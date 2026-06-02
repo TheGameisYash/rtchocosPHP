@@ -1,0 +1,36 @@
+# ----------------------------------------------------------------------
+# | Gzip / Deflate Compression                                         |
+# ----------------------------------------------------------------------
+<IfModule mod_deflate.c>
+    # Force compression for XML and HTML
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+    
+    # Decompress before storing on disk
+    SetOutputFilter DEFLATE
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | Browser Caching (Expires Headers)                                  |
+# ----------------------------------------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+
+    # CSS & JavaScript
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+
+    # Images & Media
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | Prevent directory listings                                         |
+# ----------------------------------------------------------------------
+Options -Indexes

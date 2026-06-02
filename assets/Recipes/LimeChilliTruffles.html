@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lime Chilli Truffles – RT Chocos</title>
+<meta name="description" content="Detailed recipe for Lime Chilli Truffles. 70% dark chocolate with fresh lime zest and red chilli infusion." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #f7f0e3;
+    --cream2: #ede3d0;
+    --dark: #1a0e05;
+    --dark2: #2c1a0a;
+    --brown: #5c2f0e;
+    --gold: #b8882a;
+    --gold-light: #d4a84b;
+    --text: #2c1a0a;
+    --text-muted: #7a5a3a;
+    --text-light: #a07850;
+    --border: rgba(92,47,14,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--dark);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px 80px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-photo-wrap {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-photo {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 60% 18%;
+    display: block;
+    filter: brightness(0.88) saturate(1.1);
+    z-index: 1;
+  }
+
+  /* Vignette overlay */
+  .hero-right::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+      linear-gradient(to right, #1a0e05 0%, rgba(26,14,5,0.55) 22%, rgba(26,14,5,0.08) 50%, transparent 100%),
+      linear-gradient(to bottom, rgba(26,14,5,0.45) 0%, transparent 28%, transparent 68%, rgba(26,14,5,0.75) 100%);
+    pointer-events: none;
+  }
+
+  /* Gold corner bracket */
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    top: 28px; right: 28px;
+    width: 72px; height: 72px;
+    border-top: 1px solid rgba(184,136,42,0.55);
+    border-right: 1px solid rgba(184,136,42,0.55);
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  /* Photo caption overlay at bottom of image panel */
+  .hero-photo-caption {
+    position: absolute;
+    bottom: 36px;
+    right: 36px;
+    z-index: 4;
+    text-align: right;
+  }
+  .hero-photo-caption .cap-tag {
+    font-family: 'Jost', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(212,168,75,0.7);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .hero-photo-caption .cap-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: rgba(247,240,227,0.55);
+    display: block;
+    line-height: 1.4;
+  }
+
+  .hero-tag {
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 6vw, 76px);
+    font-weight: 300;
+    line-height: 1.0;
+    color: var(--cream);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: rgba(247,240,227,0.45);
+    margin-bottom: 48px;
+    line-height: 1.5;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--cream);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(247,240,227,0.1);
+    align-self: center;
+  }
+
+  /* ── DECORATIVE CIRCLES ── */
+  .deco-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(184,136,42,0.12);
+    pointer-events: none;
+  }
+
+  /* ── CONTENT WRAPPER ── */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ── INTRO SECTION ── */
+  .intro-section {
+    padding: 100px 0 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .intro-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .intro-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--text);
+    font-style: italic;
+  }
+
+  .intro-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 8px;
+  }
+
+  .badge-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .badge-row:first-child { border-top: 1px solid var(--border); }
+
+  .badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .badge-text {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 20px 0 60px;
+  }
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .divider-ornament {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 14px 0 0 var(--gold), -14px 0 0 var(--gold);
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    margin-bottom: 48px;
+    text-align: center;
+  }
+  .section-num {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 300;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  /* ── INGREDIENTS ── */
+  .ingredients-section {
+    padding: 80px 0;
+    background: var(--dark);
+    margin: 0 -40px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .ingredients-section .section-title { color: var(--cream); }
+  .ingredients-section .section-num { color: var(--gold); }
+
+  .ing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .ing-group-title {
+    grid-column: 1 / -1;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 24px 0 12px;
+  }
+  .ing-group-title:first-child { padding-top: 0; }
+
+  .ing-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 16px 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(184,136,42,0.1);
+    gap: 16px;
+    transition: background 0.2s;
+  }
+  .ing-item:hover { background: rgba(184,136,42,0.06); }
+
+  .ing-name-wrap { flex: 1; }
+  .ing-name {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.3;
+  }
+  .ing-note-text {
+    font-size: 11px;
+    color: rgba(247,240,227,0.3);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .ing-qty {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--gold-light);
+    white-space: nowrap;
+  }
+
+  .ing-ratio-note {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: rgba(184,136,42,0.08);
+    border: 1px solid rgba(184,136,42,0.2);
+    margin-top: 12px;
+  }
+  .ing-ratio-icon {
+    font-size: 14px;
+    color: var(--gold);
+  }
+  .ing-ratio-text {
+    font-size: 12px;
+    color: rgba(247,240,227,0.5);
+    font-style: italic;
+  }
+
+  /* ── METHOD ── */
+  .method-section { padding: 100px 0; }
+
+  .steps-container { max-width: 900px; margin: 0 auto; }
+
+  .step-item {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 0 32px;
+    margin-bottom: 0;
+    position: relative;
+  }
+
+  .step-item:not(:last-child) .step-line {
+    position: absolute;
+    left: 29px;
+    top: 60px;
+    bottom: -1px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  .step-num-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  .step-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--cream);
+  }
+
+  .step-circle-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--gold);
+  }
+
+  .step-content {
+    padding-bottom: 52px;
+  }
+
+  .step-title-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .step-desc-text {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--text-muted);
+  }
+
+  .step-callout {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: var(--cream2);
+    border-left: 2px solid var(--gold);
+    font-size: 12px;
+    font-style: italic;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── SHELF LIFE ── */
+  .shelf-section {
+    padding: 80px 0;
+    background: var(--dark2);
+    margin: 0 -40px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .shelf-section .section-title { color: var(--cream); }
+  .shelf-section .section-num { color: var(--gold); }
+  .shelf-section .section-divider::before,
+  .shelf-section .section-divider::after { background: rgba(184,136,42,0.2); }
+
+  .shelf-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 900px;
+    margin: 0 auto 48px;
+  }
+
+  .shelf-card {
+    padding: 32px 28px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(184,136,42,0.12);
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .shelf-card:hover { background: rgba(184,136,42,0.07); }
+  .shelf-card.highlight {
+    background: rgba(184,136,42,0.1);
+    border-color: rgba(184,136,42,0.35);
+  }
+
+  .shelf-icon {
+    font-size: 22px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .shelf-duration {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .shelf-condition {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(247,240,227,0.4);
+    margin-bottom: 12px;
+  }
+
+  .shelf-desc {
+    font-size: 12px;
+    color: rgba(247,240,227,0.3);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  /* ── PRO NOTES ── */
+  .notes-section { padding: 80px 0 100px; }
+
+  .notes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .note-card {
+    padding: 28px 28px 24px;
+    border: 1px solid var(--border);
+    background: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .note-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--gold);
+  }
+
+  .note-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .note-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .note-body {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-muted);
+  }
+
+  /* ── ALLERGEN BAR ── */
+  .allergen-bar {
+    background: var(--dark);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .allergen-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(247,240,227,0.4);
+  }
+
+  .allergen-dot-gold { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
+  .allergen-dot-grey { width: 5px; height: 5px; border-radius: 50%; background: rgba(247,240,227,0.2); }
+
+  /* ── FOOTER ── */
+  .recipe-footer {
+    background: var(--dark);
+    padding: 60px 40px;
+    text-align: center;
+    border-top: 1px solid rgba(184,136,42,0.15);
+  }
+
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+
+  .footer-tagline {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-right { display: none; }
+    .hero-left { padding: 60px 28px; }
+    .intro-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 0 40px; }
+    .ing-grid { grid-template-columns: 1fr; }
+    .shelf-cards { grid-template-columns: 1fr; }
+    .notes-grid { grid-template-columns: 1fr; }
+    .step-item { grid-template-columns: 40px 1fr; gap: 0 20px; }
+    .content { padding: 0 20px; }
+    .ingredients-section, .shelf-section { margin: 0 -20px; padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <a href="../../gallery.php" style="color:var(--cream);text-decoration:none;font-size:12px;margin-bottom:24px;display:inline-flex;align-items:center;gap:6px;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">&larr; Back to Recipes</a>
+    <div class="hero-tag">RT Chocos · Craft Recipe</div>
+    <h1 class="hero-title">Lime<br>Chilli<br><em>Truffles</em></h1>
+    <p class="hero-subtitle">Dark compound chocolate · fresh lime zest<br>a subtle kick of chilli · cocoa dusted</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-val">18–20</span>
+        <span class="stat-label">Truffles</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-val">~20 g</span>
+        <span class="stat-label">Each</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-val">15 min</span>
+        <span class="stat-label">Active</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-val">2–3 hrs</span>
+        <span class="stat-label">Setting</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-val">5–7 days</span>
+        <span class="stat-label">Shelf Life</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <!-- Decorative corner circles -->
+    <div class="deco-circle" style="width:420px;height:420px;top:-80px;right:-80px;z-index:3;opacity:0.6;"></div>
+    <div class="deco-circle" style="width:220px;height:220px;bottom:-30px;left:30px;z-index:3;opacity:0.4;"></div>
+
+    <!-- Photo -->
+    <img class="hero-photo" src="../limechillitrufflesphoto.jpeg" alt="Lime Chilli Truffles — cocoa-dusted, hand-rolled, in paper cups">
+
+    <!-- Caption -->
+    <div class="hero-photo-caption">
+      <span class="cap-tag">RT Chocos · Mumbai</span>
+      <span class="cap-text">Cocoa-dusted · Hand-rolled</span>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<div class="content">
+  <section class="intro-section">
+    <div>
+      <p class="intro-label">The Philosophy</p>
+      <p class="intro-text">Sometimes chocolate wants a little provocation. Bright lime cuts through the richness, chilli warms the finish, and together they turn a simple dark truffle into something you remember. No fuss — just well-placed flavour.</p>
+    </div>
+    <div class="intro-badges">
+      <div class="badge-row"><div class="badge-dot"></div><span class="badge-text">Dark compound chocolate base</span></div>
+      <div class="badge-row"><div class="badge-dot"></div><span class="badge-text">Fresh citrus — real lime zest and juice</span></div>
+      <div class="badge-row"><div class="badge-dot"></div><span class="badge-text">Hand-rolled ganache truffles</span></div>
+      <div class="badge-row"><div class="badge-dot"></div><span class="badge-text">Cocoa powder finish</span></div>
+      <div class="badge-row"><div class="badge-dot"></div><span class="badge-text">Beginner-friendly · No tempering required</span></div>
+    </div>
+  </section>
+</div>
+
+<!-- INGREDIENTS -->
+<div class="content">
+  <section class="ingredients-section">
+    <div style="max-width:900px;margin:0 auto;">
+      <div class="section-header">
+        <p class="section-num">01 · Ingredients</p>
+        <h2 class="section-title" style="color:var(--cream);">What you will need</h2>
+      </div>
+      <div class="section-divider" style="margin-bottom:40px;">
+        <div style="flex:1;height:1px;background:rgba(184,136,42,0.2);"></div>
+        <div class="divider-ornament" style="background:var(--gold);box-shadow:14px 0 0 var(--gold),-14px 0 0 var(--gold);"></div>
+        <div style="flex:1;height:1px;background:rgba(184,136,42,0.2);"></div>
+      </div>
+      <div class="ing-grid">
+        <p class="ing-group-title">Ganache</p>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">Dark compound chocolate</p>
+            <p class="ing-note-text">Finely chopped · good quality</p>
+          </div>
+          <span class="ing-qty">300 g</span>
+        </div>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">Fresh cream</p>
+            <p class="ing-note-text">Full-fat · room temperature</p>
+          </div>
+          <span class="ing-qty">70 g</span>
+        </div>
+
+        <p class="ing-group-title" style="padding-top:16px;">Flavouring</p>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">Lime zest</p>
+            <p class="ing-note-text">Freshly grated · outer green layer only</p>
+          </div>
+          <span class="ing-qty">1 tsp</span>
+        </div>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">Lime juice</p>
+            <p class="ing-note-text">Freshly squeezed · strained</p>
+          </div>
+          <span class="ing-qty">1 tsp</span>
+        </div>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">Chilli powder</p>
+            <p class="ing-note-text">Kashmiri or cayenne · adjust to preference</p>
+          </div>
+          <span class="ing-qty">¼ tsp</span>
+        </div>
+
+        <p class="ing-group-title" style="padding-top:16px;">Finish</p>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">Cocoa powder</p>
+            <p class="ing-note-text">Unsweetened · for dusting</p>
+          </div>
+          <span class="ing-qty">as needed</span>
+        </div>
+
+        <div class="ing-ratio-note">
+          <span class="ing-ratio-icon">◈</span>
+          <span class="ing-ratio-text">The cream-to-chocolate ratio is approximately 1:4.3 — this produces a firm, scoopable ganache that holds its shape when rolled. The chilli quantity is deliberately restrained for a warm back-note, not a front-palate burn. <strong style="color:rgba(247,240,227,0.6);font-weight:400;">Adjust upward in small increments if a stronger heat is desired.</strong></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- METHOD -->
+<div class="content">
+  <section class="method-section">
+    <div class="section-header">
+      <p class="section-num">02 · Method</p>
+      <h2 class="section-title">Step by step</h2>
+    </div>
+    <div class="section-divider"><div class="divider-ornament"></div></div>
+
+    <div class="steps-container">
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">1</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Chop the chocolate</h3>
+          <p class="step-desc-text">Finely chop the dark compound chocolate and place it in a clean, dry, heatproof bowl. Smaller, more uniform pieces melt more evenly and reduce the chance of unmelted lumps in the finished ganache.</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">2</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Prepare the flavoured cream</h3>
+          <p class="step-desc-text">Warm the fresh cream in a small saucepan over low heat until just warm — not boiling. Remove from heat. Add the chilli powder, lime zest and lime juice directly into the warm cream and stir well to combine. Allow the flavours to infuse for a minute.</p>
+          <div class="step-callout">The cream only needs to be warm enough to melt the compound chocolate. Boiling the cream can dull the freshness of the lime and scorch the chilli.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">3</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Build the ganache</h3>
+          <p class="step-desc-text">Pour the flavoured cream over the chopped chocolate. Let it sit undisturbed for 1 minute — this allows the heat to begin softening the chocolate without agitation. Then stir gently from the centre outward in small circles until the ganache is smooth, glossy and fully combined. If a few pieces remain unmelted, microwave for 10 seconds and stir again.</p>
+          <div class="step-callout">Stir slowly. Aggressive mixing introduces air bubbles that create a grainy texture on the surface of the finished truffle.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">4</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Set the ganache</h3>
+          <p class="step-desc-text">Cover the bowl with cling film or a lid and allow the ganache to set at room temperature for 2–3 hours, or until it is firm enough to scoop and hold its shape. In warmer conditions, refrigerate for 1–2 hours, but bring it back to a slightly pliable consistency before rolling.</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">5</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Roll the truffles</h3>
+          <p class="step-desc-text">Using a small spoon or melon baller, scoop even portions of ganache. Roll each portion quickly between your palms into a rough sphere. Perfection is not the goal — a slightly irregular, handmade shape is part of the charm of a hand-rolled truffle.</p>
+          <div class="step-callout">If the ganache sticks to your hands, lightly dust your palms with cocoa powder or briefly chill them under cold water and dry before rolling.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">6</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Dust and serve</h3>
+          <p class="step-desc-text">Spread cocoa powder on a shallow plate or tray. Roll each truffle lightly in the cocoa until evenly coated. Tap off any excess. Place finished truffles on a parchment-lined tray and refrigerate until ready to serve.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- SHELF LIFE -->
+<div class="content">
+  <section class="shelf-section">
+    <div class="section-header">
+      <p class="section-num">03 · Storage</p>
+      <h2 class="section-title">Shelf life &amp; handling</h2>
+    </div>
+    <div class="section-divider">
+      <div style="flex:1;height:1px;background:rgba(184,136,42,0.2);"></div>
+      <div class="divider-ornament" style="background:var(--gold);box-shadow:14px 0 0 var(--gold),-14px 0 0 var(--gold);"></div>
+      <div style="flex:1;height:1px;background:rgba(184,136,42,0.2);"></div>
+    </div>
+    <div class="shelf-cards">
+      <div class="shelf-card highlight">
+        <span class="shelf-icon">❄</span>
+        <div class="shelf-duration">5–7 days</div>
+        <div class="shelf-condition">Refrigerated</div>
+        <div class="shelf-desc">Store in an airtight container, single layer, separated by parchment. Recommended storage.</div>
+      </div>
+      <div class="shelf-card">
+        <span class="shelf-icon">🌡</span>
+        <div class="shelf-duration">1–2 days</div>
+        <div class="shelf-condition">Room Temperature</div>
+        <div class="shelf-desc">Best consumed quickly if left at ambient. Ganache softens and loses shape in warm conditions.</div>
+      </div>
+      <div class="shelf-card">
+        <span class="shelf-icon">🧊</span>
+        <div class="shelf-duration">3–4 wks</div>
+        <div class="shelf-condition">Frozen</div>
+        <div class="shelf-desc">Freeze in a sealed container. Thaw in the refrigerator for 2–3 hours before serving.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- PRO NOTES -->
+<div class="content">
+  <section class="notes-section">
+    <div class="section-header">
+      <p class="section-num">04 · Professional Notes</p>
+      <h2 class="section-title">Tips from the kitchen</h2>
+    </div>
+    <div class="section-divider"><div class="divider-ornament"></div></div>
+    <div class="notes-grid">
+      <div class="note-card">
+        <p class="note-label">Chilli Selection</p>
+        <h3 class="note-title">Heat level matters</h3>
+        <p class="note-body">Kashmiri chilli gives a rich colour and mild warmth. Cayenne delivers sharper heat. For a smoky note, try a small pinch of chipotle powder instead. Always start with less and taste the ganache before setting — heat intensifies as the chocolate cools.</p>
+      </div>
+      <div class="note-card">
+        <p class="note-label">Citrus</p>
+        <h3 class="note-title">Zest, not pith</h3>
+        <p class="note-body">Only the outermost green layer of the lime carries the essential oils you want. The white pith beneath is bitter and will muddy the bright citrus note. Use a fine microplane and zest lightly.</p>
+      </div>
+      <div class="note-card">
+        <p class="note-label">Scaling Up</p>
+        <h3 class="note-title">Batch production</h3>
+        <p class="note-body">This recipe scales linearly. For larger batches, infuse the cream with chilli and zest for 15–20 minutes before straining and reheating to pour over the chocolate. Straining produces a smoother finish in high-volume production.</p>
+      </div>
+      <div class="note-card">
+        <p class="note-label">Variation</p>
+        <h3 class="note-title">Alternative finishes</h3>
+        <p class="note-body">Instead of cocoa powder, roll in finely chopped pistachios, desiccated coconut, or tempered chocolate shavings. A light dusting of matcha also pairs well with the lime and adds colour contrast.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ALLERGEN BAR -->
+<div class="allergen-bar">
+  <div class="allergen-item"><div class="allergen-dot-gold"></div>Contains: dairy</div>
+  <div class="allergen-item"><div class="allergen-dot-grey"></div>Naturally gluten-free</div>
+  <div class="allergen-item"><div class="allergen-dot-grey"></div>No artificial additives</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="recipe-footer">
+  <p class="footer-brand">RT Chocos</p>
+  <p class="footer-tagline">Mumbai · Craft Chocolate · Handmade with Care</p>
+</footer>
+
+</body>
+</html>

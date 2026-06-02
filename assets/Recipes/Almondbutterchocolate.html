@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Almond Butter Chocolate Bar — RT Chocos</title>
+<meta name="description" content="Detailed recipe for Almond Butter Chocolate Bar. 70% dark chocolate with almond butter, toasted almond flakes, and fleur de sel." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #f7f0e3;
+    --cream2: #ede3d0;
+    --dark: #1a0e05;
+    --dark2: #2c1a0a;
+    --brown: #5c2f0e;
+    --gold: #b8882a;
+    --gold-light: #d4a84b;
+    --text: #2c1a0a;
+    --text-muted: #7a5a3a;
+    --text-light: #a07850;
+    --border: rgba(92,47,14,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* â”€â”€ HERO â”€â”€ */
+  .hero {
+    background: var(--dark);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px 80px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-right {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, #3d1f00 0%, #1a0e05 70%);
+  }
+
+  .choc-illustration {
+    position: relative;
+    z-index: 1;
+    width: 340px;
+    height: 340px;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(-3deg); }
+    50% { transform: translateY(-18px) rotate(-3deg); }
+  }
+
+  .hero-tag {
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 6vw, 76px);
+    font-weight: 300;
+    line-height: 1.0;
+    color: var(--cream);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: rgba(247,240,227,0.45);
+    margin-bottom: 48px;
+    line-height: 1.5;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--cream);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(247,240,227,0.1);
+    align-self: center;
+  }
+
+  /* â”€â”€ DECORATIVE CIRCLES â”€â”€ */
+  .deco-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(184,136,42,0.12);
+    pointer-events: none;
+  }
+
+  /* â”€â”€ CONTENT WRAPPER â”€â”€ */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* â”€â”€ INTRO SECTION â”€â”€ */
+  .intro-section {
+    padding: 100px 0 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .intro-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .intro-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--text);
+    font-style: italic;
+  }
+
+  .intro-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 8px;
+  }
+
+  .badge-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .badge-row:first-child { border-top: 1px solid var(--border); }
+
+  .badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .badge-text {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  /* â”€â”€ DIVIDER â”€â”€ */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 20px 0 60px;
+  }
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .divider-ornament {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 14px 0 0 var(--gold), -14px 0 0 var(--gold);
+  }
+
+  /* â”€â”€ SECTION HEADER â”€â”€ */
+  .section-header {
+    margin-bottom: 48px;
+    text-align: center;
+  }
+  .section-num {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 300;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  /* â”€â”€ INGREDIENTS â”€â”€ */
+  .ingredients-section {
+    padding: 80px 0;
+    background: var(--dark);
+    margin: 0 -40px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .ingredients-section .section-title { color: var(--cream); }
+  .ingredients-section .section-num { color: var(--gold); }
+
+  .ing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .ing-group-title {
+    grid-column: 1 / -1;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 24px 0 12px;
+  }
+  .ing-group-title:first-child { padding-top: 0; }
+
+  .ing-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 16px 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(184,136,42,0.1);
+    gap: 16px;
+    transition: background 0.2s;
+  }
+  .ing-item:hover { background: rgba(184,136,42,0.06); }
+
+  .ing-name-wrap { flex: 1; }
+  .ing-name {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.3;
+  }
+  .ing-note-text {
+    font-size: 11px;
+    color: rgba(247,240,227,0.3);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .ing-qty {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--gold-light);
+    white-space: nowrap;
+  }
+
+  .ing-ratio-note {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: rgba(184,136,42,0.08);
+    border: 1px solid rgba(184,136,42,0.2);
+    margin-top: 12px;
+  }
+  .ing-ratio-icon {
+    font-size: 14px;
+    color: var(--gold);
+  }
+  .ing-ratio-text {
+    font-size: 12px;
+    color: rgba(247,240,227,0.5);
+    font-style: italic;
+  }
+
+  /* â”€â”€ METHOD â”€â”€ */
+  .method-section { padding: 100px 0; }
+
+  .steps-container { max-width: 900px; margin: 0 auto; }
+
+  .step-item {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 0 32px;
+    margin-bottom: 0;
+    position: relative;
+  }
+
+  .step-item:not(:last-child) .step-line {
+    position: absolute;
+    left: 29px;
+    top: 60px;
+    bottom: -1px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  .step-num-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  .step-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--cream);
+  }
+
+  .step-circle-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--gold);
+  }
+
+  .step-content {
+    padding-bottom: 52px;
+  }
+
+  .step-title-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .step-desc-text {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--text-muted);
+  }
+
+  .step-callout {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: var(--cream2);
+    border-left: 2px solid var(--gold);
+    font-size: 12px;
+    font-style: italic;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* â”€â”€ SHELF LIFE â”€â”€ */
+  .shelf-section {
+    padding: 80px 0;
+    background: var(--dark2);
+    margin: 0 -40px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .shelf-section .section-title { color: var(--cream); }
+  .shelf-section .section-num { color: var(--gold); }
+  .shelf-section .section-divider::before,
+  .shelf-section .section-divider::after { background: rgba(184,136,42,0.2); }
+
+  .shelf-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 900px;
+    margin: 0 auto 48px;
+  }
+
+  .shelf-card {
+    padding: 32px 28px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(184,136,42,0.12);
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .shelf-card:hover { background: rgba(184,136,42,0.07); }
+  .shelf-card.highlight {
+    background: rgba(184,136,42,0.1);
+    border-color: rgba(184,136,42,0.35);
+  }
+
+  .shelf-icon {
+    font-size: 22px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .shelf-duration {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .shelf-condition {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(247,240,227,0.4);
+    margin-bottom: 12px;
+  }
+
+  .shelf-desc {
+    font-size: 12px;
+    color: rgba(247,240,227,0.3);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .spoilage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .spoilage-item {
+    padding: 16px 20px;
+    border: 1px solid rgba(184,136,42,0.1);
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .sp-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .sp-text {
+    font-size: 12px;
+    color: rgba(247,240,227,0.4);
+    line-height: 1.65;
+  }
+
+  .sp-text strong {
+    color: rgba(247,240,227,0.7);
+    font-weight: 400;
+  }
+
+  /* â”€â”€ NUTRITION â”€â”€ */
+  .nutrition-section { padding: 100px 0; }
+
+  .nut-table {
+    max-width: 680px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+  }
+
+  .nut-header {
+    background: var(--dark);
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nut-header-title {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .nut-header-sub {
+    font-size: 11px;
+    color: rgba(247,240,227,0.3);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .nut-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .nut-row:last-child { border-bottom: none; }
+  .nut-row.major { background: rgba(92,47,14,0.04); }
+
+  .nut-row-name {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text);
+  }
+
+  .nut-row-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--brown);
+  }
+
+  /* â”€â”€ PRO NOTES â”€â”€ */
+  .notes-section { padding: 80px 0 100px; }
+
+  .notes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .note-card {
+    padding: 28px 28px 24px;
+    border: 1px solid var(--border);
+    background: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .note-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--gold);
+  }
+
+  .note-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .note-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .note-body {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-muted);
+  }
+
+  /* â”€â”€ ALLERGEN BAR â”€â”€ */
+  .allergen-bar {
+    background: var(--dark);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .allergen-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(247,240,227,0.4);
+  }
+
+  .allergen-dot-gold { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
+  .allergen-dot-grey { width: 5px; height: 5px; border-radius: 50%; background: rgba(247,240,227,0.2); }
+
+  /* â”€â”€ FOOTER â”€â”€ */
+  .recipe-footer {
+    background: var(--dark);
+    padding: 60px 40px;
+    text-align: center;
+    border-top: 1px solid rgba(184,136,42,0.15);
+  }
+
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+
+  .footer-tagline {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* â”€â”€ RESPONSIVE â”€â”€ */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-right { display: none; }
+    .hero-left { padding: 60px 28px; }
+    .intro-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 0 40px; }
+    .ing-grid { grid-template-columns: 1fr; }
+    .shelf-cards { grid-template-columns: 1fr; }
+    .spoilage-grid { grid-template-columns: 1fr; }
+    .notes-grid { grid-template-columns: 1fr; }
+    .step-item { grid-template-columns: 40px 1fr; gap: 0 20px; }
+    .content { padding: 0 20px; }
+    .ingredients-section, .shelf-section { margin: 0 -20px; padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <a href="../../gallery.php" style="color:var(--cream);text-decoration:none;font-size:12px;margin-bottom:24px;display:inline-flex;align-items:center;gap:6px;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">&larr; Back to Recipes</a>
+    <div class="hero-tag">RT Chocos · Craft Recipe</div>
+    <h1 class="hero-title">Almond<br>Butter<br><em>Chocolate</em><br>Bar</h1>
+    <p class="hero-subtitle">70% dark chocolate · 10% almond butter<br>toasted almond flakes · fleur de sel</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-val">8</span>
+        <span class="stat-label">Bars</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-val">50 g</span>
+        <span class="stat-label">Each</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-val">45 min</span>
+        <span class="stat-label">Active</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-val">70%</span>
+        <span class="stat-label">Cacao</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-val">8–10 wks</span>
+        <span class="stat-label">Shelf Life</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="deco-circle" style="width:500px;height:500px;top:-100px;right:-100px;"></div>
+    <div class="deco-circle" style="width:300px;height:300px;bottom:-50px;left:50px;"></div>
+    <svg class="choc-illustration" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg">
+      <!-- Bar shadow -->
+      <ellipse cx="172" cy="300" rx="110" ry="14" fill="rgba(0,0,0,0.4)"/>
+      <!-- Main bar body -->
+      <rect x="60" y="80" width="220" height="200" rx="10" fill="#3d1800"/>
+      <rect x="60" y="80" width="220" height="200" rx="10" fill="url(#barGrad)"/>
+      <!-- Bar grid lines horizontal -->
+      <line x1="60" y1="146" x2="280" y2="146" stroke="#2a1000" stroke-width="3"/>
+      <line x1="60" y1="213" x2="280" y2="213" stroke="#2a1000" stroke-width="3"/>
+      <!-- Bar grid lines vertical -->
+      <line x1="115" y1="80" x2="115" y2="280" stroke="#2a1000" stroke-width="3"/>
+      <line x1="170" y1="80" x2="170" y2="280" stroke="#2a1000" stroke-width="3"/>
+      <line x1="225" y1="80" x2="225" y2="280" stroke="#2a1000" stroke-width="3"/>
+      <!-- Shine on segments -->
+      <rect x="63" y="83" width="50" height="60" rx="4" fill="rgba(255,200,100,0.06)"/>
+      <rect x="118" y="83" width="50" height="60" rx="4" fill="rgba(255,200,100,0.03)"/>
+      <!-- Almond flakes scattered -->
+      <ellipse cx="88" cy="100" rx="7" ry="3" fill="#d4a84b" opacity="0.9" transform="rotate(25,88,100)"/>
+      <ellipse cx="148" cy="115" rx="6" ry="2.5" fill="#c8922a" opacity="0.85" transform="rotate(-15,148,115)"/>
+      <ellipse cx="200" cy="95" rx="8" ry="3" fill="#d4a84b" opacity="0.9" transform="rotate(40,200,95)"/>
+      <ellipse cx="252" cy="108" rx="6" ry="2.5" fill="#b8882a" opacity="0.8" transform="rotate(-30,252,108)"/>
+      <ellipse cx="100" cy="170" rx="7" ry="3" fill="#d4a84b" opacity="0.85" transform="rotate(10,100,170)"/>
+      <ellipse cx="242" cy="165" rx="6" ry="2.5" fill="#c8922a" opacity="0.9" transform="rotate(-20,242,165)"/>
+      <ellipse cx="170" cy="235" rx="8" ry="3" fill="#d4a84b" opacity="0.8" transform="rotate(35,170,235)"/>
+      <ellipse cx="118" cy="248" rx="6" ry="2.5" fill="#c8922a" opacity="0.85" transform="rotate(-10,118,248)"/>
+      <ellipse cx="230" cy="245" rx="7" ry="3" fill="#b8882a" opacity="0.9" transform="rotate(20,230,245)"/>
+      <!-- Salt crystals -->
+      <rect x="134" y="93" width="3" height="3" fill="rgba(255,255,255,0.6)" rx="0.5"/>
+      <rect x="188" y="155" width="2.5" height="2.5" fill="rgba(255,255,255,0.5)" rx="0.5"/>
+      <rect x="260" y="200" width="3" height="3" fill="rgba(255,255,255,0.55)" rx="0.5"/>
+      <rect x="80" y="230" width="2.5" height="2.5" fill="rgba(255,255,255,0.5)" rx="0.5"/>
+      <!-- Top gloss -->
+      <rect x="60" y="80" width="220" height="30" rx="10" fill="url(#topGloss)"/>
+      <!-- Left gloss stripe -->
+      <rect x="60" y="80" width="15" height="200" rx="5" fill="rgba(255,200,100,0.05)"/>
+      <defs>
+        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5c2a08"/>
+          <stop offset="50%" stop-color="#3d1800"/>
+          <stop offset="100%" stop-color="#2a1000"/>
+        </linearGradient>
+        <linearGradient id="topGloss" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(255,200,120,0.15)"/>
+          <stop offset="100%" stop-color="rgba(255,200,120,0)"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+</section>
+
+<!-- INTRO -->
+<div class="content">
+  <section class="intro-section">
+    <div>
+      <p class="intro-label">The Philosophy</p>
+      <p class="intro-text">Good chocolate doesn't need to be complicated. A quality 70% dark chocolate, a spoonful of real almond butter, and a handful of toasted flakes — that's it. Simple ingredients, handled well, make something genuinely worth eating.</p>
+    </div>
+    <div class="intro-badges">
+      <div class="badge-row"><div class="badge-dot"></div><span class="badge-text">70% dark chocolate</span></div>
+      <div class="badge-row"><div class="badge-dot"></div><span class="badge-text">No artificial additives or emulsifiers</span></div>
+      <div class="badge-row"><div class="badge-dot"></div><span class="badge-text">Naturally gluten-free</span></div>
+      <div class="badge-row"><div class="badge-dot"></div><span class="badge-text">Ambient shelf life — no refrigeration needed</span></div>
+      <div class="badge-row"><div class="badge-dot"></div><span class="badge-text">Intermediate craft level</span></div>
+    </div>
+  </section>
+</div>
+
+<!-- INGREDIENTS -->
+<div class="content">
+  <section class="ingredients-section">
+    <div style="max-width:900px;margin:0 auto;">
+      <div class="section-header">
+        <p class="section-num">01 · Ingredients</p>
+        <h2 class="section-title" style="color:var(--cream);">What you will need</h2>
+      </div>
+      <div class="section-divider" style="margin-bottom:40px;">
+        <div style="flex:1;height:1px;background:rgba(184,136,42,0.2);"></div>
+        <div class="divider-ornament" style="background:var(--gold);box-shadow:14px 0 0 var(--gold),-14px 0 0 var(--gold);"></div>
+        <div style="flex:1;height:1px;background:rgba(184,136,42,0.2);"></div>
+      </div>
+      <div class="ing-grid">
+        <p class="ing-group-title">Chocolate Base</p>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">70% dark chocolate</p>
+            <p class="ing-note-text">Good quality, any brand you trust</p>
+          </div>
+          <span class="ing-qty">350 g</span>
+        </div>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">Natural almond butter</p>
+            <p class="ing-note-text">No salt, no added oil · stoneground preferred</p>
+          </div>
+          <span class="ing-qty">35 g</span>
+        </div>
+
+        <p class="ing-group-title" style="padding-top:16px;">Inclusions & Finish</p>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">Almond flakes</p>
+            <p class="ing-note-text">Raw, unblanched · toasted before use</p>
+          </div>
+          <span class="ing-qty">60 g</span>
+        </div>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">Fleur de sel</p>
+            <p class="ing-note-text">Or any quality flaky sea salt</p>
+          </div>
+          <span class="ing-qty">2 g</span>
+        </div>
+        <div class="ing-item">
+          <div class="ing-name-wrap">
+            <p class="ing-name">Pure vanilla extract</p>
+            <p class="ing-note-text">Optional · alcohol-free</p>
+          </div>
+          <span class="ing-qty">2 ml</span>
+        </div>
+
+        <div class="ing-ratio-note">
+          <span class="ing-ratio-icon">â—ˆ</span>
+          <span class="ing-ratio-text">Almond butter is held at exactly 10% of the chocolate weight. This preserves the chocolate's structural integrity, temper stability, and clean snap while delivering a distinct, rounded nuttiness. <strong style="color:rgba(247,240,227,0.6);font-weight:400;">No cocoa butter is used in this recipe</strong> — at 10%, the almond butter integrates cleanly without requiring additional fat adjustment.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- METHOD -->
+<div class="content">
+  <section class="method-section">
+    <div class="section-header">
+      <p class="section-num">02 · Method</p>
+      <h2 class="section-title">Step by step</h2>
+    </div>
+    <div class="section-divider"><div class="divider-ornament"></div></div>
+
+    <div class="steps-container">
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">1</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Toast the almond flakes</h3>
+          <p class="step-desc-text">Preheat your oven to 160 °C (fan) or 170 °C (conventional). Spread the almond flakes in a single, even layer on a baking tray lined with parchment paper — make sure they are not piled on top of each other, as uneven layers toast unevenly. Place the tray on the middle rack and roast for 7–9 minutes. At the 5-minute mark, open the oven and give the flakes a gentle shake or stir to ensure even colour on all sides. Watch them closely from this point — they go from pale to over-toasted quickly. Pull the tray out as soon as the flakes turn pale gold and smell nutty and fragrant. Slide the parchment off the hot tray immediately onto a cool surface — leaving them on the hot tray will carry-over cook them further. Allow to cool completely before using.</p>
+          <div class="step-callout">Colour cue: pale gold, not amber or brown. Overly toasted almonds develop a faint bitterness that competes with the chocolate's origin character.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">2</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Melt and temper the chocolate</h3>
+          <p class="step-desc-text">Melt your chocolate to 44–50 °C using a bain-marie or microwave in short bursts, stirring between each. Once fully melted and smooth, temper it using your preferred method — seeding or tabling — until it reaches the correct working temperature of 31–32 °C for dark chocolate.</p>
+          <div class="step-callout">Temper gives you gloss, snap, and clean mould release. A correctly tempered chocolate will set firm and shiny within 3–4 minutes on a palette knife test.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">3</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Warm the almond butter</h3>
+          <p class="step-desc-text">Gently warm the natural almond butter to approximately 30–32 °C — the same temperature as the tempered chocolate. This is important: cold almond butter dropped into warm chocolate will locally shock the temper and cause streaking or bloom. A brief warm water bath or low microwave pulse (10 seconds, stirred) is sufficient. Stir it well to ensure it is smooth and homogenous with no oil separation.</p>
+          <div class="step-callout">No cocoa butter is required at 10% inclusion. The almond butter integrates cleanly and the chocolate's own fat structure remains stable.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">4</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Mix in the almond butter</h3>
+          <p class="step-desc-text">Add the warmed almond butter into the tempered chocolate and stir gently with a spatula until fully mixed with no streaks. Keep the stirring slow and easy — no need to rush. Add vanilla extract if using. Once smooth, fold in three-quarters of the toasted almond flakes and mix through.</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">5</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Fill the moulds</h3>
+          <p class="step-desc-text">Pour the chocolate into your bar moulds and tap the mould on the counter a few times to remove any air bubbles. Scrape the top level. Scatter the remaining almond flakes on top, press them in lightly, and finish with a small pinch of fleur de sel on each bar.</p>
+          <div class="step-callout">Polycarbonate moulds give the best gloss and release. Silicone works too but gives a slightly duller finish.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line"></div>
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">6</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Set in the fridge</h3>
+          <p class="step-desc-text">Place the filled mould in the refrigerator and let the bars set for 20–30 minutes. Once fully set, flex the mould gently and the bars should pop out cleanly.</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num-wrap"><div class="step-circle"><span class="step-circle-num">7</span></div></div>
+        <div class="step-content">
+          <h3 class="step-title-text">Your bars are ready</h3>
+          <p class="step-desc-text">Once out of the mould, your bars are ready to eat, pack, or gift straight away. No waiting required.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+
+
+
+
+
+
+<!-- ALLERGEN BAR -->
+<div class="allergen-bar">
+  <div class="allergen-item"><div class="allergen-dot-gold"></div>Contains: tree nuts (almonds)</div>
+  <div class="allergen-item"><div class="allergen-dot-grey"></div>Naturally gluten-free</div>
+  <div class="allergen-item"><div class="allergen-dot-grey"></div>No artificial additives</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="recipe-footer">
+  <p class="footer-brand">RT Chocos</p>
+  <p class="footer-tagline">Mumbai · Craft Chocolate · Handmade with Care</p>
+</footer>
+
+</body>
+</html>
