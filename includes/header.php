@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title><?php echo $pageTitle; ?></title>
 <meta name="description" content="<?php echo $pageDescription; ?>" />
+<link rel="icon" type="image/png" href="<?php echo $pathPrefix; ?>assets/favicon.png" />
+<link rel="apple-touch-icon" href="<?php echo $pathPrefix; ?>assets/favicon.png" />
+
 <meta name="keywords" content="chocolate blog India, bean to bar chocolate India, craft chocolate articles, cocoa science India, chocolate making blog, RT Chocos blog" />
 <meta property="og:title" content="Chocolate Blog India | RT Chocos" />
 <meta property="og:description" content="Expert chocolate articles on bean-to-bar making, cocoa origins, and craft chocolate in India." />
