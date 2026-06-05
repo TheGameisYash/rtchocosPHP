@@ -10,7 +10,7 @@ $BLOGS = [
     'bodyClass' => ''
   ],
   'milkfat-chocolate' => [
-    'title' => "what really happens when Milk fat enters Chocolate?",
+    'title' => "What Really Happens When Milk Fat Enters Chocolate?",
     'category' => "Science",
     'date' => "Mar 2026",
     'read' => "5 min",
@@ -52,7 +52,7 @@ $BLOGS = [
     'read' => "6 min",
     'excerpt' => "Meet lecithin — the quiet emulsifier behind every velvety bite of chocolate you have ever loved.",
     'image' => "assets/lecithin.png",
-    'bodyClass' => ''
+    'bodyClass' => 'blog-wrap'
   ]
 ];
 ?>

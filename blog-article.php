@@ -1,10 +1,12 @@
 <?php
-require_once 'includes/blog-data.php';
+require_once __DIR__ . '/includes/blog-data.php';
+
 
 if (!isset($articleKey) || !isset($BLOGS[$articleKey])) {
     header('Location: ../blog.php');
     exit;
 }
+
 
 $post = $BLOGS[$articleKey];
 $pageTitle = $post['title'] . " | RT Chocos";
@@ -29,7 +31,7 @@ function parse_markdown($markdown) {
         if (preg_match('/^(#{1,6})\s+(.+)$/', $block, $matches)) {
             $level = strlen($matches[1]);
             $content = parse_inline($matches[2]);
-            $html .= "<h{$level} style=\"font-size:" . ($level == 2 ? "32px" : "24px") . ";line-height:1.25;margin-top:18px;\">{$content}</h{$level}>\n";
+            $html .= "<h{$level}>{$content}</h{$level}>\n";
             continue;
         }
         
@@ -102,31 +104,32 @@ function parse_inline($text) {
 $markdown_file = __DIR__ . '/blog/posts/' . $articleKey . '.md';
 $markdown_content = file_exists($markdown_file) ? file_get_contents($markdown_file) : '';
 
-include $pathPrefix . 'includes/header.php';
+include __DIR__ . '/includes/header.php';
 ?>
 
+
 <!-- --- BLOG ARTICLE SECTION --- -->
-<div id="page-blog-article" class="page active" style="padding-top:72px;">
-  <div class="page-hero blog-page-hero" style="min-height:320px;">
-    <div class="page-hero-content" style="max-width:860px;text-align:left;">
-      <a class="btn-outline-dark" href="../blog.php" style="margin-bottom:20px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">&larr; Back to Blog</a>
+<div id="page-blog-article" class="page active">
+  <div class="page-hero blog-page-hero">
+    <div class="page-hero-content blog-article-hero-content">
+      <a class="btn-outline-dark back-to-blog-btn" href="../blog.php">&larr; Back to Blog</a>
       <div class="section-label" id="blog-article-category"><?php echo htmlspecialchars($post['category']); ?></div>
       <?php if (!empty($post['image'])): ?>
-      <img id="blog-article-image" src="../<?php echo htmlspecialchars($post['image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" style="display:block;width:100%;max-width:720px;border-radius:20px;box-shadow:0 18px 50px rgba(59,42,34,0.18);margin:8px 0 20px;" />
+      <img id="blog-article-image" src="../<?php echo htmlspecialchars($post['image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" />
       <?php endif; ?>
-      <h1 id="blog-article-title" class="fade-up" style="max-width:14ch;"><?php echo htmlspecialchars($post['title']); ?></h1>
-      <p id="blog-article-meta" class="fade-up-d1" style="max-width:none;"><?php echo htmlspecialchars($post['date']); ?> • <?php echo htmlspecialchars($post['read']); ?> read</p>
+      <h1 id="blog-article-title" class="fade-up"><?php echo htmlspecialchars($post['title']); ?></h1>
+      <p id="blog-article-meta" class="fade-up-d1"><?php echo htmlspecialchars($post['date']); ?> • <?php echo htmlspecialchars($post['read']); ?> read</p>
     </div>
   </div>
-  <div class="section" style="max-width:860px;">
-    <div id="blog-article-content" style="display:grid;gap:18px;font-size:18px;line-height:1.9;color:var(--brown);">
+  <div class="section blog-article-section">
+    <div id="blog-article-content">
       <?php echo parse_markdown($markdown_content); ?>
     </div>
     
-    <?php include $pathPrefix . 'includes/comments.php'; ?>
+    <?php include __DIR__ . '/includes/comments.php'; ?>
   </div>
 </div>
 
 <?php
-include $pathPrefix . 'includes/footer.php';
+include __DIR__ . '/includes/footer.php';
 ?>
