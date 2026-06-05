@@ -15,9 +15,6 @@
       <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>workshops.php">Advanced Workshops</a>
       <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>workshops.php">Kids Workshops</a>
       <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>workshops.php">Professional Workshops</a>
-      <button class="footer-link" style="color: var(--cream);" onclick="navigate('workshops')">Advanced Workshops</button>
-      <button class="footer-link" style="color: var(--cream);" onclick="navigate('workshops')">Kids Workshops</button>
-      <button class="footer-link" style="color: var(--cream);" onclick="navigate('workshops')">Professional Workshops</button>
     </div>
     <div>
       <div class="footer-heading" style="color: var(--cream);">Newsletter</div>
