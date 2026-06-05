@@ -6,7 +6,7 @@
 ?>
 
 <!-- --- HOME PAGE --- -->
-<div id="page-blog" class="page active" style="padding-top:72px;">
+<div id="page-blog" class="page active" style="padding-top:80px;">
   <div class="page-hero blog-page-hero">
     <div class="blog-page-hero-image fade-in">
       <img src="assets/blog.jpg" alt="RT Chocos blog" />

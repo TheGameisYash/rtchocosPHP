@@ -6,7 +6,7 @@
 ?>
 
 <!-- --- HOME PAGE --- -->
-<div id="page-about" class="page active" style="padding-top:72px;">
+<div id="page-about" class="page active" style="padding-top:80px;">
   <div class="page-hero about-page-hero">
     <div class="about-page-hero-image">
       <img src="assets/finalaztech.jpg" alt="" />
@@ -16,7 +16,7 @@
       <p class="fade-up-d1">From ancient rituals to artisan bars - honouring cacao's true origins.</p>
     </div>
   </div>
-  <div class="section" style="background-color: #f1daae; padding-top: 28px;">
+  <div class="section" style="background-color: var(--cream); padding-top: 28px;">
     <div class="about-grid">
       <div style="max-width: 820px; min-height: 320px;">
         <div class="section-label">About Me</div>

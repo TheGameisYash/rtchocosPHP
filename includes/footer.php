@@ -2,23 +2,23 @@
 <footer id="site-footer" class="footer-links-section">
   <div class="footer-grid">
     <div>
-      <div class="footer-heading" style="color: var(--cream);">Quick Links</div>
-      <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>index.php">Home</a>
-      <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>about.php">About</a>
-      <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
-      <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
-      <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
+      <a href="<?php echo $pathPrefix; ?>index.php" style="text-decoration:none;display:inline-block;margin-bottom:16px;">
+        <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-footer" alt="RT Chocos Logo" />
+      </a>
+      <p style="color:rgba(246,242,234,0.6);font-size:13px;line-height:1.7;font-weight:300;max-width:260px;">India's chocolate blog for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
     </div>
     <div>
-      <div class="footer-heading" style="color: var(--cream);">Workshops</div>
-      <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>workshops.php">Beginner Workshops</a>
-      <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>workshops.php">Advanced Workshops</a>
-      <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>workshops.php">Kids Workshops</a>
-      <a class="footer-link" style="color: var(--cream);" href="<?php echo $pathPrefix; ?>workshops.php">Professional Workshops</a>
+      <div class="footer-heading">Quick Links</div>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>index.php">Home</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
     </div>
     <div>
-      <div class="footer-heading" style="color: var(--cream);">Newsletter</div>
-      <p style="margin-bottom:12px; color: var(--cream);">Recipes, science &amp; exclusive workshop updates.</p>
+      <div class="footer-heading">Newsletter</div>
+      <p style="margin-bottom:12px; color: rgba(246,242,234,0.6); font-size:13px;">Recipes, science &amp; exclusive workshop updates.</p>
       <div class="footer-newsletter-row">
         <input class="footer-newsletter-input" type="email" placeholder="Email" />
         <button class="footer-newsletter-btn">→</button>
@@ -51,6 +51,10 @@
         </a>
       </div>
     </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; <?php echo date('Y'); ?> RT Chocos. All rights reserved.</span>
+    <span>Crafted with ♥ from Mumbai</span>
   </div>
 </footer>
 

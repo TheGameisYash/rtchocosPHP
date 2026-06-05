@@ -269,14 +269,9 @@ function navigate(page, options = {}) {
     return;
   }
 
-  // Hide all pages
+  // Show all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
-
-  const footer = document.getElementById('site-footer');
-  if (footer) {
-    footer.style.display = page === 'about' ? 'none' : '';
-  }
 
   // Update nav links
   updateActiveNavLinks();

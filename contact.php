@@ -6,7 +6,7 @@
 ?>
 
 <!-- --- HOME PAGE --- -->
-<div id="page-contact" class="page active" style="padding-top:72px;">
+<div id="page-contact" class="page active" style="padding-top:80px;">
   <div class="page-hero contact-page-hero">
     <div class="page-hero-content">
       <h1 class="fade-up">Get in Touch</h1>
