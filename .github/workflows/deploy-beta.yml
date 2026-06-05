@@ -1,0 +1,29 @@
+name: Deploy Beta Branch to Hostinger
+
+on:
+  push:
+    branches:
+      - beta
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy Beta
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+
+    - name: 📂 Sync files to Hostinger Subdomain
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./
+        server-dir: public_html/beta/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          .github/**
+          .htaccess
+          robots.txt
