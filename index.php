@@ -349,27 +349,29 @@
 
             const subMidAngle = (sub.startAngle + sub.endAngle) / 2;
             const subNormMid = (subMidAngle % 360 + 360) % 360;
-            const subIsTop = (subNormMid > 180 && subNormMid < 360);
             
-            const subTextR = R2 + 18;
-            let subTextPathD = "";
-            if (subIsTop) {
-              subTextPathD = getArcPath(cx, cy, subTextR, sub.startAngle + 1, sub.endAngle - 1, false);
-            } else {
-              subTextPathD = getArcPath(cx, cy, subTextR, sub.endAngle - 1, sub.startAngle + 1, true);
+            // Position the text tangentially in the middle of the subsector
+            const subTextR = R2 + 22; // Center of sub-sector text (approx 160)
+            const textPos = polarToCartesian(cx, cy, subTextR, subMidAngle);
+            
+            let rotateAngle = subMidAngle + 90;
+            if (subNormMid > 0 && subNormMid < 180) {
+              rotateAngle = subMidAngle - 90;
             }
 
-            const subTextPathId = `subpath-${category.id}-${subIdx}`;
             svgContent += `
-              <path id="${subTextPathId}" d="${subTextPathD}" fill="none" stroke="none" />
-              <text class="wheel-sub-text">
-                <textPath href="#${subTextPathId}" startOffset="50%" text-anchor="middle" fill="#f6f2ea">
-                  ${sub.label}
-                </textPath>
+              <text class="wheel-sub-text" 
+                    x="${textPos.x}" 
+                    y="${textPos.y}" 
+                    transform="rotate(${rotateAngle}, ${textPos.x}, ${textPos.y})" 
+                    text-anchor="middle" 
+                    dominant-baseline="central" 
+                    fill="#f6f2ea">
+                ${sub.label}
               </text>
             `;
 
-            const subIconR = R2 + 54;
+            const subIconR = R2 + 56; // Position the icon near the outer edge (approx 194)
             const subIconPos = polarToCartesian(cx, cy, subIconR, subMidAngle);
             const subIconRot = subMidAngle + 90;
             svgContent += `
@@ -392,7 +394,7 @@
               <path d="M-4 -18 C4 -10 4 10 -4 18" stroke="#c7a66a" fill="none" stroke-width="1.2"/>
               <path d="M4 -18 C-4 -10 -4 10 4 18" stroke="#c7a66a" fill="none" stroke-width="1.2"/>
             </g>
-            <text class="wheel-center-hub-text" x="${cx}" y="${cy + 18}">Cacao</text>
+            <text class="wheel-center-hub-text" x="${cx}" y="${cy + 14}">Cacao</text>
             <text class="wheel-center-hub-subtext" x="${cx}" y="${cy + 32}">Origin</text>
           </g>
         `;

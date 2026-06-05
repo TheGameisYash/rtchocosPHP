@@ -19,7 +19,13 @@
       <p style="font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:var(--brown-light);font-weight:300;max-width:560px;margin:0 auto;">Science, craft, and stories from the world of bean-to-bar chocolate</p>
     </div>
     <div style="display:flex;flex-direction:column;align-items:center;gap:20px;margin-bottom:48px;">
-      <input class="blog-search" type="text" placeholder="Search articles..." oninput="searchBlog(this.value)" />
+      <div class="search-container">
+        <input class="blog-search" type="text" placeholder="Search articles by topic, keyword..." oninput="searchBlog(this.value)" />
+        <svg class="search-bar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;" id="blog-filters">
         <button class="filter-btn active" data-filter="All" onclick="filterBlog('All')">All</button>
         <button class="filter-btn" data-filter="Science" onclick="filterBlog('Science')">Science</button>

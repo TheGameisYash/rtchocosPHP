@@ -579,9 +579,17 @@ function openBlogArticle(blogId, options = {}) {
 
 // --- POPUP ------------------------------------------------------
 function closePopup() {
-  document.getElementById('newsletter-popup').classList.remove('open');
+  const popup = document.getElementById('newsletter-popup');
+  if (popup) {
+    popup.classList.remove('open');
+  }
+  localStorage.setItem('rtchocos-newsletter-closed', 'true');
 }
-document.getElementById('newsletter-popup').addEventListener('click', closePopup);
+
+const popupEl = document.getElementById('newsletter-popup');
+if (popupEl) {
+  popupEl.addEventListener('click', closePopup);
+}
 
 // --- INIT -------------------------------------------------------
 renderHome();
@@ -590,7 +598,12 @@ renderBlog();
 restoreRouteFromLocation();
 
 
-// Newsletter popup after 8 seconds
+// Newsletter popup after 8 seconds, only if not previously closed
 setTimeout(() => {
-  document.getElementById('newsletter-popup').classList.add('open');
+  if (localStorage.getItem('rtchocos-newsletter-closed') !== 'true') {
+    const popup = document.getElementById('newsletter-popup');
+    if (popup) {
+      popup.classList.add('open');
+    }
+  }
 }, 8000);
