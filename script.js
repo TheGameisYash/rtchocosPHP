@@ -9,6 +9,54 @@ function getCorrectedPath(path) {
 
 // ----------------------------------------------------
 const WORKSHOPS = [
+  {
+    id: 1,
+    title: "Artisan Chocolate Truffles & Ganache",
+    level: "Beginner to Intermediate",
+    category: "Practical",
+    duration: "1 Day",
+    price: "Coming Soon",
+    status: "coming-soon",
+    image: "assets/truffle_workshop.png",
+    outcomes: [
+      "Hand-rolling and coating classic chocolate truffles",
+      "Infusing ganache with spices, herbs, and citrus",
+      "Controlling fat and water separation in fillings",
+      "Piping and decoration techniques for an artisan finish"
+    ]
+  },
+  {
+    id: 2,
+    title: "The Science of Tempering & Cocoa Crystallization",
+    level: "Intermediate to Advanced",
+    category: "Science",
+    duration: "1 Day (Masterclass)",
+    price: "Coming Soon",
+    status: "coming-soon",
+    image: "assets/tempering_workshop.png",
+    outcomes: [
+      "Cocoa butter crystal structures (Forms I-VI)",
+      "How to read and control tempering curves",
+      "Water activity (aw) & shelf-life chemistry",
+      "Emulsification math for silkier ganache"
+    ]
+  },
+  {
+    id: 3,
+    title: "Mastering Artisan Bonbons & Cocoa Painting",
+    level: "Advanced Masterclass",
+    category: "Artisan",
+    duration: "3 Days",
+    price: "Coming Soon",
+    status: "coming-soon",
+    image: "assets/bonbon_workshop.png",
+    outcomes: [
+      "Cocoa butter coloring & airbrushing basics",
+      "Achieving flawless, glossy bonbon shells",
+      "Layered fillings: caramels, gelées, duos",
+      "Troubleshooting cracks, dullness, and sticking"
+    ]
+  }
 ];
 
 const BLOGS = [
@@ -344,22 +392,43 @@ function addToCart() {
 }
 
 // --- WORKSHOP CARD ----------------------------------------------
+function triggerNewsletterAlert() {
+  const popup = document.getElementById('newsletter-popup');
+  if (popup) {
+    popup.classList.add('open');
+    const popupInput = popup.querySelector('.popup-input');
+    if (popupInput) {
+      setTimeout(() => popupInput.focus(), 100);
+    }
+  }
+}
+
 function workshopCardHTML(w) {
-  const outcomes = w.outcomes.map(o => `<li>${o}</li>`).join('');
+  const buttonLabel = w.status === 'coming-soon' ? 'Notify Me When Open' : 'Book Now';
+  const buttonOnClick = w.status === 'coming-soon' 
+    ? `onclick="triggerNewsletterAlert()"` 
+    : `onclick="addToCart()"`;
+  
+  const imageTag = w.image && w.image.includes('/')
+    ? `<img src="${getCorrectedPath(w.image)}" alt="${w.title}">`
+    : `<span>🍫</span>`;
+
   return `
     <div class="card workshop-card">
       <div class="workshop-card-img">
-        <span style="font-size:56px;">${w.image}</span>
+        ${imageTag}
         <span class="tag workshop-card-tag">${w.level}</span>
       </div>
       <div class="workshop-card-body">
         <h3>${w.title}</h3>
         <div class="workshop-meta">
-          <span>? ${w.duration}</span>
+          <span>🕒 ${w.duration}</span>
           <span class="price">${w.price}</span>
         </div>
-        <ul class="workshop-outcomes">${outcomes}</ul>
-        <button class="btn-primary" style="width:100%;justify-content:center;padding:12px 24px;">Book Now</button>
+        <ul class="workshop-outcomes">
+          ${w.outcomes.map(o => `<li>${o}</li>`).join('')}
+        </ul>
+        <button class="btn-primary" ${buttonOnClick} style="width:100%;justify-content:center;">${buttonLabel}</button>
       </div>
     </div>`;
 }
@@ -585,6 +654,218 @@ const popupEl = document.getElementById('newsletter-popup');
 if (popupEl) {
   popupEl.addEventListener('click', closePopup);
 }
+
+// --- FORM HANDLING & INTERACTIVITY ------------------------------
+function initInteractiveForms() {
+  const getSubfolderPrefix = () => {
+    const isBlogSubfolder = window.location.pathname.includes('/blog/');
+    return isBlogSubfolder ? '../' : '';
+  };
+
+  // 1. Helper for email subscription submit
+  function bindNewsletterSubmit(formId, inputClass, btnClass, feedbackId, successMsg) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+
+    const input = form.querySelector('.' + inputClass);
+    const button = form.querySelector('.' + btnClass);
+    const feedback = document.getElementById(feedbackId);
+    if (!input || !feedback) return;
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = input.value.trim();
+      
+      if (!email) {
+        feedback.style.display = "block";
+        feedback.style.color = "#ff5252";
+        feedback.textContent = "Please enter an email address.";
+        return;
+      }
+      
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        feedback.style.display = "block";
+        feedback.style.color = "#ff5252";
+        feedback.textContent = "Please enter a valid email address.";
+        return;
+      }
+
+      // Show loader
+      if (button) button.classList.add("loading");
+      feedback.style.display = "none";
+
+      const prefix = getSubfolderPrefix();
+      fetch(prefix + 'subscribe.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Server returned an error.');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (button) button.classList.remove("loading");
+        
+        feedback.style.display = "block";
+        feedback.style.color = "var(--gold-light)";
+        
+        if (formId === "newsletter-popup-form") {
+          feedback.style.color = "var(--green-900)";
+        }
+        
+        feedback.textContent = data.message || successMsg;
+        input.value = "";
+        
+        localStorage.setItem("rtchocos-newsletter-closed", "true");
+
+        if (formId === "newsletter-popup-form") {
+          setTimeout(() => {
+            closePopup();
+          }, 2000);
+        }
+      })
+      .catch(error => {
+        // Fallback for static environments
+        setTimeout(() => {
+          if (button) button.classList.remove("loading");
+          feedback.style.display = "block";
+          feedback.style.color = "var(--gold-light)";
+          if (formId === "newsletter-popup-form") {
+            feedback.style.color = "var(--green-900)";
+          }
+          feedback.textContent = successMsg;
+          input.value = "";
+          localStorage.setItem("rtchocos-newsletter-closed", "true");
+          if (formId === "newsletter-popup-form") {
+            setTimeout(() => {
+              closePopup();
+            }, 2000);
+          }
+        }, 1000);
+      });
+    });
+  }
+
+  // Bind the forms
+  bindNewsletterSubmit(
+    "newsletter-home-form",
+    "newsletter-input",
+    "btn-gold",
+    "newsletter-home-feedback",
+    "✓ Thank you for subscribing! Your first Chocolate Letter is on the way."
+  );
+
+  bindNewsletterSubmit(
+    "newsletter-footer-form",
+    "footer-newsletter-input",
+    "footer-newsletter-btn",
+    "newsletter-footer-feedback",
+    "✓ Subscribed! Thank you."
+  );
+
+  bindNewsletterSubmit(
+    "newsletter-popup-form",
+    "popup-input",
+    "btn-primary",
+    "newsletter-popup-feedback",
+    "✓ Subscribed successfully! Welcome."
+  );
+
+  // 2. Contact Form Submit Handler
+  const contactForm = document.getElementById("contact-form");
+  if (contactForm) {
+    const feedback = document.getElementById("contact-form-feedback");
+    const submitBtn = contactForm.querySelector("button[type='submit']");
+
+    contactForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      
+      const name = contactForm.querySelector("input[name='name']").value.trim();
+      const email = contactForm.querySelector("input[name='email']").value.trim();
+      const phone = contactForm.querySelector("input[name='phone']").value.trim();
+      const subject = contactForm.querySelector("input[name='subject']").value.trim();
+      const message = contactForm.querySelector("textarea[name='message']").value.trim();
+
+      if (!name || !email || !subject || !message) {
+        feedback.className = "form-feedback error";
+        feedback.textContent = "Please fill out all required fields.";
+        feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        feedback.className = "form-feedback error";
+        feedback.textContent = "Please enter a valid email address.";
+        feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+      }
+
+      // Show loading state
+      if (submitBtn) {
+        submitBtn.classList.add("loading");
+        submitBtn.disabled = true;
+      }
+      feedback.style.display = "none";
+
+      const prefix = getSubfolderPrefix();
+      fetch(prefix + 'send_contact.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          phone: phone,
+          subject: subject,
+          message: message
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Server returned an error.');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (submitBtn) {
+          submitBtn.classList.remove("loading");
+          submitBtn.disabled = false;
+        }
+
+        feedback.className = "form-feedback success";
+        feedback.textContent = `✓ ${data.message || 'Thank you! Your message has been sent successfully.'}`;
+        
+        contactForm.reset();
+        feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      })
+      .catch(error => {
+        // Fallback for static environments
+        setTimeout(() => {
+          if (submitBtn) {
+            submitBtn.classList.remove("loading");
+            submitBtn.disabled = false;
+          }
+          feedback.className = "form-feedback success";
+          feedback.textContent = `✓ Thank you, ${name}! Your message has been sent successfully. We'll be in touch soon.`;
+          contactForm.reset();
+          feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 1200);
+      });
+    });
+  }
+}
+
+// Call interactive form initializer
+initInteractiveForms();
+
 
 // --- INIT -------------------------------------------------------
 renderHome();

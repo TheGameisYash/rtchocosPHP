@@ -17,12 +17,18 @@
       <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
     </div>
     <div>
-      <div class="footer-heading">Newsletter</div>
-      <p style="margin-bottom:12px; color: rgba(246,242,234,0.6); font-size:13px;">Recipes, science &amp; exclusive workshop updates.</p>
-      <div class="footer-newsletter-row">
-        <input class="footer-newsletter-input" type="email" placeholder="Email" />
-        <button class="footer-newsletter-btn">→</button>
-      </div>
+      <?php if (empty($isHome)): ?>
+        <div class="footer-heading">Newsletter</div>
+        <p style="margin-bottom:12px; color: rgba(246,242,234,0.6); font-size:13px;">Recipes, science &amp; exclusive workshop updates.</p>
+        <form class="footer-newsletter-row" id="newsletter-footer-form" novalidate>
+          <input class="footer-newsletter-input" type="email" placeholder="Email" required />
+          <button class="footer-newsletter-btn" type="submit">→</button>
+        </form>
+        <div id="newsletter-footer-feedback" style="margin-top: 10px; display: none; font-size: 13px; font-weight: 300; line-height: 1.5; color: rgba(246,242,234,0.85); animation: fadeIn 0.3s ease;"></div>
+        <div class="footer-heading" style="margin-top: 24px;">Connect With Us</div>
+      <?php else: ?>
+        <div class="footer-heading">Connect With Us</div>
+      <?php endif; ?>
       <div class="social-icons">
         <a class="social-icon" href="https://www.instagram.com/rt.chocos/?hl=en" target="_blank" rel="noopener" aria-label="Instagram">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -68,10 +74,11 @@
     <div class="section-label" style="margin-bottom:8px;">Join Our Community</div>
     <h3>The Chocolate Letter</h3>
     <p>Recipes, science, workshop announcements and exclusive offers — delivered to your inbox weekly.</p>
-    <div class="popup-row">
-      <input class="popup-input" type="email" placeholder="Your email" />
-      <button class="btn-primary" style="padding:12px 20px;" onclick="closePopup()">Subscribe</button>
-    </div>
+    <form class="popup-row" id="newsletter-popup-form" novalidate>
+      <input class="popup-input" type="email" placeholder="Your email" required />
+      <button class="btn-primary" type="submit" style="padding:12px 20px;">Subscribe</button>
+    </form>
+    <div id="newsletter-popup-feedback" style="margin-top: 15px; display: none; font-size: 14.5px; font-weight: 400; line-height: 1.5; color: var(--green-900); animation: fadeIn 0.3s ease;"></div>
   </div>
 </div>
 

@@ -34,3 +34,11 @@
 # | Prevent directory listings                                         |
 # ----------------------------------------------------------------------
 Options -Indexes
+
+# ----------------------------------------------------------------------
+# | Protect Sensitive Files (like .env, .gitignore, .git)              |
+# ----------------------------------------------------------------------
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

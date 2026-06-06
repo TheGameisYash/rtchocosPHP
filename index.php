@@ -2,6 +2,7 @@
   $pageTitle = "RT Chocos — India's Chocolate Blog | Bean to Bar Learning";
   $pageDescription = "India's chocolate blog for makers, learners, and enthusiasts. Bean-to-bar making, cocoa science, recipes, and workshops.";
   $pathPrefix = "";
+  $isHome = true;
   include $pathPrefix . 'includes/header.php';
 ?>
 
@@ -77,24 +78,12 @@
         <p class="section-label" style="margin-bottom:12px;">Learn With Us</p>
         <h2 class="section-title">Workshops Coming Soon</h2>
         <div class="divider"></div>
-        <p style="max-width: 540px; font-size: 16px; line-height: 1.75; color: var(--brown-light); margin-top: 18px; font-weight: 300; font-style: italic;">
-          I'm currently designing a collection of premium chocolate workshops and learning experiences. This space will be updated soon — registrations may open anytime.
+        <p style="max-width: 540px; font-size: 16px; line-height: 1.7; color: var(--brown-light); margin-top: 18px; font-weight: 400;">
+          A collection of premium, science-first chocolate workshops and masterclasses is currently in development. Explore the upcoming sessions below and subscribe to be notified when registrations open.
         </p>
       </div>
       
-      <div class="card" style="max-width: 680px; margin: 40px auto;">
-        <div style="height: 200px; background: linear-gradient(160deg, #f9f5ec 0%, #f0ece2 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-          <span style="position: absolute; top: 14px; right: 14px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 12px; border-radius: 3px; background: var(--green-700); color: #fff; z-index: 10;">Coming Soon</span>
-          <img src="assets/workshop.png.png" alt="Workshop" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        <div style="padding: 36px 32px 32px; text-align: center;">
-          <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 500; color: var(--brown); margin-bottom: 12px;">Something Special is Coming</h3>
-          <p style="font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--brown-light); max-width: 420px; margin: 0 auto;">New chocolate workshops, masterclasses and tasting sessions are currently being prepared.</p>
-        </div>
-        <div style="display: block; width: 100%; padding: 16px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; text-align: center; border: none; border-radius: 0 0 6px 6px; background: var(--green-700); color: rgba(255,255,255,0.45); cursor: default; pointer-events: none; user-select: none;">Coming Soon</div>
-      </div>
-
-      <p style="text-align: center; font-size: 13px; font-weight: 300; font-style: italic; color: var(--brown-light);">Check back soon or follow along for upcoming workshop announcements.</p>
+      <div class="grid-3" id="home-workshops" style="margin-top: 48px;"></div>
     </div>
   </section>
 
@@ -535,10 +524,11 @@
       <div class="sub-label">Stay Connected</div>
       <h2>The Chocolate Letter</h2>
       <p>Weekly recipes, science deep-dives, workshop announcements and exclusive offers.</p>
-      <div class="newsletter-row">
-        <input class="newsletter-input" placeholder="Enter your email" type="email" />
-        <button class="btn-gold">Subscribe</button>
-      </div>
+      <form class="newsletter-row" id="newsletter-home-form" novalidate>
+        <input class="newsletter-input" type="email" placeholder="Enter your email" required />
+        <button class="btn-gold" type="submit">Subscribe</button>
+      </form>
+      <div id="newsletter-home-feedback" style="margin-top: 18px; display: none; font-size: 14.5px; font-weight: 400; line-height: 1.6; animation: fadeIn 0.3s ease;"></div>
     </div>
   </section>
 
