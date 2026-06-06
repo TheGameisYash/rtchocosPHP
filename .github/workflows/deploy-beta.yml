@@ -14,16 +14,12 @@ jobs:
       uses: actions/checkout@v4
 
     - name: 📂 Sync files to Hostinger Subdomain
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.6
       with:
-        server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
+        server: ${{ secrets.FTP_SERVER }}
+        port: 65002
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./
-        server-dir: domains/rtchocos.com/public_html/beta/
-        exclude: |
-          **/.git*
-          **/.git*/**
-          .github/**
-          .htaccess
-          robots.txt
+        local_path: './*'
+        remote_path: 'domains/rtchocos.com/public_html/beta'
+        rsyncArgs: '--exclude=.git --exclude=.github --exclude=.htaccess --exclude=robots.txt --exclude=.env'
