@@ -284,23 +284,19 @@ render_admin_header($isEdit ? "Edit Post" : "New Post", "blogs");
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
                 <div class="form-group">
                     <label for="header_image">Header Image</label>
-                    <input type="file" id="header_image" name="header_image" class="form-control">
-                    <?php if (!empty($post['image_path'])): ?>
-                        <div class="file-preview">
-                            <img src="../<?php echo htmlspecialchars($post['image_path']); ?>" alt="Current Header">
-                            <div style="font-size:11px; padding:4px; text-align:center; background:#eee;">Current Header</div>
-                        </div>
-                    <?php endif; ?>
+                    <input type="file" id="header_image" name="header_image" class="form-control" onchange="previewImage(this, 'header-preview-img', 'header-preview-container')">
+                    <div class="file-preview" id="header-preview-container" style="<?php echo !empty($post['image_path']) ? '' : 'display:none;'; ?> margin-top:10px;">
+                        <img id="header-preview-img" src="<?php echo !empty($post['image_path']) ? '../' . htmlspecialchars($post['image_path']) : ''; ?>" alt="Header Preview" style="max-width:100%; height:120px; object-fit:cover; border-radius:6px; border:1px solid var(--cream-dark); display:block;">
+                        <div style="font-size:11px; padding:4px; text-align:center; background:#eee; border-radius: 0 0 6px 6px;">Header Image Preview</div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="thumbnail_image">Thumbnail Image (Optional)</label>
-                    <input type="file" id="thumbnail_image" name="thumbnail_image" class="form-control">
-                    <?php if (!empty($post['thumbnail_path'])): ?>
-                        <div class="file-preview">
-                            <img src="../<?php echo htmlspecialchars($post['thumbnail_path']); ?>" alt="Current Thumbnail">
-                            <div style="font-size:11px; padding:4px; text-align:center; background:#eee;">Current Thumbnail</div>
-                        </div>
-                    <?php endif; ?>
+                    <input type="file" id="thumbnail_image" name="thumbnail_image" class="form-control" onchange="previewImage(this, 'thumbnail-preview-img', 'thumbnail-preview-container')">
+                    <div class="file-preview" id="thumbnail-preview-container" style="<?php echo !empty($post['thumbnail_path']) ? '' : 'display:none;'; ?> margin-top:10px;">
+                        <img id="thumbnail-preview-img" src="<?php echo !empty($post['thumbnail_path']) ? '../' . htmlspecialchars($post['thumbnail_path']) : ''; ?>" alt="Thumbnail Preview" style="max-width:100%; height:120px; object-fit:cover; border-radius:6px; border:1px solid var(--cream-dark); display:block;">
+                        <div style="font-size:11px; padding:4px; text-align:center; background:#eee; border-radius: 0 0 6px 6px;">Thumbnail Image Preview</div>
+                    </div>
                 </div>
             </div>
 
@@ -309,13 +305,17 @@ render_admin_header($isEdit ? "Edit Post" : "New Post", "blogs");
                 <div class="markdown-toolbar">
                     <button type="button" onclick="insertAtTextarea('## ', '')">H2</button>
                     <button type="button" onclick="insertAtTextarea('### ', '')">H3</button>
-                    <button type="button" onclick="insertAtTextarea('**', '**')">Bold</button>
-                    <button type="button" onclick="insertAtTextarea('*', '*')">Italic</button>
-                    <button type="button" onclick="insertAtTextarea('> ', '')">Quote</button>
-                    <button type="button" onclick="insertAtTextarea('- ', '')">Bullet List</button>
-                    <button type="button" onclick="insertAtTextarea('1. ', '')">Num List</button>
+                    <button type="button" onclick="insertAtTextarea('**', '**')"><b>B</b> Bold</button>
+                    <button type="button" onclick="insertAtTextarea('*', '*')"><i>I</i> Italic</button>
+                    <button type="button" onclick="insertAtTextarea('> ', '')">” Quote</button>
+                    <button type="button" onclick="insertAtTextarea('- ', '')">• Bullet List</button>
+                    <button type="button" onclick="insertAtTextarea('1. ', '')">1. Num List</button>
                 </div>
                 <textarea id="content" name="content" rows="18" class="form-control markdown-textarea" required placeholder="Write your post content using standard markdown here..."><?php echo htmlspecialchars($post['content']); ?></textarea>
+                <div class="textarea-stats" style="font-size: 11.5px; color: rgba(59,42,34,0.6); display: flex; justify-content: space-between; padding: 6px 12px; background: #fdfbf8; border: 1px solid var(--cream-dark); border-top: none; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;">
+                    <span id="char-count">0 characters</span>
+                    <span id="word-count">0 words</span>
+                </div>
             </div>
 
             <div class="form-group" style="display:flex; align-items:center; gap: 10px;">
@@ -528,9 +528,34 @@ function parseMarkdown(markdown) {
     return html;
 }
 
+// Update live stats (word / char count)
+function updateStats() {
+    const text = contentEl.value;
+    const charCount = text.length;
+    const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+    document.getElementById('char-count').innerText = charCount + ' character' + (charCount !== 1 ? 's' : '');
+    document.getElementById('word-count').innerText = wordCount + ' word' + (wordCount !== 1 ? 's' : '');
+}
+
 // Update live markdown preview
 function updatePreview() {
     previewEl.innerHTML = parseMarkdown(contentEl.value);
+    updateStats();
+}
+
+// Client-side image upload preview helper
+function previewImage(input, previewId, containerId) {
+    const previewImg = document.getElementById(previewId);
+    const container = document.getElementById(containerId);
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            container.style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
 }
 
 // Extract YouTube ID helper
