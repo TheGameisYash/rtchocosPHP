@@ -7,7 +7,7 @@
 ?>
 
 <!-- --- HOME PAGE --- -->
-<div id="page-home" class="page active" style="margin-top:80px;">
+<div id="page-home" class="page active" style="padding-top:80px;">
 
   <!-- Hero -->
   <section id="hero">

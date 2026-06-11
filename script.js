@@ -59,14 +59,7 @@ const WORKSHOPS = [
   }
 ];
 
-const BLOGS = [
-  { id:1, title:"Why pH is the Most Underrated Factor in Cocoa Powder", category:"Science", date:"Apr 2026", read:"7 min", excerpt:"How cocoa powder pH shapes colour, flavour, leavening, solubility and flavanol retention in chocolate work.", articleKey:"cocoa-ph", image:"assets/ph.png" },
-  { id:2, title:"what really happens when Milk fat enters Chocolate?", category:"Science", date:"Mar 2026", read:"5 min", excerpt:"Why milk chocolate behaves so differently from dark, and what milk fat changes at the molecular level.", articleKey:"milkfat-chocolate", image:"assets/milkfat.png" },
-  { id:4, title:"How to Flavor Chocolate Correctly", category:"Beginner Guide", date:"Apr 2026", read:"6 min", excerpt:"A practical guide to adding oils, extracts and infusions without seizing, splitting or dulling your chocolate.", articleKey:"flavor-chocolate", image:"assets/flavor.jpg" },
-  { id:5, title:"Fat Bloom vs Sugar Bloom in Chocolate: A Practical Diagnosis Guide", category:"Science", date:"Apr 2026", read:"8 min", excerpt:"Learn to diagnose, prevent and fix the two most common chocolate surface defects — with science explained simply.",  articleKey:"fat-bloom-sugar-bloom", image:"assets/bloom.png" },
-  { id:6, title:"Intimacy Chocolate — What It Is, What's In It, and Whether It Actually Works", category:"Science", date:"May 2026", read:"9 min", excerpt:"A deep, honest guide to intimacy chocolate — the ingredients, the science, the psychology, and the truth behind the fastest-growing niche in functional confectionery.", articleKey:"intimacy-chocolate", image:"assets/intimacy.png" },
-  { id:7, title:"The Invisible Ingredient That Makes Chocolate Smooth", category:"Science", date:"Jun 2026", read:"6 min", excerpt:"Meet lecithin — the quiet emulsifier behind every velvety bite of chocolate you have ever loved.", articleKey:"lecithin-chocolate", image:"assets/lecithin.png" },
-];
+let BLOGS = [];
 
 const BLOG_ARTICLES = {}; // Content rendered server-side via PHP
 
@@ -128,6 +121,19 @@ function getRouteFromFileName() {
 
   for (const [articleKey, mappedFile] of Object.entries(ARTICLE_FILE_MAP)) {
     const mappedName = mappedFile.split('/').pop().toLowerCase();
+    
+    // Support dynamic catch-all route matching
+    if (fileName === 'article.php') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const slug = urlParams.get('slug');
+      if (articleKey === slug) {
+        return {
+          page: 'blog-article',
+          article: getValidBlogArticleByKey(articleKey)
+        };
+      }
+    }
+    
     if (mappedFile.toLowerCase() === fileName || mappedName === fileName) {
       return {
         page: 'blog-article',
@@ -444,6 +450,8 @@ function blogCardHTML(b) {
     ? `<img src="${getCorrectedPath(b.image)}" alt="${b.title}">`
     : '<span>Chocolate Journal</span>';
 
+  const ytBadge = b.youtube_url ? ' • <span class="yt-badge">🎥 Video</span>' : '';
+
   if (hasFullArticle) {
     const articleFile = ARTICLE_FILE_MAP[b.articleKey] || HOME_FILE_NAME;
     return `
@@ -455,7 +463,7 @@ function blogCardHTML(b) {
         <h3 class="blog-card-title">${b.title}</h3>
         <div class="blog-meta">
           <span class="tag">${b.category}</span>
-          <span class="blog-date">${b.date} • ${b.read} read</span>
+          <span class="blog-date">${b.date} • ${b.read} read${ytBadge}</span>
         </div>
         <p class="blog-excerpt">${b.excerpt}</p>
         <div class="blog-read-more">${readMoreLabel}</div>
@@ -472,7 +480,7 @@ function blogCardHTML(b) {
         <h3 class="blog-card-title">${b.title}</h3>
         <div class="blog-meta">
           <span class="tag">${b.category}</span>
-          <span class="blog-date">${b.date} • ${b.read} read</span>
+          <span class="blog-date">${b.date} • ${b.read} read${ytBadge}</span>
         </div>
         <p class="blog-excerpt">${b.excerpt}</p>
         <div class="blog-read-more">${readMoreLabel}</div>
@@ -868,10 +876,43 @@ initInteractiveForms();
 
 
 // --- INIT -------------------------------------------------------
-renderHome();
-renderWorkshops('all');
-renderBlog();
-restoreRouteFromLocation();
+async function initApp() {
+  try {
+    const response = await fetch(getCorrectedPath('api_blogs.php'));
+    if (response.ok) {
+      const data = await response.json();
+      BLOGS = data.map(b => ({
+        id: b.id,
+        title: b.title,
+        category: b.category,
+        date: b.date,
+        read: b.read_time,
+        excerpt: b.excerpt,
+        articleKey: b.slug,
+        image: b.thumbnail || b.image,
+        youtube_url: b.youtube_url,
+        bodyClass: b.body_class
+      }));
+
+      // Populate ARTICLE_FILE_MAP for any dynamic entries
+      BLOGS.forEach(b => {
+        if (!ARTICLE_FILE_MAP[b.articleKey]) {
+          ARTICLE_FILE_MAP[b.articleKey] = 'blog/article.php?slug=' + b.articleKey;
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Failed to load dynamic blogs:", error);
+  }
+
+  // Now run initializers
+  renderHome();
+  renderWorkshops('all');
+  renderBlog();
+  restoreRouteFromLocation();
+}
+
+initApp();
 
 
 // Newsletter popup after 8 seconds, only if not previously closed

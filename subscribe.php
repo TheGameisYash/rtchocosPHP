@@ -32,7 +32,18 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-// 1. SAVE LOCALLY (Fail-safe backup database on Hostinger server)
+// 1. SAVE TO DATABASE (Primary)
+try {
+    require_once __DIR__ . '/includes/db.php';
+    $pdo = get_db();
+    $stmt = $pdo->prepare('INSERT IGNORE INTO subscribers (email, created_at) VALUES (?, NOW())');
+    $stmt->execute([$email]);
+} catch (Exception $e) {
+    // Log failure but let execution continue for CSV backup fallback
+    error_log("Database subscriber insert failure: " . $e->getMessage());
+}
+
+// 2. SAVE LOCALLY (Fail-safe backup database on Hostinger server)
 $dir = __DIR__ . '/data';
 if (!is_dir($dir)) {
     mkdir($dir, 0755, true);
