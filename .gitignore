@@ -1,3 +1,5 @@
 scratch/
 .git/
 *.log
+.env
+data/

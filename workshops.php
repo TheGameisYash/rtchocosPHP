@@ -6,7 +6,7 @@
 ?>
 
 <!-- --- HOME PAGE --- -->
-<div id="page-workshops" class="page active" style="padding-top:72px;">
+<div id="page-workshops" class="page active" style="padding-top:80px;">
   <div class="page-hero workshops-page-hero">
   </div>
   <div class="section">

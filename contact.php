@@ -6,7 +6,7 @@
 ?>
 
 <!-- --- HOME PAGE --- -->
-<div id="page-contact" class="page active" style="padding-top:72px;">
+<div id="page-contact" class="page active" style="padding-top:80px;">
   <div class="page-hero contact-page-hero">
     <div class="page-hero-content">
       <h1 class="fade-up">Get in Touch</h1>
@@ -50,15 +50,18 @@
           </a>
         </div>
       </div>
-      <div class="contact-form">
+      <form class="contact-form" id="contact-form" novalidate>
         <h3>Send Us a Message</h3>
-        <div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" /></div>
-        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" /></div>
-        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" /></div>
-        <div class="form-group"><label class="form-label">Subject</label><input class="form-input" type="text" /></div>
-        <div class="form-group"><label class="form-label">Message</label><textarea class="form-input form-textarea" rows="4"></textarea></div>
-        <button class="btn-primary" style="width:100%;justify-content:center;">Send Message</button>
-      </div>
+        <div id="contact-form-feedback" class="form-feedback"></div>
+        <div class="form-fields-wrapper">
+          <div class="form-group"><label class="form-label">Name</label><input class="form-input" name="name" type="text" required placeholder="Your name" /></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" name="email" type="email" required placeholder="your.email@domain.com" /></div>
+          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone" type="tel" placeholder="Your phone (optional)" /></div>
+          <div class="form-group"><label class="form-label">Subject</label><input class="form-input" name="subject" type="text" required placeholder="How can we help?" /></div>
+          <div class="form-group"><label class="form-label">Message</label><textarea class="form-input form-textarea" name="message" rows="4" required placeholder="Write your message here..."></textarea></div>
+          <button class="btn-primary" type="submit" style="width:100%;justify-content:center;">Send Message</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

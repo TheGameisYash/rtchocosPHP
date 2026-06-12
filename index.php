@@ -2,11 +2,12 @@
   $pageTitle = "RT Chocos — India's Chocolate Blog | Bean to Bar Learning";
   $pageDescription = "India's chocolate blog for makers, learners, and enthusiasts. Bean-to-bar making, cocoa science, recipes, and workshops.";
   $pathPrefix = "";
+  $isHome = true;
   include $pathPrefix . 'includes/header.php';
 ?>
 
 <!-- --- HOME PAGE --- -->
-<div id="page-home" class="page active" style="margin-top:110px;">
+<div id="page-home" class="page active" style="padding-top:80px;">
 
   <!-- Hero -->
   <section id="hero">
@@ -14,7 +15,7 @@
     <div class="deco-circle-2"></div>
     <div class="deco-radial"></div>
     <div class="hero-content">
-      <h1 class="fade-up" style="font-family:'Dancing Script','Segoe Script',cursive;font-size:clamp(58px,7.4vw,96px);line-height:1.02;font-weight:700;letter-spacing:0;">The Cacao Journal</h1>
+      <h1 class="fade-up" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(52px,7vw,88px);line-height:1.05;font-weight:700;letter-spacing:0.01em;">The Cacao Journal</h1>
       <p class="fade-up-d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.8vw,36px);font-weight:600;line-height:1.25;color:#ffffff;">From Cacao farm to Commercial Kitchen- Every story worth knowing about Chocolate</p>
       <div class="hero-btns fade-up-d2">
         <a href="workshops.php" class="btn-hero-primary">Explore Workshops</a>
@@ -39,25 +40,29 @@
       <div class="divider" style="margin:20px auto;"></div>
       <p class="section-subtitle" style="margin:0 auto 48px;text-align:center;">We don't just make chocolate — we teach you the science, art and business behind every bar.</p>
       <div class="why-grid">
-        <div class="why-card-first">
-          <img src="assets/cocoabeans.png.jpg" alt="Bean-to-Bar" class="why-card-first-image">
-          <div class="why-card-first-fade"></div>
-          <div class="why-card-first-text">
+        <div class="why-card">
+          <div class="why-card-img-wrapper">
+            <img src="assets/cocoabeans.png.jpg" alt="Bean-to-Bar">
+          </div>
+          <div class="why-card-text">
             <h4>Bean-to-Bar Expertise</h4>
             <p>Direct cacao procurement from Kerala &amp; Karnataka. We control every step — from roast to wrap.</p>
           </div>
         </div>
-        <div class="why-card-second">
-          <img src="assets/temepring.jpg" alt="Science-First Approach" class="why-card-second-image">
-          <div class="why-card-second-text">
+        <div class="why-card">
+          <div class="why-card-img-wrapper">
+            <img src="assets/temepring.jpg" alt="Science-First Approach">
+          </div>
+          <div class="why-card-text">
             <h4>Science-First Approach</h4>
             <p>Tempering curves, water activity, crystal polymorphism — we teach the why, not just the how.</p>
           </div>
         </div>
-        <div class="why-card-third">
-          <img src="assets/bonbons.png" alt="10+ Years Teaching" class="why-card-third-image">
-          <div class="why-card-third-fade"></div>
-          <div class="why-card-third-text">
+        <div class="why-card">
+          <div class="why-card-img-wrapper">
+            <img src="assets/bonbons.png" alt="10+ Years Teaching">
+          </div>
+          <div class="why-card-text">
             <h4>10+ Years Teaching</h4>
             <p>From curious home bakers to aspiring entrepreneurs, our workshops transform skill and confidence.</p>
           </div>
@@ -67,30 +72,18 @@
   </section>
 
   <!-- Featured Workshops -->
-  <section style="background:#ddf2a1;">
+  <section style="background:var(--green-50);">
     <div class="section">
       <div class="workshops-section-header">
         <p class="section-label" style="margin-bottom:12px;">Learn With Us</p>
         <h2 class="section-title">Workshops Coming Soon</h2>
         <div class="divider"></div>
-        <p style="max-width: 540px; font-size: 16px; line-height: 1.75; color: var(--brown-light); margin-top: 18px; font-weight: 300; font-style: italic;">
-          I'm currently designing a collection of premium chocolate workshops and learning experiences. This space will be updated soon — registrations may open anytime.
+        <p style="max-width: 540px; font-size: 16px; line-height: 1.7; color: var(--brown-light); margin-top: 18px; font-weight: 400;">
+          A collection of premium, science-first chocolate workshops and masterclasses is currently in development. Explore the upcoming sessions below and subscribe to be notified when registrations open.
         </p>
       </div>
       
-      <div class="card" style="max-width: 680px; margin: 40px auto;">
-        <div style="height: 200px; background: linear-gradient(160deg, #f9f5ec 0%, #f0ece2 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-          <span style="position: absolute; top: 14px; right: 14px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 12px; border-radius: 3px; background: #2e5339; color: #fff; z-index: 10;">Coming Soon</span>
-          <img src="assets/workshop.png.png" alt="Workshop" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        <div style="padding: 36px 32px 32px; text-align: center;">
-          <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 500; color: var(--brown); margin-bottom: 12px;">Something Special is Coming</h3>
-          <p style="font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--brown-light); max-width: 420px; margin: 0 auto;">New chocolate workshops, masterclasses and tasting sessions are currently being prepared.</p>
-        </div>
-        <div style="display: block; width: 100%; padding: 16px; font-family: 'Lato', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; text-align: center; border: none; background: #2e5339; color: rgba(255,255,255,0.45); cursor: default; pointer-events: none; user-select: none;">Coming Soon</div>
-      </div>
-
-      <p style="text-align: center; font-size: 13px; font-weight: 300; font-style: italic; color: var(--brown-light);">Check back soon or follow along for upcoming workshop announcements.</p>
+      <div class="grid-3" id="home-workshops" style="margin-top: 48px;"></div>
     </div>
   </section>
 
@@ -301,18 +294,11 @@
           `;
 
           const midAngle = (category.startAngle + category.endAngle) / 2;
-          const normMid = (midAngle % 360 + 360) % 360;
-          const isTop = (normMid > 180 && normMid < 360);
-          
-          let textPathD = "";
-          const textR = (R1 + R2) / 2 + (isTop ? -3 : 4);
+          const textR = (R1 + R2) / 2 - 3;
           const textSpan = 45;
           
-          if (isTop) {
-            textPathD = getArcPath(cx, cy, textR, midAngle - textSpan, midAngle + textSpan, false);
-          } else {
-            textPathD = getArcPath(cx, cy, textR, midAngle + textSpan, midAngle - textSpan, true);
-          }
+          // Always draw clockwise so text is right-side up when rotated to the top (12 o'clock)
+          const textPathD = getArcPath(cx, cy, textR, midAngle - textSpan, midAngle + textSpan, false);
 
           const textPathId = `textpath-${category.id}`;
           svgContent += `
@@ -324,7 +310,7 @@
             </text>
           `;
 
-          const iconR = (R1 + R2) / 2 - (isTop ? 22 : -20);
+          const iconR = (R1 + R2) / 2 - 22;
           const iconPos = polarToCartesian(cx, cy, iconR, midAngle);
           const iconRot = midAngle + 90;
           svgContent += `
@@ -491,18 +477,42 @@
 
 
   <!-- Gallery Preview -->
-  <section style="background:#ddf2a1;text-align:center;">
+  <section style="background:var(--cream);text-align:center;">
     <div class="section">
     <div class="section-label">Our World</div>
     <h2 class="section-title">Gallery</h2>
     <div class="divider" style="margin:20px auto 40px;"></div>
     <div class="gallery-grid">
-      <div class="gallery-item" style="background:#556B4D;">Roasting</div>
-      <div class="gallery-item" style="background:#5C4033;">Tempering</div>
-      <div class="gallery-item" style="background:#C7A66A;">Moulding</div>
-      <div class="gallery-item" style="background:#3E5137;">Workshop</div>
-      <div class="gallery-item" style="background:#3B2A22;">Finished Bars</div>
-      <div class="gallery-item" style="background:#8B6F4E;">Packaging</div>
+      <div class="gallery-item">
+        <div class="gallery-item-bg" style="background-image: url('assets/cocoabeans.png.jpg');"></div>
+        <div class="gallery-item-overlay"></div>
+        <span class="gallery-item-text">Roasting</span>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-item-bg" style="background-image: url('assets/temepring.jpg');"></div>
+        <div class="gallery-item-overlay"></div>
+        <span class="gallery-item-text">Tempering</span>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-item-bg" style="background-image: url('assets/bonbons.png');"></div>
+        <div class="gallery-item-overlay"></div>
+        <span class="gallery-item-text">Moulding</span>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-item-bg" style="background-image: url('assets/workshop.jpg');"></div>
+        <div class="gallery-item-overlay"></div>
+        <span class="gallery-item-text">Workshop</span>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-item-bg" style="background-image: url('assets/almondbutterphoto.jpg');"></div>
+        <div class="gallery-item-overlay"></div>
+        <span class="gallery-item-text">Finished Bars</span>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-item-bg" style="background-image: url('assets/limechillitrufflesphoto.jpeg');"></div>
+        <div class="gallery-item-overlay"></div>
+        <span class="gallery-item-text">Packaging</span>
+      </div>
     </div>
     <a href="gallery.php" class="btn-outline-dark" style="margin-top:32px; text-decoration:none;">View Full Gallery &rarr;</a>
     </div>
@@ -514,10 +524,11 @@
       <div class="sub-label">Stay Connected</div>
       <h2>The Chocolate Letter</h2>
       <p>Weekly recipes, science deep-dives, workshop announcements and exclusive offers.</p>
-      <div class="newsletter-row">
-        <input class="newsletter-input" placeholder="Enter your email" type="email" />
-        <button class="btn-gold">Subscribe</button>
-      </div>
+      <form class="newsletter-row" id="newsletter-home-form" novalidate>
+        <input class="newsletter-input" type="email" placeholder="Enter your email" required />
+        <button class="btn-gold" type="submit">Subscribe</button>
+      </form>
+      <div id="newsletter-home-feedback" style="margin-top: 18px; display: none; font-size: 14.5px; font-weight: 400; line-height: 1.6; animation: fadeIn 0.3s ease;"></div>
     </div>
   </section>
 
