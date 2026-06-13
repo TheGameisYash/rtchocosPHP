@@ -149,11 +149,11 @@ include __DIR__ . '/includes/header.php';
     <div class="page-hero-content blog-article-hero-content">
       <a class="btn-outline-dark back-to-blog-btn" href="../blog.php">&larr; Back to Blog</a>
       <div class="section-label" id="blog-article-category"><?php echo htmlspecialchars($post['category']); ?></div>
+      <h1 id="blog-article-title" class="fade-up"><?php echo htmlspecialchars($post['title']); ?></h1>
+      <p id="blog-article-meta" class="fade-up-d1"><?php echo htmlspecialchars($post['date']); ?> • <?php echo htmlspecialchars($post['read']); ?> read</p>
       <?php if (!empty($post['image'])): ?>
       <img id="blog-article-image" src="../<?php echo htmlspecialchars($post['image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" />
       <?php endif; ?>
-      <h1 id="blog-article-title" class="fade-up"><?php echo htmlspecialchars($post['title']); ?></h1>
-      <p id="blog-article-meta" class="fade-up-d1"><?php echo htmlspecialchars($post['date']); ?> • <?php echo htmlspecialchars($post['read']); ?> read</p>
     </div>
   </div>
   <div class="section blog-article-section">
