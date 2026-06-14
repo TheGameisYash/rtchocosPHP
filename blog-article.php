@@ -5,11 +5,11 @@ require_once __DIR__ . '/includes/db.php';
 $post = null;
 $markdown_content = '';
 $isFromDb = false;
+$pdo = get_db();
 
 // Try to fetch from DB first
 if (isset($articleKey)) {
     try {
-        $pdo = get_db();
         $stmt = $pdo->prepare("SELECT * FROM blogs WHERE slug = ? AND is_published = 1");
         $stmt->execute([$articleKey]);
         $dbPost = $stmt->fetch();
@@ -27,6 +27,14 @@ if (isset($articleKey)) {
             ];
             $markdown_content = $dbPost['content'];
             $isFromDb = true;
+
+            // Increment article views (Analytics)
+            try {
+                $upStmt = $pdo->prepare("UPDATE blogs SET views = views + 1 WHERE id = ?");
+                $upStmt->execute([$dbPost['id']]);
+            } catch (Exception $ex) {
+                // Non-blocking
+            }
         }
     } catch (Exception $e) {
         error_log("Database error fetching blog '$articleKey': " . $e->getMessage());
@@ -49,16 +57,44 @@ $pathPrefix = "../";
 
 // Custom markdown parsing function
 function parse_markdown($markdown) {
-    // Standardize line breaks
+    global $pathPrefix;
     $markdown = str_replace(array("\r\n", "\r"), "\n", $markdown);
-    
-    // Split by double newlines to find paragraphs and blocks
     $blocks = explode("\n\n", $markdown);
     $html = '';
     
     foreach ($blocks as $block) {
         $block = trim($block);
         if (empty($block)) continue;
+        
+        // Divider
+        if ($block === '---') {
+            $html .= "<hr class=\"block-divider\">\n";
+            continue;
+        }
+
+        // Image block: ![caption](url)
+        if (preg_match('/^!\[(.*?)\]\((.*?)\)$/', $block, $matches)) {
+            $caption = parse_inline($matches[1]);
+            $url = $matches[2];
+            $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0) 
+                ? $url 
+                : $pathPrefix . $url;
+            $html .= "<div class=\"article-image\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars($caption) . "\">" . (!empty($caption) ? "<span class=\"article-image-caption\">{$caption}</span>" : "") . "</div>\n";
+            continue;
+        }
+
+        // YouTube embed: [youtube](url)
+        if (preg_match('/^\[youtube\]\((.*?)\)$/', $block, $matches)) {
+            $url = $matches[1];
+            $ytId = '';
+            if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $url, $ytMatches)) {
+                $ytId = $ytMatches[1];
+            }
+            if ($ytId) {
+                $html .= "<div class=\"article-youtube-embed\"><div class=\"yt-iframe-wrap\"><iframe src=\"https://www.youtube.com/embed/{$ytId}\" frameborder=\"0\" allowfullscreen allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"></iframe></div></div>\n";
+            }
+            continue;
+        }
         
         // Headers
         if (preg_match('/^(#{1,6})\s+(.+)$/', $block, $matches)) {
@@ -75,8 +111,14 @@ function parse_markdown($markdown) {
             foreach ($lines as $line) {
                 $quoteContent .= substr($line, 2) . "\n";
             }
-            $content = parse_inline(trim($quoteContent));
-            $html .= "<blockquote><p>{$content}</p></blockquote>\n";
+            
+            $content = trim($quoteContent);
+            if (strpos($content, '[!NOTE]') === 0 || strpos($content, '[!TIP]') === 0 || strpos($content, '[!WARNING]') === 0) {
+                $clean = preg_replace('/\[!(NOTE|TIP|WARNING)\]/i', '', $content);
+                $html .= "<div class='article-callout'>" . parse_inline(trim($clean)) . "</div>\n";
+            } else {
+                $html .= "<blockquote><p>" . parse_inline($content) . "</p></blockquote>\n";
+            }
             continue;
         }
         
@@ -110,8 +152,16 @@ function parse_markdown($markdown) {
             continue;
         }
         
-        // If it starts with an HTML block tag (like div, img, hr, iframe, p)
-        if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|tr|td|th)/i', $block)) {
+        // Code Block
+        if (strpos($block, '```') === 0) {
+            $lines = explode("\n", $block);
+            $code = implode("\n", array_slice($lines, 1, count($lines) - 2));
+            $html .= "<pre><code>" . htmlspecialchars($code) . "</code></pre>\n";
+            continue;
+        }
+        
+        // HTML blocks (like div, img, hr, iframe, table)
+        if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|tr|td|th|iframe)/i', $block)) {
             $html .= $block . "\n";
             continue;
         }
@@ -130,6 +180,8 @@ function parse_inline($text) {
     // Italic: *text* or _text_
     $text = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $text);
     $text = preg_replace('/_(.*?)_/', '<em>$1</em>', $text);
+    // Links: [text](href)
+    $text = preg_replace('/\[(.*?)\]\((.*?)\)/', '<a href="$2">$1</a>', $text);
     return $text;
 }
 
@@ -139,9 +191,274 @@ if (!$isFromDb) {
     $markdown_content = file_exists($markdown_file) ? file_get_contents($markdown_file) : '';
 }
 
+// Fetch related articles (limit 3)
+$relatedArticles = [];
+try {
+    $currentId = $isFromDb ? (int)$dbPost['id'] : 0;
+    $stmt = $pdo->prepare("SELECT id, title, slug, category, excerpt, thumbnail_path, created_at FROM blogs WHERE category = ? AND id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 3");
+    $stmt->execute([$post['category'], $currentId]);
+    $relatedArticles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Fallback: If less than 2 category-matched items, grab any recent ones
+    if (count($relatedArticles) < 2) {
+        $stmt = $pdo->prepare("SELECT id, title, slug, category, excerpt, thumbnail_path, created_at FROM blogs WHERE id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 3");
+        $stmt->execute([$currentId]);
+        $relatedArticles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+} catch (Exception $e) {
+    // Non-blocking
+}
+
 include __DIR__ . '/includes/header.php';
 ?>
 
+<!-- Reading Scroll Progress Bar -->
+<div id="readingProgressBar" style="position:fixed; top:0; left:0; width:0; height:4px; background:var(--gold, #C7A66A); z-index:99999; transition:width 0.1s ease;"></div>
+
+<style>
+    /* Premium style overrides for public article pages */
+    .article-layout-wrapper {
+        display: flex;
+        gap: 48px;
+        align-items: start;
+        position: relative;
+    }
+    .article-main-body {
+        flex: 1;
+        min-width: 0;
+    }
+    .article-sidebar {
+        width: 260px;
+        position: sticky;
+        top: 100px;
+        flex-shrink: 0;
+    }
+    .toc-box {
+        background: #FEFDFB;
+        border: 1px solid var(--cream-dark, #EDE7DB);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 16px rgba(59,42,34,0.03);
+    }
+    .toc-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 18px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--brown);
+        margin-bottom: 16px;
+        border-bottom: 1px solid var(--cream-dark, #EDE7DB);
+        padding-bottom: 8px;
+    }
+    .toc-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .toc-item {
+        margin-bottom: 10px;
+        font-size: 13.5px;
+        line-height: 1.4;
+    }
+    .toc-item.indent-h3 {
+        padding-left: 14px;
+        font-size: 12.5px;
+        opacity: 0.85;
+    }
+    .toc-item a {
+        color: var(--brown-light, #5C4033);
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    .toc-item a:hover, .toc-item.active a {
+        color: var(--gold, #C7A66A);
+    }
+    .toc-item.active {
+        font-weight: 600;
+        border-left: 2px solid var(--gold);
+        padding-left: 6px;
+        margin-left: -8px;
+    }
+    .toc-item.indent-h3.active {
+        margin-left: 6px;
+    }
+
+    /* Social Share Buttons */
+    .share-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 32px 0;
+        padding: 16px 0;
+        border-top: 1px solid var(--cream-dark, #EDE7DB);
+        border-bottom: 1px solid var(--cream-dark, #EDE7DB);
+        flex-wrap: wrap;
+    }
+    .share-title {
+        font-size: 12.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--brown-light);
+    }
+    .share-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        color: white;
+        text-decoration: none;
+        transition: transform 0.2s, opacity 0.2s;
+    }
+    .share-btn:hover {
+        transform: translateY(-1px);
+        opacity: 0.9;
+    }
+    .share-btn.tw { background: #1DA1F2; }
+    .share-btn.fb { background: #1877F2; }
+    .share-btn.ln { background: #0A66C2; }
+    .share-btn.wa { background: #25D366; }
+    .share-btn.copy { background: var(--cream-dark); color: var(--brown); }
+
+    /* Lightbox Modal */
+    #lightboxModal {
+        display: none;
+        position: fixed;
+        left: 0; top: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(13, 9, 7, 0.95);
+        z-index: 999999;
+        align-items: center;
+        justify-content: center;
+        cursor: zoom-out;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    #lightboxModal.show {
+        display: flex;
+        opacity: 1;
+    }
+    #lightboxImg {
+        max-width: 90%;
+        max-height: 85vh;
+        border-radius: 6px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+    }
+    #lightboxModal.show #lightboxImg {
+        transform: scale(1);
+    }
+
+    /* Related articles grid */
+    .related-card {
+        background: #FEFDFB;
+        border: 1px solid var(--cream-dark);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 12px rgba(59,42,34,0.02);
+    }
+    .related-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(59,42,34,0.06);
+    }
+    
+    /* Article callout style */
+    .article-callout {
+        background: rgba(199, 166, 106, 0.05);
+        border-left: 4px solid var(--gold);
+        padding: 16px 20px;
+        border-radius: 0 8px 8px 0;
+        margin: 24px 0;
+        font-style: italic;
+    }
+
+    /* Print styling rules */
+    @media print {
+        header, footer, .article-sidebar, .share-container, .related-articles-section, #comments-section, .back-to-blog-btn {
+            display: none !important;
+        }
+        body, #page-blog-article, .blog-article-section {
+            background: white !important;
+            color: black !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .article-main-body {
+            width: 100% !important;
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        .article-sidebar {
+            display: none !important;
+        }
+    }
+
+    /* Divider block */
+    .block-divider {
+        border: 0;
+        height: 1px;
+        background: var(--cream-dark);
+        margin: 40px 0;
+    }
+
+    /* Block image block */
+    .article-image {
+        margin: 36px 0;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    .article-image img {
+        max-width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--cream-dark);
+        box-shadow: var(--shadow-sm);
+        cursor: zoom-in;
+        transition: transform 0.3s ease;
+    }
+    .article-image img:hover {
+        transform: scale(1.01);
+    }
+    .article-image-caption {
+        font-size: 13px;
+        color: #8E7A70;
+        font-style: italic;
+    }
+
+    /* YouTube iframe wrapper */
+    .article-youtube-embed {
+        margin: 36px 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+    }
+    .yt-iframe-wrap {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+    }
+    .yt-iframe-wrap iframe {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        border: 0;
+    }
+</style>
 
 <!-- --- BLOG ARTICLE SECTION --- -->
 <div id="page-blog-article" class="page active">
@@ -156,44 +473,105 @@ include __DIR__ . '/includes/header.php';
       <?php endif; ?>
     </div>
   </div>
+  
   <div class="section blog-article-section">
-    <!-- If there is a YouTube video, render embed below header and above content -->
-    <?php if (!empty($post['youtube_url'])): ?>
-        <?php 
-            $ytUrl = $post['youtube_url'];
-            $videoId = null;
-            $regExp = '/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/';
-            if (preg_match($regExp, $ytUrl, $matches)) {
-                if (isset($matches[2]) && strlen($matches[2]) === 11) {
-                    $videoId = $matches[2];
-                }
-            }
-        ?>
-        <?php if ($videoId): ?>
-            <div class="blog-video-embed">
-                <iframe src="https://www.youtube.com/embed/<?php echo htmlspecialchars($videoId); ?>" 
-                        frameborder="0" allowfullscreen
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-            </div>
-        <?php endif; ?>
-    <?php endif; ?>
+    <div class="article-layout-wrapper">
+        <!-- Main body text pane -->
+        <div class="article-main-body">
+            <!-- YouTube Video Embed -->
+            <?php if (!empty($post['youtube_url'])): ?>
+                <?php 
+                    $ytUrl = $post['youtube_url'];
+                    $videoId = null;
+                    $regExp = '/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/';
+                    if (preg_match($regExp, $ytUrl, $matches)) {
+                        if (isset($matches[2]) && strlen($matches[2]) === 11) {
+                            $videoId = $matches[2];
+                        }
+                    }
+                ?>
+                <?php if ($videoId): ?>
+                    <div class="blog-video-embed" style="margin-bottom: 32px; border-radius:12px; overflow:hidden; position:relative; padding-bottom:56.25%; height:0; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
+                        <iframe src="https://www.youtube.com/embed/<?php echo htmlspecialchars($videoId); ?>" 
+                                frameborder="0" allowfullscreen
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;">
+                        </iframe>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
 
-    <div id="blog-article-content">
-      <?php echo parse_markdown($markdown_content); ?>
+            <!-- Article Body -->
+            <div id="blog-article-content">
+              <?php echo parse_markdown($markdown_content); ?>
+            </div>
+            
+            <!-- Social Share Bar -->
+            <?php 
+                $articleUrl = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'rtchocos.com') . ($_SERVER['REQUEST_URI'] ?? '');
+                $shareTitle = $post['title'];
+            ?>
+            <div class="share-container">
+                <span class="share-title">Share Article:</span>
+                <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode($articleUrl); ?>&text=<?php echo urlencode($shareTitle); ?>" target="_blank" class="share-btn tw" title="Share on Twitter">Twitter</a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn fb" title="Share on Facebook">Facebook</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn ln" title="Share on LinkedIn">LinkedIn</a>
+                <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($shareTitle . ' - ' . $articleUrl); ?>" target="_blank" class="share-btn wa" title="Share via WhatsApp">WhatsApp</a>
+                <button type="button" class="share-btn copy" onclick="copyArticleLink()" title="Copy Link">Copy Link</button>
+            </div>
+            
+            <!-- Comments Section -->
+            <?php include __DIR__ . '/includes/comments.php'; ?>
+        </div>
+
+        <!-- Sticky Sidebar Panel (TOC) -->
+        <aside class="article-sidebar" id="tocSidebar" style="display: none;">
+            <div class="toc-box">
+                <div class="toc-title">On this page</div>
+                <ul class="toc-list" id="tocList">
+                    <!-- Loaded dynamically via JS -->
+                </ul>
+            </div>
+        </aside>
     </div>
-    
-    <?php include __DIR__ . '/includes/comments.php'; ?>
+
+    <!-- Related Articles Section (Bottom Grid) -->
+    <?php if (!empty($relatedArticles)): ?>
+        <div class="related-articles-section" style="margin-top: 60px; border-top: 1px solid var(--cream-dark); padding-top: 48px;">
+            <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; margin-bottom: 24px; color: var(--brown); font-weight: 700;">Related Insights</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 24px;">
+                <?php foreach ($relatedArticles as $rel): 
+                    $relThumb = $rel['thumbnail_path'] ?: 'assets/images/placeholder.jpg';
+                    $relThumbUrl = $pathPrefix . $relThumb;
+                ?>
+                    <a href="article.php?slug=<?php echo $rel['slug']; ?>" class="related-card">
+                        <div style="height:150px; overflow:hidden; background:var(--cream);">
+                            <img src="<?php echo htmlspecialchars($relThumbUrl); ?>" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <div style="padding: 20px; display:flex; flex-direction:column; flex-grow:1;">
+                            <span style="font-size:10px; font-weight:600; text-transform:uppercase; color:var(--gold); margin-bottom:6px;"><?php echo htmlspecialchars($rel['category']); ?></span>
+                            <h4 style="font-size:15px; font-weight:600; color:var(--brown); margin-bottom:8px; line-height:1.4;"><?php echo htmlspecialchars($rel['title']); ?></h4>
+                            <p style="font-size:13px; color:var(--brown-light); line-height:1.5; margin-bottom:0; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"><?php echo htmlspecialchars($rel['excerpt']); ?></p>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
   </div>
+</div>
+
+<!-- Image Lightbox Modal -->
+<div id="lightboxModal" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="Lightbox Preview">
 </div>
 
 <?php
 include __DIR__ . '/includes/footer.php';
 ?>
+
 <script>
 // Initialize comments for this article page.
-// currentBlogArticleId is used by submitBlogComment() and renderBlogComments() in script.js.
-// On PHP-rendered article pages the SPA never runs openBlogArticle(), so we set it here.
 (function() {
   var articleKey = <?php echo json_encode($articleKey ?? ''); ?>;
   if (articleKey) {
@@ -201,4 +579,96 @@ include __DIR__ . '/includes/footer.php';
     renderBlogComments();
   }
 })();
+
+// Scroll Progress, TOC scanner, and Lightbox listeners
+document.addEventListener('DOMContentLoaded', function() {
+    const content = document.getElementById('blog-article-content');
+    const tocList = document.getElementById('tocList');
+    const tocSidebar = document.getElementById('tocSidebar');
+    const progressBar = document.getElementById('readingProgressBar');
+    
+    if (!content) return;
+
+    // 1. DYNAMIC TABLE OF CONTENTS GENERATION & SCROLL SPY
+    const headings = content.querySelectorAll('h2, h3');
+    if (headings.length > 0 && tocList && tocSidebar) {
+        tocSidebar.style.display = 'block';
+        
+        headings.forEach((heading, idx) => {
+            const headingId = 'heading-' + idx;
+            heading.id = headingId;
+            
+            const li = document.createElement('li');
+            li.className = 'toc-item';
+            if (heading.tagName.toLowerCase() === 'h3') {
+                li.classList.add('indent-h3');
+            }
+            
+            const a = document.createElement('a');
+            a.href = '#' + headingId;
+            a.innerText = heading.innerText;
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+
+        // Scroll spy trigger
+        window.addEventListener('scroll', () => {
+            const scrollPos = window.scrollY + 120;
+            let activeId = '';
+            
+            headings.forEach(heading => {
+                if (heading.offsetTop <= scrollPos) {
+                    activeId = heading.id;
+                }
+            });
+            
+            const tocItems = tocList.querySelectorAll('.toc-item');
+            tocItems.forEach(item => {
+                const link = item.querySelector('a');
+                if (link && link.getAttribute('href') === '#' + activeId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    }
+
+    // 2. SCROLL PROGRESS INDICATOR
+    window.addEventListener('scroll', () => {
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (docHeight > 0 && progressBar) {
+            const progress = (window.scrollY / docHeight) * 100;
+            progressBar.style.width = progress + '%';
+        }
+    });
+
+    // 3. IMAGE LIGHTBOX INITIALIZER
+    const articleImages = content.querySelectorAll('img');
+    const lightbox = document.getElementById('lightboxModal');
+    const lightboxImg = document.getElementById('lightboxImg');
+    
+    articleImages.forEach(img => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', (e) => {
+            e.stopPropagation();
+            lightboxImg.src = img.src;
+            lightbox.classList.add('show');
+        });
+    });
+});
+
+function closeLightbox() {
+    const lightbox = document.getElementById('lightboxModal');
+    if (lightbox) {
+        lightbox.classList.remove('show');
+    }
+}
+
+// Copy URL link helper
+function copyArticleLink() {
+    navigator.clipboard.writeText(window.location.href)
+        .then(() => alert('Article link copied to clipboard!'))
+        .catch(() => alert('Failed to copy link.'));
+}
 </script>

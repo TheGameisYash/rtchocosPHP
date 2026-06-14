@@ -2810,6 +2810,17 @@ footer.footer-links-section .social-icons {
   margin-bottom: 32px;
 }
 
+#blog-article-content > p:first-of-type::first-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  float: left;
+  line-height: 0.8;
+  margin-right: 8px;
+  margin-top: 4px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
 #blog-article-content p {
   margin-bottom: 24px;
   color: var(--brown-light);

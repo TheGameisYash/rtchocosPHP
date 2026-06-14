@@ -37,6 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     reset_failed_logins();
                     $_SESSION['admin_logged_in'] = true;
                     $_SESSION['admin_user'] = $admin['username'];
+                    
+                    // Handle remember me cookie if checked (1 week duration)
+                    if (isset($_POST['remember_me'])) {
+                        setcookie('admin_remember', $admin['username'], time() + (86400 * 7), '/');
+                    }
+                    
                     header('Location: dashboard.php');
                     exit;
                 } else {
@@ -54,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $csrf_token = get_csrf_token();
+$savedUsername = $_COOKIE['admin_remember'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,174 +69,122 @@ $csrf_token = get_csrf_token();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | RT Chocos</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --green-900: #0D3B12;
-            --green-800: #14501A;
-            --gold: #C7A66A;
-            --gold-light: #D4BA8A;
-            --cream: #F6F2EA;
-            --white: #FEFDFB;
-            --black: #1A1410;
-            --brown: #3B2A22;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Jost', sans-serif;
-            background: var(--black);
-            color: var(--cream);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-        /* Deco Circles */
-        .deco-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(199,166,106,0.1) 0%, rgba(13,59,18,0) 70%);
-            z-index: 1;
-        }
-        .deco-1 { width: 500px; height: 500px; top: -10%; left: -10%; }
-        .deco-2 { width: 600px; height: 600px; bottom: -20%; right: -10%; }
-        
-        .login-card {
-            background: rgba(25, 20, 16, 0.95);
-            border: 1px solid rgba(199, 166, 106, 0.2);
-            border-radius: 12px;
-            padding: 40px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            z-index: 2;
-            text-align: center;
-        }
-        .logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--gold);
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-        }
-        .subtitle {
-            font-size: 14px;
-            color: rgba(246, 242, 234, 0.6);
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        label {
-            display: block;
-            font-size: 13px;
-            margin-bottom: 8px;
-            color: var(--gold-light);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        input {
-            width: 100%;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(199, 166, 106, 0.15);
-            border-radius: 6px;
-            padding: 12px 16px;
-            font-size: 15px;
-            color: var(--white);
-            font-family: 'Jost', sans-serif;
-            transition: all 0.3s;
-        }
-        input:focus {
-            outline: none;
-            border-color: var(--gold);
-            background: rgba(255,255,255,0.08);
-            box-shadow: 0 0 10px rgba(199, 166, 106, 0.2);
-        }
-        .btn-login {
-            width: 100%;
-            background: var(--gold);
-            color: var(--black);
-            border: none;
-            border-radius: 6px;
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-        .btn-login:hover {
-            background: var(--gold-light);
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(199, 166, 106, 0.3);
-        }
-        .error-message {
-            background: rgba(239, 83, 80, 0.1);
-            border: 1px solid rgba(239, 83, 80, 0.3);
-            color: #ef5350;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 13.5px;
-            line-height: 1.4;
-            text-align: left;
-        }
-        .footer-link {
-            display: block;
-            margin-top: 24px;
-            font-size: 13px;
-            color: rgba(246, 242, 234, 0.4);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .footer-link:hover {
-            color: var(--gold);
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
 </head>
-<body>
-    <div class="deco-circle deco-1"></div>
-    <div class="deco-circle deco-2"></div>
+<body class="login-body">
+    <!-- Randomized background particles -->
+    <div class="login-particles">
+        <?php for ($i = 0; $i < 15; $i++): 
+            $size = rand(8, 20);
+            $left = rand(5, 95);
+            $delay = rand(0, 15);
+            $duration = rand(12, 22);
+        ?>
+            <div class="login-particle" style="width: <?php echo $size; ?>px; height: <?php echo $size; ?>px; left: <?php echo $left; ?>%; animation-delay: <?php echo $delay; ?>s; animation-duration: <?php echo $duration; ?>s;"></div>
+        <?php endfor; ?>
+    </div>
 
-    <div class="login-card">
-        <div class="logo">RT Chocos</div>
-        <div class="subtitle">Admin Portal</div>
+    <!-- Login Box -->
+    <div class="login-card <?php echo !empty($error) ? 'shake' : ''; ?>" id="loginCard">
+        <div class="login-logo">
+            <!-- Inline Premium Chocolate SVG Logo -->
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px;">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <h1>RT Chocos</h1>
+            <p>Admin Portal</p>
+        </div>
 
         <?php if (!empty($error)): ?>
-            <div class="error-message">
+            <div class="alert alert-danger" style="margin-bottom: 20px; font-size: 13.5px; padding: 12px 16px; text-align: left;">
                 <?php echo htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
 
-        <form action="login.php" method="POST">
+        <form action="login.php" method="POST" id="loginForm">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
             
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" required autocomplete="username" autofocus>
+                <input type="text" id="username" name="username" required autocomplete="username" value="<?php echo htmlspecialchars($savedUsername); ?>" <?php echo empty($savedUsername) ? 'autofocus' : ''; ?>>
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required autocomplete="current-password">
+                <div class="password-input-wrapper">
+                    <input type="password" id="password" name="password" required autocomplete="current-password" <?php echo !empty($savedUsername) ? 'autofocus' : ''; ?>>
+                    <button type="button" class="password-toggle-btn" id="passwordToggle" aria-label="Toggle password visibility">
+                        <svg class="eye-open" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        <svg class="eye-closed" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88L3 3m12 12l6 6M21 12a9 9 0 01-3.35 5.646m-2.298-1.424A9 9 0 0021 12c-1.274-4.057-5.064-7-9.542-7-1.298 0-2.522.25-3.645.703"></path></svg>
+                    </button>
+                </div>
             </div>
 
-            <button type="submit" class="btn-login">Sign In</button>
+            <div class="login-actions-row">
+                <label class="login-remember">
+                    <input type="checkbox" name="remember_me" id="remember_me" <?php echo !empty($savedUsername) ? 'checked' : ''; ?>>
+                    <span>Remember me</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                <span class="btn-text">Sign In</span>
+                <span class="btn-loader" style="display:none; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; width: 16px; height: 16px; animation: spin 0.8s linear infinite;"></span>
+            </button>
         </form>
 
-        <a href="../index.php" class="footer-link">&larr; Return to main site</a>
+        <a href="../index.php" class="footer-link" style="margin-top:28px;">&larr; Return to main website</a>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password toggle logic
+            const passwordInput = document.getElementById('password');
+            const passwordToggle = document.getElementById('passwordToggle');
+            const eyeOpen = passwordToggle.querySelector('.eye-open');
+            const eyeClosed = passwordToggle.querySelector('.eye-closed');
+
+            passwordToggle.addEventListener('click', function() {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeOpen.style.display = 'none';
+                    eyeClosed.style.display = 'block';
+                } else {
+                    passwordInput.type = 'password';
+                    eyeOpen.style.display = 'block';
+                    eyeClosed.style.display = 'none';
+                }
+            });
+
+            // Error Shake Timeout reset
+            const card = document.getElementById('loginCard');
+            if (card.classList.contains('shake')) {
+                setTimeout(() => {
+                    card.classList.remove('shake');
+                }, 400);
+            }
+
+            // Submit Loader logic
+            const form = document.getElementById('loginForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoader = submitBtn.querySelector('.btn-loader');
+
+            form.addEventListener('submit', function() {
+                submitBtn.disabled = true;
+                btnText.style.display = 'none';
+                btnLoader.style.display = 'inline-block';
+            });
+        });
+    </script>
+    
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </body>
 </html>
