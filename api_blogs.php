@@ -35,9 +35,30 @@ try {
     
     echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'error' => 'Failed to fetch blog list: ' . $e->getMessage()
-    ]);
+    error_log("Failed to fetch blog list from database: " . $e->getMessage() . ". Falling back to static array.");
+    require_once __DIR__ . '/includes/blog-data.php';
+    
+    $response = [];
+    $idx = 1;
+    // Reverse the static list so latest blogs (freeze-dried-fruits, lecithin, etc.) appear first
+    $reversedBlogs = array_reverse($BLOGS, true);
+    
+    foreach ($reversedBlogs as $slug => $meta) {
+        $response[] = [
+            'id' => $idx++,
+            'slug' => $slug,
+            'title' => $meta['title'],
+            'category' => $meta['category'],
+            'date' => $meta['date'],
+            'read_time' => $meta['read'] ?? '5 min',
+            'excerpt' => $meta['excerpt'],
+            'image' => $meta['image'],
+            'thumbnail' => $meta['image'],
+            'youtube_url' => $meta['youtube_url'] ?? null,
+            'body_class' => $meta['bodyClass'] ?? ''
+        ];
+    }
+    
+    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 }
 ?>

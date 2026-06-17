@@ -92,14 +92,7 @@ const PAGE_FILE_MAP = {
   gallery: 'gallery.php',
   contact: 'contact.php'
 };
-const ARTICLE_FILE_MAP = {
-  'cocoa-ph': 'blog/article-cocoa-ph.php',
-  'milkfat-chocolate': 'blog/article-milkfat-chocolate.php',
-  'flavor-chocolate': 'blog/article-flavor-chocolate.php',
-  'fat-bloom-sugar-bloom': 'blog/article-fat-bloom-vs-sugar-bloom-diagnosis-guide.php',
-  'intimacy-chocolate': 'blog/intimacy-chocolate.php',
-  'lecithin-chocolate': 'blog/article-lecithin-chocolate.php',
-};
+const ARTICLE_FILE_MAP = {};
 
 function getValidPage(page) {
   return page && document.getElementById('page-' + page) ? page : null;
@@ -632,9 +625,27 @@ function openBlogArticle(blogId, options = {}) {
 
   const currentFile = getCurrentFileName().toLowerCase();
   const articleFile = ARTICLE_FILE_MAP[blog.articleKey];
-  const mappedName = articleFile ? articleFile.split('/').pop().toLowerCase() : '';
+  let isAlreadyOnPage = false;
 
-  if (currentFile !== mappedName && currentFile !== (articleFile ? articleFile.toLowerCase() : '')) {
+  if (articleFile) {
+    const lowerArticleFile = articleFile.toLowerCase();
+    if (lowerArticleFile.includes('article.php?slug=')) {
+      // Dynamic article route (matches blog/article.php?slug=...)
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentSlug = (urlParams.get('slug') || '').toLowerCase();
+      if (currentFile === 'article.php' && currentSlug === blog.articleKey.toLowerCase()) {
+        isAlreadyOnPage = true;
+      }
+    } else {
+      // Static article route (matches blog/article-name.php)
+      const mappedName = lowerArticleFile.split('/').pop();
+      if (currentFile === mappedName || currentFile === lowerArticleFile) {
+        isAlreadyOnPage = true;
+      }
+    }
+  }
+
+  if (!isAlreadyOnPage) {
     if (articleFile) {
       window.location.href = getCorrectedPath(articleFile);
       return;

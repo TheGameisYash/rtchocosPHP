@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Source+Sans+3:wght@400;500;600&display=swap');
+
 /* --- RESET & BASE --- */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -697,7 +699,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* --- BLOG CARD --- */
 .blog-card-img {
   height: 240px;
-  background: var(--cream-dark);
+  background: var(--white);
   display: flex; align-items: center; justify-content: center; padding: 0;
   overflow: hidden;
   position: relative;
@@ -715,7 +717,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .blog-card-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
   display: block;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -2768,7 +2770,6 @@ footer.footer-links-section .social-icons {
   border-radius: 12px;
   box-shadow: 0 12px 40px rgba(59, 42, 34, 0.12);
   margin: 16px 0 24px;
-  object-fit: cover;
 }
 
 #blog-article-title {
@@ -3818,5 +3819,96 @@ footer.footer-links-section .social-icons {
   .whatsapp-float {
     bottom: calc(18px + env(safe-area-inset-bottom));
   }
+}
+
+/* --- FREEZE-DRIED FRUITS ARTICLE CUSTOM STYLES (SCOPED) --- */
+.freeze-dried-fruits-article {
+  --cacao: var(--black);
+  --cocoa: var(--brown-light);
+  --truffle: var(--brown);
+  --copper: var(--gold);
+  --caramel: var(--gold-light);
+  --cream: var(--white);
+  --linen: var(--cream);
+  --muted: var(--brown-light);
+  --text: var(--brown);
+}
+
+/* — SAMPLE CALLOUT — */
+.freeze-dried-fruits-article .sample-note {
+  background: var(--linen) !important;
+  border-left: 3px solid var(--copper) !important;
+  padding: 1.25rem 1.5rem !important;
+  margin-bottom: 2.5rem !important;
+  border-radius: 0 6px 6px 0 !important;
+  font-size: 0.92rem !important;
+  line-height: 1.7 !important;
+  color: var(--truffle) !important;
+  font-family: 'Jost', sans-serif !important;
+  transition: transform 0.3s ease !important;
+}
+.freeze-dried-fruits-article .sample-note:hover {
+  transform: translateX(4px) !important;
+}
+
+.freeze-dried-fruits-article .sample-note span {
+  display: block !important;
+  font-weight: 600 !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: var(--copper) !important;
+  font-family: 'Jost', sans-serif !important;
+  margin-bottom: 0.4rem !important;
+}
+
+/* — PULL QUOTE — */
+.freeze-dried-fruits-article .pullquote {
+  border-top: 1px solid var(--linen) !important;
+  border-bottom: 1px solid var(--linen) !important;
+  padding: 1.8rem 0 !important;
+  margin: 2.5rem 0 !important;
+  text-align: center !important;
+}
+
+.freeze-dried-fruits-article .pullquote p {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-style: italic !important;
+  font-size: 1.25rem !important;
+  line-height: 1.5 !important;
+  color: var(--truffle) !important;
+  max-width: 580px !important;
+  margin: 0 auto !important;
+}
+
+/* — CLOSING — */
+.freeze-dried-fruits-article .closing-bar {
+  text-align: center !important;
+  padding: 2.5rem 2rem !important;
+  background: var(--linen) !important;
+  margin-top: 3rem !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.freeze-dried-fruits-article .closing-bar p {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 1.1rem !important;
+  color: var(--truffle) !important;
+  font-style: italic !important;
+  max-width: 560px !important;
+  margin: 0 auto !important;
+  line-height: 1.6 !important;
+}
+
+.freeze-dried-fruits-article .closing-bar .sig {
+  font-family: 'Jost', sans-serif !important;
+  font-style: normal !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: var(--copper) !important;
+  margin-top: 1rem !important;
+  display: block !important;
 }
 
