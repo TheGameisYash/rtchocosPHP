@@ -1,6 +1,6 @@
 <?php
-  $pageTitle = "RT Chocos — India's Chocolate Blog | Bean to Bar Learning";
-  $pageDescription = "India's chocolate blog for makers, learners, and enthusiasts. Bean-to-bar making, cocoa science, recipes, and workshops.";
+  $pageTitle = "RT Chocos — India's #1 Chocolate Blog | Bean to Bar Science, Recipes & Workshops";
+  $pageDescription = "India's first chocolate blog by Aarti Saluja Sahni. Discover bean-to-bar chocolate making, cocoa science, tempering secrets, and professional Mumbai workshops.";
   $pathPrefix = "";
   $isHome = true;
   include $pathPrefix . 'includes/header.php';
@@ -15,8 +15,9 @@
     <div class="deco-circle-2"></div>
     <div class="deco-radial"></div>
     <div class="hero-content">
-      <h1 class="fade-up" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(52px,7vw,88px);line-height:1.05;font-weight:700;letter-spacing:0.01em;">The Cacao Journal</h1>
-      <p class="fade-up-d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.8vw,36px);font-weight:600;line-height:1.25;color:#ffffff;">From Cacao farm to Commercial Kitchen- Every story worth knowing about Chocolate</p>
+      <div class="section-label" style="color:var(--gold); margin-bottom:12px; font-weight:700; letter-spacing:3px;">THE CACAO JOURNAL</div>
+      <h1 class="fade-up" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(42px,5.5vw,72px);line-height:1.1;font-weight:700;letter-spacing:0.01em;color:#ffffff;margin-bottom:12px;">India's Chocolate Blog &amp; Bean-to-Bar Learning</h1>
+      <p class="fade-up-d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.4vw,28px);font-weight:400;line-height:1.3;color:rgba(255,255,255,0.9);margin-bottom:24px;">From Cacao Farm to Commercial Kitchen — Every story worth knowing about chocolate science and craft</p>
       <div class="hero-btns fade-up-d2">
         <a href="workshops.php" class="btn-hero-primary">Explore Workshops</a>
         <a href="blog.php" class="btn-hero-outline">Read the Blog</a>

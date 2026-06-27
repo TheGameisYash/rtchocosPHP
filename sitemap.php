@@ -4,7 +4,7 @@ header("Content-Type: application/xml; charset=utf-8");
 require_once __DIR__ . '/includes/db.php';
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
 
 $baseUrl = "https://www.rtchocos.com/";
 
@@ -29,7 +29,7 @@ foreach ($staticPages as $page => $meta) {
 // Blog articles
 try {
     $pdo = get_db();
-    $stmt = $pdo->query("SELECT slug, updated_at FROM blogs WHERE is_published = 1 ORDER BY updated_at DESC");
+    $stmt = $pdo->query("SELECT slug, title, image_path, updated_at FROM blogs WHERE is_published = 1 ORDER BY updated_at DESC");
     $dbBlogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     foreach ($dbBlogs as $blog) {
@@ -39,6 +39,13 @@ try {
         echo "    <lastmod>" . $lastmod . "</lastmod>\n";
         echo "    <changefreq>weekly</changefreq>\n";
         echo "    <priority>0.8</priority>\n";
+        if (!empty($blog['image_path'])) {
+            $imgUrl = $baseUrl . ltrim($blog['image_path'], '/.');
+            echo "    <image:image>\n";
+            echo "      <image:loc>" . htmlspecialchars($imgUrl) . "</image:loc>\n";
+            echo "      <image:title>" . htmlspecialchars($blog['title']) . "</image:title>\n";
+            echo "    </image:image>\n";
+        }
         echo "  </url>\n";
     }
 } catch (Exception $e) {
@@ -49,6 +56,13 @@ try {
         echo "    <loc>" . $baseUrl . "blog/" . htmlspecialchars($slug) . "</loc>\n";
         echo "    <changefreq>weekly</changefreq>\n";
         echo "    <priority>0.8</priority>\n";
+        if (!empty($meta['image'])) {
+            $imgUrl = $baseUrl . ltrim($meta['image'], '/.');
+            echo "    <image:image>\n";
+            echo "      <image:loc>" . htmlspecialchars($imgUrl) . "</image:loc>\n";
+            echo "      <image:title>" . htmlspecialchars($meta['title']) . "</image:title>\n";
+            echo "    </image:image>\n";
+        }
         echo "  </url>\n";
     }
 }

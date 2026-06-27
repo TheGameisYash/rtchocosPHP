@@ -74,12 +74,23 @@ if (!$post) {
     $post = $BLOGS[$articleKey];
 }
 
-$pageTitle = $post['title'] . " | RT Chocos";
+$pageTitle = $post['title'] . " | RT Chocos — India's Chocolate Blog";
 $pageDescription = $post['excerpt'];
 $pageImage = $post['image'];
 $pageType = 'article';
 $bodyClass = $post['bodyClass'] ?? '';
 $pathPrefix = "../";
+
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+$canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+$breadcrumbs = [
+    ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
+    ['name' => 'Blog', 'item' => 'https://www.rtchocos.com/blog.php'],
+    ['name' => $post['title'], 'item' => $canonicalUrl]
+];
+
+$pageKeywords = htmlspecialchars($post['title']) . ", " . htmlspecialchars($post['category']) . ", India chocolate blog, craft chocolate, cocoa science, bean to bar chocolate";
 
 // Custom markdown parsing function
 function parse_markdown($markdown) {
@@ -175,7 +186,20 @@ function parse_markdown($markdown) {
         if (preg_match('/^(#{1,6})\s+(.+)$/', $block, $matches)) {
             $level = strlen($matches[1]);
             $content = parse_inline($matches[2]);
-            $html .= "<h{$level}>{$content}</h{$level}>\n";
+            $cleanText = strip_tags($content);
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $cleanText), '-'));
+            
+            if ($level === 2 || $level === 3) {
+                global $headings_list;
+                $headings_list[] = [
+                    'level' => $level,
+                    'text' => $cleanText,
+                    'slug' => $slug
+                ];
+                $html .= "<h{$level} id=\"{$slug}\">{$content}</h{$level}>\n";
+            } else {
+                $html .= "<h{$level}>{$content}</h{$level}>\n";
+            }
             continue;
         }
         
@@ -545,6 +569,16 @@ include __DIR__ . '/includes/header.php';
   <div class="page-hero blog-page-hero">
     <div class="page-hero-content blog-article-hero-content">
       <a class="btn-outline-dark back-to-blog-btn" href="../blog.php">&larr; Back to Blog</a>
+      
+      <!-- Visual Breadcrumbs Trail -->
+      <div class="blog-breadcrumbs" style="font-size: 13px; color: var(--gold); margin: 16px 0 8px; font-family: var(--font-sans);">
+        <a href="../index.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Home</a>
+        <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
+        <a href="../blog.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Blog</a>
+        <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
+        <span style="opacity: 0.7; font-weight: 500;"><?php echo htmlspecialchars($post['title']); ?></span>
+      </div>
+
       <div class="section-label" id="blog-article-category"><?php echo htmlspecialchars($post['category']); ?></div>
       <h1 id="blog-article-title" class="fade-up"><?php echo htmlspecialchars($post['title']); ?></h1>
       <p id="blog-article-meta" class="fade-up-d1"><?php echo htmlspecialchars($post['date']); ?> • <?php echo htmlspecialchars($post['read']); ?> read</p>
@@ -604,15 +638,21 @@ include __DIR__ . '/includes/header.php';
             <?php include __DIR__ . '/includes/comments.php'; ?>
         </div>
 
-        <!-- Sticky Sidebar Panel (TOC) -->
-        <aside class="article-sidebar" id="tocSidebar" style="display: none;">
-            <div class="toc-box">
-                <div class="toc-title">On this page</div>
-                <ul class="toc-list" id="tocList">
-                    <!-- Loaded dynamically via JS -->
-                </ul>
-            </div>
-        </aside>
+        <!-- Sticky Sidebar Panel (TOC - Server-side Rendered) -->
+        <?php if (!empty($headings_list)): ?>
+            <aside class="article-sidebar" id="tocSidebar">
+                <div class="toc-box">
+                    <div class="toc-title">On this page</div>
+                    <ul class="toc-list" id="tocList">
+                        <?php foreach ($headings_list as $h): ?>
+                            <li class="toc-item <?php echo $h['level'] === 3 ? 'indent-h3' : ''; ?>">
+                                <a href="#<?php echo $h['slug']; ?>"><?php echo htmlspecialchars($h['text']); ?></a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </aside>
+        <?php endif; ?>
     </div>
 
     <!-- Related Articles Section (Bottom Grid) -->
@@ -623,10 +663,11 @@ include __DIR__ . '/includes/header.php';
                 <?php foreach ($relatedArticles as $rel): 
                     $relThumb = $rel['thumbnail_path'] ?: 'assets/images/placeholder.jpg';
                     $relThumbUrl = $pathPrefix . $relThumb;
+                    $relLink = $pathPrefix . "blog/" . $rel['slug'];
                 ?>
-                    <a href="article.php?slug=<?php echo $rel['slug']; ?>" class="related-card">
+                    <a href="<?php echo htmlspecialchars($relLink); ?>" class="related-card">
                         <div style="height:150px; overflow:hidden; background:var(--cream);">
-                            <img src="<?php echo htmlspecialchars($relThumbUrl); ?>" style="width:100%; height:100%; object-fit:cover;">
+                            <img src="<?php echo htmlspecialchars($relThumbUrl); ?>" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
                         </div>
                         <div style="padding: 20px; display:flex; flex-direction:column; flex-grow:1;">
                             <span style="font-size:10px; font-weight:600; text-transform:uppercase; color:var(--gold); margin-bottom:6px;"><?php echo htmlspecialchars($rel['category']); ?></span>
@@ -669,28 +710,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (!content) return;
 
-    // 1. DYNAMIC TABLE OF CONTENTS GENERATION & SCROLL SPY
+    // 1. DYNAMIC TABLE OF CONTENTS SCROLL SPY
     const headings = content.querySelectorAll('h2, h3');
     if (headings.length > 0 && tocList && tocSidebar) {
-        tocSidebar.style.display = 'block';
-        
-        headings.forEach((heading, idx) => {
-            const headingId = 'heading-' + idx;
-            heading.id = headingId;
-            
-            const li = document.createElement('li');
-            li.className = 'toc-item';
-            if (heading.tagName.toLowerCase() === 'h3') {
-                li.classList.add('indent-h3');
-            }
-            
-            const a = document.createElement('a');
-            a.href = '#' + headingId;
-            a.innerText = heading.innerText;
-            li.appendChild(a);
-            tocList.appendChild(li);
-        });
-
         // Scroll spy trigger
         window.addEventListener('scroll', () => {
             const scrollPos = window.scrollY + 120;

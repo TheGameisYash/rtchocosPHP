@@ -1,7 +1,26 @@
 <?php
-  $pageTitle = "Workshops | RT Chocos — India's Chocolate Blog";
-  $pageDescription = "Professional chocolate workshops and bean-to-bar training in Mumbai and online.";
+  $pageTitle = "Chocolate Making Workshops India — Bean to Bar Training | RT Chocos";
+  $pageDescription = "Join India's top-rated chocolate making workshops. Learn bean-to-bar chocolate, tempering science, and conching secrets from RT Chocos in Mumbai & online.";
+  $pageKeywords = "chocolate workshops India, bean to bar classes Mumbai, professional chocolate course, learn tempering chocolate";
   $pathPrefix = "";
+  
+  $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+  $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  
+  $breadcrumbs = [
+      ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
+      ['name' => 'Workshops', 'item' => $canonicalUrl]
+  ];
+  
+  // Dynamic Course schema data
+  $courseData = [
+      'name' => "Professional Bean-to-Bar Chocolate Masterclass",
+      'description' => "Deep-dive course on cacao fermentation, roasting profiles, stone grinding, tempering science, and packaging design.",
+      'mode' => "blended",
+      'location' => "Mumbai Craft Kitchen Studio & Online Zoom sessions",
+      'price' => "15000"
+  ];
+  
   include $pathPrefix . 'includes/header.php';
 ?>
 

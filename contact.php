@@ -1,7 +1,17 @@
 <?php
-  $pageTitle = "Contact | RT Chocos — India's Chocolate Blog";
-  $pageDescription = "Get in touch with RT Chocos for recipe development, consulting, and training.";
+  $pageTitle = "Contact RT Chocos — Chocolate Consulting, Training & Recipe Development";
+  $pageDescription = "Get in touch with RT Chocos for chocolate recipe development, bean-to-bar consulting, workshop bookings, and corporate chocolate training across India.";
+  $pageKeywords = "contact RT Chocos, chocolate consulting India, bean to bar consulting Mumbai, recipe development chocolate";
   $pathPrefix = "";
+  
+  $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+  $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  
+  $breadcrumbs = [
+      ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
+      ['name' => 'Contact Us', 'item' => $canonicalUrl]
+  ];
+  
   include $pathPrefix . 'includes/header.php';
 ?>
 

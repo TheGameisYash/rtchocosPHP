@@ -48,9 +48,19 @@
       }
   }
 
-  $pageTitle = "Blog | RT Chocos — India's Chocolate Blog";
-  $pageDescription = "Articles on cocoa science, chocolate formulation, quality control, and recipes.";
+  $pageTitle = "Chocolate Blog — Articles on Cocoa Science, Recipes & Making | RT Chocos India";
+  $pageDescription = "Read India's best chocolate blog. Deep-dive articles on cocoa science, chocolate tempering, bean-to-bar making, flavour development, and industry insights by RT Chocos.";
+  $pageKeywords = "chocolate blog, cocoa science, craft chocolate making, tempering chocolate science, bean to bar articles India";
   $pathPrefix = "";
+  
+  $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+  $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  
+  $breadcrumbs = [
+      ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
+      ['name' => 'Blog', 'item' => $canonicalUrl]
+  ];
+  
   include $pathPrefix . 'includes/header.php';
 ?>
 

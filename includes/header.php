@@ -16,7 +16,7 @@ $ogTitle = !empty($pageTitle) ? $pageTitle : "RT Chocos | India's Chocolate Blog
 $ogType = !empty($pageType) ? $pageType : "website";
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,7 +26,15 @@ $ogType = !empty($pageType) ? $pageType : "website";
 <link rel="apple-touch-icon" href="<?php echo $pathPrefix; ?>assets/favicon.png" />
 <link rel="canonical" href="<?php echo htmlspecialchars($canonicalUrl); ?>" />
 
-<meta name="keywords" content="chocolate blog India, bean to bar chocolate India, craft chocolate articles, cocoa science India, chocolate making blog, RT Chocos blog" />
+<meta name="geo.region" content="IN-MH" />
+<meta name="geo.placename" content="Mumbai" />
+<meta property="og:locale" content="en_IN" />
+
+<?php
+$defaultKeywords = "chocolate blog India, bean to bar chocolate India, craft chocolate articles, cocoa science India, chocolate making blog, RT Chocos blog";
+$keywordsVal = !empty($pageKeywords) ? htmlspecialchars($pageKeywords) : $defaultKeywords;
+?>
+<meta name="keywords" content="<?php echo $keywordsVal; ?>" />
 <meta property="og:title" content="<?php echo htmlspecialchars($ogTitle); ?>" />
 <meta property="og:description" content="<?php echo htmlspecialchars($ogDescription); ?>" />
 <meta property="og:image" content="<?php echo htmlspecialchars($ogImage); ?>" />
@@ -47,58 +55,147 @@ $ogType = !empty($pageType) ? $pageType : "website";
 <link rel="stylesheet" href="<?php echo $pathPrefix; ?>style.css">
 
 <!-- JSON-LD Structured Data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://www.rtchocos.com/#organization",
-      "name": "RT Chocos",
-      "url": "https://www.rtchocos.com/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://www.rtchocos.com/assets/logo.png"
-      },
-      "sameAs": [
-        "https://www.instagram.com/rt.chocos/",
-        "https://www.youtube.com/@RTCHOCOS",
-        "https://www.facebook.com/rtchocos"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://www.rtchocos.com/#website",
-      "url": "https://www.rtchocos.com/",
-      "name": "RT Chocos",
-      "publisher": {
-        "@id": "https://www.rtchocos.com/#organization"
-      }
-    }
-    <?php if (!empty($pageType) && $pageType === 'article' && !empty($post)): ?>
-    ,{
-      "@type": "BlogPosting",
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "<?php echo htmlspecialchars($canonicalUrl); ?>"
-      },
-      "headline": "<?php echo htmlspecialchars($post['title']); ?>",
-      "description": "<?php echo htmlspecialchars($post['excerpt']); ?>",
-      "image": "<?php echo htmlspecialchars($ogImage); ?>",
-      "datePublished": "<?php echo date('c', strtotime($dbPost['created_at'] ?? 'now')); ?>",
-      "dateModified": "<?php echo date('c', strtotime($dbPost['updated_at'] ?? 'now')); ?>",
-      "author": {
-        "@type": "Person",
-        "name": "Aarti Saluja Sahni",
-        "url": "https://www.rtchocos.com/about.php"
-      },
-      "publisher": {
-        "@id": "https://www.rtchocos.com/#organization"
-      }
-    }
-    <?php endif; ?>
-  ]
+<?php
+$graph = [
+    [
+        "@type" => "Organization",
+        "@id" => "https://www.rtchocos.com/#organization",
+        "name" => "RT Chocos",
+        "url" => "https://www.rtchocos.com/",
+        "logo" => [
+            "@type" => "ImageObject",
+            "url" => "https://www.rtchocos.com/assets/logo.png"
+        ],
+        "sameAs" => [
+            "https://www.instagram.com/rt.chocos/",
+            "https://www.youtube.com/@RTCHOCOS",
+            "https://www.facebook.com/rtchocos"
+        ]
+    ],
+    [
+        "@type" => "WebSite",
+        "@id" => "https://www.rtchocos.com/#website",
+        "url" => "https://www.rtchocos.com/",
+        "name" => "RT Chocos",
+        "publisher" => [
+            "@id" => "https://www.rtchocos.com/#organization"
+        ]
+    ],
+    [
+        "@type" => "LocalBusiness",
+        "@id" => "https://www.rtchocos.com/#localbusiness",
+        "name" => "RT Chocos",
+        "image" => "https://www.rtchocos.com/assets/logo.png",
+        "url" => "https://www.rtchocos.com/",
+        "telephone" => "+919876543210",
+        "priceRange" => "$$",
+        "address" => [
+            "@type" => "PostalAddress",
+            "streetAddress" => "Mumbai Craft Kitchen Studio",
+            "addressLocality" => "Mumbai",
+            "addressRegion" => "MH",
+            "postalCode" => "400001",
+            "addressCountry" => "IN"
+        ],
+        "geo" => [
+            "@type" => "GeoCoordinates",
+            "latitude" => "19.0760",
+            "longitude" => "72.8777"
+        ]
+    ]
+];
+
+if (!empty($pageType) && $pageType === 'article' && !empty($post)) {
+    $graph[] = [
+        "@type" => "BlogPosting",
+        "mainEntityOfPage" => [
+            "@type" => "WebPage",
+            "@id" => $canonicalUrl
+        ],
+        "headline" => $post['title'],
+        "description" => $post['excerpt'],
+        "image" => $ogImage,
+        "datePublished" => date('c', strtotime($dbPost['created_at'] ?? 'now')),
+        "dateModified" => date('c', strtotime($dbPost['updated_at'] ?? 'now')),
+        "author" => [
+            "@type" => "Person",
+            "name" => "Aarti Saluja Sahni",
+            "url" => "https://www.rtchocos.com/about.php"
+        ],
+        "publisher" => [
+            "@id" => "https://www.rtchocos.com/#organization"
+        ]
+    ];
 }
+
+if (!empty($breadcrumbs)) {
+    $elements = [];
+    foreach ($breadcrumbs as $idx => $bc) {
+        $elements[] = [
+            "@type" => "ListItem",
+            "position" => $idx + 1,
+            "name" => $bc['name'],
+            "item" => $bc['item']
+        ];
+    }
+    $graph[] = [
+        "@type" => "BreadcrumbList",
+        "itemListElement" => $elements
+    ];
+}
+
+if (!empty($courseData)) {
+    $graph[] = [
+        "@type" => "Course",
+        "name" => $courseData['name'],
+        "description" => $courseData['description'],
+        "provider" => [
+            "@type" => "Organization",
+            "name" => "RT Chocos",
+            "sameAs" => "https://www.rtchocos.com/"
+        ],
+        "hasCourseInstance" => [
+            "@type" => "CourseInstance",
+            "courseMode" => $courseData['mode'] ?? 'blended',
+            "location" => $courseData['location'] ?? 'Mumbai & Online',
+            "offers" => [
+                "@type" => "Offer",
+                "category" => "Fees",
+                "price" => $courseData['price'] ?? '0',
+                "priceCurrency" => "INR"
+            ]
+        ]
+    ];
+}
+
+if (!empty($recipeData)) {
+    $graph[] = [
+        "@type" => "Recipe",
+        "name" => $recipeData['name'],
+        "image" => $recipeData['image'] ?? $ogImage,
+        "description" => $recipeData['description'],
+        "recipeCategory" => "Dessert",
+        "cuisine" => "Indian / Western Fusion",
+        "prepTime" => $recipeData['prepTime'] ?? 'PT15M',
+        "cookTime" => $recipeData['cookTime'] ?? 'PT30M',
+        "totalTime" => $recipeData['totalTime'] ?? 'PT45M',
+        "recipeYield" => $recipeData['yield'] ?? '1 batch',
+        "recipeIngredient" => $recipeData['ingredients'] ?? [],
+        "recipeInstructions" => array_map(function($step) {
+            return [
+                "@type" => "HowToStep",
+                "text" => $step
+            ];
+        }, $recipeData['instructions'] ?? []),
+        "author" => [
+            "@type" => "Person",
+            "name" => "Aarti Saluja Sahni"
+        ]
+    ];
+}
+?>
+<script type="application/ld+json">
+<?php echo json_encode(["@context" => "https://schema.org", "@graph" => $graph], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT); ?>
 </script>
 </head>
 <body<?php echo !empty($bodyClass) ? ' class="' . $bodyClass . '"' : ''; ?>>
