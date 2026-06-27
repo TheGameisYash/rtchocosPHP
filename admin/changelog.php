@@ -27,12 +27,26 @@ $changelog = [
                 'title' => '🔍 SEO & Discoverability',
                 'items' => [
                     'Dynamic XML sitemap generation (<code>/sitemap.xml</code>) pulling live blog slugs from database',
+                    'Added <code>image:image</code> XML sitemap tagging with metadata to index blog header pictures in Google Image search',
                     'Clean blog URLs: <code>/blog/your-article-slug</code> instead of query parameters',
                     'Open Graph and Twitter Card meta tags for every blog article',
-                    'JSON-LD structured data schemas (Organization, WebSite, BlogPosting)',
+                    'Rich JSON-LD Schema graphs supporting <code>Organization</code>, <code>WebSite</code>, <code>BlogPosting</code>, <code>LocalBusiness</code>, <code>BreadcrumbList</code>, <code>Recipe</code>, and <code>Course</code>',
+                    'Dynamic keywords and descriptive page titles matching search queries',
+                    'Server-side heading ID anchor generator (<code>h2/h3</code>) enabling Google sitelinks',
+                    'Visible breadcrumbs trail showing site hierarchy on blog article pages',
+                    'Related articles recommendation carousel showing category-matched insights',
                     'Canonical URL tags to prevent duplicate content indexing',
                     'Updated <code>robots.txt</code> to block admin, cache, and data directories',
                     'Resource preconnect hints for Google Fonts and external CDNs',
+                ]
+            ],
+            [
+                'title' => '🛠️ Admin Panel & Toast UI',
+                'items' => [
+                    'Added a Changelog timeline view detailing all project changes',
+                    'Fixed Toast Notifications timer so notifications dismiss cleanly after 5 seconds',
+                    'Fixed close cross button handler in layout script to support immediate toast removal',
+                    'Added theme switch toggle button checks to prevent layout crashes',
                 ]
             ],
             [
