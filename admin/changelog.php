@@ -55,6 +55,8 @@ $changelog = [
                     'Introduced file-based JSON caching layer (<code>data/cache/</code>)',
                     '3-tier fallback chain: <strong>Database → File Cache → Static Array</strong>',
                     'Blog listing and individual articles survive complete database outages',
+                    'Fixed broken blog image paths for <code>lecithin-chocolate</code> and <code>freeze-dried-fruits-chocolate</code> in the database',
+                    'Added safe path resolution checks in <code>blog-article.php</code> to support absolute, root-relative, and relative (<code>../</code>) image sources without breaking page formatting',
                     'Custom styled 404 error page for missing articles',
                     'Sitemap gracefully degrades to cached/static blog list when DB is down',
                 ]
