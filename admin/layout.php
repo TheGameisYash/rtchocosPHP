@@ -290,35 +290,39 @@ function render_admin_footer() {
 
             // Theme toggle (light/dark) logic
             const themeToggleBtn = document.getElementById('themeToggleBtn');
-            const sunIcon = themeToggleBtn.querySelector('.sun-icon');
-            const moonIcon = themeToggleBtn.querySelector('.moon-icon');
+            if (themeToggleBtn) {
+                const sunIcon = themeToggleBtn.querySelector('.sun-icon');
+                const moonIcon = themeToggleBtn.querySelector('.moon-icon');
 
-            function updateThemeIcons(theme) {
-                if (theme === 'dark') {
-                    sunIcon.style.display = 'block';
-                    moonIcon.style.display = 'none';
-                } else {
-                    sunIcon.style.display = 'none';
-                    moonIcon.style.display = 'block';
+                function updateThemeIcons(theme) {
+                    if (sunIcon && moonIcon) {
+                        if (theme === 'dark') {
+                            sunIcon.style.display = 'block';
+                            moonIcon.style.display = 'none';
+                        } else {
+                            sunIcon.style.display = 'none';
+                            moonIcon.style.display = 'block';
+                        }
+                    }
                 }
+
+                // Initialize icons
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                updateThemeIcons(currentTheme);
+
+                themeToggleBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme') || 'light';
+                    const nextTheme = current === 'light' ? 'dark' : 'light';
+                    
+                    document.documentElement.setAttribute('data-theme', nextTheme);
+                    localStorage.setItem('admin-theme', nextTheme);
+                    updateThemeIcons(nextTheme);
+                    showToast('Theme switched to ' + nextTheme + ' mode', 'info');
+                    
+                    // Dispatch event so custom elements/charts can redraw
+                    window.dispatchEvent(new CustomEvent('themechanged', { detail: { theme: nextTheme } }));
+                });
             }
-
-            // Initialize icons
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-            updateThemeIcons(currentTheme);
-
-            themeToggleBtn.addEventListener('click', function() {
-                const current = document.documentElement.getAttribute('data-theme') || 'light';
-                const nextTheme = current === 'light' ? 'dark' : 'light';
-                
-                document.documentElement.setAttribute('data-theme', nextTheme);
-                localStorage.setItem('admin-theme', nextTheme);
-                updateThemeIcons(nextTheme);
-                showToast('Theme switched to ' + nextTheme + ' mode', 'info');
-                
-                // Dispatch event so custom elements/charts can redraw
-                window.dispatchEvent(new CustomEvent('themechanged', { detail: { theme: nextTheme } }));
-            });
 
             // Global Toast Notification System
             window.showToast = function(message, type = 'info') {
@@ -342,15 +346,18 @@ function render_admin_footer() {
                         ${iconSvg}
                         <span>${message}</span>
                     </div>
-                    <button class="toast-close">&times;</button>
+                    <button class="toast-close" style="cursor:pointer; background:none; border:none; padding:4px; font-size:18px;">&times;</button>
                 `;
 
                 container.appendChild(toast);
 
                 const closeBtn = toast.querySelector('.toast-close');
-                closeBtn.addEventListener('click', function() {
-                    dismissToast(toast);
-                });
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dismissToast(toast);
+                    });
+                }
 
                 // Auto-dismiss after 5 seconds
                 setTimeout(() => {
@@ -359,12 +366,14 @@ function render_admin_footer() {
             };
 
             function dismissToast(toast) {
+                if (!toast) return;
                 toast.classList.add('toast-fadeout');
-                toast.addEventListener('transitionend', function() {
+                // Use a reliable timer instead of transitionend
+                setTimeout(() => {
                     if (toast.parentNode) {
                         toast.parentNode.removeChild(toast);
                     }
-                });
+                }, 300);
             }
         });
     </script>
