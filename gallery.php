@@ -1,7 +1,41 @@
 <?php
-  $pageTitle = "Recipes | RT Chocos — India's Chocolate Blog";
-  $pageDescription = "Premium craft chocolate recipes, formulation guides, and tasting rituals.";
+  $pageTitle = "Chocolate Recipes & Formulations — Craft Chocolate Gallery | RT Chocos";
+  $pageDescription = "Explore premium craft chocolate recipes, dark chocolate formulation guides, truffle recipes, and tasting rituals from India's first chocolate blog.";
+  $pageKeywords = "chocolate recipes, craft chocolate formulation, chocolate truffle recipe, dark chocolate recipes India";
   $pathPrefix = "";
+  
+  $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+  $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  
+  $breadcrumbs = [
+      ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
+      ['name' => 'Recipes', 'item' => $canonicalUrl]
+  ];
+  
+  // Dynamic Recipe schema data
+  $recipeData = [
+      'name' => "Signature Bean-to-Bar Dark Chocolate Truffles",
+      'description' => "Indulgent, silky craft dark chocolate truffles formulated with hand-tempered Kerala cocoa beans and organic cream.",
+      'prepTime' => "PT20M",
+      'cookTime' => "PT10M",
+      'totalTime' => "PT30M",
+      'yield' => "20 truffles",
+      'ingredients' => [
+          "200g craft dark chocolate (70% cocoa)",
+          "120ml organic heavy whipping cream",
+          "20g unsalted grass-fed butter",
+          "20g unsweetened natural cocoa powder (for dusting)"
+      ],
+      'instructions' => [
+          "Finely chop the craft dark chocolate and place it in a heatproof glass bowl.",
+          "Gently heat the heavy cream in a small saucepan until it just begins to simmer.",
+          "Pour the hot cream over the chopped chocolate and let it stand undisturbed for 2 minutes.",
+          "Slowly stir from the center outwards until a smooth, glossy ganache forms. Stir in the butter.",
+          "Cover and chill the ganache for 2 hours until firm.",
+          "Scoop small portions, roll quickly into balls, and coat thoroughly with natural cocoa powder."
+      ]
+  ];
+  
   include $pathPrefix . 'includes/header.php';
 ?>
 

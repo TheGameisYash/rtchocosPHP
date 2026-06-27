@@ -699,7 +699,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* --- BLOG CARD --- */
 .blog-card-img {
   height: 240px;
-  background: var(--white);
+  background: var(--cream-dark);
   display: flex; align-items: center; justify-content: center; padding: 0;
   overflow: hidden;
   position: relative;
@@ -717,7 +717,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .blog-card-img img {
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover;
   display: block;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -2811,6 +2811,17 @@ footer.footer-links-section .social-icons {
   margin-bottom: 32px;
 }
 
+#blog-article-content > p:first-of-type::first-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  float: left;
+  line-height: 0.8;
+  margin-right: 8px;
+  margin-top: 4px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
 #blog-article-content p {
   margin-bottom: 24px;
   color: var(--brown-light);
@@ -3821,94 +3832,33 @@ footer.footer-links-section .social-icons {
   }
 }
 
-/* --- FREEZE-DRIED FRUITS ARTICLE CUSTOM STYLES (SCOPED) --- */
-.freeze-dried-fruits-article {
-  --cacao: var(--black);
-  --cocoa: var(--brown-light);
-  --truffle: var(--brown);
-  --copper: var(--gold);
-  --caramel: var(--gold-light);
-  --cream: var(--white);
-  --linen: var(--cream);
-  --muted: var(--brown-light);
-  --text: var(--brown);
-}
+/* --- BLOG ADDITIONS (Phase 9) --- */
+/* Blog content image positioning */
+.blog-img-center { text-align: center; margin: 24px auto; }
+.blog-img-center img { max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-sm); }
+.blog-img-left { float: left; margin: 0 20px 16px 0; max-width: 50%; }
+.blog-img-left img { max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-sm); }
+.blog-img-right { float: right; margin: 0 0 16px 20px; max-width: 50%; }
+.blog-img-right img { max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-sm); }
+.blog-img-end { text-align: center; margin: 32px auto 0; clear: both; }
+.blog-img-end img { max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-sm); }
 
-/* — SAMPLE CALLOUT — */
-.freeze-dried-fruits-article .sample-note {
-  background: var(--linen) !important;
-  border-left: 3px solid var(--copper) !important;
-  padding: 1.25rem 1.5rem !important;
-  margin-bottom: 2.5rem !important;
-  border-radius: 0 6px 6px 0 !important;
-  font-size: 0.92rem !important;
-  line-height: 1.7 !important;
-  color: var(--truffle) !important;
-  font-family: 'Jost', sans-serif !important;
-  transition: transform 0.3s ease !important;
-}
-.freeze-dried-fruits-article .sample-note:hover {
-  transform: translateX(4px) !important;
-}
+/* Inline blog image container */
+.blog-img-container { display: inline-block; vertical-align: middle; }
 
-.freeze-dried-fruits-article .sample-note span {
-  display: block !important;
-  font-weight: 600 !important;
-  font-size: 0.72rem !important;
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase !important;
-  color: var(--copper) !important;
-  font-family: 'Jost', sans-serif !important;
-  margin-bottom: 0.4rem !important;
-}
+/* Responsive YouTube embed in blog content */
+.blog-yt-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 24px 0; border-radius: 8px; }
+.blog-yt-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-/* — PULL QUOTE — */
-.freeze-dried-fruits-article .pullquote {
-  border-top: 1px solid var(--linen) !important;
-  border-bottom: 1px solid var(--linen) !important;
-  padding: 1.8rem 0 !important;
-  margin: 2.5rem 0 !important;
-  text-align: center !important;
-}
+/* Code blocks & Inline code in blog content */
+.blog-article-section pre { background: #1a1410; color: #f6f2ea; padding: 16px; border-radius: 8px; overflow-x: auto; margin: 20px 0; }
+.blog-article-section code { background: rgba(201,168,76,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: monospace; color: var(--gold); }
+.blog-article-section pre code { background: none; padding: 0; border-radius: 0; font-size: 0.95em; color: inherit; }
 
-.freeze-dried-fruits-article .pullquote p {
-  font-family: 'Cormorant Garamond', serif !important;
-  font-style: italic !important;
-  font-size: 1.25rem !important;
-  line-height: 1.5 !important;
-  color: var(--truffle) !important;
-  max-width: 580px !important;
-  margin: 0 auto !important;
-}
-
-/* — CLOSING — */
-.freeze-dried-fruits-article .closing-bar {
-  text-align: center !important;
-  padding: 2.5rem 2rem !important;
-  background: var(--linen) !important;
-  margin-top: 3rem !important;
-  border-radius: 8px !important;
-  box-shadow: var(--shadow-sm) !important;
-}
-
-.freeze-dried-fruits-article .closing-bar p {
-  font-family: 'Cormorant Garamond', serif !important;
-  font-size: 1.1rem !important;
-  color: var(--truffle) !important;
-  font-style: italic !important;
-  max-width: 560px !important;
-  margin: 0 auto !important;
-  line-height: 1.6 !important;
-}
-
-.freeze-dried-fruits-article .closing-bar .sig {
-  font-family: 'Jost', sans-serif !important;
-  font-style: normal !important;
-  font-size: 0.75rem !important;
-  letter-spacing: 0.14em !important;
-  text-transform: uppercase !important;
-  color: var(--copper) !important;
-  margin-top: 1rem !important;
-  display: block !important;
-}
+/* Tables in blog content */
+.table-responsive { width: 100%; overflow-x: auto; margin: 24px 0; }
+.blog-article-section table { width: 100%; border-collapse: collapse; border: 1px solid var(--cream-dark, #EDE7DB); border-radius: 6px; }
+.blog-article-section th, .blog-article-section td { padding: 12px 16px; text-align: left; border: 1px solid var(--cream-dark, #EDE7DB); }
+.blog-article-section th { background: rgba(199,166,106,0.08); font-weight: 600; color: var(--brown); }
+.blog-article-section tr:nth-child(even) { background: rgba(59,42,34,0.01); }
 

@@ -1,7 +1,16 @@
 <?php
-  $pageTitle = "About | RT Chocos — India's Chocolate Blog";
-  $pageDescription = "Meet Aarti Saluja Sahni, founder of RT Chocos. Over a decade of bean-to-bar chocolate expertise.";
+  $pageTitle = "About Aarti Saluja Sahni | RT Chocos — India's First Chocolate Educator";
+  $pageDescription = "Meet Aarti Saluja Sahni, founder of RT Chocos. Over a decade of bean-to-bar chocolate making, consulting, and recipe formulation experience in Mumbai, India.";
+  $pageKeywords = "Aarti Saluja Sahni, RT Chocos founder, chocolate educator India, chocolate consultant Mumbai, bean to bar chocolate expert";
   $pathPrefix = "";
+  
+  $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+  $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  
+  $breadcrumbs = [
+      ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
+      ['name' => 'About Us', 'item' => $canonicalUrl]
+  ];
   include $pathPrefix . 'includes/header.php';
 ?>
 

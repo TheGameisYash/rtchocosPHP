@@ -78,6 +78,19 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     echo "OK<br>";
 
+    // Create comments table
+    echo "Creating 'comments' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS comments (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        blog_slug VARCHAR(100) NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        comment TEXT NOT NULL,
+        is_approved TINYINT(1) DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_blog_slug (blog_slug)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
     // 5. Migrate blogs from static array + markdown files
     echo "Migrating blog articles...<br>";
     foreach ($BLOGS as $slug => $meta) {
@@ -134,6 +147,82 @@ try {
             fclose($file);
         }
     }
+
+    // 7. Add columns to blogs table if they don't exist
+    $columns = $pdo->query("SHOW COLUMNS FROM blogs")->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('scheduled_at', $columns)) {
+        echo "Adding 'scheduled_at' column to 'blogs'... ";
+        $pdo->exec("ALTER TABLE blogs ADD COLUMN scheduled_at TIMESTAMP NULL DEFAULT NULL;");
+        echo "OK<br>";
+    }
+    if (!in_array('views', $columns)) {
+        echo "Adding 'views' column to 'blogs'... ";
+        $pdo->exec("ALTER TABLE blogs ADD COLUMN views INT NOT NULL DEFAULT 0;");
+        echo "OK<br>";
+    }
+
+    // 8. Create tags and mapping tables
+    echo "Creating 'blog_tags' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS blog_tags (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) UNIQUE NOT NULL,
+        slug VARCHAR(100) UNIQUE NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    echo "Creating 'blog_tag_map' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS blog_tag_map (
+        blog_id INT NOT NULL,
+        tag_id INT NOT NULL,
+        PRIMARY KEY (blog_id, tag_id),
+        FOREIGN KEY (blog_id) REFERENCES blogs(id) ON DELETE CASCADE,
+        FOREIGN KEY (tag_id) REFERENCES blog_tags(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // 9. Create site_settings table
+    echo "Creating 'site_settings' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS site_settings (
+        setting_key VARCHAR(100) PRIMARY KEY,
+        setting_value TEXT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Populate default settings
+    $defaultSettings = [
+        'site_name' => 'RT Chocos',
+        'site_tagline' => 'Real Taste, Real Chocolate',
+        'meta_description' => 'Experience the real taste of premium chocolates crafted with love and science.',
+        'contact_email' => 'info@rtchocos.com',
+        'contact_phone' => '+1234567890',
+        'social_instagram' => 'https://instagram.com/rtchocos',
+        'social_facebook' => 'https://facebook.com/rtchocos',
+        'social_youtube' => 'https://youtube.com/rtchocos',
+        'social_linkedin' => 'https://linkedin.com/company/rtchocos',
+        'newsletter_text' => 'Subscribe to our newsletter for exclusive recipes, scientific cocoa insights, and new product releases.'
+    ];
+
+    foreach ($defaultSettings as $key => $value) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM site_settings WHERE setting_key = ?");
+        $stmt->execute([$key]);
+        if ($stmt->fetchColumn() == 0) {
+            $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)");
+            $stmt->execute([$key, $value]);
+        }
+    }
+    echo "Settings initialized<br>";
+
+    // 10. Create media table
+    echo "Creating 'media' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS media (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        filename VARCHAR(255) NOT NULL,
+        path VARCHAR(255) NOT NULL,
+        mime_type VARCHAR(100) NOT NULL,
+        size INT NOT NULL,
+        uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
 
     echo "<h3>Setup Completed Successfully!</h3>";
     echo "<p style='color:red;'><b>IMPORTANT: Delete db_setup.php before deploying to production!</b></p>";

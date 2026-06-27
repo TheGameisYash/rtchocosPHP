@@ -5,6 +5,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Cache-Control: post-check=0, pre-check=0', false);
 header('Pragma: no-cache');
 require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/blog-cache.php';
 
 try {
     $pdo = get_db();
@@ -33,14 +34,26 @@ try {
         ];
     }
     
+    // Save to cache
+    cache_blog_list($response);
+    header('X-Data-Source: database');
     echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 } catch (Exception $e) {
-    error_log("Failed to fetch blog list from database: " . $e->getMessage() . ". Falling back to static array.");
+    error_log("Failed to fetch blog list from database: " . $e->getMessage() . ". Checking file cache fallback.");
+    
+    $cached = get_cached_blog_list();
+    if ($cached !== null) {
+        header('X-Data-Source: cache');
+        echo json_encode($cached, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+    
+    // Fall back to static array
     require_once __DIR__ . '/includes/blog-data.php';
+    header('X-Data-Source: static');
     
     $response = [];
     $idx = 1;
-    // Reverse the static list so latest blogs (freeze-dried-fruits, lecithin, etc.) appear first
     $reversedBlogs = array_reverse($BLOGS, true);
     
     foreach ($reversedBlogs as $slug => $meta) {
