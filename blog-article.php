@@ -113,7 +113,7 @@ function parse_markdown($markdown) {
         if (preg_match('/^!\[(.*?)\]\((.*?)\)$/', $block, $matches)) {
             $caption = parse_inline($matches[1]);
             $url = $matches[2];
-            $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0) 
+            $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0 || strpos($url, '../') === 0) 
                 ? $url 
                 : $pathPrefix . $url;
             $html .= "<div class=\"article-image\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars($caption) . "\">" . (!empty($caption) ? "<span class=\"article-image-caption\">{$caption}</span>" : "") . "</div>\n";
@@ -279,7 +279,7 @@ function parse_inline($text) {
         $caption = $matches[1];
         $url = $matches[2];
         $pos = !empty($matches[3]) ? $matches[3] : 'center';
-        $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0) 
+        $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0 || strpos($url, '../') === 0) 
             ? $url 
             : $pathPrefix . $url;
         return "<span class=\"blog-img-container blog-img-{$pos}\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars($caption) . "\" class=\"blog-img-{$pos}\" loading=\"lazy\" decoding=\"async\"></span>";
@@ -582,8 +582,13 @@ include __DIR__ . '/includes/header.php';
       <div class="section-label" id="blog-article-category"><?php echo htmlspecialchars($post['category']); ?></div>
       <h1 id="blog-article-title" class="fade-up"><?php echo htmlspecialchars($post['title']); ?></h1>
       <p id="blog-article-meta" class="fade-up-d1"><?php echo htmlspecialchars($post['date']); ?> • <?php echo htmlspecialchars($post['read']); ?> read</p>
-      <?php if (!empty($post['image'])): ?>
-      <img id="blog-article-image" src="../<?php echo htmlspecialchars($post['image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" />
+      <?php if (!empty($post['image'])): 
+        $heroImg = $post['image'];
+        if (strpos($heroImg, 'http://') !== 0 && strpos($heroImg, 'https://') !== 0 && strpos($heroImg, '/') !== 0 && strpos($heroImg, '../') !== 0) {
+            $heroImg = $pathPrefix . $heroImg;
+        }
+      ?>
+      <img id="blog-article-image" src="<?php echo htmlspecialchars($heroImg); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" />
       <?php endif; ?>
     </div>
   </div>
