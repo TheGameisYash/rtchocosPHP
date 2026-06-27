@@ -42,7 +42,7 @@
       <div class="why-grid">
         <div class="why-card">
           <div class="why-card-img-wrapper">
-            <img src="assets/cocoabeans.png.jpg" alt="Bean-to-Bar">
+            <img src="assets/cocoabeans.png.jpg" alt="Bean-to-Bar" loading="lazy">
           </div>
           <div class="why-card-text">
             <h4>Bean-to-Bar Expertise</h4>
@@ -51,7 +51,7 @@
         </div>
         <div class="why-card">
           <div class="why-card-img-wrapper">
-            <img src="assets/temepring.jpg" alt="Science-First Approach">
+            <img src="assets/temepring.jpg" alt="Science-First Approach" loading="lazy">
           </div>
           <div class="why-card-text">
             <h4>Science-First Approach</h4>
@@ -60,7 +60,7 @@
         </div>
         <div class="why-card">
           <div class="why-card-img-wrapper">
-            <img src="assets/bonbons.png" alt="10+ Years Teaching">
+            <img src="assets/bonbons.png" alt="10+ Years Teaching" loading="lazy">
           </div>
           <div class="why-card-text">
             <h4>10+ Years Teaching</h4>

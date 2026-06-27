@@ -2,14 +2,16 @@
 require_once __DIR__ . '/includes/blog-data.php';
 require_once __DIR__ . '/includes/db.php';
 
+require_once __DIR__ . '/includes/blog-cache.php';
+
 $post = null;
 $markdown_content = '';
 $isFromDb = false;
-$pdo = get_db();
 
 // Try to fetch from DB first
 if (isset($articleKey)) {
     try {
+        $pdo = get_db();
         $stmt = $pdo->prepare("SELECT * FROM blogs WHERE slug = ? AND is_published = 1");
         $stmt->execute([$articleKey]);
         $dbPost = $stmt->fetch();
@@ -28,6 +30,12 @@ if (isset($articleKey)) {
             $markdown_content = $dbPost['content'];
             $isFromDb = true;
 
+            // Cache article data for offline resilience
+            cache_blog_article($articleKey, [
+                'post' => $post,
+                'markdown_content' => $markdown_content
+            ]);
+
             // Increment article views (Analytics)
             try {
                 $upStmt = $pdo->prepare("UPDATE blogs SET views = views + 1 WHERE id = ?");
@@ -35,16 +43,32 @@ if (isset($articleKey)) {
             } catch (Exception $ex) {
                 // Non-blocking
             }
+        } else {
+            // Check cache fallback
+            $cached = get_cached_blog_article($articleKey);
+            if ($cached) {
+                $post = $cached['post'];
+                $markdown_content = $cached['markdown_content'];
+                $isFromDb = true;
+            }
         }
     } catch (Exception $e) {
-        error_log("Database error fetching blog '$articleKey': " . $e->getMessage());
+        error_log("Database error fetching blog '$articleKey': " . $e->getMessage() . ". Checking cache fallback.");
+        $cached = get_cached_blog_article($articleKey);
+        if ($cached) {
+            $post = $cached['post'];
+            $markdown_content = $cached['markdown_content'];
+            $isFromDb = true;
+        }
     }
 }
 
 // Fallback to static blog data array
 if (!$post) {
     if (!isset($articleKey) || !isset($BLOGS[$articleKey])) {
-        header('Location: ../blog.php');
+        http_response_code(404);
+        $pathPrefix = "../";
+        include __DIR__ . '/error.php';
         exit;
     }
     $post = $BLOGS[$articleKey];
@@ -52,6 +76,8 @@ if (!$post) {
 
 $pageTitle = $post['title'] . " | RT Chocos";
 $pageDescription = $post['excerpt'];
+$pageImage = $post['image'];
+$pageType = 'article';
 $bodyClass = $post['bodyClass'] ?? '';
 $pathPrefix = "../";
 
@@ -91,9 +117,58 @@ function parse_markdown($markdown) {
                 $ytId = $ytMatches[1];
             }
             if ($ytId) {
-                $html .= "<div class=\"article-youtube-embed\"><div class=\"yt-iframe-wrap\"><iframe src=\"https://www.youtube.com/embed/{$ytId}\" frameborder=\"0\" allowfullscreen allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"></iframe></div></div>\n";
+                $html .= "<div class=\"blog-yt-embed\"><iframe src=\"https://www.youtube.com/embed/{$ytId}\" frameborder=\"0\" allowfullscreen allow=";
+                $html .= '"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"';
+                $html .= "></iframe></div>\n";
             }
             continue;
+        }
+        
+        // Fenced Code Block
+        if (strpos($block, '```') === 0) {
+            $lines = explode("\n", $block);
+            $firstLine = array_shift($lines);
+            $lastLine = array_pop($lines);
+            $lang = trim(str_replace('```', '', $firstLine));
+            $code = implode("\n", $lines);
+            $classAttr = !empty($lang) ? " class=\"language-" . htmlspecialchars($lang) . "\"" : "";
+            $html .= "<pre><code{$classAttr}>" . htmlspecialchars($code) . "</code></pre>\n";
+            continue;
+        }
+
+        // Tables support
+        if (strpos($block, '|') === 0) {
+            $lines = explode("\n", $block);
+            if (count($lines) >= 2) {
+                $tableHtml = "<div class=\"table-responsive\"><table>\n";
+                $hasHeader = false;
+                foreach ($lines as $line) {
+                    $trimmedLine = trim($line, "| ");
+                    if (empty($trimmedLine) || preg_match('/^[:\-\s|]+$/', $trimmedLine)) {
+                        continue;
+                    }
+                    $cols = explode('|', $trimmedLine);
+                    $rowHtml = "  <tr>\n";
+                    foreach ($cols as $col) {
+                        $colVal = parse_inline(trim($col));
+                        $cellTag = !$hasHeader ? 'th' : 'td';
+                        $rowHtml .= "    <{$cellTag}>{$colVal}</{$cellTag}>\n";
+                    }
+                    $rowHtml .= "  </tr>\n";
+                    if (!$hasHeader) {
+                        $tableHtml .= "<thead>\n" . $rowHtml . "</thead>\n<tbody>\n";
+                        $hasHeader = true;
+                    } else {
+                        $tableHtml .= $rowHtml;
+                    }
+                }
+                if ($hasHeader) {
+                    $tableHtml .= "</tbody>\n";
+                }
+                $tableHtml .= "</table></div>\n";
+                $html .= $tableHtml;
+                continue;
+            }
         }
         
         // Headers
@@ -152,14 +227,6 @@ function parse_markdown($markdown) {
             continue;
         }
         
-        // Code Block
-        if (strpos($block, '```') === 0) {
-            $lines = explode("\n", $block);
-            $code = implode("\n", array_slice($lines, 1, count($lines) - 2));
-            $html .= "<pre><code>" . htmlspecialchars($code) . "</code></pre>\n";
-            continue;
-        }
-        
         // HTML blocks (like div, img, hr, iframe, table)
         if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|tr|td|th|iframe)/i', $block)) {
             $html .= $block . "\n";
@@ -175,11 +242,24 @@ function parse_markdown($markdown) {
 }
 
 function parse_inline($text) {
+    global $pathPrefix;
     // Bold: **text**
     $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
     // Italic: *text* or _text_
     $text = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $text);
     $text = preg_replace('/_(.*?)_/', '<em>$1</em>', $text);
+    // Inline code: `code`
+    $text = preg_replace('/`([^`]+)`/', '<code>$1</code>', $text);
+    // Inline images with optional position matching: ![alt](url){position}
+    $text = preg_replace_callback('/!\[(.*?)\]\((.*?)\)(?:\{(left|right|center|end)\})?/', function($matches) use ($pathPrefix) {
+        $caption = $matches[1];
+        $url = $matches[2];
+        $pos = !empty($matches[3]) ? $matches[3] : 'center';
+        $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0) 
+            ? $url 
+            : $pathPrefix . $url;
+        return "<span class=\"blog-img-container blog-img-{$pos}\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars($caption) . "\" class=\"blog-img-{$pos}\" loading=\"lazy\" decoding=\"async\"></span>";
+    }, $text);
     // Links: [text](href)
     $text = preg_replace('/\[(.*?)\]\((.*?)\)/', '<a href="$2">$1</a>', $text);
     return $text;

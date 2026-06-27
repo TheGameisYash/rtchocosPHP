@@ -577,18 +577,39 @@ function renderBlogComments() {
     return;
   }
 
-  const comments = getBlogComments(currentBlogArticleId);
-  commentsList.innerHTML = comments.length
-    ? comments.map(comment => `
-        <div class="blog-comment-item">
-          <div class="blog-comment-head">
-            <span class="blog-comment-name">${escapeHTML(comment.name)}</span>
-            <span class="blog-comment-date">${escapeHTML(comment.date)}</span>
-          </div>
-          <div class="blog-comment-text">${escapeHTML(comment.text)}</div>
-        </div>
-      `).join('')
-    : '<div class="blog-comment-empty">No comments yet. Be the first to start the conversation.</div>';
+  fetch(getCorrectedPath('api_comments.php?slug=') + currentBlogArticleId)
+    .then(res => {
+      if (!res.ok) throw new Error();
+      return res.json();
+    })
+    .then(comments => {
+      commentsList.innerHTML = comments.length
+        ? comments.map(comment => `
+            <div class="blog-comment-item">
+              <div class="blog-comment-head">
+                <span class="blog-comment-name">${escapeHTML(comment.name)}</span>
+                <span class="blog-comment-date">${escapeHTML(comment.date)}</span>
+              </div>
+              <div class="blog-comment-text">${escapeHTML(comment.text)}</div>
+            </div>
+          `).join('')
+        : '<div class="blog-comment-empty">No comments yet. Be the first to start the conversation.</div>';
+    })
+    .catch(() => {
+      // LocalStorage Fallback
+      const comments = getBlogComments(currentBlogArticleId);
+      commentsList.innerHTML = comments.length
+        ? comments.map(comment => `
+            <div class="blog-comment-item">
+              <div class="blog-comment-head">
+                <span class="blog-comment-name">${escapeHTML(comment.name)}</span>
+                <span class="blog-comment-date">${escapeHTML(comment.date)}</span>
+              </div>
+              <div class="blog-comment-text">${escapeHTML(comment.text)}</div>
+            </div>
+          `).join('')
+        : '<div class="blog-comment-empty">No comments yet. Be the first to start the conversation. (Offline Mode)</div>';
+    });
 }
 
 function submitBlogComment() {
@@ -604,21 +625,57 @@ function submitBlogComment() {
 
   if (!name || !text) {
     note.textContent = 'Please enter your name and comment before posting.';
+    note.style.color = '#ff5252';
     return;
   }
 
-  const comments = getBlogComments(currentBlogArticleId);
-  comments.unshift({
-    name,
-    text,
-    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-  });
-  saveBlogComments(currentBlogArticleId, comments);
+  note.textContent = 'Posting comment...';
+  note.style.color = 'var(--text-light)';
 
-  nameInput.value = '';
-  commentInput.value = '';
-  note.textContent = 'Your comment has been added.';
-  renderBlogComments();
+  fetch(getCorrectedPath('api_comments.php'), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      slug: currentBlogArticleId,
+      name: name,
+      comment: text
+    })
+  })
+    .then(res => {
+      return res.json().then(data => {
+        if (!res.ok) {
+          throw new Error(data.error || 'Server error posting comment.');
+        }
+        return data;
+      });
+    })
+    .then(data => {
+      nameInput.value = '';
+      commentInput.value = '';
+      note.textContent = data.message || 'Your comment has been added.';
+      note.style.color = 'var(--green-900)';
+      renderBlogComments();
+    })
+    .catch(err => {
+      // Fallback: save to LocalStorage if DB fails
+      console.warn("API comment submission failed. Reverting to LocalStorage:", err.message);
+      const comments = getBlogComments(currentBlogArticleId);
+      const newComment = {
+        name,
+        text,
+        date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+      };
+      comments.unshift(newComment);
+      saveBlogComments(currentBlogArticleId, comments);
+
+      nameInput.value = '';
+      commentInput.value = '';
+      note.textContent = 'Posted (Offline Mode).';
+      note.style.color = 'var(--green-900)';
+      renderBlogComments();
+    });
 }
 
 function openBlogArticle(blogId, options = {}) {
@@ -897,7 +954,7 @@ async function initApp() {
       // Populate ARTICLE_FILE_MAP for any dynamic entries
       BLOGS.forEach(b => {
         if (!ARTICLE_FILE_MAP[b.articleKey]) {
-          ARTICLE_FILE_MAP[b.articleKey] = 'blog/article.php?slug=' + b.articleKey;
+          ARTICLE_FILE_MAP[b.articleKey] = 'blog/' + b.articleKey;
         }
       });
     }

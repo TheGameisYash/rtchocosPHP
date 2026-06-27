@@ -584,3 +584,14 @@
     top: 30px; right: 40px;
     z-index: 3050;
 }
+
+/* Positioned images inside the editor canvas */
+.blog-img-center { text-align: center; margin: 24px auto; }
+.blog-img-left { float: left; margin: 0 20px 16px 0; max-width: 50%; }
+.blog-img-right { float: right; margin: 0 0 16px 20px; max-width: 50%; }
+.blog-img-end { text-align: center; margin: 32px auto 0; clear: both; }
+
+.block-image-uploaded img.blog-img-center { margin: 0 auto; display: block; }
+.block-image-uploaded img.blog-img-left { float: left; max-width: 200px; margin: 10px; }
+.block-image-uploaded img.blog-img-right { float: right; max-width: 200px; margin: 10px; }
+.block-image-uploaded img.blog-img-end { margin: 20px auto 0; display: block; clear: both; }

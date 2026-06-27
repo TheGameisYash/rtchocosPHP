@@ -11,8 +11,38 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Read JSON input or fallback to POST variables
 $input = json_decode(file_get_contents('php://input'), true);
+
+// Honeypot check
+$honeypot = isset($input['nickname']) ? trim($input['nickname']) : '';
+if (empty($honeypot)) {
+    $honeypot = isset($_POST['nickname']) ? trim($_POST['nickname']) : '';
+}
+if (!empty($honeypot)) {
+    // Silent discard/fail to fool bots
+    echo json_encode(["status" => "success", "message" => "Thank you for subscribing! Your email has been registered."]);
+    exit;
+}
+
+// Session-based rate limiting (max 5 per hour)
+$now = time();
+if (!isset($_SESSION['last_sub_times'])) {
+    $_SESSION['last_sub_times'] = [];
+}
+$_SESSION['last_sub_times'] = array_filter($_SESSION['last_sub_times'], function($t) use ($now) {
+    return ($now - $t) < 3600;
+});
+if (count($_SESSION['last_sub_times']) >= 5) {
+    http_response_code(429);
+    echo json_encode(["status" => "error", "message" => "Too many subscription attempts. Please try again in an hour."]);
+    exit;
+}
+$_SESSION['last_sub_times'][] = $now;
 $email = isset($input['email']) ? trim($input['email']) : '';
 
 if (empty($email)) {

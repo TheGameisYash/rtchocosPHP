@@ -36,9 +36,40 @@
 Options -Indexes
 
 # ----------------------------------------------------------------------
-# | Protect Sensitive Files (like .env, .gitignore, .git)              |
+# | Protect Sensitive Files (like .env, .gitignore, .git, db_setup)    |
 # ----------------------------------------------------------------------
-<FilesMatch "^\.">
+<FilesMatch "^(\.env|\.git|\.gitignore|db_setup\.php)">
     Order allow,deny
     Deny from all
 </FilesMatch>
+
+# ----------------------------------------------------------------------
+# | Prevent direct access to includes folder                           |
+# ----------------------------------------------------------------------
+RewriteEngine On
+RewriteRule ^includes/ - [F,L]
+RewriteRule ^data/ - [F,L]
+
+# ----------------------------------------------------------------------
+# | Rewrite Rules for Sitemap & Blog Clean URLs                         |
+# ----------------------------------------------------------------------
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+# Redirect blog/article.php?slug=xxx to clean url /blog/xxx (optional SEO improvement)
+RewriteCond %{THE_REQUEST} \s/blog/article\.php\?slug=([^\s&]+)\s [NC]
+RewriteRule ^blog/article\.php$ /blog/%1? [R=301,L]
+
+# Rewrite clean blog URL to the actual router
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^blog/([^/]+)$ blog/article.php?slug=$1 [L,QSA]
+
+# ----------------------------------------------------------------------
+# | Security Headers                                                   |
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>

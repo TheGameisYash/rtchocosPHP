@@ -78,6 +78,19 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     echo "OK<br>";
 
+    // Create comments table
+    echo "Creating 'comments' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS comments (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        blog_slug VARCHAR(100) NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        comment TEXT NOT NULL,
+        is_approved TINYINT(1) DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_blog_slug (blog_slug)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
     // 5. Migrate blogs from static array + markdown files
     echo "Migrating blog articles...<br>";
     foreach ($BLOGS as $slug => $meta) {

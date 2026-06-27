@@ -577,10 +577,31 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 
 <!-- Parse Inline Markdown helper for preview compile -->
 <script>
+function escapeHtml(text) {
+    if (!text) return '';
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 function parseInline(text) {
+    if (!text) return '';
+    // Bold: **text**
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Italic: *text* or _text_
     text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
     text = text.replace(/_(.*?)_/g, '<em>$1</em>');
+    // Inline code: `code`
+    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // Inline images with optional position matching: ![alt](url){position}
+    text = text.replace(/!\[(.*?)\]\((.*?)\)(?:\{(left|right|center|end)\})?/g, function(match, alt, url, pos) {
+        pos = pos || 'center';
+        return `<span class="blog-img-container blog-img-${pos}"><img src="../${url}" alt="${alt}" class="blog-img-${pos}" loading="lazy" decoding="async"></span>`;
+    });
+    // Links: [text](href)
     text = text.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
     return text;
 }
@@ -588,21 +609,61 @@ function parseInline(text) {
 function parseMarkdown(markdown) {
     if (!markdown) return '';
     markdown = markdown.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    
+    // Global replacements: YouTube embeds {{youtube:VIDEO_ID}}
+    markdown = markdown.replace(/\{\{youtube:([a-zA-Z0-9_\-]+)\}\}/g, '<div class="blog-yt-embed"><iframe src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>');
+    
     const blocks = markdown.split(/\n\n+/);
     let html = '';
-    let inList = false;
-    let listType = ''; // 'ul' or 'ol'
     
     blocks.forEach(block => {
         block = block.trim();
         if (!block) return;
         
-        // Code blocks
+        // Fenced Code blocks
         if (block.startsWith('```')) {
             const lines = block.split('\n');
+            const firstLine = lines[0];
+            const lang = firstLine.replace('```', '').trim();
             const code = lines.slice(1, lines.length - 1).join('\n');
-            html += `<pre><code>${code}</code></pre>\n`;
+            const classAttr = lang ? ` class="language-${lang}"` : '';
+            html += `<pre><code${classAttr}>${escapeHtml(code)}</code></pre>\n`;
             return;
+        }
+
+        // Table support
+        if (block.startsWith('|')) {
+            const lines = block.split('\n');
+            if (lines.length >= 2) {
+                let tableHtml = '<div class="table-responsive"><table>\n';
+                let hasHeader = false;
+                lines.forEach(line => {
+                    const trimmedLine = line.trim().replace(/^\||\|$/g, '');
+                    if (!trimmedLine || /^[:\-\s|]+$/.test(trimmedLine)) {
+                        return;
+                    }
+                    const cols = trimmedLine.split('|');
+                    let rowHtml = '  <tr>\n';
+                    cols.forEach(col => {
+                        const colVal = parseInline(col.trim());
+                        const cellTag = !hasHeader ? 'th' : 'td';
+                        rowHtml += `    <${cellTag}>${colVal}</${cellTag}>\n`;
+                    });
+                    rowHtml += '  </tr>\n';
+                    if (!hasHeader) {
+                        tableHtml += '<thead>\n' + rowHtml + '</thead>\n<tbody>\n';
+                        hasHeader = true;
+                    } else {
+                        tableHtml += rowHtml;
+                    }
+                });
+                if (hasHeader) {
+                    tableHtml += '</tbody>\n';
+                }
+                tableHtml += '</table></div>\n';
+                html += tableHtml;
+                return;
+            }
         }
 
         // Heading 2
@@ -665,22 +726,23 @@ function parseMarkdown(markdown) {
             html += listHtml;
             return;
         }
-        // Images
-        if (block.startsWith('![') && block.includes('](')) {
-            const altMatch = block.match(/!\[(.*?)\]\((.*?)\)/);
-            if (altMatch) {
-                html += `<div style="text-align:center;"><img src="../${altMatch[2]}" alt="${altMatch[1]}"><div style="font-size:12px;color:var(--text-light);margin-top:6px;">${altMatch[1]}</div></div>\n`;
-            }
+        // Standalone Images block-level
+        const imgBlockMatch = block.match(/^!\[(.*?)\]\((.*?)\)(?:\{(left|right|center|end)\})?$/);
+        if (imgBlockMatch) {
+            const alt = imgBlockMatch[1];
+            const url = imgBlockMatch[2];
+            const pos = imgBlockMatch[3] || 'center';
+            html += `<div class="blog-img-${pos}"><img src="../${url}" alt="${alt}" loading="lazy" decoding="async">${alt ? `<span class="article-image-caption">${parseInline(alt)}</span>` : ''}</div>\n`;
             return;
         }
-        // YouTube
+        // YouTube (legacy block format)
         if (block.startsWith('[youtube](') && block.endsWith(')')) {
             const url = block.match(/\[youtube\]\((.*?)\)/)[1];
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
             const ytId = (match && match[2].length === 11) ? match[2] : null;
             if (ytId) {
-                html += `<div class="block-yt-embed-widget" style="margin:24px 0;"><div class="yt-preview-box"><iframe src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen></iframe></div></div>\n`;
+                html += `<div class="blog-yt-embed" style="margin:24px 0;"><iframe src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen></iframe></div>\n`;
             }
             return;
         }

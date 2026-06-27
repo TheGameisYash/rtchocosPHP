@@ -1,7 +1,11 @@
 <?php
 // api_blogs.php
 header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache');
 require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/blog-cache.php';
 
 try {
     $pdo = get_db();
@@ -30,11 +34,44 @@ try {
         ];
     }
     
+    // Save to cache
+    cache_blog_list($response);
+    header('X-Data-Source: database');
     echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'error' => 'Failed to fetch blog list: ' . $e->getMessage()
-    ]);
+    error_log("Failed to fetch blog list from database: " . $e->getMessage() . ". Checking file cache fallback.");
+    
+    $cached = get_cached_blog_list();
+    if ($cached !== null) {
+        header('X-Data-Source: cache');
+        echo json_encode($cached, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+    
+    // Fall back to static array
+    require_once __DIR__ . '/includes/blog-data.php';
+    header('X-Data-Source: static');
+    
+    $response = [];
+    $idx = 1;
+    $reversedBlogs = array_reverse($BLOGS, true);
+    
+    foreach ($reversedBlogs as $slug => $meta) {
+        $response[] = [
+            'id' => $idx++,
+            'slug' => $slug,
+            'title' => $meta['title'],
+            'category' => $meta['category'],
+            'date' => $meta['date'],
+            'read_time' => $meta['read'] ?? '5 min',
+            'excerpt' => $meta['excerpt'],
+            'image' => $meta['image'],
+            'thumbnail' => $meta['image'],
+            'youtube_url' => $meta['youtube_url'] ?? null,
+            'body_class' => $meta['bodyClass'] ?? ''
+        ];
+    }
+    
+    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 }
 ?>

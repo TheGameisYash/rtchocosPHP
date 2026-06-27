@@ -3831,3 +3831,33 @@ footer.footer-links-section .social-icons {
   }
 }
 
+/* --- BLOG ADDITIONS (Phase 9) --- */
+/* Blog content image positioning */
+.blog-img-center { text-align: center; margin: 24px auto; }
+.blog-img-center img { max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-sm); }
+.blog-img-left { float: left; margin: 0 20px 16px 0; max-width: 50%; }
+.blog-img-left img { max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-sm); }
+.blog-img-right { float: right; margin: 0 0 16px 20px; max-width: 50%; }
+.blog-img-right img { max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-sm); }
+.blog-img-end { text-align: center; margin: 32px auto 0; clear: both; }
+.blog-img-end img { max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-sm); }
+
+/* Inline blog image container */
+.blog-img-container { display: inline-block; vertical-align: middle; }
+
+/* Responsive YouTube embed in blog content */
+.blog-yt-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 24px 0; border-radius: 8px; }
+.blog-yt-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+/* Code blocks & Inline code in blog content */
+.blog-article-section pre { background: #1a1410; color: #f6f2ea; padding: 16px; border-radius: 8px; overflow-x: auto; margin: 20px 0; }
+.blog-article-section code { background: rgba(201,168,76,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: monospace; color: var(--gold); }
+.blog-article-section pre code { background: none; padding: 0; border-radius: 0; font-size: 0.95em; color: inherit; }
+
+/* Tables in blog content */
+.table-responsive { width: 100%; overflow-x: auto; margin: 24px 0; }
+.blog-article-section table { width: 100%; border-collapse: collapse; border: 1px solid var(--cream-dark, #EDE7DB); border-radius: 6px; }
+.blog-article-section th, .blog-article-section td { padding: 12px 16px; text-align: left; border: 1px solid var(--cream-dark, #EDE7DB); }
+.blog-article-section th { background: rgba(199,166,106,0.08); font-weight: 600; color: var(--brown); }
+.blog-article-section tr:nth-child(even) { background: rgba(59,42,34,0.01); }
+

@@ -104,6 +104,10 @@
                 }
             }
             // YouTube embeds
+            else if (trimmed.startsWith('{{youtube:') && trimmed.endsWith('}}')) {
+                const ytId = trimmed.replace('{{youtube:', '').replace('}}', '').trim();
+                blocks.push({ type: 'youtube', url: `https://www.youtube.com/watch?v=${ytId}` });
+            }
             else if (trimmed.startsWith('[youtube](') && trimmed.endsWith(')')) {
                 const url = trimmed.match(/\[youtube\]\((.*?)\)/)[1];
                 blocks.push({ type: 'youtube', url: url });
@@ -122,11 +126,16 @@
                 const numMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
                 blocks.push({ type: 'list-ordered', content: mdInlineToHtml(numMatch[2]), index: numMatch[1] });
             }
-            // Images: ![alt](src)
+            // Images: ![alt](src){position}
             else if (trimmed.startsWith('![') && trimmed.includes('](')) {
-                const altMatch = trimmed.match(/!\[(.*?)\]\((.*?)\)/);
+                const altMatch = trimmed.match(/!\[(.*?)\]\((.*?)\)(?:\{(left|right|center|end)\})?/);
                 if (altMatch) {
-                    blocks.push({ type: 'image', url: altMatch[2], caption: altMatch[1] });
+                    blocks.push({ 
+                        type: 'image', 
+                        url: altMatch[2], 
+                        caption: altMatch[1], 
+                        position: altMatch[3] || 'center' 
+                    });
                 }
             }
             // Regular Paragraph (contiguous lines)
@@ -201,12 +210,18 @@
                     break;
                 case 'image':
                     if (block.url) {
-                        md.push(`![${htmlToMdInline(block.caption || '')}](${block.url})`);
+                        const pos = block.position ? `{${block.position}}` : '';
+                        md.push(`![${htmlToMdInline(block.caption || '')}](${block.url})${pos}`);
                     }
                     break;
                 case 'youtube':
                     if (block.url) {
-                        md.push(`[youtube](${block.url})`);
+                        const ytId = getYoutubeId(block.url);
+                        if (ytId) {
+                            md.push(`{{youtube:${ytId}}}`);
+                        } else {
+                            md.push(`[youtube](${block.url})`);
+                        }
                     }
                     break;
             }
@@ -436,16 +451,32 @@
             // Already uploaded representation
             const displayBox = document.createElement('div');
             displayBox.className = 'block-image-uploaded';
+            const position = block.position || 'center';
             displayBox.innerHTML = `
-                <img src="../${block.url}" alt="">
-                <div class="block-image-details">
-                    <input type="text" class="img-caption" placeholder="Write image caption..." value="${block.caption || ''}">
+                <img src="../${block.url}" alt="" class="blog-img-${position}">
+                <div class="block-image-details" style="display:flex; gap:10px; margin-top:8px;">
+                    <input type="text" class="img-caption" placeholder="Write image caption..." value="${block.caption || ''}" style="flex-grow:1;">
+                    <select class="img-position" style="padding:6px; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-app); color:var(--text-main); font-size:12px;">
+                        <option value="center" ${position === 'center' ? 'selected' : ''}>Center</option>
+                        <option value="left" ${position === 'left' ? 'selected' : ''}>Left</option>
+                        <option value="right" ${position === 'right' ? 'selected' : ''}>Right</option>
+                        <option value="end" ${position === 'end' ? 'selected' : ''}>End of Blog</option>
+                    </select>
                 </div>
             `;
             
             const captionInput = displayBox.querySelector('.img-caption');
             captionInput.addEventListener('input', (e) => {
                 block.caption = e.target.value;
+                updateHiddenInput();
+            });
+
+            const positionSelect = displayBox.querySelector('.img-position');
+            positionSelect.addEventListener('change', (e) => {
+                block.position = e.target.value;
+                const img = displayBox.querySelector('img');
+                img.className = '';
+                img.classList.add(`blog-img-${e.target.value}`);
                 updateHiddenInput();
             });
 
