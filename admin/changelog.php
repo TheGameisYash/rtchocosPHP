@@ -5,6 +5,38 @@ require_once __DIR__ . '/layout.php';
 // Changelog data - add new entries at the top
 $changelog = [
     [
+        'version' => '2.1.0-beta',
+        'date' => '29 June 2026',
+        'tag' => 'Visual Update',
+        'tag_color' => 'green',
+        'summary' => 'Enhanced blog card layouts, resolved image cropping, unified article sizes, and integrated new dynamic assets.',
+        'sections' => [
+            [
+                'title' => '🎨 Visual Sizing & Consistency',
+                'items' => [
+                    'Replaced cover fitting with <code>object-fit: fill</code> on blog listing cards and related article thumbnails to ensure uniform image sizes and prevent cropping or letterboxing.',
+                    'Expanded the blog layout width to <code>1400px</code> for a premium, spacious grid layout.',
+                    'Modified article detail banner to use <code>object-fit: contain</code> with a dark cream background to prevent header text and graphic cropping.',
+                    'Enforced 16:9 uniform grid card sizing across all viewports.'
+                ]
+            ],
+            [
+                'title' => '🖼️ Asset Management & Image Fallbacks',
+                'items' => [
+                    'Uploaded high-resolution headers and thumbnails for Lecithin and Freeze-Dried Fruits blogs.',
+                    'Added fail-safe <code>onerror</code> image loading event triggers which dynamically display stylized CSS fallback gradients if dynamic assets return a 404.',
+                    'Synchronized the database and local file paths to resolve broken image links.'
+                ]
+            ],
+            [
+                'title' => '📖 Author Publishing Guide',
+                'items' => [
+                    'Created a comprehensive <code>blog_upload_guide.md</code> inside the admin panel detailing best practices, recommended image dimensions, and SEO formatting instructions.'
+                ]
+            ]
+        ]
+    ],
+    [
         'version' => '2.0.0-beta',
         'date' => '27 June 2026',
         'tag' => 'Major Release',
