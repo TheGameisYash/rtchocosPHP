@@ -9,7 +9,7 @@ $changelog = [
         'date' => '29 June 2026',
         'tag' => 'Visual Update',
         'tag_color' => 'green',
-        'summary' => 'Enhanced blog card layouts, resolved image cropping, unified article sizes, and integrated new dynamic assets.',
+        'summary' => 'Enhanced blog card layouts, resolved image cropping, unified article sizes, integrated new dynamic assets, and optimized SEO for core chocolate learning search terms.',
         'sections' => [
             [
                 'title' => '🎨 Visual Sizing & Consistency',
@@ -26,6 +26,13 @@ $changelog = [
                     'Uploaded high-resolution headers and thumbnails for Lecithin and Freeze-Dried Fruits blogs.',
                     'Added fail-safe <code>onerror</code> image loading event triggers which dynamically display stylized CSS fallback gradients if dynamic assets return a 404.',
                     'Synchronized the database and local file paths to resolve broken image links.'
+                ]
+            ],
+            [
+                'title' => '🔍 Target Search SEO Optimizations',
+                'items' => [
+                    'Optimized meta titles, keywords, and descriptions across Home, Blog, Recipes, and Workshops pages to index heavily for target search terms (<code>chocolate</code>, <code>chocolate learning</code>, <code>recipes</code>, <code>bean to bar chocolate</code>, <code>chocolate academy</code>).',
+                    'Upgraded the main H1 tag on the homepage to leverage search-critical keywords.'
                 ]
             ],
             [
