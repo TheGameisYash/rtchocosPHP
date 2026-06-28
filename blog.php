@@ -48,9 +48,9 @@
       }
   }
 
-  $pageTitle = "Chocolate Blog — Articles on Cocoa Science, Recipes & Making | RT Chocos India";
-  $pageDescription = "Read India's best chocolate blog. Deep-dive articles on cocoa science, chocolate tempering, bean-to-bar making, flavour development, and industry insights by RT Chocos.";
-  $pageKeywords = "chocolate blog, cocoa science, craft chocolate making, tempering chocolate science, bean to bar articles India";
+  $pageTitle = "Chocolate Blog & Academy — Cocoa Science, Recipes & Learning | RT Chocos India";
+  $pageDescription = "Read the RT Chocos Chocolate Academy Blog. Deep-dive articles on cocoa science, chocolate recipes, tempering, bean-to-bar making, and flavor chemistry.";
+  $pageKeywords = "chocolate, chocolate learning, recipes, bean to bar chocolate, chocolate academy, chocolate blog, cocoa science, craft chocolate making, tempering chocolate science, bean to bar articles India";
   $pathPrefix = "";
   
   $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
@@ -77,19 +77,19 @@
       <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,52px);font-weight:400;color:var(--brown);margin-bottom:12px;letter-spacing:-0.01em;">Articles &amp; Insights</h1>
       <p style="font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:var(--brown-light);font-weight:300;max-width:560px;margin:0 auto;">Science, craft, and stories from the world of bean-to-bar chocolate</p>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:20px;margin-bottom:48px;">
+    <div class="blog-header-bar">
+      <div class="blog-filters-wrapper" id="blog-filters">
+        <button class="filter-btn active" data-filter="All" onclick="filterBlog('All')">All</button>
+        <button class="filter-btn" data-filter="Science" onclick="filterBlog('Science')">Science</button>
+        <button class="filter-btn" data-filter="Beginner Guide" onclick="filterBlog('Beginner Guide')">Beginner Guide</button>
+        <button class="filter-btn" data-filter="Business Tips" onclick="filterBlog('Business Tips')">Business Tips</button>
+      </div>
       <div class="search-container">
         <input class="blog-search" type="text" placeholder="Search articles by topic, keyword..." oninput="searchBlog(this.value)" />
         <svg class="search-bar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;" id="blog-filters">
-        <button class="filter-btn active" data-filter="All" onclick="filterBlog('All')">All</button>
-        <button class="filter-btn" data-filter="Science" onclick="filterBlog('Science')">Science</button>
-        <button class="filter-btn" data-filter="Beginner Guide" onclick="filterBlog('Beginner Guide')">Beginner Guide</button>
-        <button class="filter-btn" data-filter="Business Tips" onclick="filterBlog('Business Tips')">Business Tips</button>
       </div>
     </div>
     <div class="grid-blog" id="blog-grid">
@@ -98,10 +98,11 @@
           $href = "blog/" . $b['slug'];
           $ytBadge = !empty($b['youtube_url']) ? ' • <span class="yt-badge">🎥 Video</span>' : '';
         ?>
-        <a class="card" style="cursor:pointer;text-decoration:none;color:inherit;display:block;" href="<?php echo htmlspecialchars($href); ?>">
+        <a class="card blog-card-link" href="<?php echo htmlspecialchars($href); ?>">
           <div class="blog-card-img">
             <?php if (!empty($b['image'])): ?>
-              <img src="<?php echo htmlspecialchars($b['image']); ?>" alt="<?php echo htmlspecialchars($b['title']); ?>" loading="lazy">
+              <img src="<?php echo htmlspecialchars($b['image']); ?>" alt="<?php echo htmlspecialchars($b['title']); ?>" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+              <span style="display:none;">Chocolate Journal</span>
             <?php else: ?>
               <span>Chocolate Journal</span>
             <?php endif; ?>

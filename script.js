@@ -440,7 +440,7 @@ function blogCardHTML(b) {
 );
   const readMoreLabel = hasFullArticle ? 'Read Article' : 'Read Article';
   const imageMarkup = b.image
-    ? `<img src="${getCorrectedPath(b.image)}" alt="${b.title}">`
+    ? `<img src="${getCorrectedPath(b.image)}" alt="${b.title}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';"><span style="display:none;">Chocolate Journal</span>`
     : '<span>Chocolate Journal</span>';
 
   const ytBadge = b.youtube_url ? ' • <span class="yt-badge">🎥 Video</span>' : '';
@@ -448,7 +448,7 @@ function blogCardHTML(b) {
   if (hasFullArticle) {
     const articleFile = ARTICLE_FILE_MAP[b.articleKey] || HOME_FILE_NAME;
     return `
-    <a class="card" style="cursor:pointer;text-decoration:none;color:inherit;display:block;" href="${getCorrectedPath(articleFile)}">
+    <a class="card blog-card-link" href="${getCorrectedPath(articleFile)}">
       <div class="blog-card-img">
         ${imageMarkup}
       </div>
@@ -465,7 +465,7 @@ function blogCardHTML(b) {
   }
 
   return `
-    <div class="card" style="cursor:pointer;" onclick="openBlogArticle(${b.id})">
+    <div class="card blog-card-link" onclick="openBlogArticle(${b.id})">
       <div class="blog-card-img">
         ${imageMarkup}
       </div>

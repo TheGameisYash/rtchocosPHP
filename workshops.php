@@ -1,7 +1,7 @@
 <?php
-  $pageTitle = "Chocolate Making Workshops India — Bean to Bar Training | RT Chocos";
-  $pageDescription = "Join India's top-rated chocolate making workshops. Learn bean-to-bar chocolate, tempering science, and conching secrets from RT Chocos in Mumbai & online.";
-  $pageKeywords = "chocolate workshops India, bean to bar classes Mumbai, professional chocolate course, learn tempering chocolate";
+  $pageTitle = "Chocolate Academy & Workshops — Bean to Bar Learning Classes | RT Chocos";
+  $pageDescription = "Join India's leading Chocolate Academy workshops. Learn bean-to-bar chocolate making, tempering chemistry, and conching secrets from RT Chocos in Mumbai & online.";
+  $pageKeywords = "chocolate, chocolate learning, chocolate academy, bean to bar chocolate, recipes, chocolate workshops India, bean to bar classes Mumbai, professional chocolate course, learn tempering chocolate";
   $pathPrefix = "";
   
   $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";

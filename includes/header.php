@@ -31,7 +31,7 @@ $ogType = !empty($pageType) ? $pageType : "website";
 <meta property="og:locale" content="en_IN" />
 
 <?php
-$defaultKeywords = "chocolate blog India, bean to bar chocolate India, craft chocolate articles, cocoa science India, chocolate making blog, RT Chocos blog";
+$defaultKeywords = "chocolate, chocolate learning, recipes, bean to bar chocolate, chocolate academy, chocolate blog India, bean to bar chocolate India, craft chocolate articles, cocoa science India, chocolate making blog, RT Chocos blog";
 $keywordsVal = !empty($pageKeywords) ? htmlspecialchars($pageKeywords) : $defaultKeywords;
 ?>
 <meta name="keywords" content="<?php echo $keywordsVal; ?>" />

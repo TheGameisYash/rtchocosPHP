@@ -93,6 +93,7 @@ $breadcrumbs = [
 $pageKeywords = htmlspecialchars($post['title']) . ", " . htmlspecialchars($post['category']) . ", India chocolate blog, craft chocolate, cocoa science, bean to bar chocolate";
 
 // Custom markdown parsing function
+if (!function_exists('parse_markdown')) {
 function parse_markdown($markdown) {
     global $pathPrefix;
     $markdown = str_replace(array("\r\n", "\r"), "\n", $markdown);
@@ -259,12 +260,13 @@ function parse_markdown($markdown) {
         
         // Default to paragraph
         $content = parse_inline($block);
-        $html .= "<p>{$content}</p>\n";
-    }
+        $html .= "<p>{$content}</p>\n";    } // end foreach
     
     return $html;
 }
+} // end function_exists check
 
+if (!function_exists('parse_inline')) {
 function parse_inline($text) {
     global $pathPrefix;
     // Bold: **text**
@@ -279,7 +281,7 @@ function parse_inline($text) {
         $caption = $matches[1];
         $url = $matches[2];
         $pos = !empty($matches[3]) ? $matches[3] : 'center';
-        $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0 || strpos($url, '../') === 0) 
+        $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0 || strpos($url, '../') === 0)
             ? $url 
             : $pathPrefix . $url;
         return "<span class=\"blog-img-container blog-img-{$pos}\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars($caption) . "\" class=\"blog-img-{$pos}\" loading=\"lazy\" decoding=\"async\"></span>";
@@ -288,6 +290,7 @@ function parse_inline($text) {
     $text = preg_replace('/\[(.*?)\]\((.*?)\)/', '<a href="$2">$1</a>', $text);
     return $text;
 }
+} // end function_exists check
 
 // Load markdown content from file if not loaded from DB
 if (!$isFromDb) {
@@ -330,6 +333,7 @@ include __DIR__ . '/includes/header.php';
     .article-main-body {
         flex: 1;
         min-width: 0;
+        max-width: 760px; /* Limit text container size for professional typography reading layout */
     }
     .article-sidebar {
         width: 260px;
@@ -570,25 +574,31 @@ include __DIR__ . '/includes/header.php';
     <div class="page-hero-content blog-article-hero-content">
       <a class="btn-outline-dark back-to-blog-btn" href="../blog.php">&larr; Back to Blog</a>
       
-      <!-- Visual Breadcrumbs Trail -->
-      <div class="blog-breadcrumbs" style="font-size: 13px; color: var(--gold); margin: 16px 0 8px; font-family: var(--font-sans);">
-        <a href="../index.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Home</a>
-        <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
-        <a href="../blog.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Blog</a>
-        <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
-        <span style="opacity: 0.7; font-weight: 500;"><?php echo htmlspecialchars($post['title']); ?></span>
+      <div class="article-hero-text-container" style="max-width: 760px; margin: 0 auto;">
+        <!-- Visual Breadcrumbs Trail -->
+        <div class="blog-breadcrumbs" style="font-size: 13px; color: var(--gold); margin: 16px 0 8px; font-family: var(--font-sans);">
+          <a href="../index.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Home</a>
+          <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
+          <a href="../blog.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Blog</a>
+          <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
+          <span style="opacity: 0.7; font-weight: 500;"><?php echo htmlspecialchars($post['title']); ?></span>
+        </div>
+
+        <div class="section-label" id="blog-article-category"><?php echo htmlspecialchars($post['category']); ?></div>
+        <h1 id="blog-article-title" class="fade-up"><?php echo htmlspecialchars($post['title']); ?></h1>
+        <p id="blog-article-meta" class="fade-up-d1"><?php echo htmlspecialchars($post['date']); ?> • <?php echo htmlspecialchars($post['read']); ?> read</p>
       </div>
 
-      <div class="section-label" id="blog-article-category"><?php echo htmlspecialchars($post['category']); ?></div>
-      <h1 id="blog-article-title" class="fade-up"><?php echo htmlspecialchars($post['title']); ?></h1>
-      <p id="blog-article-meta" class="fade-up-d1"><?php echo htmlspecialchars($post['date']); ?> • <?php echo htmlspecialchars($post['read']); ?> read</p>
       <?php if (!empty($post['image'])): 
         $heroImg = $post['image'];
         if (strpos($heroImg, 'http://') !== 0 && strpos($heroImg, 'https://') !== 0 && strpos($heroImg, '/') !== 0 && strpos($heroImg, '../') !== 0) {
             $heroImg = $pathPrefix . $heroImg;
         }
       ?>
-      <img id="blog-article-image" src="<?php echo htmlspecialchars($heroImg); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" />
+      <img id="blog-article-image" src="<?php echo htmlspecialchars($heroImg); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" />
+      <div class="blog-article-image-fallback" style="display:none; justify-content:center; align-items:center; width:100%; height:320px; background:linear-gradient(145deg, var(--cream) 0%, var(--cream-dark) 100%); border-radius:12px; margin:24px 0; font-family:'Cormorant Garamond', serif; font-size:28px; font-style:italic; color:var(--brown-light); box-shadow: 0 12px 40px rgba(59, 42, 34, 0.12); border: 1px solid var(--cream-dark);">
+          RT Chocos Chocolate Journal
+      </div>
       <?php endif; ?>
     </div>
   </div>
@@ -644,7 +654,9 @@ include __DIR__ . '/includes/header.php';
         </div>
 
         <!-- Sticky Sidebar Panel (TOC - Server-side Rendered) -->
-        <?php if (!empty($headings_list)): ?>
+        <?php 
+        global $headings_list;
+        if (!empty($headings_list)): ?>
             <aside class="article-sidebar" id="tocSidebar">
                 <div class="toc-box">
                     <div class="toc-title">On this page</div>
@@ -671,8 +683,9 @@ include __DIR__ . '/includes/header.php';
                     $relLink = $pathPrefix . "blog/" . $rel['slug'];
                 ?>
                     <a href="<?php echo htmlspecialchars($relLink); ?>" class="related-card">
-                        <div style="height:150px; overflow:hidden; background:var(--cream);">
-                            <img src="<?php echo htmlspecialchars($relThumbUrl); ?>" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+                        <div style="height:180px; overflow:hidden; background:linear-gradient(145deg, var(--cream) 0%, var(--cream-dark) 100%); display:flex; align-items:center; justify-content:center;">
+                            <img src="<?php echo htmlspecialchars($relThumbUrl); ?>" style="width:100%; height:100%; object-fit:fill;" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                            <span style="display:none; font-family:'Cormorant Garamond', serif; font-size:18px; color:var(--brown-light); font-style:italic; text-align:center; padding:15px;">Chocolate Journal</span>
                         </div>
                         <div style="padding: 20px; display:flex; flex-direction:column; flex-grow:1;">
                             <span style="font-size:10px; font-weight:600; text-transform:uppercase; color:var(--gold); margin-bottom:6px;"><?php echo htmlspecialchars($rel['category']); ?></span>
