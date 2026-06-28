@@ -53,6 +53,15 @@ $BLOGS = [
     'excerpt' => "Meet lecithin — the quiet emulsifier behind every velvety bite of chocolate you have ever loved.",
     'image' => "assets/lecithin.png",
     'bodyClass' => 'blog-wrap'
+  ],
+  'freeze-dried-fruits-chocolate' => [
+    'title' => "Freeze-Dried Fruits in Chocolate: What I Discovered on My Development Bench",
+    'category' => "Science",
+    'date' => "Jun 2026",
+    'read' => "8 min",
+    'excerpt' => "Freeze-dried fruits are beautiful, crunchy, and packed with flavour. But their high porosity makes them moisture magnets, requiring careful technical architecture to use successfully in chocolate.",
+    'image' => "assets/freeze-dried-fruits.png",
+    'bodyClass' => 'freeze-dried-fruits-article'
   ]
 ];
 ?>
