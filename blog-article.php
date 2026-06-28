@@ -684,7 +684,7 @@ include __DIR__ . '/includes/header.php';
                 ?>
                     <a href="<?php echo htmlspecialchars($relLink); ?>" class="related-card">
                         <div style="height:180px; overflow:hidden; background:linear-gradient(145deg, var(--cream) 0%, var(--cream-dark) 100%); display:flex; align-items:center; justify-content:center;">
-                            <img src="<?php echo htmlspecialchars($relThumbUrl); ?>" style="width:100%; height:100%; object-fit:cover; object-position:center;" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                            <img src="<?php echo htmlspecialchars($relThumbUrl); ?>" style="width:100%; height:100%; object-fit:contain;" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
                             <span style="display:none; font-family:'Cormorant Garamond', serif; font-size:18px; color:var(--brown-light); font-style:italic; text-align:center; padding:15px;">Chocolate Journal</span>
                         </div>
                         <div style="padding: 20px; display:flex; flex-direction:column; flex-grow:1;">
