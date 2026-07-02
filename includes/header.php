@@ -200,7 +200,7 @@ if (!empty($recipeData)) {
 </head>
 <body<?php echo !empty($bodyClass) ? ' class="' . $bodyClass . '"' : ''; ?>>
 <!-- --- HEADER --- -->
-<header id="site-header">
+<header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
   <div class="header-inner">
     <a href="<?php echo $pathPrefix; ?>index.php" class="logo">
       <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-header" alt="RT Chocos Logo" />

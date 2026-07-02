@@ -260,13 +260,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* --- HEADER --- */
 #site-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: var(--green-800);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  box-shadow: none;
   transition: all var(--transition);
 }
-#site-header.scrolled {
-  background: rgba(20,80,26,0.95);
+#site-header.scrolled,
+#site-header.not-home {
+  background: rgba(20,80,26,0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom-color: rgba(255,255,255,0.08);
