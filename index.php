@@ -8,16 +8,19 @@
 ?>
 
 <!-- --- HOME PAGE --- -->
-<div id="page-home" class="page active" style="padding-top:80px;">
+<div id="page-home" class="page active">
 
   <!-- Hero -->
   <section id="hero">
+    <video autoplay muted loop playsinline class="hero-video-bg">
+      <source src="assets/award.mp4" type="video/mp4">
+    </video>
+    <div class="hero-video-overlay"></div>
     <div class="deco-circle-1"></div>
     <div class="deco-circle-2"></div>
     <div class="deco-radial"></div>
     <div class="hero-content">
-      <div class="section-label" style="color:var(--gold); margin-bottom:12px; font-weight:700; letter-spacing:3px;">THE CACAO JOURNAL</div>
-      <h1 class="fade-up" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(42px,5.5vw,72px);line-height:1.1;font-weight:700;letter-spacing:0.01em;color:#ffffff;margin-bottom:12px;">RT Chocos — Chocolate Academy &amp; Bean-to-Bar Learning</h1>
+      <h1 class="fade-up" style="font-family:'Cormorant Garamond',serif;font-size:clamp(42px,5.5vw,72px);line-height:1.1;font-weight:700;letter-spacing:0.01em;color:#ffffff;margin-bottom:12px;">The Cacao Journal</h1>
       <p class="fade-up-d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.4vw,28px);font-weight:400;line-height:1.3;color:rgba(255,255,255,0.9);margin-bottom:24px;">From Cacao Farm to Commercial Kitchen — Every story worth knowing about chocolate science and craft</p>
       <div class="hero-btns fade-up-d2">
         <a href="workshops.php" class="btn-hero-primary">Explore Workshops</a>

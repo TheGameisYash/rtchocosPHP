@@ -48,13 +48,14 @@
       }
   }
 
-  $pageTitle = "Chocolate Blog & Academy — Cocoa Science, Recipes & Learning | RT Chocos India";
-  $pageDescription = "Read the RT Chocos Chocolate Academy Blog. Deep-dive articles on cocoa science, chocolate recipes, tempering, bean-to-bar making, and flavor chemistry.";
-  $pageKeywords = "chocolate, chocolate learning, recipes, bean to bar chocolate, chocolate academy, chocolate blog, cocoa science, craft chocolate making, tempering chocolate science, bean to bar articles India";
+  $pageTitle = "Chocolate Blog India: Cocoa Science & Making | RT Chocos";
+  $pageDescription = "An Indian chocolate blog with practical guides to cocoa science, tempering, ingredients, flavour, defects and bean-to-bar chocolate making.";
   $pathPrefix = "";
-  
-  $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-  $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  $canonicalUrl = "https://www.rtchocos.com/blog.php";
+  $schemaType = "CollectionPage";
+  $itemList = ['name' => 'RT Chocos chocolate articles', 'items' => array_map(function($blog) {
+      return ['name' => $blog['title'], 'url' => 'https://www.rtchocos.com/blog/' . $blog['slug']];
+  }, $blogs)];
   
   $breadcrumbs = [
       ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
@@ -76,6 +77,15 @@
       <div class="section-label" style="margin-bottom:12px;">The Cacao Journal</div>
       <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,52px);font-weight:400;color:var(--brown);margin-bottom:12px;letter-spacing:-0.01em;">Articles &amp; Insights</h1>
       <p style="font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:var(--brown-light);font-weight:300;max-width:560px;margin:0 auto;">Science, craft, and stories from the world of bean-to-bar chocolate</p>
+    </div>
+    <div class="blog-seo-intro">
+      <p><strong>RT Chocos is an independent chocolate blog from India</strong>, written for makers who want to understand what happens inside the bowl—not simply follow a method. Explore evidence-led articles on cocoa ingredients, tempering, bloom, flavour development, formulation and bean-to-bar production.</p>
+      <nav aria-label="Chocolate learning topics">
+        <a href="#blog-grid">Cocoa science</a>
+        <a href="#blog-grid">Beginner guides</a>
+        <a href="gallery.php">Chocolate recipes</a>
+        <a href="workshops.php">Workshops</a>
+      </nav>
     </div>
     <div class="blog-header-bar">
       <div class="blog-filters-wrapper" id="blog-filters">

@@ -1,8 +1,10 @@
 <?php
-// Determine canonical URL if not set
+// Canonicals always point to the public HTTPS URL, never to a preview host or query string.
+$siteUrl = "https://www.rtchocos.com";
 if (empty($canonicalUrl)) {
-    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-    $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $requestPath = $requestPath === '/index.php' ? '/' : $requestPath;
+    $canonicalUrl = $siteUrl . $requestPath;
 }
 
 // Fallback OG description and image
@@ -20,8 +22,12 @@ $ogType = !empty($pageType) ? $pageType : "website";
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title><?php echo $pageTitle; ?></title>
-<meta name="description" content="<?php echo $pageDescription; ?>" />
+<title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></title>
+<meta name="description" content="<?php echo htmlspecialchars($pageDescription, ENT_QUOTES, 'UTF-8'); ?>" />
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+<?php if (!empty($pageType) && $pageType === 'article'): ?>
+<meta name="author" content="Aarti Saluja Sahni" />
+<?php endif; ?>
 <link rel="icon" type="image/png" href="<?php echo $pathPrefix; ?>assets/favicon.png" />
 <link rel="apple-touch-icon" href="<?php echo $pathPrefix; ?>assets/favicon.png" />
 <link rel="canonical" href="<?php echo htmlspecialchars($canonicalUrl); ?>" />
@@ -30,11 +36,6 @@ $ogType = !empty($pageType) ? $pageType : "website";
 <meta name="geo.placename" content="Mumbai" />
 <meta property="og:locale" content="en_IN" />
 
-<?php
-$defaultKeywords = "chocolate, chocolate learning, recipes, bean to bar chocolate, chocolate academy, chocolate blog India, bean to bar chocolate India, craft chocolate articles, cocoa science India, chocolate making blog, RT Chocos blog";
-$keywordsVal = !empty($pageKeywords) ? htmlspecialchars($pageKeywords) : $defaultKeywords;
-?>
-<meta name="keywords" content="<?php echo $keywordsVal; ?>" />
 <meta property="og:title" content="<?php echo htmlspecialchars($ogTitle); ?>" />
 <meta property="og:description" content="<?php echo htmlspecialchars($ogDescription); ?>" />
 <meta property="og:image" content="<?php echo htmlspecialchars($ogImage); ?>" />
@@ -62,9 +63,18 @@ $graph = [
         "@id" => "https://www.rtchocos.com/#organization",
         "name" => "RT Chocos",
         "url" => "https://www.rtchocos.com/",
+        "description" => "An independent Indian chocolate learning platform covering bean-to-bar craft, cocoa science, recipes and workshops.",
         "logo" => [
             "@type" => "ImageObject",
             "url" => "https://www.rtchocos.com/assets/logo.png"
+        ],
+        "founder" => ["@id" => "https://www.rtchocos.com/#aarti-saluja-sahni"],
+        "contactPoint" => [
+            "@type" => "ContactPoint",
+            "contactType" => "customer support",
+            "telephone" => "+91-91402-38741",
+            "email" => "hello@rtchocos.com",
+            "areaServed" => "IN"
         ],
         "sameAs" => [
             "https://www.instagram.com/rt.chocos/",
@@ -73,36 +83,37 @@ $graph = [
         ]
     ],
     [
+        "@type" => "Person",
+        "@id" => "https://www.rtchocos.com/#aarti-saluja-sahni",
+        "name" => "Aarti Saluja Sahni",
+        "url" => "https://www.rtchocos.com/about.php",
+        "image" => "https://www.rtchocos.com/assets/myphoto.jpg",
+        "jobTitle" => "Chocolate maker, recipe developer and educator",
+        "worksFor" => ["@id" => "https://www.rtchocos.com/#organization"],
+        "sameAs" => ["https://www.linkedin.com/in/aarti-saluja-sahni-8304637/"]
+    ],
+    [
         "@type" => "WebSite",
         "@id" => "https://www.rtchocos.com/#website",
         "url" => "https://www.rtchocos.com/",
         "name" => "RT Chocos",
+        "alternateName" => "RT Chocos Chocolate Blog",
+        "inLanguage" => "en-IN",
         "publisher" => [
             "@id" => "https://www.rtchocos.com/#organization"
         ]
-    ],
-    [
-        "@type" => "LocalBusiness",
-        "@id" => "https://www.rtchocos.com/#localbusiness",
-        "name" => "RT Chocos",
-        "image" => "https://www.rtchocos.com/assets/logo.png",
-        "url" => "https://www.rtchocos.com/",
-        "telephone" => "+919876543210",
-        "priceRange" => "$$",
-        "address" => [
-            "@type" => "PostalAddress",
-            "streetAddress" => "Mumbai Craft Kitchen Studio",
-            "addressLocality" => "Mumbai",
-            "addressRegion" => "MH",
-            "postalCode" => "400001",
-            "addressCountry" => "IN"
-        ],
-        "geo" => [
-            "@type" => "GeoCoordinates",
-            "latitude" => "19.0760",
-            "longitude" => "72.8777"
-        ]
     ]
+];
+
+$graph[] = [
+    "@type" => !empty($schemaType) ? $schemaType : "WebPage",
+    "@id" => $canonicalUrl . "#webpage",
+    "url" => $canonicalUrl,
+    "name" => $pageTitle,
+    "description" => $pageDescription,
+    "inLanguage" => "en-IN",
+    "isPartOf" => ["@id" => "https://www.rtchocos.com/#website"],
+    "about" => ["@id" => "https://www.rtchocos.com/#organization"]
 ];
 
 if (!empty($pageType) && $pageType === 'article' && !empty($post)) {
@@ -115,16 +126,42 @@ if (!empty($pageType) && $pageType === 'article' && !empty($post)) {
         "headline" => $post['title'],
         "description" => $post['excerpt'],
         "image" => $ogImage,
-        "datePublished" => date('c', strtotime($dbPost['created_at'] ?? 'now')),
-        "dateModified" => date('c', strtotime($dbPost['updated_at'] ?? 'now')),
+        "datePublished" => date('c', strtotime($post['published'] ?? $dbPost['created_at'] ?? '2026-01-01')),
+        "dateModified" => date('c', strtotime($post['modified'] ?? $dbPost['updated_at'] ?? $post['published'] ?? '2026-01-01')),
         "author" => [
-            "@type" => "Person",
-            "name" => "Aarti Saluja Sahni",
-            "url" => "https://www.rtchocos.com/about.php"
+            "@id" => "https://www.rtchocos.com/#aarti-saluja-sahni"
         ],
         "publisher" => [
             "@id" => "https://www.rtchocos.com/#organization"
         ]
+    ];
+}
+
+if (!empty($itemList)) {
+    $graph[] = [
+        "@type" => "ItemList",
+        "name" => $itemList['name'],
+        "itemListElement" => array_map(function($item, $index) {
+            return [
+                "@type" => "ListItem",
+                "position" => $index + 1,
+                "name" => $item['name'],
+                "url" => $item['url']
+            ];
+        }, $itemList['items'], array_keys($itemList['items']))
+    ];
+}
+
+if (!empty($faqItems)) {
+    $graph[] = [
+        "@type" => "FAQPage",
+        "mainEntity" => array_map(function($faq) {
+            return [
+                "@type" => "Question",
+                "name" => $faq['question'],
+                "acceptedAnswer" => ["@type" => "Answer", "text" => $faq['answer']]
+            ];
+        }, $faqItems)
     ];
 }
 
@@ -200,7 +237,7 @@ if (!empty($recipeData)) {
 </head>
 <body<?php echo !empty($bodyClass) ? ' class="' . $bodyClass . '"' : ''; ?>>
 <!-- --- HEADER --- -->
-<header id="site-header">
+<header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
   <div class="header-inner">
     <a href="<?php echo $pathPrefix; ?>index.php" class="logo">
       <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-header" alt="RT Chocos Logo" />

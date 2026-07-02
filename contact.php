@@ -1,11 +1,9 @@
 <?php
-  $pageTitle = "Contact RT Chocos — Chocolate Consulting, Training & Recipe Development";
+  $pageTitle = "Contact RT Chocos | Chocolate Training & Consulting India";
   $pageDescription = "Get in touch with RT Chocos for chocolate recipe development, bean-to-bar consulting, workshop bookings, and corporate chocolate training across India.";
-  $pageKeywords = "contact RT Chocos, chocolate consulting India, bean to bar consulting Mumbai, recipe development chocolate";
   $pathPrefix = "";
-  
-  $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-  $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  $canonicalUrl = "https://www.rtchocos.com/contact.php";
+  $schemaType = "ContactPage";
   
   $breadcrumbs = [
       ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],

@@ -15,6 +15,8 @@ $staticPages = [
     "workshops.php" => ["priority" => "0.9", "changefreq" => "weekly"],
     "blog.php" => ["priority" => "0.9", "changefreq" => "daily"],
     "gallery.php" => ["priority" => "0.8", "changefreq" => "weekly"],
+    "assets/Recipes/Almondbutterchocolate.html" => ["priority" => "0.8", "changefreq" => "monthly"],
+    "assets/Recipes/LimeChilliTruffles.html" => ["priority" => "0.8", "changefreq" => "monthly"],
     "contact.php" => ["priority" => "0.7", "changefreq" => "monthly"]
 ];
 

@@ -22,6 +22,8 @@ if (isset($articleKey)) {
                 'date' => date('M Y', strtotime($dbPost['created_at'])),
                 'read' => $dbPost['read_time'] ?: '5 min',
                 'excerpt' => $dbPost['excerpt'],
+                'published' => $dbPost['created_at'],
+                'modified' => $dbPost['updated_at'],
                 'image' => $dbPost['image_path'],
                 'thumbnail' => $dbPost['thumbnail_path'] ?: $dbPost['image_path'],
                 'bodyClass' => $dbPost['body_class'] ?: '',
@@ -74,15 +76,14 @@ if (!$post) {
     $post = $BLOGS[$articleKey];
 }
 
-$pageTitle = $post['title'] . " | RT Chocos — India's Chocolate Blog";
+$pageTitle = $post['title'] . " | RT Chocos";
 $pageDescription = $post['excerpt'];
 $pageImage = $post['image'];
 $pageType = 'article';
 $bodyClass = $post['bodyClass'] ?? '';
 $pathPrefix = "../";
 
-$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-$canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+$canonicalUrl = "https://www.rtchocos.com/blog/" . rawurlencode($articleKey);
 
 $breadcrumbs = [
     ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],

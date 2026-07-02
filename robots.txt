@@ -3,4 +3,10 @@ Allow: /
 Disallow: /admin/
 Disallow: /data/
 Disallow: /db_setup.php
+Disallow: /test_blog.php
+Disallow: /router.php
+Disallow: /api_blogs.php
+Disallow: /api_comments.php
+Disallow: /blog/posts/
+Disallow: /*.md$
 Sitemap: https://www.rtchocos.com/sitemap.xml

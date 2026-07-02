@@ -52,6 +52,16 @@ Options -Indexes
 # | Prevent direct access to includes folder                           |
 # ----------------------------------------------------------------------
 RewriteEngine On
+
+# Keep one public origin so links, analytics and ranking signals do not split.
+RewriteCond %{HTTP_HOST} !^www\.rtchocos\.com$ [NC,OR]
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://www.rtchocos.com%{REQUEST_URI} [R=301,L,NE]
+
+# The home page canonical is the root URL.
+RewriteCond %{THE_REQUEST} \s/+index\.php[\s?] [NC]
+RewriteRule ^index\.php$ / [R=301,L]
+
 RewriteRule ^includes/ - [F,L]
 RewriteRule ^data/ - [F,L]
 
@@ -77,4 +87,7 @@ RewriteRule ^blog/([^/]+)$ blog/article.php?slug=$1 [L,QSA]
     Header set X-Frame-Options "SAMEORIGIN"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
     Header set X-XSS-Protection "1; mode=block"
+    <FilesMatch "^(api_.*|test_blog|router)\.php$">
+        Header set X-Robots-Tag "noindex, nofollow"
+    </FilesMatch>
 </IfModule>

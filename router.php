@@ -9,6 +9,12 @@ if ($uri !== '/' && file_exists(__DIR__ . $uri)) {
     return false;
 }
 
+// Match the production sitemap rewrite during local verification.
+if ($uri === '/sitemap.xml') {
+    include __DIR__ . '/sitemap.php';
+    return true;
+}
+
 // Blog clean URL rewrite: /blog/{slug} → set slug and include article logic
 if (preg_match('#^/blog/([^/]+)$#', $uri, $m)) {
     $articleKey = $m[1];
