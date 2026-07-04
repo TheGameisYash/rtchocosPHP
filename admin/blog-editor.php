@@ -363,6 +363,66 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     <div class="editor-canvas-wrapper">
         <!-- Main Canvas Panel -->
         <div class="editor-main-canvas">
+            <!-- Static Formatting Toolbar -->
+            <div class="editor-static-toolbar" id="editorToolbar">
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-btn" data-action="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+                    <button type="button" class="toolbar-btn" data-action="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+                    <button type="button" class="toolbar-btn" data-action="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+                    <button type="button" class="toolbar-btn" data-action="strikethrough" title="Strikethrough"><s>S</s></button>
+                </div>
+                <div class="toolbar-divider"></div>
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-btn" data-action="heading-2" title="Heading 2">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10"></path></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="heading-3" title="Heading 3">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h12M4 12h8"></path></svg>
+                    </button>
+                </div>
+                <div class="toolbar-divider"></div>
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-btn" data-action="list-bullet" title="Bullet List">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="4" cy="7" r="1.5" fill="currentColor"/><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="17" r="1.5" fill="currentColor"/></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="list-ordered" title="Numbered List">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><text x="2" y="9" font-size="7" fill="currentColor" font-family="sans-serif">1</text><text x="2" y="14" font-size="7" fill="currentColor" font-family="sans-serif">2</text><text x="2" y="19" font-size="7" fill="currentColor" font-family="sans-serif">3</text></svg>
+                    </button>
+                </div>
+                <div class="toolbar-divider"></div>
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-btn" data-action="quote" title="Blockquote">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="callout" title="Callout Note">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="code" title="Code Block">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </button>
+                </div>
+                <div class="toolbar-divider"></div>
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-btn" data-action="link" title="Insert Link">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="image" title="Insert Image">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="divider" title="Divider Line">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14"></path></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="table" title="Table">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18M8 4v16M16 4v16M4 4h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1z"></path></svg>
+                    </button>
+                </div>
+                <div class="toolbar-divider"></div>
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-btn" data-action="clear-format" title="Clear Formatting">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
+                    </button>
+                </div>
+            </div>
             <!-- Content Block Canvas Container -->
             <div class="editor-blocks-container" id="editorBlocksContainer">
                 <!-- Blocks loaded dynamically via editor.js -->
@@ -613,19 +673,78 @@ function parseMarkdown(markdown) {
     // Global replacements: YouTube embeds {{youtube:VIDEO_ID}}
     markdown = markdown.replace(/\{\{youtube:([a-zA-Z0-9_\-]+)\}\}/g, '<div class="blog-yt-embed"><iframe src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>');
     
-    const blocks = markdown.split(/\n\n+/);
+    // PRE-PROCESS: Group consecutive list items separated by \n into \n-joined blocks
+    // while keeping \n\n as block separator for non-list content
+    const lines = markdown.split('\n');
+    const mergedBlocks = [];
+    let currentBlock = '';
+    let inCodeFence = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        
+        // Track code fences
+        if (line.trim().startsWith('```')) {
+            inCodeFence = !inCodeFence;
+            currentBlock += (currentBlock ? '\n' : '') + line;
+            if (!inCodeFence) {
+                mergedBlocks.push(currentBlock);
+                currentBlock = '';
+            }
+            continue;
+        }
+        if (inCodeFence) {
+            currentBlock += (currentBlock ? '\n' : '') + line;
+            continue;
+        }
+        
+        if (line.trim() === '') {
+            // Empty line = block separator
+            if (currentBlock.trim()) {
+                mergedBlocks.push(currentBlock);
+            }
+            currentBlock = '';
+            continue;
+        }
+        
+        // Check if current line is a list item
+        const isBullet = /^[\-\*]\s+/.test(line.trim());
+        const isOrdered = /^\d+\.\s+/.test(line.trim());
+        const isListItem = isBullet || isOrdered;
+        
+        // Check what the current block contains
+        const currentBlockTrimmed = currentBlock.trim();
+        const currentIsBullet = /^[\-\*]\s+/.test(currentBlockTrimmed);
+        const currentIsOrdered = /^\d+\.\s+/.test(currentBlockTrimmed);
+        
+        if (isListItem && currentBlock.trim() && 
+            ((isBullet && currentIsBullet) || (isOrdered && currentIsOrdered))) {
+            // Same list type — merge with single newline
+            currentBlock += '\n' + line;
+        } else {
+            // Different type — start new block
+            if (currentBlock.trim()) {
+                mergedBlocks.push(currentBlock);
+            }
+            currentBlock = line;
+        }
+    }
+    if (currentBlock.trim()) {
+        mergedBlocks.push(currentBlock);
+    }
+    
     let html = '';
     
-    blocks.forEach(block => {
+    mergedBlocks.forEach(block => {
         block = block.trim();
         if (!block) return;
         
         // Fenced Code blocks
         if (block.startsWith('```')) {
-            const lines = block.split('\n');
-            const firstLine = lines[0];
+            const codeLines = block.split('\n');
+            const firstLine = codeLines[0];
             const lang = firstLine.replace('```', '').trim();
-            const code = lines.slice(1, lines.length - 1).join('\n');
+            const code = codeLines.slice(1, codeLines.length - 1).join('\n');
             const classAttr = lang ? ` class="language-${lang}"` : '';
             html += `<pre><code${classAttr}>${escapeHtml(code)}</code></pre>\n`;
             return;
@@ -633,11 +752,11 @@ function parseMarkdown(markdown) {
 
         // Table support
         if (block.startsWith('|')) {
-            const lines = block.split('\n');
-            if (lines.length >= 2) {
+            const tableLines = block.split('\n');
+            if (tableLines.length >= 2) {
                 let tableHtml = '<div class="table-responsive"><table>\n';
                 let hasHeader = false;
-                lines.forEach(line => {
+                tableLines.forEach(line => {
                     const trimmedLine = line.trim().replace(/^\||\|$/g, '');
                     if (!trimmedLine || /^[:\-\s|]+$/.test(trimmedLine)) {
                         return;
@@ -688,9 +807,9 @@ function parseMarkdown(markdown) {
         }
         // Blockquotes & Callouts
         if (block.startsWith('> ')) {
-            const lines = block.split('\n');
+            const qLines = block.split('\n');
             let content = '';
-            lines.forEach(line => {
+            qLines.forEach(line => {
                 content += line.trim().substring(2) + ' ';
             });
             content = content.trim();
@@ -702,25 +821,29 @@ function parseMarkdown(markdown) {
             }
             return;
         }
-        // Bullet list item
+        // Bullet list items (multiple lines grouped)
         if (block.startsWith('- ') || block.startsWith('* ')) {
             const items = block.split('\n');
             let listHtml = '<ul>\n';
             items.forEach(item => {
-                const text = item.trim().substring(2);
-                listHtml += `<li>${parseInline(text)}</li>\n`;
+                const trimmedItem = item.trim();
+                if (trimmedItem.startsWith('- ') || trimmedItem.startsWith('* ')) {
+                    listHtml += `<li>${parseInline(trimmedItem.substring(2))}</li>\n`;
+                }
             });
             listHtml += '</ul>\n';
             html += listHtml;
             return;
         }
-        // Ordered list item
+        // Ordered list items (multiple lines grouped)
         if (/^\d+\.\s+/.test(block)) {
             const items = block.split('\n');
             let listHtml = '<ol>\n';
             items.forEach(item => {
                 const clean = item.trim().replace(/^\d+\.\s+/, '');
-                listHtml += `<li>${parseInline(clean)}</li>\n`;
+                if (clean) {
+                    listHtml += `<li>${parseInline(clean)}</li>\n`;
+                }
             });
             listHtml += '</ol>\n';
             html += listHtml;

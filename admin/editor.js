@@ -1,4 +1,4 @@
-/* admin/editor.js - Core Engine for Vanilla JS Block-Based Rich Editor */
+/* admin/editor.js - Premium Rich Block Editor Engine v2 */
 
 (function() {
     // Global editor state
@@ -7,7 +7,11 @@
         focusedIndex: null,
         undoStack: [],
         redoStack: [],
-        autosaveKey: 'rt_blog_editor_autosave'
+        autosaveKey: 'rt_blog_editor_autosave',
+        slashMenuOpen: false,
+        slashMenuFilter: '',
+        slashMenuIndex: 0,
+        dragSrcIndex: null
     };
 
     // DOM references
@@ -19,6 +23,39 @@
     const linkInputWrap = formatBar ? formatBar.querySelector('.format-bar-link-input') : null;
     const linkInput = formatBar ? formatBar.querySelector('.format-bar-link-input input') : null;
 
+    // Block type definitions for menus
+    const BLOCK_TYPES = [
+        { type: 'paragraph', name: 'Paragraph', icon: 'text', shortcut: '/p', desc: 'Plain text block' },
+        { type: 'heading-2', name: 'Heading 2', icon: 'h2', shortcut: '/h2', desc: 'Large section heading' },
+        { type: 'heading-3', name: 'Heading 3', icon: 'h3', shortcut: '/h3', desc: 'Medium section heading' },
+        { type: 'heading-4', name: 'Heading 4', icon: 'h4', shortcut: '/h4', desc: 'Small heading' },
+        { type: 'list-bullet', name: 'Bullet List', icon: 'list', shortcut: '/ul', desc: 'Unordered list item' },
+        { type: 'list-ordered', name: 'Numbered List', icon: 'olist', shortcut: '/ol', desc: 'Ordered list item' },
+        { type: 'quote', name: 'Blockquote', icon: 'quote', shortcut: '/quote', desc: 'Quoted text' },
+        { type: 'callout', name: 'Callout Box', icon: 'callout', shortcut: '/callout', desc: 'Highlighted info box' },
+        { type: 'image', name: 'Image', icon: 'image', shortcut: '/img', desc: 'Upload an image' },
+        { type: 'youtube', name: 'YouTube Embed', icon: 'youtube', shortcut: '/yt', desc: 'Embed a YouTube video' },
+        { type: 'code', name: 'Code Block', icon: 'code', shortcut: '/code', desc: 'Monospace code block' },
+        { type: 'divider', name: 'Divider', icon: 'divider', shortcut: '/hr', desc: 'Horizontal separator' },
+        { type: 'table', name: 'Table', icon: 'table', shortcut: '/table', desc: 'Data table' }
+    ];
+
+    const BLOCK_ICONS = {
+        text: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7"></path></svg>',
+        h2: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10"></path></svg>',
+        h3: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h12M4 12h8"></path></svg>',
+        h4: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h8M4 12h6"></path></svg>',
+        list: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="4" cy="6" r="1.5" fill="currentColor"/><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg>',
+        olist: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><text x="2" y="8" font-size="8" fill="currentColor" font-family="sans-serif">1</text><text x="2" y="14" font-size="8" fill="currentColor" font-family="sans-serif">2</text><text x="2" y="20" font-size="8" fill="currentColor" font-family="sans-serif">3</text></svg>',
+        quote: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2v6l-2-2m18 0l-2 2V10l2 2M8 8h3v8H8zm5 0h3v8h-3z"></path></svg>',
+        callout: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+        image: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>',
+        youtube: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+        code: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>',
+        divider: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14"></path></svg>',
+        table: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18M8 4v16M16 4v16M4 4h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1z"></path></svg>'
+    };
+
     // Initialize the editor
     window.initBlockEditor = function(initialMarkdown) {
         state.blocks = markdownToBlocks(initialMarkdown);
@@ -29,6 +66,7 @@
         updateHiddenInput();
         setupAutosaveListener();
         checkAutosaveRecovery();
+        setupToolbar();
     };
 
     // SETUP EVENT LISTENERS
@@ -38,7 +76,16 @@
         setupFormatBarListeners();
     }
 
+    // Close slash menu on outside click
+    document.addEventListener('click', (e) => {
+        if (state.slashMenuOpen && !e.target.closest('.slash-command-menu')) {
+            closeSlashMenu();
+        }
+    });
+
+    // ═══════════════════════════════════════════════════════
     // MARKDOWN DESERIALIZATION (Markdown -> JSON Blocks)
+    // ═══════════════════════════════════════════════════════
     function markdownToBlocks(markdown) {
         if (!markdown) return [];
         
@@ -113,12 +160,20 @@
                 blocks.push({ type: 'youtube', url: url });
             }
             else if (trimmed.includes('youtube.com/embed/')) {
-                // If it is iframe html
                 const srcMatch = trimmed.match(/src="(.*?)"/);
                 const url = srcMatch ? srcMatch[1] : trimmed;
                 blocks.push({ type: 'youtube', url: url });
             }
-            // Lists (Contiguous grouping)
+            // Table blocks
+            else if (trimmed.startsWith('|')) {
+                let tableContent = trimmed;
+                while (i + 1 < lines.length && lines[i + 1].trim().startsWith('|')) {
+                    i++;
+                    tableContent += '\n' + lines[i].trim();
+                }
+                blocks.push({ type: 'table', content: tableContent });
+            }
+            // Lists (each item is a block)
             else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
                 blocks.push({ type: 'list-bullet', content: mdInlineToHtml(trimmed.substring(2)) });
             }
@@ -147,7 +202,11 @@
                        !lines[i + 1].trim().startsWith('* ') && 
                        !/^\d+\.\s+/.test(lines[i + 1].trim()) &&
                        !lines[i + 1].trim().startsWith('> ') && 
-                       !lines[i + 1].trim().startsWith('```')) {
+                       !lines[i + 1].trim().startsWith('```') &&
+                       !lines[i + 1].trim().startsWith('|') &&
+                       !lines[i + 1].trim().startsWith('![') &&
+                       !lines[i + 1].trim().startsWith('{{youtube:') &&
+                       lines[i + 1].trim() !== '---') {
                     i++;
                     pText += '\n' + lines[i].trim();
                 }
@@ -168,67 +227,110 @@
             .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
     }
 
+    // ═══════════════════════════════════════════════════════
     // MARKDOWN SERIALIZATION (JSON Blocks -> Markdown)
+    // FIX: Consecutive list items joined with \n not \n\n
+    // ═══════════════════════════════════════════════════════
     window.blocksToMarkdown = function(blocksList = state.blocks) {
-        let md = [];
+        let result = '';
+        
+        // First, recalculate all ordered list indices
+        recalcListIndices(blocksList);
         
         blocksList.forEach((block, idx) => {
+            let line = '';
+            
             switch(block.type) {
                 case 'paragraph':
                     if (block.content.trim() !== '') {
-                        md.push(htmlToMdInline(block.content));
+                        line = htmlToMdInline(block.content);
                     }
                     break;
                 case 'heading-2':
-                    md.push('## ' + htmlToMdInline(block.content));
+                    line = '## ' + htmlToMdInline(block.content);
                     break;
                 case 'heading-3':
-                    md.push('### ' + htmlToMdInline(block.content));
+                    line = '### ' + htmlToMdInline(block.content);
                     break;
                 case 'heading-4':
-                    md.push('#### ' + htmlToMdInline(block.content));
+                    line = '#### ' + htmlToMdInline(block.content);
                     break;
                 case 'quote':
-                    md.push('> ' + htmlToMdInline(block.content));
+                    line = '> ' + htmlToMdInline(block.content);
                     break;
                 case 'callout':
-                    md.push('> [!NOTE]\n> ' + htmlToMdInline(block.content));
+                    line = '> [!NOTE]\n> ' + htmlToMdInline(block.content);
                     break;
                 case 'divider':
-                    md.push('---');
+                    line = '---';
                     break;
                 case 'list-bullet':
-                    md.push('- ' + htmlToMdInline(block.content));
+                    line = '- ' + htmlToMdInline(block.content);
                     break;
                 case 'list-ordered':
-                    const index = block.index || (idx > 0 && blocksList[idx-1].type === 'list-ordered' ? parseInt(blocksList[idx-1].index) + 1 : 1);
-                    block.index = index; // Keep cache updated
-                    md.push(`${index}. ` + htmlToMdInline(block.content));
+                    line = `${block.index || 1}. ` + htmlToMdInline(block.content);
                     break;
                 case 'code':
-                    md.push('```' + (block.lang || '') + '\n' + block.content + '\n```');
+                    line = '```' + (block.lang || '') + '\n' + block.content + '\n```';
                     break;
                 case 'image':
                     if (block.url) {
                         const pos = block.position ? `{${block.position}}` : '';
-                        md.push(`![${htmlToMdInline(block.caption || '')}](${block.url})${pos}`);
+                        line = `![${htmlToMdInline(block.caption || '')}](${block.url})${pos}`;
                     }
                     break;
                 case 'youtube':
                     if (block.url) {
                         const ytId = getYoutubeId(block.url);
                         if (ytId) {
-                            md.push(`{{youtube:${ytId}}}`);
+                            line = `{{youtube:${ytId}}}`;
                         } else {
-                            md.push(`[youtube](${block.url})`);
+                            line = `[youtube](${block.url})`;
                         }
                     }
                     break;
+                case 'table':
+                    line = block.content || '';
+                    break;
+            }
+            
+            if (line === '') return;
+            
+            // KEY FIX: Join consecutive list items with single newline
+            // so the PHP parser treats them as one <ol>/<ul> block
+            if (idx > 0 && result !== '') {
+                const prevBlock = blocksList[idx - 1];
+                const isContinuousList = 
+                    (block.type === 'list-bullet' && prevBlock.type === 'list-bullet') ||
+                    (block.type === 'list-ordered' && prevBlock.type === 'list-ordered');
+                
+                if (isContinuousList) {
+                    result += '\n' + line;   // Single newline — same list
+                } else {
+                    result += '\n\n' + line;  // Double newline — new block
+                }
+            } else {
+                result += line;
             }
         });
         
-        return md.join('\n\n');
+        return result;
     };
+
+    // Recalculate ordered list indices for consecutive list-ordered blocks
+    function recalcListIndices(blocksList) {
+        let counter = 0;
+        for (let i = 0; i < blocksList.length; i++) {
+            if (blocksList[i].type === 'list-ordered') {
+                if (i === 0 || blocksList[i - 1].type !== 'list-ordered') {
+                    counter = 1; // Start new list
+                } else {
+                    counter++;
+                }
+                blocksList[i].index = counter;
+            }
+        }
+    }
 
     function htmlToMdInline(html) {
         if (!html) return '';
@@ -244,6 +346,10 @@
         const ems = div.querySelectorAll('em, i');
         ems.forEach(e => { e.outerHTML = `*${e.innerHTML}*`; });
         
+        // Convert underlines to <u> markdown-safe
+        const underlines = div.querySelectorAll('u');
+        underlines.forEach(u => { u.outerHTML = u.innerHTML; });
+        
         // Convert links to [text](href)
         const links = div.querySelectorAll('a');
         links.forEach(l => { l.outerHTML = `[${l.innerHTML}](${l.getAttribute('href')})`; });
@@ -255,14 +361,28 @@
         return div.textContent.trim();
     }
 
+    // ═══════════════════════════════════════════════════════
     // RENDER BLOCKS TO EDITOR DOM
+    // ═══════════════════════════════════════════════════════
     function renderBlocks() {
         container.innerHTML = '';
+        
+        // Recalculate list indices before rendering
+        recalcListIndices(state.blocks);
         
         state.blocks.forEach((block, index) => {
             const blockWrapper = document.createElement('div');
             blockWrapper.className = 'editor-block-wrapper';
             blockWrapper.dataset.index = index;
+            
+            // Add drag handle
+            blockWrapper.draggable = true;
+            blockWrapper.addEventListener('dragstart', (e) => handleDragStart(e, index));
+            blockWrapper.addEventListener('dragover', (e) => handleDragOver(e, index));
+            blockWrapper.addEventListener('drop', (e) => handleDrop(e, index));
+            blockWrapper.addEventListener('dragend', handleDragEnd);
+            blockWrapper.addEventListener('dragenter', (e) => handleDragEnter(e, index));
+            blockWrapper.addEventListener('dragleave', handleDragLeave);
             
             // Add Side Controls
             const controls = createBlockControls(index, block.type);
@@ -275,50 +395,103 @@
             container.appendChild(blockWrapper);
         });
 
-        // Add an extra "+" adder block at the bottom
+        // Add the bottom adder
         const adder = createBottomAdder();
         container.appendChild(adder);
         
         updateStats();
     }
 
+    // ═══════════════════════════════════════════════════════
+    // DRAG AND DROP
+    // ═══════════════════════════════════════════════════════
+    function handleDragStart(e, index) {
+        state.dragSrcIndex = index;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', index);
+        
+        // Add visual feedback
+        setTimeout(() => {
+            const wrapper = container.querySelector(`[data-index="${index}"]`);
+            if (wrapper) wrapper.classList.add('dragging');
+        }, 0);
+    }
+
+    function handleDragOver(e, index) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    }
+
+    function handleDragEnter(e, index) {
+        e.preventDefault();
+        const wrapper = container.querySelector(`[data-index="${index}"]`);
+        if (wrapper && state.dragSrcIndex !== index) {
+            wrapper.classList.add('drag-over');
+        }
+    }
+
+    function handleDragLeave(e) {
+        e.target.closest('.editor-block-wrapper')?.classList.remove('drag-over');
+    }
+
+    function handleDrop(e, targetIndex) {
+        e.preventDefault();
+        const srcIndex = state.dragSrcIndex;
+        
+        // Clean up visual states
+        document.querySelectorAll('.drag-over, .dragging').forEach(el => {
+            el.classList.remove('drag-over', 'dragging');
+        });
+        
+        if (srcIndex === null || srcIndex === targetIndex) return;
+        
+        saveUndoState();
+        const movedBlock = state.blocks.splice(srcIndex, 1)[0];
+        state.blocks.splice(targetIndex, 0, movedBlock);
+        
+        renderBlocks();
+        updateHiddenInput();
+    }
+
+    function handleDragEnd() {
+        state.dragSrcIndex = null;
+        document.querySelectorAll('.drag-over, .dragging').forEach(el => {
+            el.classList.remove('drag-over', 'dragging');
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // BLOCK CONTROLS (side buttons)
+    // ═══════════════════════════════════════════════════════
     function createBlockControls(index, type) {
         const controls = document.createElement('div');
         controls.className = 'editor-block-controls';
+
+        // Add Plus button to insert block before
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'block-ctrl-btn block-ctrl-add';
+        addBtn.title = 'Add block above';
+        addBtn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>`;
+        addBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleInlineBlockMenu(e, index, addBtn, 'before');
+        });
+        controls.appendChild(addBtn);
         
-        // Block type icon/selector btn
+        // Drag handle / block type selector
         const dragBtn = document.createElement('button');
         dragBtn.type = 'button';
-        dragBtn.className = 'block-ctrl-btn';
-        dragBtn.title = 'Change block type';
-        dragBtn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
+        dragBtn.className = 'block-ctrl-btn block-ctrl-drag';
+        dragBtn.title = 'Drag to reorder · Click to change type';
+        dragBtn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"></path><circle cx="4" cy="8" r="1" fill="currentColor"/><circle cx="4" cy="16" r="1" fill="currentColor"/><circle cx="10" cy="8" r="1" fill="currentColor"/><circle cx="10" cy="16" r="1" fill="currentColor"/></svg>`;
         dragBtn.addEventListener('click', (e) => toggleBlockConverterMenu(e, index, dragBtn));
         controls.appendChild(dragBtn);
-
-        // Move Up button
-        const upBtn = document.createElement('button');
-        upBtn.type = 'button';
-        upBtn.className = 'block-ctrl-btn';
-        upBtn.title = 'Move Block Up';
-        upBtn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"></path></svg>`;
-        upBtn.addEventListener('click', () => moveBlock(index, -1));
-        if (index === 0) upBtn.style.opacity = '0.3';
-        controls.appendChild(upBtn);
-
-        // Move Down button
-        const downBtn = document.createElement('button');
-        downBtn.type = 'button';
-        downBtn.className = 'block-ctrl-btn';
-        downBtn.title = 'Move Block Down';
-        downBtn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>`;
-        downBtn.addEventListener('click', () => moveBlock(index, 1));
-        if (index === state.blocks.length - 1) downBtn.style.opacity = '0.3';
-        controls.appendChild(downBtn);
 
         // Delete button
         const delBtn = document.createElement('button');
         delBtn.type = 'button';
-        delBtn.className = 'block-ctrl-btn btn-delete';
+        delBtn.className = 'block-ctrl-btn block-ctrl-delete';
         delBtn.title = 'Delete Block';
         delBtn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>`;
         delBtn.addEventListener('click', () => deleteBlock(index));
@@ -327,8 +500,11 @@
         return controls;
     }
 
+    // ═══════════════════════════════════════════════════════
+    // BLOCK CONTENT ELEMENTS
+    // ═══════════════════════════════════════════════════════
     function createBlockContentElement(block, index) {
-        // Handle custom widget elements (Images, Dividers, YouTube, Code)
+        // Handle custom widget elements (Images, Dividers, YouTube, Code, Table)
         if (block.type === 'divider') {
             const hr = document.createElement('hr');
             hr.className = 'block-divider';
@@ -341,6 +517,10 @@
 
         if (block.type === 'youtube') {
             return createYoutubeBlockElement(block, index);
+        }
+
+        if (block.type === 'table') {
+            return createTableBlockElement(block, index);
         }
 
         // Standard textable blocks (Paragraph, Headings, Quote, Lists, Code, Callout)
@@ -363,7 +543,7 @@
             case 'list-bullet': el.className += ' block-list-bullet'; break;
             case 'list-ordered': 
                 el.className += ' block-list-ordered'; 
-                el.dataset.index = block.index || (index > 0 && state.blocks[index-1].type === 'list-ordered' ? parseInt(state.blocks[index-1].index) + 1 : 1);
+                el.dataset.index = block.index || 1;
                 break;
         }
 
@@ -371,30 +551,136 @@
         
         // Placeholder helper
         if (el.innerHTML === '') {
-            if (block.type === 'paragraph') el.setAttribute('placeholder', 'Write text here... Press / for blocks');
+            if (block.type === 'paragraph') el.setAttribute('placeholder', 'Type something, or press / for commands...');
             else if (block.type.startsWith('heading')) el.setAttribute('placeholder', 'Heading');
+            else if (block.type === 'list-bullet' || block.type === 'list-ordered') el.setAttribute('placeholder', 'List item');
+            else if (block.type === 'quote') el.setAttribute('placeholder', 'Write a quote...');
+            else if (block.type === 'callout') el.setAttribute('placeholder', 'Write a callout note...');
         }
 
         // Keep local content synchronized
         el.addEventListener('input', (e) => {
             block.content = el.innerHTML;
+            
+            // Slash command detection
+            const textContent = el.textContent;
+            if (textContent.startsWith('/') && block.type === 'paragraph') {
+                const filter = textContent.substring(1).toLowerCase();
+                openSlashMenu(el, index, filter);
+            } else if (state.slashMenuOpen) {
+                closeSlashMenu();
+            }
+            
             saveUndoState();
             updateHiddenInput();
             updateStats();
         });
 
-        // NOTION-STYLE TYPING UX
+        // RICH PASTE HANDLER
+        el.addEventListener('paste', (e) => handleRichPaste(e, block, index));
+
+        // KEYBOARD HANDLING
         el.addEventListener('keydown', (e) => {
+            // Slash menu keyboard navigation
+            if (state.slashMenuOpen) {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    navigateSlashMenu(1);
+                    return;
+                }
+                if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    navigateSlashMenu(-1);
+                    return;
+                }
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    selectSlashMenuItem();
+                    return;
+                }
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeSlashMenu();
+                    return;
+                }
+            }
+
             if (e.key === 'Enter' && !e.shiftKey) {
                 // If in code block, allow normal newlines
                 if (block.type === 'code') return;
                 
                 e.preventDefault();
-                insertNewBlockAfter(index, 'paragraph');
+                
+                // AUTO-CONTINUE: If in a list, create next list item
+                if (block.type === 'list-bullet') {
+                    if (el.textContent.trim() === '') {
+                        // Empty list item → convert to paragraph (exit list)
+                        convertBlockType(index, 'paragraph');
+                    } else {
+                        insertNewBlockAfter(index, 'list-bullet');
+                    }
+                } else if (block.type === 'list-ordered') {
+                    if (el.textContent.trim() === '') {
+                        convertBlockType(index, 'paragraph');
+                    } else {
+                        insertNewBlockAfter(index, 'list-ordered');
+                    }
+                } else {
+                    insertNewBlockAfter(index, 'paragraph');
+                }
             } 
             else if (e.key === 'Backspace' && el.innerHTML.trim() === '') {
                 e.preventDefault();
-                deleteBlock(index, true); // Move focus to previous
+                deleteBlock(index, true);
+            }
+            // Arrow key navigation between blocks
+            else if (e.key === 'ArrowUp' && isCaretAtStart(el)) {
+                e.preventDefault();
+                focusBlock(index - 1, 'end');
+            }
+            else if (e.key === 'ArrowDown' && isCaretAtEnd(el)) {
+                e.preventDefault();
+                focusBlock(index + 1, 'start');
+            }
+            // Tab handling for list indentation (future-proof, prevents default tab)
+            else if (e.key === 'Tab') {
+                if (block.type === 'code') return; // Allow tab in code blocks
+                e.preventDefault();
+                // For now, just insert spaces in code; lists can be extended later
+            }
+            // Markdown shortcuts
+            else if (e.key === ' ' && block.type === 'paragraph') {
+                const text = el.textContent;
+                // Auto-convert ## to heading
+                if (text === '##') {
+                    e.preventDefault();
+                    block.content = '';
+                    convertBlockType(index, 'heading-2');
+                } else if (text === '###') {
+                    e.preventDefault();
+                    block.content = '';
+                    convertBlockType(index, 'heading-3');
+                } else if (text === '####') {
+                    e.preventDefault();
+                    block.content = '';
+                    convertBlockType(index, 'heading-4');
+                } else if (text === '-' || text === '*') {
+                    e.preventDefault();
+                    block.content = '';
+                    convertBlockType(index, 'list-bullet');
+                } else if (text === '1.') {
+                    e.preventDefault();
+                    block.content = '';
+                    convertBlockType(index, 'list-ordered');
+                } else if (text === '>') {
+                    e.preventDefault();
+                    block.content = '';
+                    convertBlockType(index, 'quote');
+                } else if (text === '---') {
+                    e.preventDefault();
+                    block.content = '';
+                    convertBlockType(index, 'divider');
+                }
             }
         });
 
@@ -405,7 +691,437 @@
         return el;
     }
 
+    // ═══════════════════════════════════════════════════════
+    // RICH COPY-PASTE HANDLER
+    // ═══════════════════════════════════════════════════════
+    function handleRichPaste(e, block, index) {
+        e.preventDefault();
+        
+        const clipboardData = e.clipboardData || window.clipboardData;
+        const html = clipboardData.getData('text/html');
+        const plainText = clipboardData.getData('text/plain');
+        
+        if (html && html.trim()) {
+            // Parse pasted HTML into blocks
+            const pastedBlocks = htmlToBlocks(html);
+            
+            if (pastedBlocks.length === 1) {
+                // Single block paste — insert content into current block
+                const cleanContent = pastedBlocks[0].content || '';
+                document.execCommand('insertHTML', false, cleanContent);
+                block.content = e.target.innerHTML;
+                updateHiddenInput();
+                updateStats();
+            } else if (pastedBlocks.length > 1) {
+                // Multi-block paste — insert all blocks after current
+                saveUndoState();
+                
+                // Put first block content into current block if it's empty
+                if (block.content.trim() === '' && pastedBlocks.length > 0) {
+                    block.type = pastedBlocks[0].type;
+                    block.content = pastedBlocks[0].content || '';
+                    if (pastedBlocks[0].index) block.index = pastedBlocks[0].index;
+                    pastedBlocks.shift();
+                }
+                
+                // Insert remaining blocks after current index
+                for (let i = 0; i < pastedBlocks.length; i++) {
+                    state.blocks.splice(index + 1 + i, 0, pastedBlocks[i]);
+                }
+                
+                renderBlocks();
+                updateHiddenInput();
+                
+                // Focus last inserted block
+                const lastIdx = index + pastedBlocks.length;
+                setTimeout(() => focusBlock(lastIdx, 'end'), 50);
+            }
+        } else if (plainText) {
+            // Plain text paste — check if it's markdown-like
+            const lines = plainText.split('\n');
+            const hasStructure = lines.some(l => 
+                l.trim().startsWith('## ') || l.trim().startsWith('### ') ||
+                l.trim().startsWith('- ') || l.trim().startsWith('* ') ||
+                /^\d+\.\s+/.test(l.trim()) || l.trim().startsWith('> ')
+            );
+            
+            if (hasStructure && lines.length > 1) {
+                // Parse as markdown
+                saveUndoState();
+                const pastedBlocks = markdownToBlocks(plainText);
+                
+                if (block.content.trim() === '' && pastedBlocks.length > 0) {
+                    block.type = pastedBlocks[0].type;
+                    block.content = pastedBlocks[0].content || '';
+                    if (pastedBlocks[0].index) block.index = pastedBlocks[0].index;
+                    pastedBlocks.shift();
+                }
+                
+                for (let i = 0; i < pastedBlocks.length; i++) {
+                    state.blocks.splice(index + 1 + i, 0, pastedBlocks[i]);
+                }
+                
+                renderBlocks();
+                updateHiddenInput();
+                const lastIdx = index + pastedBlocks.length;
+                setTimeout(() => focusBlock(lastIdx, 'end'), 50);
+            } else {
+                // Just plain text — insert normally
+                document.execCommand('insertText', false, plainText);
+                block.content = e.target.innerHTML;
+                updateHiddenInput();
+                updateStats();
+            }
+        }
+    }
+
+    // Parse pasted HTML into block structures
+    function htmlToBlocks(html) {
+        const container = document.createElement('div');
+        container.innerHTML = html;
+        
+        // Remove Word/Google Docs cruft
+        container.querySelectorAll('style, script, meta, link, o\\:p, xml').forEach(el => el.remove());
+        container.querySelectorAll('[class*="Mso"]').forEach(el => {
+            el.removeAttribute('class');
+            el.removeAttribute('style');
+        });
+        container.querySelectorAll('[style]').forEach(el => {
+            // Keep only meaningful styles
+            const style = el.getAttribute('style');
+            if (style && !style.includes('font-weight') && !style.includes('font-style') && !style.includes('text-decoration')) {
+                el.removeAttribute('style');
+            }
+        });
+        
+        const blocks = [];
+        
+        function processNode(node) {
+            if (node.nodeType === 3) {
+                // Text node
+                const text = node.textContent.trim();
+                if (text) {
+                    blocks.push({ type: 'paragraph', content: text });
+                }
+                return;
+            }
+            
+            if (node.nodeType !== 1) return;
+            
+            const tag = node.tagName.toLowerCase();
+            
+            switch(tag) {
+                case 'h1':
+                case 'h2':
+                    blocks.push({ type: 'heading-2', content: cleanInlineHtml(node.innerHTML) });
+                    break;
+                case 'h3':
+                    blocks.push({ type: 'heading-3', content: cleanInlineHtml(node.innerHTML) });
+                    break;
+                case 'h4':
+                case 'h5':
+                case 'h6':
+                    blocks.push({ type: 'heading-4', content: cleanInlineHtml(node.innerHTML) });
+                    break;
+                case 'p':
+                    const pContent = cleanInlineHtml(node.innerHTML).trim();
+                    if (pContent) {
+                        blocks.push({ type: 'paragraph', content: pContent });
+                    }
+                    break;
+                case 'blockquote':
+                    blocks.push({ type: 'quote', content: cleanInlineHtml(node.textContent) });
+                    break;
+                case 'ul':
+                    node.querySelectorAll(':scope > li').forEach(li => {
+                        blocks.push({ type: 'list-bullet', content: cleanInlineHtml(li.innerHTML) });
+                    });
+                    break;
+                case 'ol':
+                    let olIndex = parseInt(node.getAttribute('start')) || 1;
+                    node.querySelectorAll(':scope > li').forEach(li => {
+                        blocks.push({ type: 'list-ordered', content: cleanInlineHtml(li.innerHTML), index: olIndex });
+                        olIndex++;
+                    });
+                    break;
+                case 'pre':
+                    blocks.push({ type: 'code', content: node.textContent, lang: '' });
+                    break;
+                case 'hr':
+                    blocks.push({ type: 'divider' });
+                    break;
+                case 'img':
+                    // Skip pasted images (data URIs etc)
+                    break;
+                case 'table':
+                    // Convert table to markdown table format
+                    const tableBlk = htmlTableToMarkdown(node);
+                    if (tableBlk) blocks.push({ type: 'table', content: tableBlk });
+                    break;
+                case 'div':
+                case 'section':
+                case 'article':
+                case 'main':
+                case 'span':
+                    // Recurse into container elements
+                    Array.from(node.childNodes).forEach(child => processNode(child));
+                    break;
+                case 'br':
+                    break;
+                default:
+                    // For other elements, try to extract text
+                    const txt = cleanInlineHtml(node.innerHTML).trim();
+                    if (txt) {
+                        blocks.push({ type: 'paragraph', content: txt });
+                    }
+            }
+        }
+        
+        Array.from(container.childNodes).forEach(child => processNode(child));
+        
+        return blocks;
+    }
+
+    function htmlTableToMarkdown(tableEl) {
+        const rows = tableEl.querySelectorAll('tr');
+        if (rows.length === 0) return null;
+        
+        let md = '';
+        rows.forEach((row, idx) => {
+            const cells = row.querySelectorAll('th, td');
+            const cellValues = Array.from(cells).map(c => c.textContent.trim());
+            md += '| ' + cellValues.join(' | ') + ' |\n';
+            
+            // Add separator after header row
+            if (idx === 0) {
+                md += '| ' + cellValues.map(() => '---').join(' | ') + ' |\n';
+            }
+        });
+        
+        return md.trim();
+    }
+
+    // Clean pasted HTML to only keep inline formatting
+    function cleanInlineHtml(html) {
+        if (!html) return '';
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        
+        // Remove all block-level and non-inline elements
+        div.querySelectorAll('div, p, span, br, img, table, tr, td, th, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, blockquote, hr, style, script').forEach(el => {
+            if (['span'].includes(el.tagName.toLowerCase())) {
+                // Unwrap spans but keep content
+                el.outerHTML = el.innerHTML;
+            }
+        });
+        
+        // Keep: strong, b, em, i, a, u, s, code
+        // Remove: everything else that's not inline formatting
+        
+        return div.innerHTML
+            .replace(/<\/?(?!strong|b|em|i|a|u|s|code|\/strong|\/b|\/em|\/i|\/a|\/u|\/s|\/code)[^>]*>/gi, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // SLASH COMMAND MENU
+    // ═══════════════════════════════════════════════════════
+    function openSlashMenu(el, blockIndex, filter) {
+        closeSlashMenu(); // Close existing
+        
+        state.slashMenuOpen = true;
+        state.slashMenuFilter = filter;
+        state.slashMenuIndex = 0;
+        
+        const menu = document.createElement('div');
+        menu.className = 'slash-command-menu';
+        menu.id = 'slashCommandMenu';
+        
+        const filteredTypes = BLOCK_TYPES.filter(bt => {
+            if (!filter) return true;
+            return bt.name.toLowerCase().includes(filter) || 
+                   bt.shortcut.includes('/' + filter) ||
+                   bt.desc.toLowerCase().includes(filter);
+        });
+        
+        if (filteredTypes.length === 0) {
+            const emptyEl = document.createElement('div');
+            emptyEl.className = 'slash-menu-empty';
+            emptyEl.textContent = 'No blocks found';
+            menu.appendChild(emptyEl);
+        } else {
+            const header = document.createElement('div');
+            header.className = 'slash-menu-header';
+            header.textContent = 'Insert Block';
+            menu.appendChild(header);
+            
+            filteredTypes.forEach((bt, i) => {
+                const item = document.createElement('div');
+                item.className = 'slash-menu-item' + (i === 0 ? ' active' : '');
+                item.dataset.type = bt.type;
+                item.dataset.menuIdx = i;
+                item.innerHTML = `
+                    <span class="slash-menu-icon">${BLOCK_ICONS[bt.icon] || ''}</span>
+                    <span class="slash-menu-text">
+                        <span class="slash-menu-name">${bt.name}</span>
+                        <span class="slash-menu-desc">${bt.desc}</span>
+                    </span>
+                    <span class="slash-menu-shortcut">${bt.shortcut}</span>
+                `;
+                
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectSlashMenuItemByType(bt.type, blockIndex);
+                });
+                
+                item.addEventListener('mouseenter', () => {
+                    menu.querySelectorAll('.slash-menu-item.active').forEach(el => el.classList.remove('active'));
+                    item.classList.add('active');
+                    state.slashMenuIndex = i;
+                });
+                
+                menu.appendChild(item);
+            });
+        }
+        
+        // Position relative to the block
+        const rect = el.getBoundingClientRect();
+        menu.style.position = 'fixed';
+        menu.style.left = rect.left + 'px';
+        menu.style.top = (rect.bottom + 4) + 'px';
+        
+        // Keep within viewport
+        document.body.appendChild(menu);
+        
+        const menuRect = menu.getBoundingClientRect();
+        if (menuRect.bottom > window.innerHeight) {
+            menu.style.top = (rect.top - menuRect.height - 4) + 'px';
+        }
+        if (menuRect.right > window.innerWidth) {
+            menu.style.left = (window.innerWidth - menuRect.width - 16) + 'px';
+        }
+    }
+
+    function closeSlashMenu() {
+        state.slashMenuOpen = false;
+        const existing = document.getElementById('slashCommandMenu');
+        if (existing) existing.remove();
+    }
+
+    function navigateSlashMenu(direction) {
+        const menu = document.getElementById('slashCommandMenu');
+        if (!menu) return;
+        
+        const items = menu.querySelectorAll('.slash-menu-item');
+        if (items.length === 0) return;
+        
+        items[state.slashMenuIndex]?.classList.remove('active');
+        state.slashMenuIndex = (state.slashMenuIndex + direction + items.length) % items.length;
+        items[state.slashMenuIndex]?.classList.add('active');
+        
+        // Scroll into view
+        items[state.slashMenuIndex]?.scrollIntoView({ block: 'nearest' });
+    }
+
+    function selectSlashMenuItem() {
+        const menu = document.getElementById('slashCommandMenu');
+        if (!menu) return;
+        
+        const activeItem = menu.querySelector('.slash-menu-item.active');
+        if (activeItem) {
+            const type = activeItem.dataset.type;
+            selectSlashMenuItemByType(type, state.focusedIndex);
+        }
+    }
+
+    function selectSlashMenuItemByType(type, blockIndex) {
+        closeSlashMenu();
+        
+        saveUndoState();
+        // Clear the slash command text
+        state.blocks[blockIndex].content = '';
+        state.blocks[blockIndex].type = type;
+        
+        if (type === 'list-ordered') {
+            state.blocks[blockIndex].index = 1;
+        }
+        
+        renderBlocks();
+        updateHiddenInput();
+        
+        // Focus the converted block
+        setTimeout(() => focusBlock(blockIndex, 'start'), 50);
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // STATIC TOOLBAR
+    // ═══════════════════════════════════════════════════════
+    function setupToolbar() {
+        const toolbar = document.getElementById('editorToolbar');
+        if (!toolbar) return;
+        
+        toolbar.querySelectorAll('[data-action]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = btn.dataset.action;
+                
+                switch(action) {
+                    case 'bold':
+                        document.execCommand('bold', false, null);
+                        break;
+                    case 'italic':
+                        document.execCommand('italic', false, null);
+                        break;
+                    case 'underline':
+                        document.execCommand('underline', false, null);
+                        break;
+                    case 'strikethrough':
+                        document.execCommand('strikeThrough', false, null);
+                        break;
+                    case 'link':
+                        const url = prompt('Enter URL:');
+                        if (url) document.execCommand('createLink', false, url);
+                        break;
+                    case 'heading-2':
+                    case 'heading-3':
+                    case 'list-bullet':
+                    case 'list-ordered':
+                    case 'quote':
+                    case 'code':
+                    case 'image':
+                    case 'divider':
+                    case 'callout':
+                    case 'table':
+                        if (state.focusedIndex !== null) {
+                            insertNewBlockAfter(state.focusedIndex, action);
+                        } else {
+                            insertNewBlockAfter(state.blocks.length - 1, action);
+                        }
+                        break;
+                    case 'clear-format':
+                        document.execCommand('removeFormat', false, null);
+                        break;
+                }
+                
+                // Sync block content after format command
+                if (['bold', 'italic', 'underline', 'strikethrough', 'link', 'clear-format'].includes(action)) {
+                    if (state.focusedIndex !== null) {
+                        const targetEl = container.querySelector(`[data-index="${state.focusedIndex}"] .editor-block-content`);
+                        if (targetEl) {
+                            state.blocks[state.focusedIndex].content = targetEl.innerHTML;
+                            updateHiddenInput();
+                            updateStats();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════
     // IMAGE BLOCK HTML BUILDER
+    // ═══════════════════════════════════════════════════════
     function createImageBlockElement(block, index) {
         const wrap = document.createElement('div');
         wrap.className = 'editor-block-content';
@@ -440,6 +1156,7 @@
             });
             uploadBox.addEventListener('drop', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 uploadBox.style.borderColor = '';
                 if (e.dataTransfer.files && e.dataTransfer.files[0]) {
                     uploadImageFile(e.dataTransfer.files[0], block, index);
@@ -501,7 +1218,7 @@
         const wrapper = container.querySelector(`[data-index="${index}"] .editor-block-content`);
         wrapper.innerHTML = `
             <div style="padding: 30px; text-align: center; color: var(--text-light);">
-                <div style="border: 3px solid rgba(199,166,106,0.2); border-top-color: var(--gold); border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; margin: 0 auto 12px;"></div>
+                <div class="upload-spinner"></div>
                 <span>Uploading Image...</span>
             </div>
         `;
@@ -520,7 +1237,6 @@
                 showToast('Image uploaded successfully', 'success');
             } else {
                 showToast(data.message || 'Image upload failed', 'danger');
-                // Revert
                 block.url = '';
                 renderBlocks();
             }
@@ -532,7 +1248,9 @@
         });
     }
 
+    // ═══════════════════════════════════════════════════════
     // YOUTUBE BLOCK HTML BUILDER
+    // ═══════════════════════════════════════════════════════
     function createYoutubeBlockElement(block, index) {
         const wrap = document.createElement('div');
         wrap.className = 'editor-block-content';
@@ -589,33 +1307,61 @@
         return wrap;
     }
 
+    // ═══════════════════════════════════════════════════════
+    // TABLE BLOCK HTML BUILDER
+    // ═══════════════════════════════════════════════════════
+    function createTableBlockElement(block, index) {
+        const wrap = document.createElement('div');
+        wrap.className = 'editor-block-content block-table-wrapper';
+        
+        // Parse markdown table to HTML for editing
+        const content = block.content || '| Header 1 | Header 2 | Header 3 |\n| --- | --- | --- |\n| Cell 1 | Cell 2 | Cell 3 |';
+        block.content = content;
+        
+        const textarea = document.createElement('textarea');
+        textarea.className = 'block-table-editor';
+        textarea.value = content;
+        textarea.placeholder = '| Header 1 | Header 2 |\n| --- | --- |\n| Cell 1 | Cell 2 |';
+        textarea.rows = Math.max(3, content.split('\n').length + 1);
+        
+        textarea.addEventListener('input', () => {
+            block.content = textarea.value;
+            textarea.rows = Math.max(3, textarea.value.split('\n').length + 1);
+            updateHiddenInput();
+            updateStats();
+        });
+
+        textarea.addEventListener('focus', () => {
+            state.focusedIndex = index;
+        });
+        
+        wrap.appendChild(textarea);
+        return wrap;
+    }
+
     function getYoutubeId(url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
         return (match && match[2].length === 11) ? match[2] : null;
     }
 
-    // FLOATING PLUS (+) ADDER AT BOTTOM
+    // ═══════════════════════════════════════════════════════
+    // BOTTOM BLOCK ADDER (+)
+    // ═══════════════════════════════════════════════════════
     function createBottomAdder() {
         const wrap = document.createElement('div');
         wrap.className = 'block-adder-wrap';
+        
+        let menuItems = '';
+        BLOCK_TYPES.forEach(bt => {
+            menuItems += `<div class="block-selector-item" data-type="${bt.type}">${BLOCK_ICONS[bt.icon] || ''} ${bt.name}</div>`;
+        });
+        
         wrap.innerHTML = `
             <button type="button" class="block-adder-btn" title="Add Block">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
             </button>
-            <div class="block-selector-menu">
-                <div class="block-selector-item" data-type="paragraph"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7"></path></svg> Paragraph</div>
-                <div class="block-selector-item" data-type="heading-2"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg> Heading 2</div>
-                <div class="block-selector-item" data-type="heading-3"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg> Heading 3</div>
-                <div class="block-selector-item" data-type="list-bullet"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg> Bullet List</div>
-                <div class="block-selector-item" data-type="list-ordered"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg> Numbered List</div>
-                <div class="block-selector-item" data-type="quote"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg> Blockquote</div>
-                <div class="block-selector-item" data-type="image"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Image File</div>
-                <div class="block-selector-item" data-type="youtube"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 10l-4 4v-4l4 4zm6-2.582A9.002 9.002 0 0012 3a9.002 9.002 0 00-9 9 9.002 9.002 0 009 9c4.97 0 9-4.03 9-9 0-1.89-.582-3.645-1.582-5.1z"></path></svg> YT Embed</div>
-                <div class="block-selector-item" data-type="code"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Code Block</div>
-                <div class="block-selector-item" data-type="callout"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Alert Callout</div>
-                <div class="block-selector-item" data-type="divider"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 12H6"></path></svg> Divider Line</div>
-            </div>
+            <div class="block-selector-menu">${menuItems}</div>
         `;
         
         const btn = wrap.querySelector('.block-adder-btn');
@@ -644,7 +1390,49 @@
         return wrap;
     }
 
+    // ═══════════════════════════════════════════════════════
+    // INLINE BLOCK MENU (for + button on each block)
+    // ═══════════════════════════════════════════════════════
+    function toggleInlineBlockMenu(e, index, triggerBtn, position) {
+        e.stopPropagation();
+        
+        const prior = document.querySelector('.inline-block-menu');
+        if (prior) {
+            prior.remove();
+            if (parseInt(prior.dataset.index) === index) return;
+        }
+
+        const menu = document.createElement('div');
+        menu.className = 'inline-block-menu block-selector-menu';
+        menu.dataset.index = index;
+        menu.style.display = 'grid';
+        menu.style.position = 'absolute';
+        menu.style.top = '100%';
+        menu.style.left = '0';
+        menu.style.zIndex = '600';
+        
+        BLOCK_TYPES.forEach(bt => {
+            const item = document.createElement('div');
+            item.className = 'block-selector-item';
+            item.innerHTML = `${BLOCK_ICONS[bt.icon] || ''} ${bt.name}`;
+            item.addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                const insertIdx = position === 'before' ? index - 1 : index;
+                insertNewBlockAfter(insertIdx, bt.type);
+                menu.remove();
+            });
+            menu.appendChild(item);
+        });
+        
+        triggerBtn.parentNode.style.position = 'relative';
+        triggerBtn.parentNode.appendChild(menu);
+        
+        window.addEventListener('click', () => menu.remove(), { once: true });
+    }
+
+    // ═══════════════════════════════════════════════════════
     // BLOCK CONVERTER POPUP MENU
+    // ═══════════════════════════════════════════════════════
     function toggleBlockConverterMenu(e, index, triggerBtn) {
         e.stopPropagation();
         
@@ -678,6 +1466,10 @@
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.innerText = t.name;
+            if (state.blocks[index].type === t.type) {
+                btn.style.color = 'var(--gold)';
+                btn.style.fontWeight = '600';
+            }
             btn.addEventListener('click', () => {
                 convertBlockType(index, t.type);
                 drop.parentNode.removeChild(drop);
@@ -692,12 +1484,17 @@
         }, { once: true });
     }
 
+    // ═══════════════════════════════════════════════════════
     // INTERNAL STATE MANIPULATORS (CRUD)
+    // ═══════════════════════════════════════════════════════
     function insertNewBlockAfter(index, type) {
         saveUndoState();
         const newBlock = { type: type, content: '' };
         if (type === 'list-ordered') {
-            newBlock.index = (index >= 0 && state.blocks[index].type === 'list-ordered') ? parseInt(state.blocks[index].index) + 1 : 1;
+            newBlock.index = (index >= 0 && state.blocks[index]?.type === 'list-ordered') ? (parseInt(state.blocks[index].index) || 0) + 1 : 1;
+        }
+        if (type === 'table') {
+            newBlock.content = '| Header 1 | Header 2 | Header 3 |\n| --- | --- | --- |\n| Cell 1 | Cell 2 | Cell 3 |';
         }
         
         state.blocks.splice(index + 1, 0, newBlock);
@@ -705,28 +1502,20 @@
         updateHiddenInput();
         
         // Shift focus to new block content
-        setTimeout(() => {
-            const targetEl = container.querySelector(`[data-index="${index + 1}"] .editor-block-content`);
-            if (targetEl) {
-                targetEl.focus();
-            }
-        }, 50);
+        setTimeout(() => focusBlock(index + 1, 'start'), 50);
     }
 
     function convertBlockType(index, nextType) {
         saveUndoState();
         state.blocks[index].type = nextType;
         if (nextType === 'list-ordered') {
-            state.blocks[index].index = (index > 0 && state.blocks[index-1].type === 'list-ordered') ? parseInt(state.blocks[index-1].index) + 1 : 1;
+            recalcListIndices(state.blocks);
         }
         renderBlocks();
         updateHiddenInput();
         
         // Focus converted item
-        setTimeout(() => {
-            const targetEl = container.querySelector(`[data-index="${index}"] .editor-block-content`);
-            if (targetEl) targetEl.focus();
-        }, 50);
+        setTimeout(() => focusBlock(index, 'start'), 50);
     }
 
     function moveBlock(index, offset) {
@@ -742,10 +1531,7 @@
         updateHiddenInput();
         
         // Focus moved block
-        setTimeout(() => {
-            const targetEl = container.querySelector(`[data-index="${nextIndex}"] .editor-block-content`);
-            if (targetEl) targetEl.focus();
-        }, 50);
+        setTimeout(() => focusBlock(nextIndex, 'start'), 50);
     }
 
     function deleteBlock(index, focusPrevious = false) {
@@ -766,14 +1552,24 @@
         // Focus logic
         if (focusPrevious) {
             const prevIndex = Math.max(0, index - 1);
-            setTimeout(() => {
-                const targetEl = container.querySelector(`[data-index="${prevIndex}"] .editor-block-content`);
-                if (targetEl) {
-                    targetEl.focus();
-                    // Place caret at end of text
-                    placeCaretAtEnd(targetEl);
-                }
-            }, 50);
+            setTimeout(() => focusBlock(prevIndex, 'end'), 50);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // FOCUS & CARET HELPERS
+    // ═══════════════════════════════════════════════════════
+    function focusBlock(index, position = 'end') {
+        if (index < 0 || index >= state.blocks.length) return;
+        
+        const targetEl = container.querySelector(`[data-index="${index}"] .editor-block-content`);
+        if (targetEl && targetEl.contentEditable === 'true') {
+            targetEl.focus();
+            if (position === 'end') {
+                placeCaretAtEnd(targetEl);
+            } else {
+                placeCaretAtStart(targetEl);
+            }
         }
     }
 
@@ -789,7 +1585,38 @@
         }
     }
 
+    function placeCaretAtStart(el) {
+        el.focus();
+        if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(true);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+    }
+
+    function isCaretAtStart(el) {
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return false;
+        const range = sel.getRangeAt(0);
+        return range.startOffset === 0 && range.startContainer === el || range.startContainer === el.firstChild && range.startOffset === 0;
+    }
+
+    function isCaretAtEnd(el) {
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return false;
+        const range = sel.getRangeAt(0);
+        const lastChild = el.lastChild || el;
+        if (range.endContainer === el) return range.endOffset === el.childNodes.length;
+        if (range.endContainer.nodeType === 3) return range.endOffset === range.endContainer.textContent.length && range.endContainer === lastChild;
+        return false;
+    }
+
+    // ═══════════════════════════════════════════════════════
     // STATS GENERATOR
+    // ═══════════════════════════════════════════════════════
     function updateStats() {
         const markdown = blocksToMarkdown();
         const charCount = markdown.length;
@@ -818,7 +1645,9 @@
         }
     }
 
+    // ═══════════════════════════════════════════════════════
     // UNDO/REDO LOGIC STACKS
+    // ═══════════════════════════════════════════════════════
     function saveUndoState() {
         // Simple deep clone state
         const snap = JSON.stringify(state.blocks);
@@ -863,9 +1692,17 @@
             e.preventDefault();
             window.triggerRedo();
         }
+        // Save shortcut
+        else if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            const form = document.getElementById('editorForm');
+            if (form) form.submit();
+        }
     });
 
+    // ═══════════════════════════════════════════════════════
     // TEXT SELECTION FORMATTING POPUP TOOLBAR
+    // ═══════════════════════════════════════════════════════
     function handleTextSelection() {
         const selection = window.getSelection();
         if (!selection.rangeCount || selection.isCollapsed) {
@@ -888,7 +1725,7 @@
         
         if (formatBar) {
             formatBar.style.display = 'flex';
-            linkInputWrap.style.display = 'none'; // Reset link panel
+            if (linkInputWrap) linkInputWrap.style.display = 'none'; // Reset link panel
             
             const x = rect.left + window.pageXOffset + (rect.width / 2) - (formatBar.offsetWidth / 2);
             const y = rect.top + window.pageYOffset - formatBar.offsetHeight - 10;
@@ -961,7 +1798,9 @@
         }
     }
 
+    // ═══════════════════════════════════════════════════════
     // AUTOSAVE BACKUP LOGIC
+    // ═══════════════════════════════════════════════════════
     function setupAutosaveListener() {
         // Save state to localStorage every 20 seconds if changes occur
         let lastState = JSON.stringify(state.blocks);
@@ -1003,7 +1842,7 @@
                     const banner = document.createElement('div');
                     banner.className = 'alert alert-info';
                     banner.style.display = 'flex';
-                    banner.style.justify = 'space-between';
+                    banner.style.justifyContent = 'space-between';
                     banner.style.alignItems = 'center';
                     banner.style.marginBottom = '24px';
                     banner.innerHTML = `

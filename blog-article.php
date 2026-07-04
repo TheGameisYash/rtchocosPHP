@@ -97,10 +97,75 @@ if (!function_exists('parse_markdown')) {
 function parse_markdown($markdown) {
     global $pathPrefix;
     $markdown = str_replace(array("\r\n", "\r"), "\n", $markdown);
-    $blocks = explode("\n\n", $markdown);
+    
+    // PRE-PROCESS: Intelligently group lines into blocks
+    // Consecutive list items (separated by single \n) are merged into one block
+    // Double \n still separates different block types
+    $lines = explode("\n", $markdown);
+    $mergedBlocks = array();
+    $currentBlock = '';
+    $inCodeBlock = false;
+    
+    foreach ($lines as $line) {
+        // Track code fences
+        if (strpos(trim($line), '```') === 0) {
+            $inCodeBlock = !$inCodeBlock;
+            $currentBlock .= ($currentBlock !== '' ? "\n" : '') . $line;
+            if (!$inCodeBlock) {
+                $mergedBlocks[] = $currentBlock;
+                $currentBlock = '';
+            }
+            continue;
+        }
+        if ($inCodeBlock) {
+            $currentBlock .= ($currentBlock !== '' ? "\n" : '') . $line;
+            continue;
+        }
+        
+        $trimmed = trim($line);
+        
+        if ($trimmed === '') {
+            // Empty line = block separator
+            if (trim($currentBlock) !== '') {
+                $mergedBlocks[] = $currentBlock;
+            }
+            $currentBlock = '';
+            continue;
+        }
+        
+        // Check if current line is a list item
+        $isBullet = preg_match('/^[\*\-]\s+/', $trimmed);
+        $isOrdered = preg_match('/^\d+\.\s+/', $trimmed);
+        $isListItem = $isBullet || $isOrdered;
+        
+        // Check what the current block contains
+        $currentBlockTrimmed = trim($currentBlock);
+        $currentIsBullet = preg_match('/^[\*\-]\s+/', $currentBlockTrimmed);
+        $currentIsOrdered = preg_match('/^\d+\.\s+/', $currentBlockTrimmed);
+        
+        if ($isListItem && $currentBlockTrimmed !== '' && 
+            (($isBullet && $currentIsBullet) || ($isOrdered && $currentIsOrdered))) {
+            // Same list type — merge with single newline
+            $currentBlock .= "\n" . $line;
+        } else if ($trimmed !== '' && strpos($trimmed, '|') === 0 && 
+                   $currentBlockTrimmed !== '' && strpos($currentBlockTrimmed, '|') === 0) {
+            // Table rows — merge with single newline
+            $currentBlock .= "\n" . $line;
+        } else {
+            // Different type — start new block
+            if (trim($currentBlock) !== '') {
+                $mergedBlocks[] = $currentBlock;
+            }
+            $currentBlock = $line;
+        }
+    }
+    if (trim($currentBlock) !== '') {
+        $mergedBlocks[] = $currentBlock;
+    }
+    
     $html = '';
     
-    foreach ($blocks as $block) {
+    foreach ($mergedBlocks as $block) {
         $block = trim($block);
         if (empty($block)) continue;
         
@@ -110,14 +175,15 @@ function parse_markdown($markdown) {
             continue;
         }
 
-        // Image block: ![caption](url)
-        if (preg_match('/^!\[(.*?)\]\((.*?)\)$/', $block, $matches)) {
+        // Image block: ![caption](url){position}
+        if (preg_match('/^!\[(.*?)\]\((.*?)\)(?:\{(left|right|center|end)\})?$/', $block, $matches)) {
             $caption = parse_inline($matches[1]);
             $url = $matches[2];
+            $pos = !empty($matches[3]) ? $matches[3] : 'center';
             $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0 || strpos($url, '../') === 0) 
                 ? $url 
                 : $pathPrefix . $url;
-            $html .= "<div class=\"article-image\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars($caption) . "\">" . (!empty($caption) ? "<span class=\"article-image-caption\">{$caption}</span>" : "") . "</div>\n";
+            $html .= "<div class=\"blog-img-{$pos}\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars($caption) . "\">" . (!empty($caption) ? "<span class=\"article-image-caption\">{$caption}</span>" : "") . "</div>\n";
             continue;
         }
 
@@ -135,14 +201,21 @@ function parse_markdown($markdown) {
             }
             continue;
         }
+
+        // YouTube embed: {{youtube:VIDEO_ID}}
+        if (preg_match('/^\{\{youtube:([a-zA-Z0-9_\-]+)\}\}$/', $block, $matches)) {
+            $ytId = $matches[1];
+            $html .= "<div class=\"blog-yt-embed\"><iframe src=\"https://www.youtube.com/embed/{$ytId}\" frameborder=\"0\" allowfullscreen allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"></iframe></div>\n";
+            continue;
+        }
         
         // Fenced Code Block
         if (strpos($block, '```') === 0) {
-            $lines = explode("\n", $block);
-            $firstLine = array_shift($lines);
-            $lastLine = array_pop($lines);
+            $codeLines = explode("\n", $block);
+            $firstLine = array_shift($codeLines);
+            $lastLine = array_pop($codeLines);
             $lang = trim(str_replace('```', '', $firstLine));
-            $code = implode("\n", $lines);
+            $code = implode("\n", $codeLines);
             $classAttr = !empty($lang) ? " class=\"language-" . htmlspecialchars($lang) . "\"" : "";
             $html .= "<pre><code{$classAttr}>" . htmlspecialchars($code) . "</code></pre>\n";
             continue;
@@ -150,11 +223,11 @@ function parse_markdown($markdown) {
 
         // Tables support
         if (strpos($block, '|') === 0) {
-            $lines = explode("\n", $block);
-            if (count($lines) >= 2) {
+            $tableLines = explode("\n", $block);
+            if (count($tableLines) >= 2) {
                 $tableHtml = "<div class=\"table-responsive\"><table>\n";
                 $hasHeader = false;
-                foreach ($lines as $line) {
+                foreach ($tableLines as $line) {
                     $trimmedLine = trim($line, "| ");
                     if (empty($trimmedLine) || preg_match('/^[:\-\s|]+$/', $trimmedLine)) {
                         continue;
@@ -206,9 +279,9 @@ function parse_markdown($markdown) {
         
         // Blockquotes
         if (strpos($block, '> ') === 0) {
-            $lines = explode("\n", $block);
+            $quoteLines = explode("\n", $block);
             $quoteContent = '';
-            foreach ($lines as $line) {
+            foreach ($quoteLines as $line) {
                 $quoteContent .= substr($line, 2) . "\n";
             }
             
@@ -222,11 +295,11 @@ function parse_markdown($markdown) {
             continue;
         }
         
-        // Bullet Lists
+        // Bullet Lists (now properly grouped by preprocessor)
         if (preg_match('/^[\*\-]\s+(.+)$/m', $block)) {
-            $lines = explode("\n", $block);
+            $listLines = explode("\n", $block);
             $listHtml = "<ul>\n";
-            foreach ($lines as $line) {
+            foreach ($listLines as $line) {
                 if (preg_match('/^[\*\-]\s+(.+)$/', trim($line), $matches)) {
                     $content = parse_inline($matches[1]);
                     $listHtml .= "  <li>{$content}</li>\n";
@@ -237,11 +310,11 @@ function parse_markdown($markdown) {
             continue;
         }
 
-        // Ordered Lists
+        // Ordered Lists (now properly grouped by preprocessor)
         if (preg_match('/^\d+\.\s+(.+)$/m', $block)) {
-            $lines = explode("\n", $block);
+            $listLines = explode("\n", $block);
             $listHtml = "<ol>\n";
-            foreach ($lines as $line) {
+            foreach ($listLines as $line) {
                 if (preg_match('/^\d+\.\s+(.+)$/', trim($line), $matches)) {
                     $content = parse_inline($matches[1]);
                     $listHtml .= "  <li>{$content}</li>\n";
