@@ -365,22 +365,81 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
         <div class="editor-main-canvas">
             <!-- Static Formatting Toolbar -->
             <div class="editor-static-toolbar" id="editorToolbar">
+                <!-- Text Formatting Group -->
                 <div class="toolbar-group">
                     <button type="button" class="toolbar-btn" data-action="bold" title="Bold (Ctrl+B)"><b>B</b></button>
                     <button type="button" class="toolbar-btn" data-action="italic" title="Italic (Ctrl+I)"><i>I</i></button>
                     <button type="button" class="toolbar-btn" data-action="underline" title="Underline (Ctrl+U)"><u>U</u></button>
                     <button type="button" class="toolbar-btn" data-action="strikethrough" title="Strikethrough"><s>S</s></button>
+                    <button type="button" class="toolbar-btn" data-action="superscript" title="Superscript">X<sup style="font-size:9px;">2</sup></button>
+                    <button type="button" class="toolbar-btn" data-action="subscript" title="Subscript">X<sub style="font-size:9px;">2</sub></button>
                 </div>
                 <div class="toolbar-divider"></div>
+                <!-- Font Size Dropdown -->
                 <div class="toolbar-group">
-                    <button type="button" class="toolbar-btn" data-action="heading-2" title="Heading 2">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10"></path></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="heading-3" title="Heading 3">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h12M4 12h8"></path></svg>
-                    </button>
+                    <div class="toolbar-dropdown-wrap">
+                        <button type="button" class="toolbar-btn toolbar-dropdown-trigger" data-action="fontSize" title="Font Size">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7V5h12v2M7 5v14M15 13v-1h8v1M19 12v7"/></svg>
+                        </button>
+                        <div class="toolbar-dropdown" id="fontSizeDropdown">
+                            <button type="button" data-size="small" class="toolbar-dropdown-item">Small</button>
+                            <button type="button" data-size="normal" class="toolbar-dropdown-item active">Normal</button>
+                            <button type="button" data-size="large" class="toolbar-dropdown-item">Large</button>
+                            <button type="button" data-size="xlarge" class="toolbar-dropdown-item">Extra Large</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="toolbar-divider"></div>
+                <!-- Text & Highlight Color -->
+                <div class="toolbar-group">
+                    <div class="toolbar-dropdown-wrap">
+                        <button type="button" class="toolbar-btn" data-action="textColor" title="Text Color">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 3L5 21M15 3l4 18M4 8h16M3 16h16"/></svg>
+                            <span class="toolbar-color-indicator" id="textColorIndicator" style="background:#C7A66A;"></span>
+                        </button>
+                        <div class="toolbar-dropdown toolbar-color-picker" id="textColorDropdown">
+                            <div class="color-picker-label">Text Color</div>
+                            <div class="color-picker-grid">
+                                <button type="button" class="color-swatch" data-color="inherit" title="Default" style="background:var(--text-main);"></button>
+                                <button type="button" class="color-swatch" data-color="#C7A66A" title="Gold" style="background:#C7A66A;"></button>
+                                <button type="button" class="color-swatch" data-color="#D32F2F" title="Red" style="background:#D32F2F;"></button>
+                                <button type="button" class="color-swatch" data-color="#1976D2" title="Blue" style="background:#1976D2;"></button>
+                                <button type="button" class="color-swatch" data-color="#388E3C" title="Green" style="background:#388E3C;"></button>
+                                <button type="button" class="color-swatch" data-color="#7B1FA2" title="Purple" style="background:#7B1FA2;"></button>
+                                <button type="button" class="color-swatch" data-color="#E64A19" title="Orange" style="background:#E64A19;"></button>
+                                <button type="button" class="color-swatch" data-color="#5D4037" title="Brown" style="background:#5D4037;"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="toolbar-dropdown-wrap">
+                        <button type="button" class="toolbar-btn" data-action="highlight" title="Highlight Color">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            <span class="toolbar-color-indicator" id="highlightColorIndicator" style="background:#FFF9C4;"></span>
+                        </button>
+                        <div class="toolbar-dropdown toolbar-color-picker" id="highlightColorDropdown">
+                            <div class="color-picker-label">Highlight</div>
+                            <div class="color-picker-grid">
+                                <button type="button" class="color-swatch" data-color="transparent" title="None" style="background:transparent; border:2px dashed var(--border-color);"></button>
+                                <button type="button" class="color-swatch" data-color="#FFF9C4" title="Yellow" style="background:#FFF9C4;"></button>
+                                <button type="button" class="color-swatch" data-color="#C8E6C9" title="Green" style="background:#C8E6C9;"></button>
+                                <button type="button" class="color-swatch" data-color="#BBDEFB" title="Blue" style="background:#BBDEFB;"></button>
+                                <button type="button" class="color-swatch" data-color="#F8BBD0" title="Pink" style="background:#F8BBD0;"></button>
+                                <button type="button" class="color-swatch" data-color="#FFE0B2" title="Orange" style="background:#FFE0B2;"></button>
+                                <button type="button" class="color-swatch" data-color="#E1BEE7" title="Purple" style="background:#E1BEE7;"></button>
+                                <button type="button" class="color-swatch" data-color="#D7CCC8" title="Brown" style="background:#D7CCC8;"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar-divider"></div>
+                <!-- Headings Group -->
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-btn" data-action="heading-2" title="Heading 2"><span style="font-weight:700;font-size:13px;">H2</span></button>
+                    <button type="button" class="toolbar-btn" data-action="heading-3" title="Heading 3"><span style="font-weight:600;font-size:12px;">H3</span></button>
+                    <button type="button" class="toolbar-btn" data-action="heading-4" title="Heading 4"><span style="font-weight:600;font-size:11px;">H4</span></button>
+                </div>
+                <div class="toolbar-divider"></div>
+                <!-- List & Indent Group -->
                 <div class="toolbar-group">
                     <button type="button" class="toolbar-btn" data-action="list-bullet" title="Bullet List">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="4" cy="7" r="1.5" fill="currentColor"/><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="17" r="1.5" fill="currentColor"/></svg>
@@ -388,8 +447,31 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                     <button type="button" class="toolbar-btn" data-action="list-ordered" title="Numbered List">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><text x="2" y="9" font-size="7" fill="currentColor" font-family="sans-serif">1</text><text x="2" y="14" font-size="7" fill="currentColor" font-family="sans-serif">2</text><text x="2" y="19" font-size="7" fill="currentColor" font-family="sans-serif">3</text></svg>
                     </button>
+                    <button type="button" class="toolbar-btn" data-action="indent" title="Increase Indent">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8h18M3 16h18M13 12h8M3 11l4 1-4 1"/></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="outdent" title="Decrease Indent">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8h18M3 16h18M13 12h8M7 11l-4 1 4 1"/></svg>
+                    </button>
                 </div>
                 <div class="toolbar-divider"></div>
+                <!-- Alignment Group -->
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-btn" data-action="align-left" title="Align Left">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M3 10h12M3 14h18M3 18h12"/></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="align-center" title="Align Center">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M6 10h12M3 14h18M6 18h12"/></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="align-right" title="Align Right">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M9 10h12M3 14h18M9 18h12"/></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="align-justify" title="Justify">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>
+                    </button>
+                </div>
+                <div class="toolbar-divider"></div>
+                <!-- Block Inserts Group -->
                 <div class="toolbar-group">
                     <button type="button" class="toolbar-btn" data-action="quote" title="Blockquote">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
@@ -402,8 +484,9 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                     </button>
                 </div>
                 <div class="toolbar-divider"></div>
+                <!-- Media & Links Group -->
                 <div class="toolbar-group">
-                    <button type="button" class="toolbar-btn" data-action="link" title="Insert Link">
+                    <button type="button" class="toolbar-btn" data-action="link" title="Insert Link (Ctrl+K)">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                     </button>
                     <button type="button" class="toolbar-btn" data-action="image" title="Insert Image">
@@ -417,6 +500,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                     </button>
                 </div>
                 <div class="toolbar-divider"></div>
+                <!-- Utility Group -->
                 <div class="toolbar-group">
                     <button type="button" class="toolbar-btn" data-action="clear-format" title="Clear Formatting">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
@@ -821,6 +905,11 @@ function parseMarkdown(markdown) {
             }
             return;
         }
+        // HTML blocks (like div, img, hr, iframe, table, ol, ul, li, blockquote, p, h1-h6)
+        if (block.trim().startsWith('<')) {
+            html += block + '\n';
+            return;
+        }
         // Bullet list items (multiple lines grouped)
         if (block.startsWith('- ') || block.startsWith('* ')) {
             const items = block.split('\n');
@@ -828,7 +917,8 @@ function parseMarkdown(markdown) {
             items.forEach(item => {
                 const trimmedItem = item.trim();
                 if (trimmedItem.startsWith('- ') || trimmedItem.startsWith('* ')) {
-                    listHtml += `<li>${parseInline(trimmedItem.substring(2))}</li>\n`;
+                    const clean = trimmedItem.substring(2);
+                    listHtml += `<li>${parseInline(clean)}</li>\n`;
                 }
             });
             listHtml += '</ul>\n';
@@ -836,12 +926,13 @@ function parseMarkdown(markdown) {
             return;
         }
         // Ordered list items (multiple lines grouped)
-        if (/^\d+\.\s+/.test(block)) {
+        if (/^\d+\.\s*/.test(block)) {
             const items = block.split('\n');
             let listHtml = '<ol>\n';
             items.forEach(item => {
-                const clean = item.trim().replace(/^\d+\.\s+/, '');
-                if (clean) {
+                const trimmed = item.trim();
+                if (/^\d+\.\s*/.test(trimmed)) {
+                    const clean = trimmed.replace(/^\d+\.\s*/, '');
                     listHtml += `<li>${parseInline(clean)}</li>\n`;
                 }
             });

@@ -134,14 +134,14 @@ function parse_markdown($markdown) {
         }
         
         // Check if current line is a list item
-        $isBullet = preg_match('/^[\*\-]\s+/', $trimmed);
-        $isOrdered = preg_match('/^\d+\.\s+/', $trimmed);
+        $isBullet = preg_match('/^[\*\-](\s|$)/', $trimmed);
+        $isOrdered = preg_match('/^\d+\.(\s|$)/', $trimmed);
         $isListItem = $isBullet || $isOrdered;
         
         // Check what the current block contains
         $currentBlockTrimmed = trim($currentBlock);
-        $currentIsBullet = preg_match('/^[\*\-]\s+/', $currentBlockTrimmed);
-        $currentIsOrdered = preg_match('/^\d+\.\s+/', $currentBlockTrimmed);
+        $currentIsBullet = preg_match('/^[\*\-](\s|$)/', $currentBlockTrimmed);
+        $currentIsOrdered = preg_match('/^\d+\.(\s|$)/', $currentBlockTrimmed);
         
         if ($isListItem && $currentBlockTrimmed !== '' && 
             (($isBullet && $currentIsBullet) || ($isOrdered && $currentIsOrdered))) {
@@ -296,12 +296,12 @@ function parse_markdown($markdown) {
         }
         
         // Bullet Lists (now properly grouped by preprocessor)
-        if (preg_match('/^[\*\-]\s+(.+)$/m', $block)) {
+        if (preg_match('/^[\*\-](\s|$)/m', $block)) {
             $listLines = explode("\n", $block);
             $listHtml = "<ul>\n";
             foreach ($listLines as $line) {
-                if (preg_match('/^[\*\-]\s+(.+)$/', trim($line), $matches)) {
-                    $content = parse_inline($matches[1]);
+                if (preg_match('/^[\*\-](\s*(.*))$/', trim($line), $matches)) {
+                    $content = parse_inline(isset($matches[2]) ? $matches[2] : '');
                     $listHtml .= "  <li>{$content}</li>\n";
                 }
             }
@@ -311,12 +311,12 @@ function parse_markdown($markdown) {
         }
 
         // Ordered Lists (now properly grouped by preprocessor)
-        if (preg_match('/^\d+\.\s+(.+)$/m', $block)) {
+        if (preg_match('/^\d+\.(\s|$)/m', $block)) {
             $listLines = explode("\n", $block);
             $listHtml = "<ol>\n";
             foreach ($listLines as $line) {
-                if (preg_match('/^\d+\.\s+(.+)$/', trim($line), $matches)) {
-                    $content = parse_inline($matches[1]);
+                if (preg_match('/^\d+\.(\s*(.*))$/', trim($line), $matches)) {
+                    $content = parse_inline(isset($matches[2]) ? $matches[2] : '');
                     $listHtml .= "  <li>{$content}</li>\n";
                 }
             }
@@ -325,8 +325,8 @@ function parse_markdown($markdown) {
             continue;
         }
         
-        // HTML blocks (like div, img, hr, iframe, table)
-        if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|tr|td|th|iframe)/i', $block)) {
+        // HTML blocks (like div, img, hr, iframe, table, ol, ul, li, blockquote)
+        if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|tr|td|th|iframe|ol|ul|li|blockquote)/i', $block)) {
             $html .= $block . "\n";
             continue;
         }
@@ -342,6 +342,12 @@ function parse_markdown($markdown) {
 if (!function_exists('parse_inline')) {
 function parse_inline($text) {
     global $pathPrefix;
+    
+    // Strip dangerous tags but keep safe formatting tags from the editor
+    // The editor may produce: <font color="...">, <span style="...">, <u>, <s>, <sup>, <sub>, <mark>
+    $text = preg_replace('/<script\b[^>]*>.*?<\/script>/si', '', $text);
+    $text = preg_replace('/<iframe\b[^>]*>.*?<\/iframe>/si', '', $text);
+    
     // Bold: **text**
     $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
     // Italic: *text* or _text_

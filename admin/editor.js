@@ -76,6 +76,10 @@
         setupFormatBarListeners();
     }
 
+    // COPY / CUT handlers for clean clipboard output
+    document.addEventListener('copy', handleEditorCopy);
+    document.addEventListener('cut', handleEditorCut);
+
     // Close slash menu on outside click
     document.addEventListener('click', (e) => {
         if (state.slashMenuOpen && !e.target.closest('.slash-command-menu')) {
@@ -177,9 +181,9 @@
             else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
                 blocks.push({ type: 'list-bullet', content: mdInlineToHtml(trimmed.substring(2)) });
             }
-            else if (/^\d+\.\s+/.test(trimmed)) {
-                const numMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
-                blocks.push({ type: 'list-ordered', content: mdInlineToHtml(numMatch[2]), index: numMatch[1] });
+            else if (/^\d+\.\s*/.test(trimmed)) {
+                const numMatch = trimmed.match(/^(\d+)\.\s*(.*)$/);
+                blocks.push({ type: 'list-ordered', content: mdInlineToHtml(numMatch[2] || ''), index: parseInt(numMatch[1]) || 1 });
             }
             // Images: ![alt](src){position}
             else if (trimmed.startsWith('![') && trimmed.includes('](')) {
@@ -243,20 +247,40 @@
             switch(block.type) {
                 case 'paragraph':
                     if (block.content.trim() !== '') {
-                        line = htmlToMdInline(block.content);
+                        if (block.align) {
+                            line = `<p style="text-align: ${block.align};">${block.content}</p>`;
+                        } else {
+                            line = htmlToMdInline(block.content);
+                        }
                     }
                     break;
                 case 'heading-2':
-                    line = '## ' + htmlToMdInline(block.content);
+                    if (block.align) {
+                        line = `<h2 style="text-align: ${block.align};">${block.content}</h2>`;
+                    } else {
+                        line = '## ' + htmlToMdInline(block.content);
+                    }
                     break;
                 case 'heading-3':
-                    line = '### ' + htmlToMdInline(block.content);
+                    if (block.align) {
+                        line = `<h3 style="text-align: ${block.align};">${block.content}</h3>`;
+                    } else {
+                        line = '### ' + htmlToMdInline(block.content);
+                    }
                     break;
                 case 'heading-4':
-                    line = '#### ' + htmlToMdInline(block.content);
+                    if (block.align) {
+                        line = `<h4 style="text-align: ${block.align};">${block.content}</h4>`;
+                    } else {
+                        line = '#### ' + htmlToMdInline(block.content);
+                    }
                     break;
                 case 'quote':
-                    line = '> ' + htmlToMdInline(block.content);
+                    if (block.align) {
+                        line = `<blockquote style="text-align: ${block.align};">${block.content}</blockquote>`;
+                    } else {
+                        line = '> ' + htmlToMdInline(block.content);
+                    }
                     break;
                 case 'callout':
                     line = '> [!NOTE]\n> ' + htmlToMdInline(block.content);
@@ -265,10 +289,18 @@
                     line = '---';
                     break;
                 case 'list-bullet':
-                    line = '- ' + htmlToMdInline(block.content);
+                    if (block.align) {
+                        line = `<li style="text-align: ${block.align}; list-style-type: disc;">${block.content}</li>`;
+                    } else {
+                        line = '- ' + htmlToMdInline(block.content);
+                    }
                     break;
                 case 'list-ordered':
-                    line = `${block.index || 1}. ` + htmlToMdInline(block.content);
+                    if (block.align) {
+                        line = `<li style="text-align: ${block.align}; list-style-type: decimal;" value="${block.index || 1}">${block.content}</li>`;
+                    } else {
+                        line = `${block.index || 1}. ` + htmlToMdInline(block.content);
+                    }
                     break;
                 case 'code':
                     line = '```' + (block.lang || '') + '\n' + block.content + '\n```';
@@ -346,10 +378,6 @@
         const ems = div.querySelectorAll('em, i');
         ems.forEach(e => { e.outerHTML = `*${e.innerHTML}*`; });
         
-        // Convert underlines to <u> markdown-safe
-        const underlines = div.querySelectorAll('u');
-        underlines.forEach(u => { u.outerHTML = u.innerHTML; });
-        
         // Convert links to [text](href)
         const links = div.querySelectorAll('a');
         links.forEach(l => { l.outerHTML = `[${l.innerHTML}](${l.getAttribute('href')})`; });
@@ -358,7 +386,16 @@
         const brs = div.querySelectorAll('br');
         brs.forEach(b => { b.outerHTML = '\n'; });
         
-        return div.textContent.trim();
+        // Preserve inline formatting that has no markdown equivalent:
+        // <font>, <span style>, <u>, <s>, <sup>, <sub> are kept as-is
+        // Return innerHTML so HTML tags are preserved in the markdown output
+        // Strip any remaining block-level tags but keep inline ones
+        let result = div.innerHTML;
+        
+        // Remove any block-level wrappers that might have crept in
+        result = result.replace(/<\/?(?:div|p|section|article)[^>]*>/gi, '');
+        
+        return result.trim();
     }
 
     // ═══════════════════════════════════════════════════════
@@ -547,6 +584,11 @@
                 break;
         }
 
+        // Apply alignment if stored
+        if (block.align) {
+            el.style.textAlign = block.align;
+        }
+
         el.innerHTML = block.content || '';
         
         // Placeholder helper
@@ -561,6 +603,13 @@
         // Keep local content synchronized
         el.addEventListener('input', (e) => {
             block.content = el.innerHTML;
+            
+            // Recalculate ordered list indices on every input
+            if (block.type === 'list-ordered') {
+                recalcListIndices(state.blocks);
+                // Update the data-index attribute for CSS counter display
+                el.dataset.index = block.index || 1;
+            }
             
             // Slash command detection
             const textContent = el.textContent;
@@ -695,21 +744,46 @@
     // RICH COPY-PASTE HANDLER
     // ═══════════════════════════════════════════════════════
     function handleRichPaste(e, block, index) {
-        e.preventDefault();
-        
         const clipboardData = e.clipboardData || window.clipboardData;
         const html = clipboardData.getData('text/html');
         const plainText = clipboardData.getData('text/plain');
         
+        // For simple single-line plain text with no HTML, let the browser handle it natively
+        if (!html && plainText && !plainText.includes('\n')) {
+            // Don't prevent default — native paste works perfectly for simple text
+            // Just sync block content after browser processes the paste
+            setTimeout(() => {
+                block.content = e.target.innerHTML;
+                updateHiddenInput();
+                updateStats();
+            }, 0);
+            return;
+        }
+        
+        e.preventDefault();
+        
         if (html && html.trim()) {
             // Parse pasted HTML into blocks
             const pastedBlocks = htmlToBlocks(html);
+            
+            if (pastedBlocks.length === 0) {
+                // Fallback: insert as plain text
+                document.execCommand('insertText', false, plainText || '');
+                block.content = e.target.innerHTML;
+                updateHiddenInput();
+                updateStats();
+                return;
+            }
             
             if (pastedBlocks.length === 1) {
                 // Single block paste — insert content into current block
                 const cleanContent = pastedBlocks[0].content || '';
                 document.execCommand('insertHTML', false, cleanContent);
                 block.content = e.target.innerHTML;
+                if (pastedBlocks[0].align) {
+                    e.target.style.textAlign = pastedBlocks[0].align;
+                    block.align = pastedBlocks[0].align;
+                }
                 updateHiddenInput();
                 updateStats();
             } else if (pastedBlocks.length > 1) {
@@ -721,6 +795,7 @@
                     block.type = pastedBlocks[0].type;
                     block.content = pastedBlocks[0].content || '';
                     if (pastedBlocks[0].index) block.index = pastedBlocks[0].index;
+                    if (pastedBlocks[0].align) block.align = pastedBlocks[0].align;
                     pastedBlocks.shift();
                 }
                 
@@ -728,6 +803,9 @@
                 for (let i = 0; i < pastedBlocks.length; i++) {
                     state.blocks.splice(index + 1 + i, 0, pastedBlocks[i]);
                 }
+                
+                // Recalculate ordered list indices
+                recalcListIndices(state.blocks);
                 
                 renderBlocks();
                 updateHiddenInput();
@@ -737,12 +815,12 @@
                 setTimeout(() => focusBlock(lastIdx, 'end'), 50);
             }
         } else if (plainText) {
-            // Plain text paste — check if it's markdown-like
+            // Plain text paste — check if it's markdown-like or multiline
             const lines = plainText.split('\n');
             const hasStructure = lines.some(l => 
                 l.trim().startsWith('## ') || l.trim().startsWith('### ') ||
                 l.trim().startsWith('- ') || l.trim().startsWith('* ') ||
-                /^\d+\.\s+/.test(l.trim()) || l.trim().startsWith('> ')
+                /^\d+\.\s*/.test(l.trim()) || l.trim().startsWith('> ')
             );
             
             if (hasStructure && lines.length > 1) {
@@ -761,18 +839,150 @@
                     state.blocks.splice(index + 1 + i, 0, pastedBlocks[i]);
                 }
                 
+                recalcListIndices(state.blocks);
+                
                 renderBlocks();
                 updateHiddenInput();
                 const lastIdx = index + pastedBlocks.length;
                 setTimeout(() => focusBlock(lastIdx, 'end'), 50);
+            } else if (lines.length > 1) {
+                // Multi-line plain text — create paragraph blocks
+                saveUndoState();
+                const nonEmpty = lines.filter(l => l.trim() !== '');
+                
+                if (block.content.trim() === '' && nonEmpty.length > 0) {
+                    block.content = nonEmpty[0];
+                    nonEmpty.shift();
+                }
+                
+                for (let i = 0; i < nonEmpty.length; i++) {
+                    state.blocks.splice(index + 1 + i, 0, { type: 'paragraph', content: nonEmpty[i] });
+                }
+                
+                renderBlocks();
+                updateHiddenInput();
+                const lastIdx = index + nonEmpty.length;
+                setTimeout(() => focusBlock(lastIdx, 'end'), 50);
             } else {
-                // Just plain text — insert normally
+                // Single line plain text — insert normally
                 document.execCommand('insertText', false, plainText);
                 block.content = e.target.innerHTML;
                 updateHiddenInput();
                 updateStats();
             }
         }
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // COPY / CUT EVENT HANDLERS
+    // ═══════════════════════════════════════════════════════
+    function getSelectedBlocks() {
+        const sel = window.getSelection();
+        if (!sel.rangeCount || sel.isCollapsed) return [];
+        
+        const selectedBlocks = [];
+        const blockEls = Array.from(container.querySelectorAll('.editor-block-content'));
+        blockEls.forEach((el, index) => {
+            if (sel.containsNode(el, true)) {
+                selectedBlocks.push({
+                    index: index,
+                    element: el,
+                    block: state.blocks[index]
+                });
+            }
+        });
+        
+        return selectedBlocks;
+    }
+
+    function handleEditorCopy(e) {
+        const sel = window.getSelection();
+        if (!sel.rangeCount || sel.isCollapsed) return;
+        
+        const selected = getSelectedBlocks();
+        if (selected.length <= 1) return; // Let browser handle the native copy within a single block
+        
+        e.preventDefault();
+        
+        // Serialize selected blocks list
+        const selectedBlocksList = selected.map(s => s.block);
+        const markdown = blocksToMarkdown(selectedBlocksList);
+        
+        // Construct HTML representation
+        let html = '';
+        selected.forEach(s => {
+            const block = s.block;
+            const alignStyle = block.align ? ` style="text-align: ${block.align};"` : '';
+            if (block.type.startsWith('heading-2')) {
+                html += `<h2${alignStyle}>${block.content}</h2>\n`;
+            } else if (block.type.startsWith('heading-3')) {
+                html += `<h3${alignStyle}>${block.content}</h3>\n`;
+            } else if (block.type.startsWith('heading-4')) {
+                html += `<h4${alignStyle}>${block.content}</h4>\n`;
+            } else if (block.type === 'list-bullet') {
+                html += `<ul><li${alignStyle}>${block.content}</li></ul>\n`;
+            } else if (block.type === 'list-ordered') {
+                html += `<ol start="${block.index || 1}"><li${alignStyle}>${block.content}</li></ol>\n`;
+            } else if (block.type === 'quote') {
+                html += `<blockquote${alignStyle}>${block.content}</blockquote>\n`;
+            } else if (block.type === 'callout') {
+                html += `<div class="block-callout"${alignStyle}>${block.content}</div>\n`;
+            } else if (block.type === 'code') {
+                html += `<pre><code>${escapeHtml(block.content)}</code></pre>\n`;
+            } else if (block.type === 'divider') {
+                html += `<hr>\n`;
+            } else {
+                html += `<p${alignStyle}>${block.content}</p>\n`;
+            }
+        });
+        
+        e.clipboardData.setData('text/plain', markdown);
+        e.clipboardData.setData('text/html', html);
+    }
+
+    function handleEditorCut(e) {
+        const sel = window.getSelection();
+        if (!sel.rangeCount || sel.isCollapsed) return;
+        
+        const selected = getSelectedBlocks();
+        if (selected.length <= 1) {
+            // Single block cut: let browser handle natively, then sync
+            setTimeout(() => {
+                if (state.focusedIndex !== null && state.focusedIndex < state.blocks.length) {
+                    const targetEl = container.querySelector(`[data-index="${state.focusedIndex}"] .editor-block-content`);
+                    if (targetEl) {
+                        saveUndoState();
+                        state.blocks[state.focusedIndex].content = targetEl.innerHTML;
+                        updateHiddenInput();
+                        updateStats();
+                    }
+                }
+            }, 0);
+            return;
+        }
+        
+        // Multi-block cut
+        e.preventDefault();
+        handleEditorCopy(e); // Copy to clipboard first
+        
+        saveUndoState();
+        
+        // Remove blocks from bottom up to avoid shift indices
+        const indicesToRemove = selected.map(s => s.index).sort((a, b) => b - a);
+        indicesToRemove.forEach(idx => {
+            state.blocks.splice(idx, 1);
+        });
+        
+        if (state.blocks.length === 0) {
+            state.blocks.push({ type: 'paragraph', content: '' });
+        }
+        
+        recalcListIndices(state.blocks);
+        renderBlocks();
+        updateHiddenInput();
+        
+        const focusIdx = Math.min(indicesToRemove[indicesToRemove.length - 1], state.blocks.length - 1);
+        setTimeout(() => focusBlock(focusIdx, 'start'), 50);
     }
 
     // Parse pasted HTML into block structures
@@ -782,102 +992,111 @@
         
         // Remove Word/Google Docs cruft
         container.querySelectorAll('style, script, meta, link, o\\:p, xml').forEach(el => el.remove());
-        container.querySelectorAll('[class*="Mso"]').forEach(el => {
-            el.removeAttribute('class');
-            el.removeAttribute('style');
-        });
-        container.querySelectorAll('[style]').forEach(el => {
-            // Keep only meaningful styles
-            const style = el.getAttribute('style');
-            if (style && !style.includes('font-weight') && !style.includes('font-style') && !style.includes('text-decoration')) {
-                el.removeAttribute('style');
-            }
-        });
         
+        const blockTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'ul', 'ol', 'li', 'pre', 'hr', 'table', 'tr', 'div', 'section', 'article', 'main'];
         const blocks = [];
         
-        function processNode(node) {
-            if (node.nodeType === 3) {
-                // Text node
-                const text = node.textContent.trim();
-                if (text) {
-                    blocks.push({ type: 'paragraph', content: text });
+        function hasBlockDescendant(element) {
+            return Array.from(element.getElementsByTagName('*')).some(el => {
+                return blockTags.includes(el.tagName.toLowerCase());
+            });
+        }
+        
+        function walk(node, parentListType = null, listIndex = 1) {
+            if (node.nodeType === 3) { // Text node
+                const txt = node.textContent.trim();
+                if (txt) {
+                    blocks.push({ type: 'paragraph', content: escapeHtml(txt) });
                 }
                 return;
             }
             
-            if (node.nodeType !== 1) return;
+            if (node.nodeType !== 1) return; // Not an element node
             
             const tag = node.tagName.toLowerCase();
             
-            switch(tag) {
-                case 'h1':
-                case 'h2':
-                    blocks.push({ type: 'heading-2', content: cleanInlineHtml(node.innerHTML) });
-                    break;
-                case 'h3':
-                    blocks.push({ type: 'heading-3', content: cleanInlineHtml(node.innerHTML) });
-                    break;
-                case 'h4':
-                case 'h5':
-                case 'h6':
-                    blocks.push({ type: 'heading-4', content: cleanInlineHtml(node.innerHTML) });
-                    break;
-                case 'p':
-                    const pContent = cleanInlineHtml(node.innerHTML).trim();
-                    if (pContent) {
-                        blocks.push({ type: 'paragraph', content: pContent });
+            // Check if it's a table
+            if (tag === 'table') {
+                const tableBlk = htmlTableToMarkdown(node);
+                if (tableBlk) blocks.push({ type: 'table', content: tableBlk });
+                return;
+            }
+            
+            // Check if it's an hr
+            if (tag === 'hr') {
+                blocks.push({ type: 'divider' });
+                return;
+            }
+            
+            // Check if it's a list container
+            if (tag === 'ul' || tag === 'ol') {
+                const listType = tag === 'ul' ? 'list-bullet' : 'list-ordered';
+                let idx = 1;
+                Array.from(node.childNodes).forEach(child => {
+                    if (child.nodeType === 1 && child.tagName.toLowerCase() === 'li') {
+                        walk(child, listType, idx);
+                        idx++;
+                    } else {
+                        walk(child);
                     }
-                    break;
-                case 'blockquote':
-                    blocks.push({ type: 'quote', content: cleanInlineHtml(node.textContent) });
-                    break;
-                case 'ul':
-                    node.querySelectorAll(':scope > li').forEach(li => {
-                        blocks.push({ type: 'list-bullet', content: cleanInlineHtml(li.innerHTML) });
-                    });
-                    break;
-                case 'ol':
-                    let olIndex = parseInt(node.getAttribute('start')) || 1;
-                    node.querySelectorAll(':scope > li').forEach(li => {
-                        blocks.push({ type: 'list-ordered', content: cleanInlineHtml(li.innerHTML), index: olIndex });
-                        olIndex++;
-                    });
-                    break;
-                case 'pre':
-                    blocks.push({ type: 'code', content: node.textContent, lang: '' });
-                    break;
-                case 'hr':
-                    blocks.push({ type: 'divider' });
-                    break;
-                case 'img':
-                    // Skip pasted images (data URIs etc)
-                    break;
-                case 'table':
-                    // Convert table to markdown table format
-                    const tableBlk = htmlTableToMarkdown(node);
-                    if (tableBlk) blocks.push({ type: 'table', content: tableBlk });
-                    break;
-                case 'div':
-                case 'section':
-                case 'article':
-                case 'main':
-                case 'span':
-                    // Recurse into container elements
-                    Array.from(node.childNodes).forEach(child => processNode(child));
-                    break;
-                case 'br':
-                    break;
-                default:
-                    // For other elements, try to extract text
-                    const txt = cleanInlineHtml(node.innerHTML).trim();
-                    if (txt) {
-                        blocks.push({ type: 'paragraph', content: txt });
+                });
+                return;
+            }
+            
+            // If it's a block tag OR has no block descendants, treat it as a single block
+            if (blockTags.includes(tag) || !hasBlockDescendant(node)) {
+                // If it's a leaf node/block
+                const content = cleanInlineHtml(node.innerHTML).trim();
+                if (!content && tag !== 'hr') return; // Skip empty blocks except dividers
+                
+                let type = 'paragraph';
+                let indexAttr = null;
+                let alignAttr = null;
+                
+                if (node.style && node.style.textAlign) {
+                    alignAttr = node.style.textAlign;
+                }
+                
+                if (parentListType === 'list-bullet' && tag === 'li') {
+                    type = 'list-bullet';
+                } else if (parentListType === 'list-ordered' && tag === 'li') {
+                    type = 'list-ordered';
+                    indexAttr = listIndex;
+                } else {
+                    switch(tag) {
+                        case 'h1':
+                        case 'h2':
+                            type = 'heading-2';
+                            break;
+                        case 'h3':
+                            type = 'heading-3';
+                            break;
+                        case 'h4':
+                        case 'h5':
+                        case 'h6':
+                            type = 'heading-4';
+                            break;
+                        case 'blockquote':
+                            type = 'quote';
+                            break;
+                        case 'pre':
+                            type = 'code';
+                            break;
                     }
+                }
+                
+                const newBlock = { type: type, content: content };
+                if (indexAttr !== null) newBlock.index = indexAttr;
+                if (alignAttr !== null) newBlock.align = alignAttr;
+                blocks.push(newBlock);
+            } else {
+                // Container with block descendants — recurse into children
+                Array.from(node.childNodes).forEach(child => walk(child));
             }
         }
         
-        Array.from(container.childNodes).forEach(child => processNode(child));
+        // Walk from the container's child nodes
+        Array.from(container.childNodes).forEach(child => walk(child));
         
         return blocks;
     }
@@ -907,21 +1126,66 @@
         const div = document.createElement('div');
         div.innerHTML = html;
         
-        // Remove all block-level and non-inline elements
-        div.querySelectorAll('div, p, span, br, img, table, tr, td, th, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, blockquote, hr, style, script').forEach(el => {
-            if (['span'].includes(el.tagName.toLowerCase())) {
-                // Unwrap spans but keep content
-                el.outerHTML = el.innerHTML;
+        // Remove dangerous and non-content elements
+        div.querySelectorAll('style, script, meta, link, svg, iframe, object, embed').forEach(el => el.remove());
+        
+        // Allowed inline styling elements
+        const allowedTags = ['strong', 'b', 'em', 'i', 'a', 'u', 's', 'code', 'sub', 'sup', 'span', 'font', 'mark', 'br'];
+        
+        function sanitize(node) {
+            // Recurse first so we traverse children
+            const children = Array.from(node.childNodes);
+            children.forEach(child => sanitize(child));
+            
+            if (node.nodeType === 1) { // Element node
+                const tag = node.tagName.toLowerCase();
+                
+                if (!allowedTags.includes(tag)) {
+                    // Unwrap tags that are not allowed inline elements
+                    node.outerHTML = node.innerHTML;
+                    return;
+                }
+                
+                // Allowed tag: filter and sanitize attributes
+                const attrs = Array.from(node.attributes);
+                attrs.forEach(attr => {
+                    const name = attr.name.toLowerCase();
+                    if (tag === 'a' && (name === 'href' || name === 'target')) return;
+                    if (tag === 'font' && (name === 'color' || name === 'size')) return;
+                    if (name === 'style') {
+                        // Filter styled values to only preserve color, background-color, font-size, text-align
+                        const styleVal = attr.value;
+                        const cleanStyles = [];
+                        const styles = styleVal.split(';');
+                        styles.forEach(s => {
+                            const parts = s.split(':');
+                            if (parts.length === 2) {
+                                const prop = parts[0].trim().toLowerCase();
+                                const val = parts[1].trim();
+                                if (['color', 'background-color', 'font-size', 'text-align'].includes(prop)) {
+                                    cleanStyles.push(`${prop}: ${val}`);
+                                }
+                            }
+                        });
+                        if (cleanStyles.length > 0) {
+                            node.setAttribute('style', cleanStyles.join('; ') + ';');
+                            return;
+                        }
+                    }
+                    node.removeAttribute(attr.name);
+                });
+                
+                // Unwrap spans/fonts with no attributes left
+                if ((tag === 'span' || tag === 'font') && node.attributes.length === 0) {
+                    node.outerHTML = node.innerHTML;
+                }
             }
-        });
+        }
         
-        // Keep: strong, b, em, i, a, u, s, code
-        // Remove: everything else that's not inline formatting
+        // Sanitize children
+        Array.from(div.childNodes).forEach(child => sanitize(child));
         
-        return div.innerHTML
-            .replace(/<\/?(?!strong|b|em|i|a|u|s|code|\/strong|\/b|\/em|\/i|\/a|\/u|\/s|\/code)[^>]*>/gi, '')
-            .replace(/\s+/g, ' ')
-            .trim();
+        return div.innerHTML;
     }
 
     // ═══════════════════════════════════════════════════════
@@ -1061,9 +1325,13 @@
         const toolbar = document.getElementById('editorToolbar');
         if (!toolbar) return;
         
+        // Setup dropdown toggles
+        setupToolbarDropdowns(toolbar);
+        
         toolbar.querySelectorAll('[data-action]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 const action = btn.dataset.action;
                 
                 switch(action) {
@@ -1079,12 +1347,46 @@
                     case 'strikethrough':
                         document.execCommand('strikeThrough', false, null);
                         break;
+                    case 'superscript':
+                        document.execCommand('superscript', false, null);
+                        break;
+                    case 'subscript':
+                        document.execCommand('subscript', false, null);
+                        break;
                     case 'link':
                         const url = prompt('Enter URL:');
                         if (url) document.execCommand('createLink', false, url);
                         break;
+                    // Alignment actions
+                    case 'align-left':
+                        applyAlignment('left');
+                        break;
+                    case 'align-center':
+                        applyAlignment('center');
+                        break;
+                    case 'align-right':
+                        applyAlignment('right');
+                        break;
+                    case 'align-justify':
+                        applyAlignment('justify');
+                        break;
+                    // Indent/Outdent
+                    case 'indent':
+                        document.execCommand('indent', false, null);
+                        break;
+                    case 'outdent':
+                        document.execCommand('outdent', false, null);
+                        break;
+                    // Text color toggle (opens dropdown via setupToolbarDropdowns)
+                    case 'textColor':
+                    case 'highlight':
+                    case 'fontSize':
+                        // Handled by dropdown toggle setup
+                        break;
+                    // Block type inserts
                     case 'heading-2':
                     case 'heading-3':
+                    case 'heading-4':
                     case 'list-bullet':
                     case 'list-ordered':
                     case 'quote':
@@ -1101,22 +1403,135 @@
                         break;
                     case 'clear-format':
                         document.execCommand('removeFormat', false, null);
+                        // Also remove inline styles
+                        if (state.focusedIndex !== null) {
+                            const targetEl = container.querySelector(`[data-index="${state.focusedIndex}"] .editor-block-content`);
+                            if (targetEl) {
+                                targetEl.style.textAlign = '';
+                                state.blocks[state.focusedIndex].align = null; // Clear alignment state
+                                targetEl.querySelectorAll('[style]').forEach(el => {
+                                    el.removeAttribute('style');
+                                });
+                            }
+                        }
                         break;
                 }
                 
                 // Sync block content after format command
-                if (['bold', 'italic', 'underline', 'strikethrough', 'link', 'clear-format'].includes(action)) {
-                    if (state.focusedIndex !== null) {
-                        const targetEl = container.querySelector(`[data-index="${state.focusedIndex}"] .editor-block-content`);
-                        if (targetEl) {
-                            state.blocks[state.focusedIndex].content = targetEl.innerHTML;
-                            updateHiddenInput();
-                            updateStats();
-                        }
-                    }
+                const formatActions = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'link', 'clear-format', 'indent', 'outdent'];
+                if (formatActions.includes(action)) {
+                    syncFocusedBlockContent();
                 }
             });
         });
+    }
+
+    // Helper: sync focused block content to state
+    function syncFocusedBlockContent() {
+        if (state.focusedIndex !== null) {
+            const targetEl = container.querySelector(`[data-index="${state.focusedIndex}"] .editor-block-content`);
+            if (targetEl) {
+                state.blocks[state.focusedIndex].content = targetEl.innerHTML;
+                updateHiddenInput();
+                updateStats();
+            }
+        }
+    }
+
+    // Alignment helper
+    function applyAlignment(align) {
+        if (state.focusedIndex !== null) {
+            const targetEl = container.querySelector(`[data-index="${state.focusedIndex}"] .editor-block-content`);
+            if (targetEl) {
+                targetEl.style.textAlign = align;
+                state.blocks[state.focusedIndex].align = align; // Store alignment state
+                syncFocusedBlockContent();
+            }
+        }
+    }
+
+    // Setup dropdown toggles for color pickers and font size
+    function setupToolbarDropdowns(toolbar) {
+        // Generic dropdown toggle for .toolbar-dropdown-wrap
+        toolbar.querySelectorAll('.toolbar-dropdown-wrap').forEach(wrap => {
+            const trigger = wrap.querySelector('.toolbar-btn, .toolbar-dropdown-trigger');
+            const dropdown = wrap.querySelector('.toolbar-dropdown');
+            if (!trigger || !dropdown) return;
+            
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // Close other dropdowns first
+                toolbar.querySelectorAll('.toolbar-dropdown.open').forEach(d => {
+                    if (d !== dropdown) d.classList.remove('open');
+                });
+                dropdown.classList.toggle('open');
+            });
+        });
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', () => {
+            toolbar.querySelectorAll('.toolbar-dropdown.open').forEach(d => d.classList.remove('open'));
+        });
+
+        // Text Color swatches
+        const textColorDropdown = document.getElementById('textColorDropdown');
+        if (textColorDropdown) {
+            textColorDropdown.querySelectorAll('.color-swatch').forEach(swatch => {
+                swatch.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const color = swatch.dataset.color;
+                    document.execCommand('foreColor', false, color === 'inherit' ? '' : color);
+                    // Update indicator
+                    const indicator = document.getElementById('textColorIndicator');
+                    if (indicator && color !== 'inherit') indicator.style.background = color;
+                    textColorDropdown.classList.remove('open');
+                    syncFocusedBlockContent();
+                });
+            });
+        }
+
+        // Highlight Color swatches
+        const highlightDropdown = document.getElementById('highlightColorDropdown');
+        if (highlightDropdown) {
+            highlightDropdown.querySelectorAll('.color-swatch').forEach(swatch => {
+                swatch.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const color = swatch.dataset.color;
+                    if (color === 'transparent') {
+                        document.execCommand('removeFormat', false, null);
+                    } else {
+                        document.execCommand('hiliteColor', false, color);
+                    }
+                    const indicator = document.getElementById('highlightColorIndicator');
+                    if (indicator) indicator.style.background = color === 'transparent' ? '#FFF9C4' : color;
+                    highlightDropdown.classList.remove('open');
+                    syncFocusedBlockContent();
+                });
+            });
+        }
+
+        // Font Size items
+        const fontSizeDropdown = document.getElementById('fontSizeDropdown');
+        if (fontSizeDropdown) {
+            const sizeMap = { 'small': '2', 'normal': '3', 'large': '5', 'xlarge': '6' };
+            fontSizeDropdown.querySelectorAll('.toolbar-dropdown-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const size = item.dataset.size;
+                    const cmdSize = sizeMap[size] || '3';
+                    document.execCommand('fontSize', false, cmdSize);
+                    // Update active state
+                    fontSizeDropdown.querySelectorAll('.toolbar-dropdown-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    fontSizeDropdown.classList.remove('open');
+                    syncFocusedBlockContent();
+                });
+            });
+        }
     }
 
     // ═══════════════════════════════════════════════════════
@@ -1498,6 +1913,10 @@
         }
         
         state.blocks.splice(index + 1, 0, newBlock);
+        
+        // Always recalculate ordered list indices after insertion
+        recalcListIndices(state.blocks);
+        
         renderBlocks();
         updateHiddenInput();
         
@@ -1508,9 +1927,7 @@
     function convertBlockType(index, nextType) {
         saveUndoState();
         state.blocks[index].type = nextType;
-        if (nextType === 'list-ordered') {
-            recalcListIndices(state.blocks);
-        }
+        recalcListIndices(state.blocks);
         renderBlocks();
         updateHiddenInput();
         
@@ -1546,6 +1963,7 @@
 
         saveUndoState();
         state.blocks.splice(index, 1);
+        recalcListIndices(state.blocks);
         renderBlocks();
         updateHiddenInput();
 
