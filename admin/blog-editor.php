@@ -342,6 +342,10 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     
     <div style="display:flex; gap:12px; align-items:center;">
         <span id="autosaveIndicator" style="font-size:12.5px; color:var(--text-light); opacity:0.5; transition:opacity var(--transition);">Autosave is active</span>
+        <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-light); margin-right:8px; cursor:pointer; user-select:none; margin-bottom:0;">
+            <input type="checkbox" id="autoFormatPasteToggle" checked style="width:14px; height:14px; accent-color:var(--green-900); margin:0;">
+            <span>Auto-Format Paste</span>
+        </label>
         <button type="button" class="btn btn-outline" onclick="triggerUndo()" title="Undo (Ctrl+Z)">Undo</button>
         <button type="button" class="btn btn-outline" onclick="triggerRedo()" title="Redo (Ctrl+Y)">Redo</button>
         <button type="button" class="btn btn-outline" onclick="openFullPreview()">
@@ -502,6 +506,12 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                 <div class="toolbar-divider"></div>
                 <!-- Utility Group -->
                 <div class="toolbar-group">
+                    <button type="button" class="toolbar-btn" data-action="select-all" title="Select All Blocks (Ctrl+A)">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm0 4h14M5 12h14M5 17h14"></path></svg>
+                    </button>
+                    <button type="button" class="toolbar-btn" data-action="delete-selected" title="Delete Selected Blocks (Backspace/Delete)">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
                     <button type="button" class="toolbar-btn" data-action="clear-format" title="Clear Formatting">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
                     </button>
@@ -523,12 +533,12 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
             <div class="drawer-body">
                 <div class="form-group">
                     <label class="static-label" for="title">Title</label>
-                    <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($post['title']); ?>" required placeholder="e.g. Science of fat bloom">
+                    <input type="text" id="title" name="title" value="<?php echo htmlspecialchars((string)$post['title']); ?>" required placeholder="e.g. Science of fat bloom">
                 </div>
 
                 <div class="form-group">
                     <label class="static-label" for="slug">URL Slug</label>
-                    <input type="text" id="slug" name="slug" value="<?php echo htmlspecialchars($post['slug']); ?>" required placeholder="e.g. cocoa-fat-bloom">
+                    <input type="text" id="slug" name="slug" value="<?php echo htmlspecialchars((string)$post['slug']); ?>" required placeholder="e.g. cocoa-fat-bloom">
                 </div>
 
                 <div class="form-group">
@@ -544,7 +554,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 
                 <div class="form-group">
                     <label class="static-label" for="read_time">Estimated Read Time</label>
-                    <input type="text" id="read_time" name="read_time" value="<?php echo htmlspecialchars($post['read_time']); ?>" placeholder="e.g. 5 min">
+                    <input type="text" id="read_time" name="read_time" value="<?php echo htmlspecialchars((string)$post['read_time']); ?>" placeholder="e.g. 5 min">
                 </div>
 
                 <div class="form-group">
@@ -573,7 +583,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 
                 <div class="form-group">
                     <label class="static-label" for="excerpt">Excerpt / Summary</label>
-                    <textarea id="excerpt" name="excerpt" rows="3" required placeholder="Write a short blog card teaser summary..."><?php echo htmlspecialchars($post['excerpt']); ?></textarea>
+                    <textarea id="excerpt" name="excerpt" rows="3" required placeholder="Write a short blog card teaser summary..."><?php echo htmlspecialchars((string)$post['excerpt']); ?></textarea>
                 </div>
 
                 <!-- Google SEO Result Live Mockup Card -->
@@ -593,7 +603,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                         <p>Upload header image</p>
                         <input type="file" id="header_image" name="header_image" onchange="previewFile(this, 'header-preview')">
                         <div class="file-preview" id="header-preview" style="<?php echo !empty($post['image_path']) ? '' : 'display:none;'; ?>">
-                            <img src="<?php echo !empty($post['image_path']) ? '../' . htmlspecialchars($post['image_path']) : ''; ?>" alt="">
+                            <img src="<?php echo !empty($post['image_path']) ? '../' . htmlspecialchars((string)$post['image_path']) : ''; ?>" alt="">
                         </div>
                     </div>
                 </div>
@@ -605,19 +615,19 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                         <p>Upload thumbnail image</p>
                         <input type="file" id="thumbnail_image" name="thumbnail_image" onchange="previewFile(this, 'thumb-preview')">
                         <div class="file-preview" id="thumb-preview" style="<?php echo !empty($post['thumbnail_path']) ? '' : 'display:none;'; ?>">
-                            <img src="<?php echo !empty($post['thumbnail_path']) ? '../' . htmlspecialchars($post['thumbnail_path']) : ''; ?>" alt="">
+                            <img src="<?php echo !empty($post['thumbnail_path']) ? '../' . htmlspecialchars((string)$post['thumbnail_path']) : ''; ?>" alt="">
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="static-label" for="youtube_url">YouTube URL</label>
-                    <input type="url" id="youtube_url" name="youtube_url" value="<?php echo htmlspecialchars($post['youtube_url']); ?>" placeholder="e.g. https://youtube.com/watch?v=...">
+                    <input type="url" id="youtube_url" name="youtube_url" value="<?php echo htmlspecialchars((string)$post['youtube_url']); ?>" placeholder="e.g. https://youtube.com/watch?v=...">
                 </div>
 
                 <div class="form-group">
                     <label class="static-label" for="body_class">Body CSS Class</label>
-                    <input type="text" id="body_class" name="body_class" value="<?php echo htmlspecialchars($post['body_class']); ?>" placeholder="e.g. cocoa-article">
+                    <input type="text" id="body_class" name="body_class" value="<?php echo htmlspecialchars((string)$post['body_class']); ?>" placeholder="e.g. cocoa-article">
                 </div>
 
                 <div class="form-group" style="display:flex; justify-content:space-between; align-items:center;">

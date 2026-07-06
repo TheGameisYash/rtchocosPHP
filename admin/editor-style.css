@@ -21,7 +21,7 @@
     box-shadow: var(--shadow-sm);
     min-height: 700px;
     transition: all var(--transition);
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -38,9 +38,11 @@
     border-radius: 16px 16px 0 0;
     flex-wrap: wrap;
     position: sticky;
-    top: 60px;
-    z-index: 100;
-    backdrop-filter: blur(12px);
+    top: 70px;
+    z-index: 800;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .toolbar-btn {
@@ -870,7 +872,7 @@
    ═══════════════════════════════════════════════════════ */
 
 #floatingFormatBar {
-    position: absolute;
+    position: fixed;
     background: var(--sidebar-bg);
     border: 1px solid rgba(199, 166, 106, 0.2);
     border-radius: 10px;
@@ -881,6 +883,7 @@
     align-items: center;
     gap: 2px;
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .format-bar-btn {
@@ -1155,3 +1158,65 @@
         display: none;
     }
 }
+
+/* ═══════════════════════════════════════════════════════
+   MULTI-BLOCK SELECTION & CONTROLS STYLES
+   ═══════════════════════════════════════════════════════ */
+
+/* Highlights for selected blocks */
+.editor-block-wrapper.block-selected {
+    background-color: rgba(199, 166, 106, 0.08) !important;
+    box-shadow: inset 0 0 0 1px rgba(199, 166, 106, 0.4), 0 2px 12px rgba(199, 166, 106, 0.05);
+}
+
+.editor-block-wrapper.block-selected .editor-block-controls {
+    opacity: 1;
+    pointer-events: auto;
+    left: -48px;
+}
+
+/* Selector toggle checkbox styling */
+.block-ctrl-select {
+    color: var(--text-light);
+    border-radius: 50% !important; /* Circular selector */
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.block-ctrl-select:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+    background: rgba(199, 166, 106, 0.1);
+}
+
+.block-ctrl-select svg {
+    width: 10px;
+    height: 10px;
+    display: none;
+}
+
+.editor-block-wrapper.block-selected .block-ctrl-select {
+    background-color: var(--gold) !important;
+    border-color: var(--gold) !important;
+    color: var(--white) !important;
+}
+
+.editor-block-wrapper.block-selected .block-ctrl-select svg {
+    display: block;
+}
+
+/* Custom styling for Delete Selected button in toolbar */
+.toolbar-btn[data-action="delete-selected"] {
+    color: var(--text-light);
+}
+
+.toolbar-btn[data-action="delete-selected"]:hover {
+    color: #d32f2f;
+    background: rgba(211, 47, 47, 0.08);
+}
+
+.toolbar-btn[data-action="delete-selected"].active {
+    color: #d32f2f;
+    background: rgba(211, 47, 47, 0.12);
+}
+

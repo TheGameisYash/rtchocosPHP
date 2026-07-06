@@ -11,7 +11,9 @@
         slashMenuOpen: false,
         slashMenuFilter: '',
         slashMenuIndex: 0,
-        dragSrcIndex: null
+        dragSrcIndex: null,
+        selectionStart: null,
+        selectionEnd: null
     };
 
     // DOM references
@@ -80,10 +82,15 @@
     document.addEventListener('copy', handleEditorCopy);
     document.addEventListener('cut', handleEditorCut);
 
-    // Close slash menu on outside click
+    // Close slash menu and clear block selection on outside click
     document.addEventListener('click', (e) => {
         if (state.slashMenuOpen && !e.target.closest('.slash-command-menu')) {
             closeSlashMenu();
+        }
+        if (!e.target.closest('.editor-block-wrapper') && 
+            !e.target.closest('#editorToolbar') && 
+            !e.target.closest('#floatingFormatBar')) {
+            clearBlockSelection();
         }
     });
 
@@ -421,6 +428,18 @@
             blockWrapper.addEventListener('dragenter', (e) => handleDragEnter(e, index));
             blockWrapper.addEventListener('dragleave', handleDragLeave);
             
+            // Shift + Click range selection
+            blockWrapper.addEventListener('click', (e) => {
+                if (e.shiftKey) {
+                    e.preventDefault();
+                    if (state.selectionStart === null) {
+                        state.selectionStart = state.focusedIndex !== null ? state.focusedIndex : index;
+                    }
+                    state.selectionEnd = index;
+                    updateSelectionVisuals();
+                }
+            });
+            
             // Add Side Controls
             const controls = createBlockControls(index, block.type);
             blockWrapper.appendChild(controls);
@@ -437,6 +456,7 @@
         container.appendChild(adder);
         
         updateStats();
+        updateSelectionVisuals();
     }
 
     // ═══════════════════════════════════════════════════════
@@ -503,6 +523,18 @@
     function createBlockControls(index, type) {
         const controls = document.createElement('div');
         controls.className = 'editor-block-controls';
+
+        // Selection checkbox toggle button
+        const selBtn = document.createElement('button');
+        selBtn.type = 'button';
+        selBtn.className = 'block-ctrl-btn block-ctrl-select';
+        selBtn.title = 'Select block';
+        selBtn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>`;
+        selBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleBlockSelection(index);
+        });
+        controls.appendChild(selBtn);
 
         // Add Plus button to insert block before
         const addBtn = document.createElement('button');
@@ -630,6 +662,68 @@
 
         // KEYBOARD HANDLING
         el.addEventListener('keydown', (e) => {
+            // Multi-block Selection Key Handling
+            const hasSelection = state.selectionStart !== null && state.selectionEnd !== null;
+            
+            if (hasSelection && (e.key === 'Backspace' || e.key === 'Delete')) {
+                e.preventDefault();
+                deleteSelectedBlocks();
+                return;
+            }
+            
+            if (hasSelection && e.key === 'Escape') {
+                e.preventDefault();
+                clearBlockSelection();
+                return;
+            }
+            
+            if (e.key === 'ArrowDown' && e.shiftKey) {
+                e.preventDefault();
+                if (state.selectionStart === null) {
+                    state.selectionStart = index;
+                    state.selectionEnd = index;
+                }
+                state.selectionEnd = Math.min(state.blocks.length - 1, state.selectionEnd + 1);
+                updateSelectionVisuals();
+                return;
+            }
+            
+            if (e.key === 'ArrowUp' && e.shiftKey) {
+                e.preventDefault();
+                if (state.selectionStart === null) {
+                    state.selectionStart = index;
+                    state.selectionEnd = index;
+                }
+                state.selectionEnd = Math.max(0, state.selectionEnd - 1);
+                updateSelectionVisuals();
+                return;
+            }
+            
+            if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+                if (isTextFullySelected(el)) {
+                    e.preventDefault();
+                    selectAllBlocks();
+                    return;
+                }
+            }
+            
+            if (hasSelection && !e.ctrlKey && !e.metaKey && e.key.length === 1) {
+                e.preventDefault();
+                deleteSelectedBlocks();
+                setTimeout(() => {
+                    const activeEl = document.activeElement;
+                    if (activeEl && activeEl.classList.contains('editor-block-content')) {
+                        activeEl.innerHTML = e.key;
+                        placeCaretAtEnd(activeEl);
+                        const currentIdx = parseInt(activeEl.closest('.editor-block-wrapper').dataset.index);
+                        state.blocks[currentIdx].content = e.key;
+                        updateHiddenInput();
+                        updateStats();
+                    }
+                }, 100);
+                return;
+            }
+
             // Slash menu keyboard navigation
             if (state.slashMenuOpen) {
                 if (e.key === 'ArrowDown') {
@@ -748,74 +842,40 @@
         const html = clipboardData.getData('text/html');
         const plainText = clipboardData.getData('text/plain');
         
-        // For simple single-line plain text with no HTML, let the browser handle it natively
-        if (!html && plainText && !plainText.includes('\n')) {
-            // Don't prevent default — native paste works perfectly for simple text
-            // Just sync block content after browser processes the paste
+        // Check if auto format is active
+        const autoFormatToggle = document.getElementById('autoFormatPasteToggle');
+        const doAutoFormat = autoFormatToggle ? autoFormatToggle.checked : true;
+
+        // If there's block selection, delete it first
+        const hasSelection = state.selectionStart !== null && state.selectionEnd !== null;
+        if (hasSelection) {
+            deleteSelectedBlocks();
+            // Focused index might have shifted, get the current one
+            index = state.focusedIndex !== null ? state.focusedIndex : index;
+            block = state.blocks[index] || block;
+        }
+        
+        // For simple single-line plain text with no HTML and no auto format
+        if (!html && plainText && !plainText.includes('\n') && !doAutoFormat) {
+            // Let native browser paste happen
             setTimeout(() => {
-                block.content = e.target.innerHTML;
-                updateHiddenInput();
-                updateStats();
+                const targetEl = container.querySelector(`[data-index="${index}"] .editor-block-content`);
+                if (targetEl) {
+                    block.content = targetEl.innerHTML;
+                    updateHiddenInput();
+                    updateStats();
+                }
             }, 0);
             return;
         }
         
         e.preventDefault();
         
+        let pastedBlocks = [];
+        
         if (html && html.trim()) {
-            // Parse pasted HTML into blocks
-            const pastedBlocks = htmlToBlocks(html);
-            
-            if (pastedBlocks.length === 0) {
-                // Fallback: insert as plain text
-                document.execCommand('insertText', false, plainText || '');
-                block.content = e.target.innerHTML;
-                updateHiddenInput();
-                updateStats();
-                return;
-            }
-            
-            if (pastedBlocks.length === 1) {
-                // Single block paste — insert content into current block
-                const cleanContent = pastedBlocks[0].content || '';
-                document.execCommand('insertHTML', false, cleanContent);
-                block.content = e.target.innerHTML;
-                if (pastedBlocks[0].align) {
-                    e.target.style.textAlign = pastedBlocks[0].align;
-                    block.align = pastedBlocks[0].align;
-                }
-                updateHiddenInput();
-                updateStats();
-            } else if (pastedBlocks.length > 1) {
-                // Multi-block paste — insert all blocks after current
-                saveUndoState();
-                
-                // Put first block content into current block if it's empty
-                if (block.content.trim() === '' && pastedBlocks.length > 0) {
-                    block.type = pastedBlocks[0].type;
-                    block.content = pastedBlocks[0].content || '';
-                    if (pastedBlocks[0].index) block.index = pastedBlocks[0].index;
-                    if (pastedBlocks[0].align) block.align = pastedBlocks[0].align;
-                    pastedBlocks.shift();
-                }
-                
-                // Insert remaining blocks after current index
-                for (let i = 0; i < pastedBlocks.length; i++) {
-                    state.blocks.splice(index + 1 + i, 0, pastedBlocks[i]);
-                }
-                
-                // Recalculate ordered list indices
-                recalcListIndices(state.blocks);
-                
-                renderBlocks();
-                updateHiddenInput();
-                
-                // Focus last inserted block
-                const lastIdx = index + pastedBlocks.length;
-                setTimeout(() => focusBlock(lastIdx, 'end'), 50);
-            }
+            pastedBlocks = htmlToBlocks(html);
         } else if (plainText) {
-            // Plain text paste — check if it's markdown-like or multiline
             const lines = plainText.split('\n');
             const hasStructure = lines.some(l => 
                 l.trim().startsWith('## ') || l.trim().startsWith('### ') ||
@@ -824,52 +884,80 @@
             );
             
             if (hasStructure && lines.length > 1) {
-                // Parse as markdown
-                saveUndoState();
-                const pastedBlocks = markdownToBlocks(plainText);
-                
-                if (block.content.trim() === '' && pastedBlocks.length > 0) {
-                    block.type = pastedBlocks[0].type;
-                    block.content = pastedBlocks[0].content || '';
-                    if (pastedBlocks[0].index) block.index = pastedBlocks[0].index;
-                    pastedBlocks.shift();
-                }
-                
-                for (let i = 0; i < pastedBlocks.length; i++) {
-                    state.blocks.splice(index + 1 + i, 0, pastedBlocks[i]);
-                }
-                
-                recalcListIndices(state.blocks);
-                
-                renderBlocks();
-                updateHiddenInput();
-                const lastIdx = index + pastedBlocks.length;
-                setTimeout(() => focusBlock(lastIdx, 'end'), 50);
+                pastedBlocks = markdownToBlocks(plainText);
             } else if (lines.length > 1) {
-                // Multi-line plain text — create paragraph blocks
-                saveUndoState();
                 const nonEmpty = lines.filter(l => l.trim() !== '');
-                
-                if (block.content.trim() === '' && nonEmpty.length > 0) {
-                    block.content = nonEmpty[0];
-                    nonEmpty.shift();
-                }
-                
-                for (let i = 0; i < nonEmpty.length; i++) {
-                    state.blocks.splice(index + 1 + i, 0, { type: 'paragraph', content: nonEmpty[i] });
-                }
-                
-                renderBlocks();
-                updateHiddenInput();
-                const lastIdx = index + nonEmpty.length;
-                setTimeout(() => focusBlock(lastIdx, 'end'), 50);
+                pastedBlocks = nonEmpty.map(l => ({ type: 'paragraph', content: l }));
             } else {
-                // Single line plain text — insert normally
-                document.execCommand('insertText', false, plainText);
-                block.content = e.target.innerHTML;
-                updateHiddenInput();
-                updateStats();
+                pastedBlocks = [{ type: 'paragraph', content: plainText }];
             }
+        }
+        
+        if (pastedBlocks.length === 0) {
+            return;
+        }
+        
+        // Auto Formatter logic
+        if (doAutoFormat) {
+            pastedBlocks.forEach(b => {
+                if (b.type === 'paragraph' || b.type.startsWith('heading') || b.type === 'quote' || b.type === 'callout' || b.type.startsWith('list')) {
+                    if (b.content) {
+                        // 1. Convert double asterisks/underscores and inline links
+                        let formatted = b.content
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                            .replace(/_(.*?)_/g, '<em>$1</em>')
+                            .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+                        
+                        // 2. Linkify URLs
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = formatted;
+                        linkifyDOM(tempDiv);
+                        b.content = tempDiv.innerHTML;
+                    }
+                }
+            });
+        }
+        
+        saveUndoState();
+        
+        const targetEl = container.querySelector(`[data-index="${index}"] .editor-block-content`);
+        
+        // Now insert pastedBlocks at current index
+        if (pastedBlocks.length === 1 && pastedBlocks[0].type === block.type && targetEl) {
+            // Single block paste into current block — insert content at caret
+            const cleanContent = pastedBlocks[0].content || '';
+            document.execCommand('insertHTML', false, cleanContent);
+            block.content = targetEl.innerHTML;
+            if (pastedBlocks[0].align) {
+                targetEl.style.textAlign = pastedBlocks[0].align;
+                block.align = pastedBlocks[0].align;
+            }
+            updateHiddenInput();
+            updateStats();
+        } else {
+            // Multi-block paste or type mismatch — replace/insert blocks
+            // If current block is empty, reuse it for the first pasted block
+            if (block.content.trim() === '' && targetEl) {
+                block.type = pastedBlocks[0].type;
+                block.content = pastedBlocks[0].content || '';
+                if (pastedBlocks[0].index) block.index = pastedBlocks[0].index;
+                if (pastedBlocks[0].align) block.align = pastedBlocks[0].align;
+                pastedBlocks.shift();
+            }
+            
+            // Insert remaining blocks
+            for (let i = 0; i < pastedBlocks.length; i++) {
+                state.blocks.splice(index + 1 + i, 0, pastedBlocks[i]);
+            }
+            
+            recalcListIndices(state.blocks);
+            renderBlocks();
+            updateHiddenInput();
+            
+            // Focus last inserted block
+            const lastIdx = index + pastedBlocks.length;
+            setTimeout(() => focusBlock(lastIdx, 'end'), 50);
         }
     }
 
@@ -877,6 +965,22 @@
     // COPY / CUT EVENT HANDLERS
     // ═══════════════════════════════════════════════════════
     function getSelectedBlocks() {
+        const hasSelection = state.selectionStart !== null && state.selectionEnd !== null;
+        if (hasSelection) {
+            const selectedBlocks = [];
+            const minIdx = Math.min(state.selectionStart, state.selectionEnd);
+            const maxIdx = Math.max(state.selectionStart, state.selectionEnd);
+            for (let i = minIdx; i <= maxIdx; i++) {
+                const el = container.querySelector(`[data-index="${i}"] .editor-block-content`);
+                selectedBlocks.push({
+                    index: i,
+                    element: el,
+                    block: state.blocks[i]
+                });
+            }
+            return selectedBlocks;
+        }
+
         const sel = window.getSelection();
         if (!sel.rangeCount || sel.isCollapsed) return [];
         
@@ -896,11 +1000,12 @@
     }
 
     function handleEditorCopy(e) {
+        const hasSelection = state.selectionStart !== null && state.selectionEnd !== null;
         const sel = window.getSelection();
-        if (!sel.rangeCount || sel.isCollapsed) return;
+        if (!hasSelection && (!sel.rangeCount || sel.isCollapsed)) return;
         
         const selected = getSelectedBlocks();
-        if (selected.length <= 1) return; // Let browser handle the native copy within a single block
+        if (!hasSelection && selected.length <= 1) return; // Let browser handle the native copy within a single block
         
         e.preventDefault();
         
@@ -928,7 +1033,8 @@
             } else if (block.type === 'callout') {
                 html += `<div class="block-callout"${alignStyle}>${block.content}</div>\n`;
             } else if (block.type === 'code') {
-                html += `<pre><code>${escapeHtml(block.content)}</code></pre>\n`;
+                const escapeHtmlFunc = window.escapeHtml || ((text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+                html += `<pre><code>${escapeHtmlFunc(block.content)}</code></pre>\n`;
             } else if (block.type === 'divider') {
                 html += `<hr>\n`;
             } else {
@@ -941,11 +1047,12 @@
     }
 
     function handleEditorCut(e) {
+        const hasSelection = state.selectionStart !== null && state.selectionEnd !== null;
         const sel = window.getSelection();
-        if (!sel.rangeCount || sel.isCollapsed) return;
+        if (!hasSelection && (!sel.rangeCount || sel.isCollapsed)) return;
         
         const selected = getSelectedBlocks();
-        if (selected.length <= 1) {
+        if (!hasSelection && selected.length <= 1) {
             // Single block cut: let browser handle natively, then sync
             setTimeout(() => {
                 if (state.focusedIndex !== null && state.focusedIndex < state.blocks.length) {
@@ -978,6 +1085,7 @@
         }
         
         recalcListIndices(state.blocks);
+        clearBlockSelection();
         renderBlocks();
         updateHiddenInput();
         
@@ -1335,6 +1443,12 @@
                 const action = btn.dataset.action;
                 
                 switch(action) {
+                    case 'select-all':
+                        selectAllBlocks();
+                        break;
+                    case 'delete-selected':
+                        deleteSelectedBlocks();
+                        break;
                     case 'bold':
                         document.execCommand('bold', false, null);
                         break;
@@ -2293,6 +2407,134 @@
             }
         } catch (e) {
             // Error parsing autosave
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // MULTI-BLOCK SELECTION MANAGER
+    // ═══════════════════════════════════════════════════════
+    function toggleBlockSelection(index) {
+        if (state.selectionStart === null) {
+            state.selectionStart = index;
+            state.selectionEnd = index;
+        } else {
+            const minSel = Math.min(state.selectionStart, state.selectionEnd);
+            const maxSel = Math.max(state.selectionStart, state.selectionEnd);
+            if (index >= minSel && index <= maxSel) {
+                clearBlockSelection();
+            } else {
+                if (index < minSel) {
+                    state.selectionStart = index;
+                } else {
+                    state.selectionEnd = index;
+                }
+            }
+        }
+        updateSelectionVisuals();
+    }
+
+    function clearBlockSelection() {
+        state.selectionStart = null;
+        state.selectionEnd = null;
+        updateSelectionVisuals();
+    }
+
+    function selectAllBlocks() {
+        state.selectionStart = 0;
+        state.selectionEnd = state.blocks.length - 1;
+        updateSelectionVisuals();
+    }
+
+    function deleteSelectedBlocks() {
+        if (state.selectionStart === null || state.selectionEnd === null) return;
+        
+        saveUndoState();
+        
+        const minIdx = Math.min(state.selectionStart, state.selectionEnd);
+        const maxIdx = Math.max(state.selectionStart, state.selectionEnd);
+        const count = maxIdx - minIdx + 1;
+        
+        state.blocks.splice(minIdx, count);
+        
+        if (state.blocks.length === 0) {
+            state.blocks.push({ type: 'paragraph', content: '' });
+        }
+        
+        recalcListIndices(state.blocks);
+        clearBlockSelection();
+        renderBlocks();
+        updateHiddenInput();
+        updateStats();
+        
+        const focusIdx = Math.min(minIdx, state.blocks.length - 1);
+        setTimeout(() => focusBlock(focusIdx, 'start'), 50);
+    }
+
+    function updateSelectionVisuals() {
+        const wrappers = container.querySelectorAll('.editor-block-wrapper');
+        const hasSelection = state.selectionStart !== null && state.selectionEnd !== null;
+        
+        const minIdx = hasSelection ? Math.min(state.selectionStart, state.selectionEnd) : -1;
+        const maxIdx = hasSelection ? Math.max(state.selectionStart, state.selectionEnd) : -1;
+        
+        wrappers.forEach((wrapper, idx) => {
+            if (hasSelection && idx >= minIdx && idx <= maxIdx) {
+                wrapper.classList.add('block-selected');
+            } else {
+                wrapper.classList.remove('block-selected');
+            }
+        });
+        
+        const delSelBtn = document.querySelector('[data-action="delete-selected"]');
+        if (delSelBtn) {
+            if (hasSelection) {
+                delSelBtn.classList.add('active');
+                delSelBtn.disabled = false;
+            } else {
+                delSelBtn.classList.remove('active');
+                delSelBtn.disabled = true;
+            }
+        }
+    }
+
+    function isTextFullySelected(el) {
+        const sel = window.getSelection();
+        if (!sel.rangeCount || sel.isCollapsed) {
+            return el.textContent.trim() === '';
+        }
+        const range = sel.getRangeAt(0);
+        const selStr = sel.toString().trim();
+        const elStr = el.textContent.trim();
+        return selStr.length === elStr.length;
+    }
+
+    // Auto-Formatter linkification helper
+    function linkifyDOM(node) {
+        if (node.nodeType === 3) {
+            const text = node.textContent;
+            const urlRegex = /(https?:\/\/[^\s<]+)/g;
+            if (urlRegex.test(text)) {
+                const parent = node.parentNode;
+                if (parent && parent.tagName.toLowerCase() === 'a') return;
+                
+                const parts = text.split(urlRegex);
+                const frag = document.createDocumentFragment();
+                parts.forEach(part => {
+                    if (urlRegex.test(part)) {
+                        const a = document.createElement('a');
+                        a.href = part;
+                        a.target = '_blank';
+                        a.textContent = part;
+                        frag.appendChild(a);
+                    } else if (part) {
+                        frag.appendChild(document.createTextNode(part));
+                    }
+                });
+                parent.replaceChild(frag, node);
+            }
+        } else if (node.nodeType === 1) {
+            const children = Array.from(node.childNodes);
+            children.forEach(child => linkifyDOM(child));
         }
     }
 
