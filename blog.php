@@ -73,10 +73,10 @@
     </div>
   </div>
   <div class="section">
-    <div style="text-align:center;margin-bottom:48px;">
-      <div class="section-label" style="margin-bottom:12px;">The Cacao Journal</div>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,52px);font-weight:400;color:var(--brown);margin-bottom:12px;letter-spacing:-0.01em;">Articles &amp; Insights</h1>
-      <p style="font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:var(--brown-light);font-weight:300;max-width:560px;margin:0 auto;">Science, craft, and stories from the world of bean-to-bar chocolate</p>
+    <div style="text-align:center;margin-bottom:48px; display: flex; flex-direction: column; align-items: center;">
+      <div class="section-label">The Cacao Journal</div>
+      <h1 class="section-title">Articles &amp; Insights</h1>
+      <p class="section-subtitle">Science, craft, and stories from the world of bean-to-bar chocolate</p>
     </div>
     <div class="blog-seo-intro">
       <p><strong>RT Chocos is an independent chocolate blog from India</strong>, written for makers who want to understand what happens inside the bowl—not simply follow a method. Explore evidence-led articles on cocoa ingredients, tempering, bloom, flavour development, formulation and bean-to-bar production.</p>

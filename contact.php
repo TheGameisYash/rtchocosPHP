@@ -25,7 +25,7 @@
     <div class="contact-grid">
       <div>
         <div class="section-label">Reach Out</div>
-        <h2 style="font-size:32px;margin-bottom:16px;">Contact Details</h2>
+        <h2 class="section-title">Contact Details</h2>
         <div class="divider" style="margin-bottom:24px;"></div>
         <div class="contact-item"><div><div class="contact-label">Location</div><div class="contact-value">Mumbai, Maharashtra, India</div></div></div>
         <div class="contact-item"><div><div class="contact-label">Email</div><div class="contact-value">hello@rtchocos.com</div></div></div>

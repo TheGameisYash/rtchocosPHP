@@ -3,18 +3,22 @@
   <div class="footer-grid">
     <div>
       <a href="<?php echo $pathPrefix; ?>index.php" style="text-decoration:none;display:inline-block;margin-bottom:16px;">
-        <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-footer" alt="RT Chocos Logo" />
+        <span class="logo-rt" style="font-size: 28px;">RT</span><span class="logo-chocos" style="font-size: 28px;"> Chocos</span>
       </a>
-      <p style="color:rgba(246,242,234,0.6);font-size:13px;line-height:1.7;font-weight:300;max-width:260px;">India's chocolate blog for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
+      <p style="color:rgba(245,237,230,0.5);font-size:13px;line-height:1.7;font-weight:300;max-width:260px;">India's chocolate learning platform for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
     </div>
     <div>
-      <div class="footer-heading">Quick Links</div>
+      <div class="footer-heading">Navigation</div>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>index.php">Home</a>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About</a>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
+    </div>
+    <div>
+      <div class="footer-heading">Explore</div>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
     </div>
     <div>
       <?php if (empty($isHome)): ?>
@@ -63,9 +67,6 @@
     <span>Crafted with ♥ from Mumbai</span>
   </div>
 </footer>
-
-<!-- WhatsApp -->
-<button class="whatsapp-float" title="Chat with us on WhatsApp">&#128172;</button>
 
 <!-- Newsletter Popup -->
 <div id="newsletter-popup">

@@ -4,30 +4,88 @@
   $pageKeywords = "chocolate, chocolate learning, recipes, bean to bar chocolate, chocolate academy, chocolate blog India, bean to bar chocolate India, craft chocolate articles, cocoa science India, chocolate making blog, RT Chocos blog";
   $pathPrefix = "";
   $isHome = true;
+
+  // Load database connection and fetch the latest 5 cached insights for server-side scrolling ticker rendering
+  require_once $pathPrefix . 'includes/db.php';
+  try {
+      $pdo = get_db();
+      $insightStmt = $pdo->query("SELECT insight_text FROM ai_insights ORDER BY id DESC LIMIT 5");
+      $cachedInsights = $insightStmt->fetchAll(PDO::FETCH_COLUMN);
+  } catch (Exception $e) {
+      $cachedInsights = [];
+  }
+  if (empty($cachedInsights)) {
+      $cachedInsights = [
+          "Cacao beans contain over 600 flavor compounds, making them chemically more complex than red wine.",
+          "The ideal temperature for dark chocolate tempering is between 88°F and 90°F (31°C - 32°C).",
+          "Criollo cacao is highly prized for its delicate, aromatic flavor profile and low bitterness.",
+          "Water is chocolate's biggest enemy; even a single drop can cause a batch to seize.",
+          "Roasting cacao beans sterilizes them, reduces moisture, and develops crucial chocolate aroma precursors."
+      ];
+  }
+
   include $pathPrefix . 'includes/header.php';
 ?>
 
 <!-- --- HOME PAGE --- -->
 <div id="page-home" class="page active">
+  <div class="deco-leaf-left"></div>
+  <div class="deco-leaf-right"></div>
 
-  <!-- Hero -->
-  <section id="hero">
-    <video autoplay muted loop playsinline class="hero-video-bg">
-      <source src="assets/award.mp4" type="video/mp4">
-    </video>
-    <div class="hero-video-overlay"></div>
+  <!-- Split Hero (No Video) -->
+  <section id="hero" style="min-height: 85vh; padding: 140px 24px 80px;">
     <div class="deco-circle-1"></div>
     <div class="deco-circle-2"></div>
     <div class="deco-radial"></div>
-    <div class="hero-content">
-      <h1 class="fade-up" style="font-family:'Cormorant Garamond',serif;font-size:clamp(42px,5.5vw,72px);line-height:1.1;font-weight:700;letter-spacing:0.01em;color:#ffffff;margin-bottom:12px;">The Cacao Journal</h1>
-      <p class="fade-up-d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.4vw,28px);font-weight:400;line-height:1.3;color:rgba(255,255,255,0.9);margin-bottom:24px;">From Cacao Farm to Commercial Kitchen — Every story worth knowing about chocolate science and craft</p>
-      <div class="hero-btns fade-up-d2">
-        <a href="workshops.php" class="btn-hero-primary">Explore Workshops</a>
-        <a href="blog.php" class="btn-hero-outline">Read the Blog</a>
+    <div class="split-hero-container">
+      <div class="split-hero-content">
+        <span class="hero-tag fade-up">Premium Chocolate Academy</span>
+        <h1 class="fade-up-d1">Unlocking Cacao's <em>Science &amp; Art</em></h1>
+        <p class="fade-up-d2">An independent Indian chocolate learning academy covering bean-to-bar craftsmanship, cacao formulation science, and professional masterclasses.</p>
+        <div class="hero-btns fade-up-d3">
+          <a href="workshops.php" class="btn-hero-primary">Start Learning</a>
+          <button onclick="toggleAiDrawer()" class="btn-hero-outline" style="display:inline-flex; align-items:center; gap:8px;">✨ Ask CocoaGenius AI</button>
+        </div>
+      </div>
+      <div class="split-hero-visual fade-in">
+        <div class="split-hero-img-wrapper">
+          <div class="hero-slideshow">
+            <div class="slide active"><img src="assets/premium_chocolate.png" alt="Luxury artisanal chocolate bar craft photography" loading="eager"></div>
+            <div class="slide"><img src="assets/premium_bonbons.png" alt="Glossy hand-painted artisan chocolate bonbons"></div>
+            <div class="slide"><img src="assets/premium_pods.png" alt="Organic raw cacao pods split open displaying pulp"></div>
+          </div>
+          
+          <!-- Circular Rotating Brand Stamp -->
+          <div class="circular-stamp-container">
+            <svg class="circular-stamp" viewBox="0 0 100 100">
+              <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
+              <text>
+                <textPath href="#circlePath">🌱 100% CRAFT BEAN-TO-BAR • RT CHOCOS ACADEMY •</textPath>
+              </text>
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- Moving AI Insights Ticker Bar (Looping horizontal ticker) -->
+  <div class="ticker-wrap">
+    <div class="ticker-title">✨ AI Live Insights</div>
+    <div class="ticker-track">
+      <div class="ticker-content">
+        <?php foreach ($cachedInsights as $insight): ?>
+          <span class="ticker-item">🌱 <?php echo htmlspecialchars($insight, ENT_QUOTES, 'UTF-8'); ?></span>
+        <?php endforeach; ?>
+      </div>
+      <!-- Duplicate for infinite seamless scroll -->
+      <div class="ticker-content" aria-hidden="true">
+        <?php foreach ($cachedInsights as $insight): ?>
+          <span class="ticker-item">🌱 <?php echo htmlspecialchars($insight, ENT_QUOTES, 'UTF-8'); ?></span>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </div>
 
   <!-- Credibility Strip -->
   <div id="cred-strip">
@@ -76,8 +134,133 @@
     </div>
   </section>
 
+  <!-- AI Troubleshooting Section -->
+  <section class="ai-widget-sec section">
+    <div class="ai-widget-container">
+      <div class="section-label">AI Diagnostics Tool</div>
+      <h2 class="section-title">Troubleshoot Chocolate Defects Instantly</h2>
+      <p class="section-subtitle" style="margin: 0 auto 36px;">Experiencing issues with your batch? Our CocoaGenius AI can diagnose common tempering, crystallization, and texture defects in seconds. Select a symptom or chat with the AI helper.</p>
+      
+      <div class="ai-widget-grid">
+        <div class="ai-widget-card" onclick="sendTroubleshootQuery('Why does my tempered chocolate have dull white streaks or haze on the surface?')">
+          <div class="ai-widget-icon">🔬</div>
+          <h3>Dull Streaks or Haze</h3>
+          <p>Chocolate has greyish streaks, swirls, or a dull finish instead of a glossy shine.</p>
+          <span>Diagnose Defect &rarr;</span>
+        </div>
+        <div class="ai-widget-card" onclick="sendTroubleshootQuery('Why is my chocolate soft at room temperature and refuses to snap when broken?')">
+          <div class="ai-widget-icon">🍫</div>
+          <h3>No Snap or Soft Texture</h3>
+          <p>Chocolate melts immediately in fingers, bends instead of snaps, or won\'t release from the mould.</p>
+          <span>Diagnose Temper &rarr;</span>
+        </div>
+        <div class="ai-widget-card" onclick="sendTroubleshootQuery('Why does my chocolate feel gritty, sandy, or coarse on the tongue instead of silky smooth?')">
+          <div class="ai-widget-icon">👅</div>
+          <h3>Gritty or Coarse Mouthfeel</h3>
+          <p>Particles feel sandy or rough on the palate, lacking the signature smooth melt.</p>
+          <span>Diagnose Grind &rarr;</span>
+        </div>
+        <div class="ai-widget-card" onclick="sendTroubleshootQuery('How can I safely add water-based liquid flavors or colors to chocolate without seizing it?')">
+          <div class="ai-widget-icon">⚠️</div>
+          <h3>Chocolate Seizing Risk</h3>
+          <p>Learn how to safely introduce colors or liquid flavors without thickening the batch.</p>
+          <span>Explain Process &rarr;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Chocolab Section -->
+  <section class="ai-chocolab-sec section" style="position: relative; overflow: hidden; padding: 80px 24px;">
+    <div class="deco-circle-3" style="position: absolute; top: -10%; right: -10%; width: 350px; height: 350px; border-radius: 50%; background: radial-gradient(circle, rgba(201,149,107,0.08) 0%, transparent 70%); z-index: 1;"></div>
+    
+    <div style="max-width: 1100px; margin: 0 auto; position: relative; z-index: 2;">
+      <div class="section-label" style="text-align: center;">Interactive Lab</div>
+      <h2 class="section-title" style="text-align: center; margin-bottom: 12px;">✨ AI Chocolab Formulation Playground</h2>
+      <p class="section-subtitle" style="max-width: 680px; margin: 0 auto 48px; text-align: center;">Design your dream chocolate bar. Select a base, cacao percentage, and gourmet inclusions. Our CocoaGenius AI will instantly formulate a custom recipe, tasting profile, and tempering guide for your creation.</p>
+      
+      <div class="chocolab-layout">
+        <!-- Control Panel -->
+        <div class="chocolab-controls" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(201,149,107,0.15); border-radius: 20px; padding: 32px; backdrop-filter: blur(10px);">
+          <h3 style="font-family:'Playfair Display', serif; font-size: 20px; color: var(--white); margin-bottom: 24px; border-bottom: 1px solid rgba(201,149,107,0.15); padding-bottom: 12px;">Customize Ingredients</h3>
+          
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-light); margin-bottom: 8px;">1. Select Cacao Base</label>
+            <select id="chocolab-base" style="width:100%; padding: 12px 16px; background: rgba(0,0,0,0.3); border: 1px solid rgba(201,149,107,0.25); border-radius: 8px; color: var(--cream); outline: none; font-family: 'Inter', sans-serif;">
+              <option value="Dark Chocolate" selected>Dark Chocolate (Rich &amp; Complex)</option>
+              <option value="Milk Chocolate">Milk Chocolate (Creamy &amp; Sweet)</option>
+              <option value="White Chocolate">White Chocolate (Buttery &amp; Smooth)</option>
+            </select>
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-light); margin-bottom: 8px;">2. Cacao Percentage: <span id="chocolab-percent-val">72%</span></label>
+            <input type="range" id="chocolab-percent" min="30" max="100" value="72" oninput="document.getElementById('chocolab-percent-val').textContent = this.value + '%'" style="width: 100%; accent-color: var(--accent); cursor: pointer;">
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 28px;">
+            <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-light); margin-bottom: 12px;">3. Choose Inclusions (Up to 3)</label>
+            <div class="inclusions-grid">
+              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Sea Salt" name="inclusions" style="accent-color:var(--accent);"> Sea Salt</label>
+              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Cardamom" name="inclusions" style="accent-color:var(--accent);"> Cardamom</label>
+              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Lavender" name="inclusions" style="accent-color:var(--accent);"> Lavender</label>
+              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Bird's Eye Chili" name="inclusions" style="accent-color:var(--accent);"> Bird's Eye Chili</label>
+              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Orange Zest" name="inclusions" style="accent-color:var(--accent);"> Orange Zest</label>
+              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Rose Petals" name="inclusions" style="accent-color:var(--accent);"> Rose Petals</label>
+              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Peppermint" name="inclusions" style="accent-color:var(--accent);"> Peppermint</label>
+              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Roasted Almonds" name="inclusions" style="accent-color:var(--accent);"> Roasted Almonds</label>
+            </div>
+          </div>
+          
+          <button class="btn-primary" onclick="generateCustomBarFormula()" style="width: 100%; justify-content: center; font-size: 13.5px; padding: 14px 20px;">⚡ Formulate Recipe</button>
+        </div>
+        
+        <!-- Formulation Output -->
+        <div class="chocolab-output" style="background: rgba(26,16,18,0.7); border: 1px dashed rgba(201,149,107,0.25); border-radius: 20px; padding: 36px; min-height: 420px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;">
+          <div id="chocolab-placeholder" style="text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 16px;">🧪</div>
+            <h4 style="font-family:'Playfair Display', serif; font-size: 20px; color: var(--cream); margin-bottom: 8px;">Ready for Formulation</h4>
+            <p style="font-size: 13.5px; color: rgba(245,237,230,0.6); max-width: 320px; margin: 0 auto;">Select your custom ingredients on the left and click "Formulate Recipe" to generate your custom chocolate bar profile.</p>
+          </div>
+          
+          <div id="chocolab-loader" style="display: none; text-align: center;">
+            <div class="ai-typing-indicator" style="margin: 0 auto 16px;">
+              <span class="ai-typing-dot"></span>
+              <span class="ai-typing-dot"></span>
+              <span class="ai-typing-dot"></span>
+            </div>
+            <h4 style="font-family:'Playfair Display', serif; font-size: 18px; color: var(--accent);">AI Alchemist at Work...</h4>
+            <p style="font-size: 13px; color: rgba(245,237,230,0.5); margin-top: 6px;">Calculating tempering ranges, flavor chemistry, and custom descriptions...</p>
+          </div>
+          
+          <div id="chocolab-results" style="display: none; width: 100%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(201,149,107,0.15); padding-bottom: 12px; margin-bottom: 20px;">
+              <span style="font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px;">AI Dynamic Recipe Profile</span>
+              <span id="chocolab-result-base" style="font-size: 12px; color: var(--accent-light); font-weight: 600;">72% Dark Chocolate</span>
+            </div>
+            <h3 id="chocolab-result-name" style="font-family:'Playfair Display', serif; font-size: 24px; color: var(--white); margin-bottom: 12px;">Signature formulation</h3>
+            <p id="chocolab-result-desc" style="font-size: 14.5px; color: var(--cream); line-height: 1.6; margin-bottom: 24px; font-style: italic;"></p>
+            
+            <div class="chocolab-details-grid">
+              <div>
+                <h5 style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-light); margin-bottom: 6px;">👅 Tasting Notes</h5>
+                <p id="chocolab-result-tasting" style="font-size: 13.5px; color: rgba(245,237,230,0.85); line-height: 1.5; margin: 0;"></p>
+              </div>
+              <div>
+                <h5 style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-light); margin-bottom: 6px;">🌡️ Tempering Guide</h5>
+                <p id="chocolab-result-tempering" style="font-size: 13.5px; color: rgba(245,237,230,0.85); line-height: 1.5; margin: 0;"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <br>
+
   <!-- Featured Workshops -->
-  <section style="background:var(--green-50);">
+  <section style="background:var(--ivory);">
     <div class="section">
       <div class="workshops-section-header">
         <p class="section-label" style="margin-bottom:12px;">Learn With Us</p>
@@ -88,7 +271,14 @@
         </p>
       </div>
       
-      <div class="grid-3" id="home-workshops" style="margin-top: 48px;"></div>
+      <div class="grid-3" id="home-workshops" style="margin-top: 48px;">
+        <?php
+          require_once 'includes/workshops_data.php';
+          foreach ($workshops as $w) {
+              echo renderWorkshopCard($w);
+          }
+        ?>
+      </div>
     </div>
   </section>
 

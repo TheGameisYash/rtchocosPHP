@@ -5,6 +5,18 @@
   $canonicalUrl = "https://www.rtchocos.com/workshops.php";
   $schemaType = "CollectionPage";
   
+  // Load database connection and fetch the latest class fact for server-side pre-rendering
+  require_once $pathPrefix . 'includes/db.php';
+  try {
+      $pdo = get_db();
+      $factStmt = $pdo->query("SELECT fact_text FROM ai_class_facts ORDER BY id DESC LIMIT 1");
+      $latestClassFact = $factStmt->fetchColumn();
+  } catch (Exception $e) {
+      $latestClassFact = "Tempering cocoa butter requires precisely forming Type V crystals for that satisfying snap and glossy finish.";
+  }
+  if (!$latestClassFact) {
+      $latestClassFact = "Tempering cocoa butter requires precisely forming Type V crystals for that satisfying snap and glossy finish.";
+  }
   $breadcrumbs = [
       ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
       ['name' => 'Workshops', 'item' => $canonicalUrl]
@@ -28,17 +40,35 @@
   include $pathPrefix . 'includes/header.php';
 ?>
 
-<!-- --- HOME PAGE --- -->
+<!-- --- WORKSHOPS PAGE --- -->
 <div id="page-workshops" class="page active" style="padding-top:80px;">
   <div class="page-hero workshops-page-hero">
+    <div class="page-hero-content">
+      <h1 class="fade-up">Workshops &amp; Masterclasses</h1>
+      <p class="fade-up-d1">Science-first chocolate learning for curious makers, professionals and food entrepreneurs.</p>
+    </div>
   </div>
   <div class="section">
-    <div id="workshop-filters" style="margin-bottom:40px;text-align:center;">
-      <div class="section-label" style="margin-bottom:12px;">RT Chocos Learning Studio</div>
-      <h1 style="font-family:'Cormorant Garamond', serif;font-style:italic;font-weight:700;font-size:42px;margin-bottom:12px;color:var(--brown);letter-spacing:0.02em;">Chocolate Workshops &amp; Bean-to-Bar Learning</h1>
-      <p style="font-family:'Cormorant Garamond', serif;font-style:italic;font-size:24px;line-height:1.6;color:var(--brown-light);font-weight:600;max-width:760px;margin:0 auto;">Science-first chocolate classes for curious makers, professionals and food entrepreneurs. New workshop dates are coming soon.</p>
+    <div id="workshop-filters" style="margin-bottom:40px;text-align:center; display:flex; flex-direction:column; align-items:center;">
+      <div class="section-label">RT Chocos Learning Studio</div>
+      <h2 class="section-title">Upcoming Learning Sessions</h2>
+      <p class="section-subtitle">A collection of premium, technical chocolate workshops is currently in development. Explore our topics below.</p>
     </div>
-    <div class="grid-3" id="workshops-grid"></div>
+
+    <!-- AI Class Insight -->
+    <div class="ai-class-insight" style="background: rgba(201,149,107,0.06); border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 4px; margin-bottom: 32px; text-align: left;">
+      <h4 style="font-family:'Playfair Display', serif; font-size: 16px; color: var(--accent-dark); margin-bottom: 6px;">💡 AI Class Fact of the Moment</h4>
+      <p id="ai-dynamic-class-insight" style="font-size: 14px; color: var(--brown-light); line-height: 1.6; margin: 0; font-style: italic;"><?php echo htmlspecialchars($latestClassFact, ENT_QUOTES, 'UTF-8'); ?></p>
+    </div>
+
+    <div class="grid-3" id="workshops-grid">
+      <?php
+        require_once 'includes/workshops_data.php';
+        foreach ($workshops as $w) {
+            echo renderWorkshopCard($w);
+        }
+      ?>
+    </div>
 
     <section class="seo-learning-section" aria-labelledby="learning-roadmap-title">
       <div class="section-label">What You Can Learn</div>

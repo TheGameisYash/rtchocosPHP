@@ -224,6 +224,60 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     echo "OK<br>";
 
+    // 11. Create ai_insights table for server-side cache
+    echo "Creating 'ai_insights' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS ai_insights (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        insight_text TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Seed default insights if table is empty
+    $stmt = $pdo->query("SELECT COUNT(*) FROM ai_insights");
+    if ($stmt->fetchColumn() == 0) {
+        echo "Seeding default cacao insights... ";
+        $defaults = [
+            "Cacao beans contain over 600 flavor compounds, making them chemically more complex than red wine.",
+            "The ideal temperature for dark chocolate tempering is between 88°F and 90°F (31°C - 32°C).",
+            "Criollo cacao is highly prized for its delicate, aromatic flavor profile and low bitterness.",
+            "Water is chocolate's biggest enemy; even a single drop can cause a batch to seize.",
+            "Roasting cacao beans sterilizes them, reduces moisture, and develops crucial chocolate aroma precursors."
+        ];
+        $insStmt = $pdo->prepare("INSERT INTO ai_insights (insight_text) VALUES (?)");
+        foreach ($defaults as $d) {
+            $insStmt->execute([$d]);
+        }
+        echo "OK<br>";
+    }
+
+    // 12. Create ai_class_facts table for workshops facts
+    echo "Creating 'ai_class_facts' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS ai_class_facts (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        fact_text TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Seed default class facts if table is empty
+    $stmt = $pdo->query("SELECT COUNT(*) FROM ai_class_facts");
+    if ($stmt->fetchColumn() == 0) {
+        echo "Seeding default chocolate workshop facts... ";
+        $classDefaults = [
+            "Tempering cocoa butter requires precisely forming Type V crystals for that satisfying snap and glossy finish.",
+            "Under-roasting cacao beans leads to high acidity and lack of deep chocolate flavor notes in the final bar.",
+            "The conching process reduces volatile acids (like acetic acid) and coats solid particles with cocoa butter for a smooth mouthfeel.",
+            "Adding lecithin (an emulsifier) reduces chocolate viscosity significantly, making it easier to mould or coat.",
+            "Roasting temperature profiles are varied: high-temperature short-time (HTST) for floral profiles, low-temperature long-time (LTLT) for earthy profiles."
+        ];
+        $insStmt = $pdo->prepare("INSERT INTO ai_class_facts (fact_text) VALUES (?)");
+        foreach ($classDefaults as $fd) {
+            $insStmt->execute([$fd]);
+        }
+        echo "OK<br>";
+    }
+
     echo "<h3>Setup Completed Successfully!</h3>";
     echo "<p style='color:red;'><b>IMPORTANT: Delete db_setup.php before deploying to production!</b></p>";
 

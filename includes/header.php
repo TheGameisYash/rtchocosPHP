@@ -52,7 +52,7 @@ $ogType = !empty($pageType) ? $pageType : "website";
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 <link rel="dns-prefetch" href="https://www.youtube.com" />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Dancing+Script:wght@700&family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="<?php echo $pathPrefix; ?>style.css">
 
 <!-- JSON-LD Structured Data -->
@@ -240,7 +240,7 @@ if (!empty($recipeData)) {
 <header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
   <div class="header-inner">
     <a href="<?php echo $pathPrefix; ?>index.php" class="logo">
-      <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-header" alt="RT Chocos Logo" />
+      <span class="logo-rt">RT</span><span class="logo-chocos"> Chocos</span>
     </a>
     <div class="header-nav-left">
       <a class="nav-link" data-page="home" href="<?php echo $pathPrefix; ?>index.php">Home</a>
@@ -249,8 +249,12 @@ if (!empty($recipeData)) {
     </div>
     <div class="header-nav-right">
       <a class="nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
+      <a class="nav-link" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
       <a class="nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
       <a class="nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
+      <button class="nav-ai-btn" aria-label="Ask AI Chatbot" onclick="toggleAiDrawer()">
+        ✨ Ask AI
+      </button>
       <button class="search-btn" aria-label="Search" onclick="openSearch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon-svg">
           <circle cx="11" cy="11" r="8"></circle>
@@ -267,7 +271,49 @@ if (!empty($recipeData)) {
     <a class="mobile-nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
     <a class="mobile-nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
     <a class="mobile-nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
+    <a class="mobile-nav-link" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
     <a class="mobile-nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
     <a class="mobile-nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
+    <button class="mobile-nav-ai-btn" onclick="toggleAiDrawer(); toggleMobileMenu();">
+      ✨ Ask CocoaGenius AI
+    </button>
   </div>
 </header>
+
+<!-- AI Chat Drawer -->
+<div id="ai-chat-drawer" class="ai-drawer-container">
+  <div class="ai-drawer-header">
+    <div class="ai-drawer-title">
+      <span class="ai-glowing-dot"></span>
+      <h3>CocoaGenius AI</h3>
+    </div>
+    <button class="ai-drawer-close" onclick="toggleAiDrawer()">&times;</button>
+  </div>
+  <div class="ai-drawer-body" id="ai-chat-messages">
+    <div class="ai-message system">
+      <div class="ai-msg-bubble">
+        Hello! I am <strong>CocoaGenius AI</strong>, your expert guide to the science, craft, and chemistry of chocolate making. How can I help you today?
+      </div>
+    </div>
+  </div>
+  
+  <div class="ai-prompt-chips">
+    <button class="ai-chip" onclick="sendQuickPrompt('Explain chocolate tempering science')">🔬 Tempering Science</button>
+    <button class="ai-chip" onclick="sendQuickPrompt('Why is my chocolate blooming?')">🫘 Bloom Diagnosis</button>
+    <button class="ai-chip" onclick="sendQuickPrompt('What is the difference between Criollo and Forastero?')">🍫 Cacao Varieties</button>
+    <button class="ai-chip" onclick="sendQuickPrompt('Who runs RT Chocos and who developed this website?')">💻 Founder & Developer</button>
+  </div>
+
+  <div class="ai-drawer-footer">
+    <form id="ai-chat-form" onsubmit="handleAiChatSubmit(event)">
+      <input type="text" id="ai-chat-input" placeholder="Ask about tempering, roasting, recipes..." required autocomplete="off">
+      <button type="submit" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
+<div id="ai-drawer-overlay" onclick="toggleAiDrawer()"></div>
