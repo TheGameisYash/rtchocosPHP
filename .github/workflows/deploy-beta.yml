@@ -22,4 +22,4 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local_path: './*'
         remote_path: 'domains/rtchocos.com/public_html/beta'
-        rsyncArgs: '--exclude=.git --exclude=.github --exclude=.htaccess --exclude=robots.txt --exclude=.env'
+        rsyncArgs: '--exclude=.git --exclude=.github --exclude=.htaccess --exclude=robots.txt --exclude=.env --exclude=assets/blogs/'
