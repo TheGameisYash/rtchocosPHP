@@ -83,6 +83,7 @@
         <button class="filter-btn" data-filter="Science" onclick="filterBlog('Science')">Science</button>
         <button class="filter-btn" data-filter="Beginner Guide" onclick="filterBlog('Beginner Guide')">Beginner Guide</button>
         <button class="filter-btn" data-filter="Business Tips" onclick="filterBlog('Business Tips')">Business Tips</button>
+        <button class="filter-btn" data-filter="Industry Insights" onclick="filterBlog('Industry Insights')">Industry Insights</button>
       </div>
       <div class="search-container">
         <input class="blog-search" type="text" placeholder="Search articles by topic, keyword..." oninput="searchBlog(this.value)" />

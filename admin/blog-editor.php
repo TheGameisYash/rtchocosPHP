@@ -549,6 +549,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                         <option value="Recipe" <?php echo $post['category'] === 'Recipe' ? 'selected' : ''; ?>>Recipe</option>
                         <option value="Artisan" <?php echo $post['category'] === 'Artisan' ? 'selected' : ''; ?>>Artisan</option>
                         <option value="Business Tips" <?php echo $post['category'] === 'Business Tips' ? 'selected' : ''; ?>>Business Tips</option>
+                        <option value="Industry Insights" <?php echo $post['category'] === 'Industry Insights' ? 'selected' : ''; ?>>Industry Insights</option>
                     </select>
                 </div>
 

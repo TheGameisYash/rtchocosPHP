@@ -56,7 +56,7 @@ The Settings Drawer contains crucial fields that determine search rankings. Fill
 
 ## 🏷️ Categorization & Tags
 
-* **Category Selection**: Choose one of the core categories (`Science`, `Beginner Guide`, `Recipe`, `Artisan`, `Business Tips`) from the dropdown. This determines which page sections and filters display your post.
+* **Category Selection**: Choose one of the core categories (`Science`, `Beginner Guide`, `Recipe`, `Artisan`, `Business Tips`, `Industry Insights`) from the dropdown. This determines which page sections and filters display your post.
 * **Tag Manager**:
   * Check the checkboxes for existing tags (e.g. `Lecithin`, `Cocoa Powder`, `Sugar Bloom`).
   * Add new tags in the **Add new tags** input field as a comma-separated list (e.g. `ganache, tempering, dark-chocolate`). The system automatically inserts them into the database and maps them.
