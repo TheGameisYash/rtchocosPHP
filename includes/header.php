@@ -322,12 +322,10 @@ if (!empty($recipeData)) {
       <a class="nav-link" data-page="home" href="<?php echo $pathPrefix; ?>index.php">Home</a>
       <a class="nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
       <a class="nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy & Workshops India">Workshops</a>
-      <a class="nav-link" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php" title="Chocolate Shop India — Buy Bean-to-Bar Chocolate Online">Shop</a>
     </nav>
     <nav class="header-nav-right" aria-label="Secondary navigation">
       <a class="nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php" title="Indian Chocolate Blog — Cocoa Science & Articles">Blog</a>
       <a class="nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes</a>
-      <a class="nav-link" data-page="faq" href="<?php echo $pathPrefix; ?>faq.php" title="Frequently Asked Questions — RT Chocos">FAQ</a>
       <a class="nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
       <button class="search-btn" aria-label="Search RT Chocos chocolate articles" onclick="openSearch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon-svg">
@@ -344,10 +342,8 @@ if (!empty($recipeData)) {
     <a class="mobile-nav-link" data-page="home" href="<?php echo $pathPrefix; ?>index.php">Home</a>
     <a class="mobile-nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
     <a class="mobile-nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
-    <a class="mobile-nav-link" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php">Shop</a>
     <a class="mobile-nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
     <a class="mobile-nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
-    <a class="mobile-nav-link" data-page="faq" href="<?php echo $pathPrefix; ?>faq.php">FAQ</a>
     <a class="mobile-nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
   </nav>
 </header>
