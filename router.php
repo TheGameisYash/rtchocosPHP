@@ -39,6 +39,12 @@ if (preg_match('#^/assets/blogs/(.+)$#', $uri, $m)) {
     }
 }
 
+// Route clean listicle URL
+if (preg_match('#^/indian-chocolate-brands/?$#', $uri)) {
+    include __DIR__ . '/brand-listicle.php';
+    return true;
+}
+
 // Default: serve the requested URI as-is via the built-in server
 return false;
 ?>

@@ -18,6 +18,7 @@ $staticPages = [
     "blog.php" => ["priority" => "0.9", "changefreq" => "daily", "lastmod" => $today],
     "gallery.php" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
     "faq.php" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
+    "brand-listicle.php" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
     "contact.php" => ["priority" => "0.7", "changefreq" => "monthly", "lastmod" => $today]
 ];
 
