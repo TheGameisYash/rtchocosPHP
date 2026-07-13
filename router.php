@@ -9,6 +9,15 @@ if ($uri !== '/' && file_exists(__DIR__ . $uri)) {
     return false;
 }
 
+// Local clean URL mapping (e.g. /about -> about.php)
+if ($uri !== '/' && preg_match('#^/([^/]+)$#', $uri, $m)) {
+    $file = __DIR__ . '/' . $m[1] . '.php';
+    if (file_exists($file)) {
+        include $file;
+        return true;
+    }
+}
+
 // Blog clean URL rewrite: /blog/{slug} → set slug and include article logic
 if (preg_match('#^/blog/([^/]+)$#', $uri, $m)) {
     $articleKey = $m[1];

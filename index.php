@@ -1,6 +1,6 @@
 <?php
-  $pageTitle = "Chocolate Blog India & Chocolate Academy | RT Chocos Bean-to-Bar Learning";
-  $pageDescription = "RT Chocos is the premier chocolate blog in India and professional bean-to-bar chocolate academy. Discover Indian bean-to-bar chocolate making, tempering science, workshops, and courses by expert Aarti Saluja Sahni.";
+  $pageTitle = "Chocolate Blog India & Chocolate Academy | RT Chocos";
+  $pageDescription = "RT Chocos is India's premier chocolate blog and bean-to-bar academy. Learn tempering science and professional chocolate making from Aarti Saluja Sahni.";
   $pageKeywords = "chocolate blog india, chocolate academy india, indian bean to bar chocolate, bean to bar chocolate, chocolate course india, chocolate workshops india, learn chocolate making india, cocoa science blog india, craft chocolate india, chocolate education india, chocolate blogging india, tempering chocolate course, chocolate consultant Mumbai, RT Chocos";
   $pathPrefix = "";
   $isHome = true;
@@ -477,6 +477,28 @@
     </script>
   </section>
 
+  <!-- SEO Content Block (Resolving Thin Content) -->
+  <section style="background:var(--green-50);">
+    <div class="section" style="max-width:900px; margin:0 auto; text-align:center;">
+      <div class="section-label">Chocolate Education India</div>
+      <h2 class="section-title">The Science of Indian Bean-to-Bar Chocolate</h2>
+      <div class="divider" style="margin:16px auto 32px;"></div>
+      <div style="font-family:'Jost',sans-serif; font-size:15.5px; line-height:1.8; color:var(--brown-light); font-weight:300; text-align:left; display:flex; flex-direction:column; gap:20px;">
+        <p>
+          Welcome to <strong>RT Chocos</strong>, India's first chocolate blogging website and premier bean-to-bar learning academy. Founded by certified chocolate educator and recipe developer <strong>Aarti Saluja Sahni</strong>, RT Chocos is dedicated to demystifying the complex chemistry, tempering science, and formulation metrics behind craft chocolate making.
+        </p>
+        <p>
+          The chocolate landscape in India is undergoing a massive transformation. Craft chocolate makers are shifting away from mass-produced compound coatings to source single-origin organic cacao beans directly from estates in Kerala, Karnataka, and Tamil Nadu. At our academy, we believe that understanding the science of cacao fermentation, roasting thermodynamics, stone grinding (conching), and tempering curves is the key to creating award-winning artisan bars.
+        </p>
+        <p>
+          Whether you are a home baker wanting to learn how to temper chocolate, an entrepreneur looking to launch your own brand of Indian craft chocolate, or a hobbyist searching for authentic cocoa science resources, our blog and workshops provide the technical blueprints you need. We cover everything from pH levels in cocoa powder, FAT bloom versus SUGAR bloom diagnostics, and organic sugar alternatives, to hands-on tempering masterclasses in Mumbai and online.
+        </p>
+        <p>
+          Explore our professional <a href="workshops" style="color:var(--brown); font-weight:600; text-decoration:none; border-bottom:1px solid var(--brown);">Chocolate Academy India Workshops</a>, browse our curated <a href="shop" style="color:var(--brown); font-weight:600; text-decoration:none; border-bottom:1px solid var(--brown);">Chocolate Shop</a> for starter kits and single-origin ingredients, or read our latest <a href="blog" style="color:var(--brown); font-weight:600; text-decoration:none; border-bottom:1px solid var(--brown);">Chocolate Blog India articles</a> to start your craft chocolate learning journey.
+        </p>
+      </div>
+    </div>
+  </section>
 
   <!-- Gallery Preview -->
   <section style="background:var(--cream);text-align:center;">

@@ -319,14 +319,14 @@ if (!empty($recipeData)) {
       <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-header" alt="RT Chocos — India's First Chocolate Blog & Bean-to-Bar Academy" />
     </a>
     <nav class="header-nav-left" aria-label="Primary navigation">
-      <a class="nav-link" data-page="home" href="<?php echo $pathPrefix; ?>index.php">Home</a>
-      <a class="nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
-      <a class="nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy & Workshops India">Workshops</a>
+      <a class="nav-link" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
+      <a class="nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about">About</a>
+      <a class="nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops" title="Chocolate Academy & Workshops India">Workshops</a>
     </nav>
     <nav class="header-nav-right" aria-label="Secondary navigation">
-      <a class="nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php" title="Indian Chocolate Blog — Cocoa Science & Articles">Blog</a>
-      <a class="nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes</a>
-      <a class="nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
+      <a class="nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog" title="Indian Chocolate Blog — Cocoa Science & Articles">Blog</a>
+      <a class="nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery" title="Chocolate Recipes India">Recipes</a>
+      <a class="nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact">Contact</a>
       <button class="search-btn" aria-label="Search RT Chocos chocolate articles" onclick="openSearch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon-svg">
           <circle cx="11" cy="11" r="8"></circle>
@@ -339,11 +339,11 @@ if (!empty($recipeData)) {
     </button>
   </div>
   <nav id="mobile-menu" aria-label="Mobile navigation">
-    <a class="mobile-nav-link" data-page="home" href="<?php echo $pathPrefix; ?>index.php">Home</a>
-    <a class="mobile-nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
-    <a class="mobile-nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
-    <a class="mobile-nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
-    <a class="mobile-nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
-    <a class="mobile-nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
+    <a class="mobile-nav-link" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
+    <a class="mobile-nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about">About</a>
+    <a class="mobile-nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops">Workshops</a>
+    <a class="mobile-nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog">Blog</a>
+    <a class="mobile-nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery">Recipes</a>
+    <a class="mobile-nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact">Contact</a>
   </nav>
 </header>

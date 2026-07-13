@@ -12,14 +12,14 @@ $baseUrl = "https://www.rtchocos.com/";
 $today = date('Y-m-d');
 $staticPages = [
     "" => ["priority" => "1.0", "changefreq" => "daily", "lastmod" => $today],
-    "about.php" => ["priority" => "0.8", "changefreq" => "monthly", "lastmod" => $today],
-    "workshops.php" => ["priority" => "0.9", "changefreq" => "weekly", "lastmod" => $today],
-    "shop.php" => ["priority" => "0.9", "changefreq" => "daily", "lastmod" => $today],
-    "blog.php" => ["priority" => "0.9", "changefreq" => "daily", "lastmod" => $today],
-    "gallery.php" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
-    "faq.php" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
-    "brand-listicle.php" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
-    "contact.php" => ["priority" => "0.7", "changefreq" => "monthly", "lastmod" => $today]
+    "about" => ["priority" => "0.8", "changefreq" => "monthly", "lastmod" => $today],
+    "workshops" => ["priority" => "0.9", "changefreq" => "weekly", "lastmod" => $today],
+    "shop" => ["priority" => "0.9", "changefreq" => "daily", "lastmod" => $today],
+    "blog" => ["priority" => "0.9", "changefreq" => "daily", "lastmod" => $today],
+    "gallery" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
+    "faq" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
+    "indian-chocolate-brands" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
+    "contact" => ["priority" => "0.7", "changefreq" => "monthly", "lastmod" => $today]
 ];
 
 foreach ($staticPages as $page => $meta) {

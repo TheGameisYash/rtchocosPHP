@@ -10,12 +10,12 @@
     <div>
       <div class="footer-heading">Quick Links</div>
       <nav aria-label="Footer navigation">
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>index.php">Home</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About Aarti Saluja Sahni</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy India">Chocolate Academy India</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php" title="Chocolate Blog India">Chocolate Blog India</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes & Formulations</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact Us</a>
+        <a class="footer-link" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>about">About Aarti Saluja Sahni</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops" title="Chocolate Academy India">Chocolate Academy India</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>blog" title="Chocolate Blog India">Chocolate Blog India</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery" title="Chocolate Recipes India">Recipes & Formulations</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>contact">Contact Us</a>
       </nav>
     </div>
     <div>
