@@ -54,7 +54,10 @@ $keywordsVal = !empty($pageKeywords) ? htmlspecialchars($pageKeywords) : $defaul
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+<link rel="preconnect" href="https://www.youtube.com" crossorigin />
 <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+<link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 <link rel="dns-prefetch" href="https://www.youtube.com" />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Dancing+Script:wght@700&family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="<?php echo $pathPrefix; ?>style.css">
@@ -163,6 +166,46 @@ $graph = [
         ],
         "founder" => [
             "@id" => "https://www.rtchocos.com/#founder"
+        ]
+    ],
+    [
+        "@type" => "Service",
+        "@id" => "https://www.rtchocos.com/#chocolate-consulting",
+        "name" => "Professional Bean-to-Bar Chocolate Consulting & Brand Business Setup",
+        "description" => "Comprehensive consulting services for craft and bean-to-bar chocolate businesses in India. Includes micro-batch production scaling, cacao bean sourcing, stone grinder selection, chocolate tempering machinery consulting, packaging guidance, and legal compliance.",
+        "provider" => [
+            "@id" => "https://www.rtchocos.com/#organization"
+        ],
+        "areaServed" => [
+            "@type" => "Country",
+            "name" => "India"
+        ],
+        "category" => "Chocolate Food Industry Consulting",
+        "offers" => [
+            "@type" => "Offer",
+            "priceCurrency" => "INR",
+            "price" => "0",
+            "description" => "Contact hello@rtchocos.com for custom quote pricing on consulting packages"
+        ]
+    ],
+    [
+        "@type" => "Service",
+        "@id" => "https://www.rtchocos.com/#recipe-development",
+        "name" => "Artisan Chocolate Recipe Development & Formulation Services",
+        "description" => "Professional chocolate recipe formulation, dark chocolate profiles, organic inclusions, dairy-free chocolate alternatives, sugar-free keto chocolate recipes, and shelf-life optimization by food developer Aarti Saluja Sahni.",
+        "provider" => [
+            "@id" => "https://www.rtchocos.com/#organization"
+        ],
+        "areaServed" => [
+            "@type" => "Country",
+            "name" => "India"
+        ],
+        "category" => "Food Recipe Development",
+        "offers" => [
+            "@type" => "Offer",
+            "priceCurrency" => "INR",
+            "price" => "0",
+            "description" => "Contact hello@rtchocos.com for custom chocolate recipe formulation packages"
         ]
     ]
 ];
