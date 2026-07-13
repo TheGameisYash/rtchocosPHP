@@ -21,7 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
         exit;
     }
     
-    $blogsDir = __DIR__ . '/../assets/blogs';
+    $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
+    $parentDir = dirname($docRoot);
+    $liveUploadsDir = $parentDir . '/uploads_blogs';
+    if (is_dir($liveUploadsDir)) {
+        $blogsDir = $liveUploadsDir;
+    } else {
+        $blogsDir = $docRoot . '/assets/blogs';
+    }
     if (!file_exists($blogsDir)) {
         mkdir($blogsDir, 0755, true);
     }
@@ -169,8 +176,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->fetch()) {
                 $error = "The URL slug '{$slug}' is already in use by another article. URL slugs must be unique.";
             } else {
-                $blogsDir = __DIR__ . '/../assets/blogs';
-                $thumbsDir = __DIR__ . '/../assets/blogs/thumbnails';
+                $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
+                $parentDir = dirname($docRoot);
+                $liveUploadsDir = $parentDir . '/uploads_blogs';
+                if (is_dir($liveUploadsDir)) {
+                    $blogsDir = $liveUploadsDir;
+                    $thumbsDir = $liveUploadsDir . '/thumbnails';
+                } else {
+                    $blogsDir = $docRoot . '/assets/blogs';
+                    $thumbsDir = $docRoot . '/assets/blogs/thumbnails';
+                }
                 if (!file_exists($blogsDir)) mkdir($blogsDir, 0755, true);
                 if (!file_exists($thumbsDir)) mkdir($thumbsDir, 0755, true);
 

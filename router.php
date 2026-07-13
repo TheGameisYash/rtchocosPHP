@@ -30,6 +30,15 @@ if (preg_match('#^/shop/([^/]+)$#', $uri, $m)) {
     return true;
 }
 
+// Route missing blog images to blog_image.php
+if (preg_match('#^/assets/blogs/(.+)$#', $uri, $m)) {
+    if (!file_exists(__DIR__ . $uri)) {
+        $_GET['file'] = $m[1];
+        include __DIR__ . '/blog_image.php';
+        return true;
+    }
+}
+
 // Default: serve the requested URI as-is via the built-in server
 return false;
 ?>

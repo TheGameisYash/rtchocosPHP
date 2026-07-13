@@ -78,6 +78,10 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^shop/?$ shop.php [L]
 
+# Route missing blog images to blog_image.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^assets/blogs/(.+)$ blog_image.php?file=$1 [L,QSA]
+
 # ----------------------------------------------------------------------
 # | Security Headers                                                   |
 # ----------------------------------------------------------------------
