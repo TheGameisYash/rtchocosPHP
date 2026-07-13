@@ -69,6 +69,15 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^blog/([^/]+)$ blog/article.php?slug=$1 [L,QSA]
 
+# Rewrite clean shop URLs
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^shop/([^/]+)$ product.php?slug=$1 [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^shop/?$ shop.php [L]
+
 # ----------------------------------------------------------------------
 # | Security Headers                                                   |
 # ----------------------------------------------------------------------

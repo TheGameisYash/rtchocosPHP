@@ -11,6 +11,9 @@ Disallow: /api_comments.php
 Disallow: /send_contact.php
 Disallow: /subscribe.php
 Disallow: /router.php
+Disallow: /cart.php
+Disallow: /checkout.php
+Disallow: /api_cart.php
 
 # Crawl-delay for politeness
 Crawl-delay: 1

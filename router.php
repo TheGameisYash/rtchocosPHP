@@ -17,6 +17,19 @@ if (preg_match('#^/blog/([^/]+)$#', $uri, $m)) {
     return true;
 }
 
+// Shop category/main routing: /shop
+if (preg_match('#^/shop/?$#', $uri)) {
+    include __DIR__ . '/shop.php';
+    return true;
+}
+
+// Product detail routing: /shop/{slug} → set slug and include product logic
+if (preg_match('#^/shop/([^/]+)$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/product.php';
+    return true;
+}
+
 // Default: serve the requested URI as-is via the built-in server
 return false;
 ?>

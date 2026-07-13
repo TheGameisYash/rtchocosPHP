@@ -14,8 +14,10 @@ $staticPages = [
     "" => ["priority" => "1.0", "changefreq" => "daily", "lastmod" => $today],
     "about.php" => ["priority" => "0.8", "changefreq" => "monthly", "lastmod" => $today],
     "workshops.php" => ["priority" => "0.9", "changefreq" => "weekly", "lastmod" => $today],
+    "shop.php" => ["priority" => "0.9", "changefreq" => "daily", "lastmod" => $today],
     "blog.php" => ["priority" => "0.9", "changefreq" => "daily", "lastmod" => $today],
     "gallery.php" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
+    "faq.php" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
     "contact.php" => ["priority" => "0.7", "changefreq" => "monthly", "lastmod" => $today]
 ];
 
@@ -30,7 +32,7 @@ foreach ($staticPages as $page => $meta) {
     echo "  </url>\n";
 }
 
-// Blog articles
+// Blog articles & products
 try {
     $pdo = get_db();
     $stmt = $pdo->query("SELECT slug, title, image_path, updated_at FROM blogs WHERE is_published = 1 ORDER BY updated_at DESC");
@@ -48,6 +50,27 @@ try {
             echo "    <image:image>\n";
             echo "      <image:loc>" . htmlspecialchars($imgUrl) . "</image:loc>\n";
             echo "      <image:title>" . htmlspecialchars($blog['title']) . "</image:title>\n";
+            echo "    </image:image>\n";
+        }
+        echo "  </url>\n";
+    }
+
+    // Dynamic Shop Products
+    $pStmt = $pdo->query("SELECT slug, name, image_main, updated_at FROM products WHERE is_active = 1 ORDER BY updated_at DESC");
+    $dbProducts = $pStmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    foreach ($dbProducts as $product) {
+        $lastmod = date('Y-m-d', strtotime($product['updated_at']));
+        echo "  <url>\n";
+        echo "    <loc>" . $baseUrl . "shop/" . htmlspecialchars($product['slug']) . "</loc>\n";
+        echo "    <lastmod>" . $lastmod . "</lastmod>\n";
+        echo "    <changefreq>weekly</changefreq>\n";
+        echo "    <priority>0.8</priority>\n";
+        if (!empty($product['image_main'])) {
+            $imgUrl = $baseUrl . ltrim($product['image_main'], '/.');
+            echo "    <image:image>\n";
+            echo "      <image:loc>" . htmlspecialchars($imgUrl) . "</image:loc>\n";
+            echo "      <image:title>" . htmlspecialchars($product['name']) . "</image:title>\n";
             echo "    </image:image>\n";
         }
         echo "  </url>\n";

@@ -13,8 +13,10 @@
         <a class="footer-link" href="<?php echo $pathPrefix; ?>index.php">Home</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About Aarti Saluja Sahni</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy India">Chocolate Academy & Workshops</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>shop.php" title="Chocolate Shop India">Chocolate Shop</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php" title="Indian Chocolate Blog">Chocolate Blog</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes & Formulations</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>faq.php" title="Frequently Asked Questions">FAQ</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact Us</a>
       </nav>
     </div>
@@ -92,5 +94,29 @@
   gtag('js', new Date());
   gtag('config', 'G-6W5XE5DRJG');
 </script>
+<?php
+// Dynamic FAQPage schema output for any page utilizing includes/faq-block.php
+if (!empty($GLOBALS['faqSchemaItems'])) {
+    $faqEntities = [];
+    foreach ($GLOBALS['faqSchemaItems'] as $item) {
+        $faqEntities[] = [
+            "@type" => "Question",
+            "name" => $item['question'],
+            "acceptedAnswer" => [
+                "@type" => "Answer",
+                "text" => $item['answer']
+            ]
+        ];
+    }
+    $faqSchema = [
+        "@context" => "https://schema.org",
+        "@type" => "FAQPage",
+        "mainEntity" => $faqEntities
+    ];
+    echo '<script type="application/ld+json">' . "\n";
+    echo json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    echo "\n" . '</script>' . "\n";
+}
+?>
 </body>
 </html>
