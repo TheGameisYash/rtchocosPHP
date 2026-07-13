@@ -1,7 +1,7 @@
 <?php
-  $pageTitle = "RT Chocos — India's First Chocolate Blog & Academy | Bean-to-Bar Learning, Workshops & Cocoa Science";
-  $pageDescription = "RT Chocos is India's first chocolate blogging website and bean-to-bar learning academy. Explore professional chocolate courses, cocoa science articles, Indian craft chocolate recipes, and workshops by Aarti Saluja Sahni — 10+ years of chocolate education.";
-  $pageKeywords = "chocolate academy India, Indian chocolate blog, India first chocolate blog, bean to bar India, bean to bar learning academy, chocolate course India, chocolate workshops India, learn chocolate making India, cocoa science blog India, craft chocolate India, chocolate education India, chocolate blogging India, tempering chocolate course, chocolate consultant Mumbai, artisan chocolate making India, cacao farming blog India, chocolate recipes India, chocolate maker India, RT Chocos, Aarti Saluja Sahni chocolate, chocolate classes online India, bean to bar chocolate making course India";
+  $pageTitle = "Chocolate Blog India & Chocolate Academy | RT Chocos Bean-to-Bar Learning";
+  $pageDescription = "RT Chocos is the premier chocolate blog in India and professional bean-to-bar chocolate academy. Discover Indian bean-to-bar chocolate making, tempering science, workshops, and courses by expert Aarti Saluja Sahni.";
+  $pageKeywords = "chocolate blog india, chocolate academy india, indian bean to bar chocolate, bean to bar chocolate, chocolate course india, chocolate workshops india, learn chocolate making india, cocoa science blog india, craft chocolate india, chocolate education india, chocolate blogging india, tempering chocolate course, chocolate consultant Mumbai, RT Chocos";
   $pathPrefix = "";
   $isHome = true;
   include $pathPrefix . 'includes/header.php';
