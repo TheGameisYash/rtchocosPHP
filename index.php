@@ -1,13 +1,14 @@
 <?php
-  $pageTitle = "RT Chocos — Chocolate Academy & Blog | Bean to Bar Learning, Recipes & Workshops";
-  $pageDescription = "RT Chocos is India's leading Chocolate Academy & Blog for bean-to-bar learning. Explore professional chocolate recipes, cocoa science, tempering classes, and workshops by Aarti Saluja Sahni.";
-  $pageKeywords = "chocolate, chocolate learning, recipes, bean to bar chocolate, chocolate academy, chocolate blog India, bean to bar chocolate India, craft chocolate articles, cocoa science India, chocolate making blog, RT Chocos blog";
+  $pageTitle = "RT Chocos — India's First Chocolate Blog & Academy | Bean-to-Bar Learning, Workshops & Cocoa Science";
+  $pageDescription = "RT Chocos is India's first chocolate blogging website and bean-to-bar learning academy. Explore professional chocolate courses, cocoa science articles, Indian craft chocolate recipes, and workshops by Aarti Saluja Sahni — 10+ years of chocolate education.";
+  $pageKeywords = "chocolate academy India, Indian chocolate blog, India first chocolate blog, bean to bar India, bean to bar learning academy, chocolate course India, chocolate workshops India, learn chocolate making India, cocoa science blog India, craft chocolate India, chocolate education India, chocolate blogging India, tempering chocolate course, chocolate consultant Mumbai, artisan chocolate making India, cacao farming blog India, chocolate recipes India, chocolate maker India, RT Chocos, Aarti Saluja Sahni chocolate, chocolate classes online India, bean to bar chocolate making course India";
   $pathPrefix = "";
   $isHome = true;
   include $pathPrefix . 'includes/header.php';
 ?>
 
 <!-- --- HOME PAGE --- -->
+<main>
 <div id="page-home" class="page active">
 
   <!-- Hero -->
@@ -16,11 +17,11 @@
     <div class="deco-circle-2"></div>
     <div class="deco-radial"></div>
     <div class="hero-content">
-      <h1 class="fade-up" style="font-family:'Cormorant Garamond',serif;font-size:clamp(42px,5.5vw,72px);line-height:1.1;font-weight:700;letter-spacing:0.01em;color:#ffffff;margin-bottom:12px;">The Cacao Journal</h1>
-      <p class="fade-up-d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.4vw,28px);font-weight:400;line-height:1.3;color:rgba(255,255,255,0.9);margin-bottom:24px;">From Cacao Farm to Commercial Kitchen — Every story worth knowing about chocolate science and craft</p>
+      <h1 class="fade-up" style="font-family:'Cormorant Garamond',serif;font-size:clamp(42px,5.5vw,72px);line-height:1.1;font-weight:700;letter-spacing:0.01em;color:#ffffff;margin-bottom:12px;">India's First Chocolate Blog & Bean-to-Bar Academy</h1>
+      <p class="fade-up-d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.4vw,28px);font-weight:400;line-height:1.3;color:rgba(255,255,255,0.9);margin-bottom:24px;">From Cacao Farm to Commercial Kitchen — Every story worth knowing about chocolate science, craft & education in India</p>
       <div class="hero-btns fade-up-d2">
-        <a href="workshops.php" class="btn-hero-primary">Explore Workshops</a>
-        <a href="blog.php" class="btn-hero-outline">Read the Blog</a>
+        <a href="workshops.php" class="btn-hero-primary" title="Chocolate Academy Workshops India">Explore Workshops</a>
+        <a href="blog.php" class="btn-hero-outline" title="Read India's First Chocolate Blog">Read the Blog</a>
       </div>
     </div>
   </section>
@@ -43,7 +44,7 @@
       <div class="why-grid">
         <div class="why-card">
           <div class="why-card-img-wrapper">
-            <img src="assets/cocoabeans.png.jpg" alt="Bean-to-Bar" loading="lazy">
+            <img src="assets/cocoabeans.png.jpg" alt="Indian cacao beans for bean-to-bar chocolate making — RT Chocos Academy" loading="lazy">
           </div>
           <div class="why-card-text">
             <h4>Bean-to-Bar Expertise</h4>
@@ -52,7 +53,7 @@
         </div>
         <div class="why-card">
           <div class="why-card-img-wrapper">
-            <img src="assets/temepring.jpg" alt="Science-First Approach" loading="lazy">
+            <img src="assets/temepring.jpg" alt="Chocolate tempering science workshop — learn tempering at RT Chocos India" loading="lazy">
           </div>
           <div class="why-card-text">
             <h4>Science-First Approach</h4>
@@ -61,7 +62,7 @@
         </div>
         <div class="why-card">
           <div class="why-card-img-wrapper">
-            <img src="assets/bonbons.png" alt="10+ Years Teaching" loading="lazy">
+            <img src="assets/bonbons.png" alt="Handcrafted chocolate bonbons — professional chocolate workshops India" loading="lazy">
           </div>
           <div class="why-card-text">
             <h4>10+ Years Teaching</h4>
@@ -534,6 +535,7 @@
   </section>
 
 </div><!-- end home -->
+</main>
 
 <!-- --- ABOUT PAGE --- -->
 

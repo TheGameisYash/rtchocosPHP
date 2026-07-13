@@ -1,7 +1,7 @@
 <?php
-  $pageTitle = "About Aarti Saluja Sahni | RT Chocos — India's First Chocolate Educator";
-  $pageDescription = "Meet Aarti Saluja Sahni, founder of RT Chocos. Over a decade of bean-to-bar chocolate making, consulting, and recipe formulation experience in Mumbai, India.";
-  $pageKeywords = "Aarti Saluja Sahni, RT Chocos founder, chocolate educator India, chocolate consultant Mumbai, bean to bar chocolate expert";
+  $pageTitle = "About Aarti Saluja Sahni — Founder, India's First Chocolate Blog & Bean-to-Bar Educator | RT Chocos";
+  $pageDescription = "Meet Aarti Saluja Sahni, India's pioneering chocolate educator and founder of RT Chocos — India's first chocolate blogging website. 10+ years of bean-to-bar expertise, chocolate consulting, recipe formulation, and 2,000+ students trained across Mumbai and online.";
+  $pageKeywords = "Aarti Saluja Sahni, RT Chocos founder, chocolate educator India, chocolate consultant Mumbai, bean to bar chocolate expert India, India first chocolate blogger, women entrepreneur chocolate India, chocolate teacher India, chocolate expert Mumbai, chocolate academy founder India, Indian chocolate educator, craft chocolate consultant India";
   $pathPrefix = "";
   
   $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
@@ -15,17 +15,18 @@
 ?>
 
 <!-- --- HOME PAGE --- -->
+<main>
 <div id="page-about" class="page active" style="padding-top:80px;">
   <div class="page-hero about-page-hero">
     <div class="about-page-hero-image">
-      <img src="assets/finalaztech.jpg" alt="" />
+      <img src="assets/finalaztech.jpg" alt="Aztec chocolate heritage illustration — RT Chocos India's first chocolate blog" />
     </div>
     <div class="page-hero-content">
       <h1 class="fade-up">About RT Chocos</h1>
       <p class="fade-up-d1">From ancient rituals to artisan bars - honouring cacao's true origins.</p>
     </div>
   </div>
-  <div class="section" style="background-color: var(--cream); padding-top: 28px;">
+  <article class="section" style="background-color: var(--cream); padding-top: 28px;">
     <div class="about-grid">
       <div style="max-width: 820px; min-height: 320px;">
         <div class="section-label">About Me</div>
@@ -60,11 +61,12 @@
         <p style="font-size:13px;line-height:1.9;color:var(--brown);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-top:28px;">10+years in chocolate • Chocolate Maker • Recipe developer • Educator • Chocolate blogger</p>
       </div>
       <div style="display:flex; justify-content:flex-end; align-items:flex-start; align-self:flex-start; padding-top:4px;">
-        <img src="assets/myphoto.jpg" alt="Portrait of the RT Chocos founder" style="width:100%; max-width:460px; height:auto; display:block; object-fit:contain; border-radius:24px; box-shadow:0 22px 52px rgba(59,42,34,0.18);">
+        <img src="assets/myphoto.jpg" alt="Portrait of Aarti Saluja Sahni — founder of RT Chocos, India's first chocolate blog and bean-to-bar academy" style="width:100%; max-width:460px; height:auto; display:block; object-fit:contain; border-radius:24px; box-shadow:0 22px 52px rgba(59,42,34,0.18);">
       </div>
     </div>
-  </div>
+  </article>
 </div>
+</main>
 
 <!-- --- WORKSHOPS PAGE --- -->
 

@@ -2,5 +2,17 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /data/
+Disallow: /includes/
 Disallow: /db_setup.php
+Disallow: /test_blog.php
+Disallow: /error.php
+Disallow: /api_blogs.php
+Disallow: /api_comments.php
+Disallow: /send_contact.php
+Disallow: /subscribe.php
+Disallow: /router.php
+
+# Crawl-delay for politeness
+Crawl-delay: 1
+
 Sitemap: https://www.rtchocos.com/sitemap.xml

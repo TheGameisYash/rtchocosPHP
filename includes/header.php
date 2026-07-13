@@ -25,13 +25,18 @@ $ogType = !empty($pageType) ? $pageType : "website";
 <link rel="icon" type="image/png" href="<?php echo $pathPrefix; ?>assets/favicon.png" />
 <link rel="apple-touch-icon" href="<?php echo $pathPrefix; ?>assets/favicon.png" />
 <link rel="canonical" href="<?php echo htmlspecialchars($canonicalUrl); ?>" />
+<link rel="alternate" hreflang="en-IN" href="<?php echo htmlspecialchars($canonicalUrl); ?>" />
 
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+<meta name="author" content="Aarti Saluja Sahni" />
+<meta name="publisher" content="RT Chocos" />
+<meta name="theme-color" content="#3B2A22" />
 <meta name="geo.region" content="IN-MH" />
 <meta name="geo.placename" content="Mumbai" />
 <meta property="og:locale" content="en_IN" />
 
 <?php
-$defaultKeywords = "chocolate, chocolate learning, recipes, bean to bar chocolate, chocolate academy, chocolate blog India, bean to bar chocolate India, craft chocolate articles, cocoa science India, chocolate making blog, RT Chocos blog";
+$defaultKeywords = "chocolate academy India, Indian chocolate blog, India first chocolate blog, bean to bar India, bean to bar learning academy, chocolate course India, chocolate workshops India, learn chocolate making India, cocoa science blog India, craft chocolate India, chocolate education India, chocolate blogging India, tempering chocolate course, chocolate consultant Mumbai, artisan chocolate making India, cacao farming blog India, chocolate recipes India, chocolate maker India, RT Chocos, Aarti Saluja Sahni chocolate";
 $keywordsVal = !empty($pageKeywords) ? htmlspecialchars($pageKeywords) : $defaultKeywords;
 ?>
 <meta name="keywords" content="<?php echo $keywordsVal; ?>" />
@@ -58,36 +63,86 @@ $keywordsVal = !empty($pageKeywords) ? htmlspecialchars($pageKeywords) : $defaul
 <?php
 $graph = [
     [
-        "@type" => "Organization",
+        "@type" => "EducationalOrganization",
         "@id" => "https://www.rtchocos.com/#organization",
         "name" => "RT Chocos",
+        "alternateName" => "RT Chocos Chocolate Academy",
         "url" => "https://www.rtchocos.com/",
+        "description" => "India's first chocolate blogging website and bean-to-bar learning academy. Professional chocolate education, cocoa science articles, craft chocolate workshops, and recipe development by Aarti Saluja Sahni.",
         "logo" => [
             "@type" => "ImageObject",
             "url" => "https://www.rtchocos.com/assets/logo.png"
         ],
+        "founder" => [
+            "@id" => "https://www.rtchocos.com/#founder"
+        ],
+        "areaServed" => [
+            "@type" => "Country",
+            "name" => "India"
+        ],
         "sameAs" => [
             "https://www.instagram.com/rt.chocos/",
             "https://www.youtube.com/@RTCHOCOS",
-            "https://www.facebook.com/rtchocos"
+            "https://www.facebook.com/rtchocos",
+            "https://www.linkedin.com/in/aarti-saluja-sahni-8304637/"
+        ],
+        "knowsAbout" => [
+            "Bean to bar chocolate making",
+            "Cocoa science",
+            "Chocolate tempering",
+            "Cacao fermentation",
+            "Craft chocolate",
+            "Chocolate recipe development",
+            "Indian cacao farming"
+        ]
+    ],
+    [
+        "@type" => "Person",
+        "@id" => "https://www.rtchocos.com/#founder",
+        "name" => "Aarti Saluja Sahni",
+        "url" => "https://www.rtchocos.com/about.php",
+        "image" => "https://www.rtchocos.com/assets/myphoto.jpg",
+        "jobTitle" => "Founder & Chocolate Educator",
+        "description" => "India's pioneering chocolate educator with 10+ years of bean-to-bar expertise. Founder of RT Chocos — India's first chocolate blog. Recipe developer, chocolate consultant, and professional trainer with 2,000+ students trained.",
+        "worksFor" => [
+            "@id" => "https://www.rtchocos.com/#organization"
+        ],
+        "knowsAbout" => [
+            "Bean to bar chocolate making",
+            "Chocolate tempering science",
+            "Cocoa science and chemistry",
+            "Chocolate recipe formulation",
+            "Indian craft chocolate",
+            "Cacao farming and fermentation"
+        ],
+        "sameAs" => [
+            "https://www.instagram.com/rt.chocos/",
+            "https://www.linkedin.com/in/aarti-saluja-sahni-8304637/"
         ]
     ],
     [
         "@type" => "WebSite",
         "@id" => "https://www.rtchocos.com/#website",
         "url" => "https://www.rtchocos.com/",
-        "name" => "RT Chocos",
+        "name" => "RT Chocos — India's First Chocolate Blog & Academy",
+        "description" => "India's first chocolate blogging website and bean-to-bar learning academy",
         "publisher" => [
             "@id" => "https://www.rtchocos.com/#organization"
+        ],
+        "potentialAction" => [
+            "@type" => "SearchAction",
+            "target" => "https://www.rtchocos.com/blog.php?q={search_term_string}",
+            "query-input" => "required name=search_term_string"
         ]
     ],
     [
         "@type" => "LocalBusiness",
         "@id" => "https://www.rtchocos.com/#localbusiness",
-        "name" => "RT Chocos",
+        "name" => "RT Chocos — Chocolate Academy India",
+        "description" => "India's first chocolate blog and bean-to-bar learning academy offering professional chocolate workshops, cocoa science education, and craft chocolate courses in Mumbai and online.",
         "image" => "https://www.rtchocos.com/assets/logo.png",
         "url" => "https://www.rtchocos.com/",
-        "telephone" => "+919876543210",
+        "telephone" => "+919140238741",
         "priceRange" => "$$",
         "address" => [
             "@type" => "PostalAddress",
@@ -101,6 +156,13 @@ $graph = [
             "@type" => "GeoCoordinates",
             "latitude" => "19.0760",
             "longitude" => "72.8777"
+        ],
+        "areaServed" => [
+            "@type" => "Country",
+            "name" => "India"
+        ],
+        "founder" => [
+            "@id" => "https://www.rtchocos.com/#founder"
         ]
     ]
 ];
@@ -202,35 +264,35 @@ if (!empty($recipeData)) {
 <!-- --- HEADER --- -->
 <header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
   <div class="header-inner">
-    <a href="<?php echo $pathPrefix; ?>index.php" class="logo">
-      <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-header" alt="RT Chocos Logo" />
+    <a href="<?php echo $pathPrefix; ?>index.php" class="logo" title="RT Chocos — India's First Chocolate Blog & Academy">
+      <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-header" alt="RT Chocos — India's First Chocolate Blog & Bean-to-Bar Academy" />
     </a>
-    <div class="header-nav-left">
+    <nav class="header-nav-left" aria-label="Primary navigation">
       <a class="nav-link" data-page="home" href="<?php echo $pathPrefix; ?>index.php">Home</a>
       <a class="nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
-      <a class="nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
-    </div>
-    <div class="header-nav-right">
-      <a class="nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
-      <a class="nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
+      <a class="nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy & Workshops India">Workshops</a>
+    </nav>
+    <nav class="header-nav-right" aria-label="Secondary navigation">
+      <a class="nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php" title="Indian Chocolate Blog — Cocoa Science & Articles">Blog</a>
+      <a class="nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes</a>
       <a class="nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
-      <button class="search-btn" aria-label="Search" onclick="openSearch()">
+      <button class="search-btn" aria-label="Search RT Chocos chocolate articles" onclick="openSearch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon-svg">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </button>
-    </div>
-    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    </nav>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Open navigation menu">
       <span></span><span></span><span></span>
     </button>
   </div>
-  <div id="mobile-menu">
+  <nav id="mobile-menu" aria-label="Mobile navigation">
     <a class="mobile-nav-link" data-page="home" href="<?php echo $pathPrefix; ?>index.php">Home</a>
     <a class="mobile-nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
     <a class="mobile-nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
     <a class="mobile-nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
     <a class="mobile-nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
     <a class="mobile-nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
-  </div>
+  </nav>
 </header>

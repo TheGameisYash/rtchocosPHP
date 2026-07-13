@@ -74,7 +74,7 @@ if (!$post) {
     $post = $BLOGS[$articleKey];
 }
 
-$pageTitle = $post['title'] . " | RT Chocos — India's Chocolate Blog";
+$pageTitle = $post['title'] . " | RT Chocos — India's First Chocolate Blog & Academy";
 $pageDescription = $post['excerpt'];
 $pageImage = $post['image'];
 $pageType = 'article';
@@ -90,7 +90,7 @@ $breadcrumbs = [
     ['name' => $post['title'], 'item' => $canonicalUrl]
 ];
 
-$pageKeywords = htmlspecialchars($post['title']) . ", " . htmlspecialchars($post['category']) . ", India chocolate blog, craft chocolate, cocoa science, bean to bar chocolate";
+$pageKeywords = htmlspecialchars($post['title']) . ", " . htmlspecialchars($post['category']) . ", Indian chocolate blog, India first chocolate blog, craft chocolate India, cocoa science, bean to bar chocolate India, chocolate academy India, chocolate education, RT Chocos, Aarti Saluja Sahni";
 
 // Custom markdown parsing function
 if (!function_exists('parse_markdown')) {

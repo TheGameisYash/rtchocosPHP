@@ -3,18 +3,20 @@
   <div class="footer-grid">
     <div>
       <a href="<?php echo $pathPrefix; ?>index.php" style="text-decoration:none;display:inline-block;margin-bottom:16px;">
-        <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-footer" alt="RT Chocos Logo" />
+        <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-footer" alt="RT Chocos — India's First Chocolate Blog & Bean-to-Bar Academy" />
       </a>
-      <p style="color:rgba(246,242,234,0.6);font-size:13px;line-height:1.7;font-weight:300;max-width:260px;">India's chocolate blog for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
+      <p style="color:rgba(246,242,234,0.6);font-size:13px;line-height:1.7;font-weight:300;max-width:260px;">India's first chocolate blogging website and bean-to-bar learning academy. Cocoa science, craft chocolate education, and professional workshops by Aarti Saluja Sahni.</p>
     </div>
     <div>
       <div class="footer-heading">Quick Links</div>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>index.php">Home</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
+      <nav aria-label="Footer navigation">
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>index.php">Home</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About Aarti Saluja Sahni</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy India">Chocolate Academy & Workshops</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php" title="Indian Chocolate Blog">Chocolate Blog</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes & Formulations</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact Us</a>
+      </nav>
     </div>
     <div>
       <?php if (empty($isHome)): ?>

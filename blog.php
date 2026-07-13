@@ -48,9 +48,9 @@
       }
   }
 
-  $pageTitle = "Chocolate Blog & Academy — Cocoa Science, Recipes & Learning | RT Chocos India";
-  $pageDescription = "Read the RT Chocos Chocolate Academy Blog. Deep-dive articles on cocoa science, chocolate recipes, tempering, bean-to-bar making, and flavor chemistry.";
-  $pageKeywords = "chocolate, chocolate learning, recipes, bean to bar chocolate, chocolate academy, chocolate blog, cocoa science, craft chocolate making, tempering chocolate science, bean to bar articles India";
+  $pageTitle = "Indian Chocolate Blog — Cocoa Science, Bean-to-Bar Articles & Craft Chocolate Learning | RT Chocos";
+  $pageDescription = "Read India's first chocolate blog by RT Chocos. In-depth articles on cocoa science, bean-to-bar chocolate making, tempering chemistry, flavor profiling, cacao farming, and Indian craft chocolate — written by chocolate educator Aarti Saluja Sahni.";
+  $pageKeywords = "Indian chocolate blog, chocolate blog India, India first chocolate blog, cocoa science blog, bean to bar articles India, craft chocolate blog, chocolate making blog India, tempering chocolate science, cacao farming India blog, chocolate education articles, chocolate learning blog, RT Chocos blog, Aarti Saluja Sahni blog, chocolate science articles, bean to bar chocolate India blog, chocolate flavor profiling, cocoa chemistry blog";
   $pathPrefix = "";
   
   $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";

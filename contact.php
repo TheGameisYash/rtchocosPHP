@@ -1,7 +1,7 @@
 <?php
-  $pageTitle = "Contact RT Chocos — Chocolate Consulting, Training & Recipe Development";
-  $pageDescription = "Get in touch with RT Chocos for chocolate recipe development, bean-to-bar consulting, workshop bookings, and corporate chocolate training across India.";
-  $pageKeywords = "contact RT Chocos, chocolate consulting India, bean to bar consulting Mumbai, recipe development chocolate";
+  $pageTitle = "Contact RT Chocos — India's Chocolate Academy | Consulting, Training & Recipe Development";
+  $pageDescription = "Contact RT Chocos for chocolate consulting, bean-to-bar training, recipe development, and workshop bookings across India. Reach India's first chocolate educator Aarti Saluja Sahni in Mumbai for professional chocolate courses and corporate chocolate training.";
+  $pageKeywords = "contact RT Chocos, chocolate consulting India, bean to bar consulting Mumbai, recipe development chocolate India, chocolate training India, hire chocolate consultant India, chocolate workshop booking, corporate chocolate training India, chocolate educator contact, RT Chocos Mumbai";
   $pathPrefix = "";
   
   $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";

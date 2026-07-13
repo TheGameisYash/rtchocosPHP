@@ -1,7 +1,7 @@
 <?php
-  $pageTitle = "Chocolate Recipes & Formulations — Bean to Bar Learning Gallery | RT Chocos";
-  $pageDescription = "Explore professional chocolate recipes, dark chocolate formulations, truffle recipes, and tasting guides from India's first Chocolate Academy blog.";
-  $pageKeywords = "chocolate, chocolate learning, recipes, bean to bar chocolate, chocolate academy, chocolate recipes, craft chocolate formulation, chocolate truffle recipe, dark chocolate recipes India";
+  $pageTitle = "Chocolate Recipes India — Bean-to-Bar Formulations, Truffle Recipes & Tasting Guides | RT Chocos";
+  $pageDescription = "Discover professional Indian chocolate recipes from RT Chocos — India's first chocolate blog. Craft bean-to-bar formulations, artisan truffle recipes, dark chocolate tasting guides, and bonbon techniques by chocolate educator Aarti Saluja Sahni.";
+  $pageKeywords = "chocolate recipes India, Indian chocolate recipes, bean to bar chocolate recipe, dark chocolate truffle recipe India, chocolate formulation India, craft chocolate recipe, artisan chocolate recipes, chocolate tasting guide, bonbon recipe India, homemade chocolate recipe India, cocoa recipe India, RT Chocos recipes, professional chocolate recipes, chocolate making recipes India";
   $pathPrefix = "";
   
   $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
