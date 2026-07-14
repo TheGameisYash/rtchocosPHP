@@ -741,41 +741,6 @@ include __DIR__ . '/includes/header.php';
                 </div>
             </div>
 
-            <!-- Related Shop Product Widget -->
-            <?php
-            try {
-                $pSlug = 'single-origin-cacao-nibs'; // Default fallback
-                if (stripos($post['category'], 'Beginner') !== false || stripos($post['title'], 'making') !== false) {
-                    $pSlug = 'chocolate-makers-starter-kit';
-                } elseif (stripos($post['category'], 'Science') !== false || stripos($post['title'], 'ph') !== false || stripos($post['title'], 'bloom') !== false) {
-                    $pSlug = 'signature-dark-chocolate-72';
-                }
-                
-                $pStmt = $pdo->prepare("SELECT name, slug, short_description, price, sale_price, image_main FROM products WHERE slug = ? AND is_active = 1");
-                $pStmt->execute([$pSlug]);
-                $widgetProduct = $pStmt->fetch(PDO::FETCH_ASSOC);
-                
-                if ($widgetProduct):
-                    $widgetPrice = ($widgetProduct['sale_price'] && $widgetProduct['sale_price'] > 0) ? $widgetProduct['sale_price'] : $widgetProduct['price'];
-            ?>
-            <div style="background:var(--cream); border-radius:20px; padding:24px; margin-top:24px; margin-bottom:24px; box-shadow:0 4px 16px rgba(59,42,34,0.05); display:flex; gap:20px; align-items:center; flex-wrap:wrap; border:1px solid rgba(59,42,34,0.08);">
-                <?php if ($widgetProduct['image_main']): ?>
-                    <img src="<?php echo $pathPrefix . htmlspecialchars($widgetProduct['image_main']); ?>" alt="<?php echo htmlspecialchars($widgetProduct['name']); ?> — bean-to-bar chocolate, RT Chocos India" style="width:80px; height:80px; object-fit:cover; border-radius:12px; flex-shrink:0;">
-                <?php endif; ?>
-                <div style="flex:1; min-width:240px;">
-                    <span style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--gold); letter-spacing:0.08em; display:block; margin-bottom:4px;">Academy Recommends</span>
-                    <h4 style="font-family:'Jost',sans-serif; font-size:16px; font-weight:600; color:var(--brown); margin:0 0 6px;"><?php echo htmlspecialchars($widgetProduct['name']); ?></h4>
-                    <p style="font-size:13px; color:var(--brown-light); margin:0 0 12px;"><?php echo htmlspecialchars($widgetProduct['short_description']); ?></p>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-family:'Jost',sans-serif; font-weight:700; font-size:16px; color:var(--brown);">₹<?php echo number_format($widgetPrice, 0); ?></span>
-                        <a href="<?php echo $pathPrefix; ?>shop/<?php echo htmlspecialchars($widgetProduct['slug']); ?>" class="btn-primary" style="text-decoration:none; padding:6px 14px; font-size:12.5px;">View Product</a>
-                    </div>
-                </div>
-            </div>
-            <?php 
-                endif;
-            } catch (Exception $e) {} 
-            ?>
 
             <!-- Contextual FAQ Block -->
             <?php
