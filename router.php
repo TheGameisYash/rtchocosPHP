@@ -4,6 +4,12 @@
 
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
+// Explicitly handle clean blog list page requests since 'blog' is a physical directory
+if ($uri === '/blog' || $uri === '/blog/') {
+    include __DIR__ . '/blog.php';
+    return true;
+}
+
 // If it's a real file or directory, serve it directly
 if ($uri !== '/' && file_exists(__DIR__ . $uri)) {
     return false;

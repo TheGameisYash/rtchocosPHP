@@ -173,6 +173,14 @@ function simulateRoute($uri) {
     return ['routed' => false, 'html' => ''];
 }
 
+$routeBlogList = simulateRoute('/blog');
+assertEquals(true, $routeBlogList['routed'], "Router maps clean blog home URL /blog successfully");
+assertContains('<div id="page-blog"', $routeBlogList['html'], "Routed blog home page contains main wrapper");
+
+$routeBlogListSlash = simulateRoute('/blog/');
+assertEquals(true, $routeBlogListSlash['routed'], "Router maps clean blog home URL with trailing slash /blog/ successfully");
+assertContains('<div id="page-blog"', $routeBlogListSlash['html'], "Routed blog home page with slash contains main wrapper");
+
 $routePH = simulateRoute('/blog/cocoa-ph');
 assertEquals(true, $routePH['routed'], "Router maps clean URL /blog/cocoa-ph successfully");
 assertContains('Why pH is the Most Underrated Factor in Cocoa Powder', $routePH['html'], "Routed article content contains correct title");
