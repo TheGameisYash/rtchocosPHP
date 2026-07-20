@@ -301,6 +301,37 @@
     transform: translateY(0);
   }
 }
+
+@media (max-width: 768px) {
+  .theme-tester {
+    left: 12px;
+    bottom: 12px;
+  }
+  .theme-tester-trigger {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .theme-tester-menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+    animation: themeSlideUpMobile 0.25s ease-out;
+  }
+}
+@keyframes themeSlideUpMobile {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
 </style>
 
 <script>
