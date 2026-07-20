@@ -83,6 +83,279 @@
   </div>
 </div>
 
+<!-- Theme Switcher Widget -->
+<div id="theme-tester-widget" class="theme-tester">
+  <button class="theme-tester-trigger" onclick="toggleThemeMenu()" aria-label="Toggle Color Palette Tester">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="palette-icon">
+      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.3442 19.4856 5.3442 20.2709 4.85857 20.7565L4.54289 21.0722C4.16786 21.4472 3.59374 21.4925 3.16709 21.1764C1.94236 20.269 1.1415 18.8475 1.02534 17.2458C0.843644 14.7401 1.77662 12.2155 3.52513 10.467C5.86828 8.12383 9.66728 8.12383 12.0104 10.467C14.3536 12.8102 14.3536 16.6092 12.0104 18.9523C11.1633 19.7994 10 20.4 9 21.4C8 22.4 9 22 12 22Z"/>
+      <circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/>
+      <circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/>
+      <circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/>
+      <circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"/>
+    </svg>
+    <span>Theme Tester</span>
+  </button>
+  <div class="theme-tester-menu" id="theme-tester-menu">
+    <div class="theme-menu-header">
+      <h4>Select Color Palette</h4>
+      <button class="theme-menu-close" onclick="toggleThemeMenu()">&times;</button>
+    </div>
+    <div class="theme-options">
+      <!-- Option 1: Forest Green & Cream -->
+      <div class="theme-option" onclick="selectTheme('')" data-theme-id="">
+        <div class="theme-info">
+          <span class="theme-name">1. Forest Green & Cream (Default)</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #1a3d2c;"></span>
+            <span style="background-color: #476652;"></span>
+            <span style="background-color: #e5dec9;"></span>
+            <span style="background-color: #f7f4eb;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 2: Teal Green & Sage -->
+      <div class="theme-option" onclick="selectTheme('theme-teal-sage')" data-theme-id="theme-teal-sage">
+        <div class="theme-info">
+          <span class="theme-name">2. Teal Green & Sage</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #173e35;"></span>
+            <span style="background-color: #699684;"></span>
+            <span style="background-color: #c1dcd2;"></span>
+            <span style="background-color: #ebf1ee;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 3: Lavender & Mint Sage -->
+      <div class="theme-option" onclick="selectTheme('theme-lavender-mint')" data-theme-id="theme-lavender-mint">
+        <div class="theme-info">
+          <span class="theme-name">3. Lavender & Mint Sage</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #8d75af;"></span>
+            <span style="background-color: #addabf;"></span>
+            <span style="background-color: #e2ebd5;"></span>
+            <span style="background-color: #faf7f0;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 4: Peach Orange & Mint -->
+      <div class="theme-option" onclick="selectTheme('theme-peach-mint')" data-theme-id="theme-peach-mint">
+        <div class="theme-info">
+          <span class="theme-name">4. Peach Orange & Mint</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #ebb06a;"></span>
+            <span style="background-color: #addabf;"></span>
+            <span style="background-color: #e2ebd5;"></span>
+            <span style="background-color: #fbf4ea;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 5: Forest Green & Warm Ivory -->
+      <div class="theme-option" onclick="selectTheme('theme-cream-forest')" data-theme-id="theme-cream-forest">
+        <div class="theme-info">
+          <span class="theme-name">5. Forest Green & Warm Ivory</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #2b7a37;"></span>
+            <span style="background-color: #e8e5cc;"></span>
+            <span style="background-color: #FAF9F0;"></span>
+            <span style="background-color: #094616;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 6: Original theme -->
+      <div class="theme-option" onclick="selectTheme('theme-original')" data-theme-id="theme-original">
+        <div class="theme-info">
+          <span class="theme-name">6. Eucalyptus Sage (Original)</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #124F27;"></span>
+            <span style="background-color: #599A6E;"></span>
+            <span style="background-color: #E2ECE0;"></span>
+            <span style="background-color: #C2D0C0;"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.theme-tester {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 99999;
+  font-family: 'Inter', sans-serif;
+}
+.theme-tester-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(26, 61, 44, 0.85);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.theme-tester-trigger:hover {
+  background: rgba(26, 61, 44, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+.theme-tester-trigger svg {
+  width: 16px;
+  height: 16px;
+}
+.theme-tester-menu {
+  display: none;
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  animation: themeSlideUp 0.3s ease-out;
+}
+.theme-tester-menu.open {
+  display: block;
+}
+.theme-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+.theme-menu-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a3d2c;
+}
+.theme-menu-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #666;
+  line-height: 1;
+}
+.theme-options {
+  padding: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.theme-option {
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-bottom: 4px;
+  border-left: 3px solid transparent;
+}
+.theme-option:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+.theme-option.active {
+  background: rgba(26, 61, 44, 0.06);
+  border-left-color: #1a3d2c;
+}
+.theme-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.theme-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #333;
+}
+.theme-color-preview {
+  display: flex;
+  gap: 4px;
+}
+.theme-color-preview span {
+  display: inline-block;
+  width: 24px;
+  height: 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+@keyframes themeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+
+<script>
+function toggleThemeMenu() {
+  const menu = document.getElementById('theme-tester-menu');
+  if (menu) {
+    menu.classList.toggle('open');
+  }
+}
+
+function selectTheme(themeClass) {
+  // 1. Remove all existing theme classes from HTML element
+  const themes = ['theme-teal-sage', 'theme-lavender-mint', 'theme-peach-mint', 'theme-cream-forest', 'theme-original'];
+  themes.forEach(t => document.documentElement.classList.remove(t));
+
+  // 2. Add the selected theme class if it's not the default
+  if (themeClass) {
+    document.documentElement.classList.add(themeClass);
+    localStorage.setItem('rtchocos-color-theme', themeClass);
+  } else {
+    localStorage.removeItem('rtchocos-color-theme');
+  }
+
+  // 3. Update the active status in the tester menu UI
+  document.querySelectorAll('.theme-option').forEach(opt => {
+    if (opt.getAttribute('data-theme-id') === themeClass) {
+      opt.classList.add('active');
+    } else {
+      opt.classList.remove('active');
+    }
+  });
+}
+
+// Set initial active state in the switcher UI on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('rtchocos-color-theme') || '';
+  document.querySelectorAll('.theme-option').forEach(opt => {
+    if (opt.getAttribute('data-theme-id') === savedTheme) {
+      opt.classList.add('active');
+    } else {
+      opt.classList.remove('active');
+    }
+  });
+
+  // Close menu if clicking outside
+  document.addEventListener('click', (e) => {
+    const widget = document.getElementById('theme-tester-widget');
+    const menu = document.getElementById('theme-tester-menu');
+    if (widget && !widget.contains(e.target) && menu && menu.classList.contains('open')) {
+      menu.classList.remove('open');
+    }
+  });
+});
+</script>
+
 <script src="<?php echo $pathPrefix; ?>script.js?v=<?php echo filemtime(__DIR__ . '/../script.js'); ?>"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6W5XE5DRJG"></script>
 <script>

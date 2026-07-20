@@ -20,6 +20,14 @@ $ogType = !empty($pageType) ? $pageType : "website";
 <!DOCTYPE html>
 <html lang="en-IN">
 <head>
+<script>
+  (function() {
+    const savedTheme = localStorage.getItem('rtchocos-color-theme');
+    if (savedTheme) {
+      document.documentElement.classList.add(savedTheme);
+    }
+  })();
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></title>
