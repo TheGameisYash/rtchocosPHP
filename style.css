@@ -55,6 +55,8 @@
   --cream-rgb: 229, 222, 201;
   --dark-800-rgb: 216, 207, 183;
   --dark-900-rgb: 229, 222, 201;
+  --dark-100-rgb: 15, 39, 28;
+  --nav-bg: rgba(15, 39, 28, 0.88);
 
   /* --- Legacy compat aliases --- */
   --gold: var(--accent);
@@ -112,6 +114,8 @@ html.theme-teal-sage {
   --cream-rgb: 193, 220, 210;
   --dark-800-rgb: 176, 205, 191;
   --dark-900-rgb: 193, 220, 210;
+  --dark-100-rgb: 13, 39, 33;
+  --nav-bg: rgba(13, 39, 33, 0.88);
 }
 
 /* Palette 3: Lavender & Mint Sage (Image 3) */
@@ -143,6 +147,8 @@ html.theme-lavender-mint {
   --cream-rgb: 226, 235, 213;
   --dark-800-rgb: 210, 219, 202;
   --dark-900-rgb: 226, 235, 213;
+  --dark-100-rgb: 53, 37, 71;
+  --nav-bg: rgba(53, 37, 71, 0.88);
 }
 
 /* Palette 4: Peach Orange & Mint (Image 4) */
@@ -174,6 +180,8 @@ html.theme-peach-mint {
   --cream-rgb: 226, 235, 213;
   --dark-800-rgb: 210, 219, 202;
   --dark-900-rgb: 226, 235, 213;
+  --dark-100-rgb: 61, 38, 24;
+  --nav-bg: rgba(61, 38, 24, 0.88);
 }
 
 /* Palette 5: Forest Green & Warm Ivory (Image 5) */
@@ -205,6 +213,8 @@ html.theme-cream-forest {
   --cream-rgb: 232, 229, 204;
   --dark-800-rgb: 242, 235, 217;
   --dark-900-rgb: 250, 249, 240;
+  --dark-100-rgb: 5, 43, 13;
+  --nav-bg: rgba(5, 43, 13, 0.88);
 }
 
 /* Palette 6: Original Calming Eucalyptus Sage */
@@ -236,6 +246,8 @@ html.theme-original {
   --cream-rgb: 226, 236, 224;
   --dark-800-rgb: 181, 196, 178;
   --dark-900-rgb: 194, 208, 192;
+  --dark-100-rgb: 5, 21, 9;
+  --nav-bg: rgba(5, 21, 9, 0.88);
 }
 
 html {
@@ -676,7 +688,7 @@ textarea:focus-visible,
 
 #site-header.scrolled,
 #site-header.not-home {
-  background: rgba(26, 16, 18, 0.88);
+  background: var(--nav-bg, rgba(15, 39, 28, 0.88));
   backdrop-filter: blur(20px) saturate(1.5);
   -webkit-backdrop-filter: blur(20px) saturate(1.5);
   border-bottom-color: rgba(201, 149, 107, 0.08);
@@ -891,7 +903,7 @@ textarea:focus-visible,
 
 #mobile-menu {
   display: none;
-  background: var(--dark-800);
+  background: var(--nav-bg, rgba(15, 39, 28, 0.95));
   padding: 8px 0 24px;
   border-bottom: 1px solid rgba(201, 149, 107, 0.08);
   animation: slideDown 0.3s ease;
@@ -6434,96 +6446,74 @@ th {
   color: var(--brown-light) !important;
 }
 
-/* 1. Modern Windows Light Acrylic Navbar (Mint Glass) */
-#site-header {
-  background: rgba(194, 208, 192, 0.45) !important;
+/* 1. Dark Acrylic Theme-Adaptive Navbar */
+#site-header,
+#site-header.scrolled,
+#site-header.not-home {
+  background: var(--nav-bg, rgba(15, 39, 28, 0.92)) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border-bottom: 1px solid rgba(153, 168, 151, 0.45) !important;
-  box-shadow: 0 4px 30px rgba(29, 51, 34, 0.02) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25) !important;
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-#site-header.scrolled,
-#site-header.not-home {
-  background: rgba(194, 208, 192, 0.88) !important;
-  border-bottom-color: rgba(26, 95, 53, 0.2) !important;
-  box-shadow: 0 8px 32px rgba(29, 51, 34, 0.04) !important;
-}
-
-.logo-rt {
-  color: var(--brown) !important;
-}
-
-.logo-chocos {
-  color: var(--accent) !important;
-}
-
+.logo-rt,
 #site-header.scrolled .logo-rt,
 #site-header.not-home .logo-rt {
-  color: var(--brown) !important;
+  color: var(--white) !important;
 }
 
+.logo-chocos,
 #site-header.scrolled .logo-chocos,
 #site-header.not-home .logo-chocos {
-  color: var(--accent) !important;
+  color: var(--accent-light) !important;
 }
 
-.nav-link {
-  color: var(--brown-light) !important;
+.nav-link,
+#site-header.scrolled .nav-link,
+#site-header.not-home .nav-link {
+  color: rgba(255, 255, 255, 0.88) !important;
 }
 
 .nav-link:hover,
-.nav-link.active {
-  color: var(--accent) !important;
-}
-
-#site-header.scrolled .nav-link,
-#site-header.not-home .nav-link {
-  color: var(--brown-light) !important;
-}
-
+.nav-link.active,
 #site-header.scrolled .nav-link:hover,
 #site-header.not-home .nav-link:hover,
 #site-header.scrolled .nav-link.active,
 #site-header.not-home .nav-link.active {
-  color: var(--accent) !important;
+  color: var(--accent-light) !important;
 }
 
-.search-btn {
-  color: var(--brown-light) !important;
+.search-btn,
+#site-header.scrolled .search-btn,
+#site-header.not-home .search-btn {
+  color: rgba(255, 255, 255, 0.88) !important;
 }
 
 .search-btn:hover {
-  color: var(--accent) !important;
+  color: var(--accent-light) !important;
 }
 
-#site-header.scrolled .search-btn,
-#site-header.not-home .search-btn {
-  color: var(--brown-light) !important;
-}
-
-.hamburger span {
-  background: var(--brown-light) !important;
-}
-
+.hamburger span,
 #site-header.scrolled .hamburger span,
 #site-header.not-home .hamburger span {
-  background: var(--brown-light) !important;
+  background: var(--white) !important;
 }
 
 #mobile-menu {
-  background: var(--dark-800) !important;
-  border-bottom: 1px solid rgba(26, 95, 53, 0.12) !important;
+  background: var(--nav-bg, rgba(15, 39, 28, 0.95)) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .mobile-nav-link {
-  color: var(--brown-light) !important;
-  border-bottom: 1px solid rgba(26, 95, 53, 0.08) !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-.mobile-nav-link:hover {
-  color: var(--accent) !important;
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  color: var(--accent-light) !important;
 }
 
 #hero {
