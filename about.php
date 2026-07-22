@@ -43,90 +43,102 @@
       </div>
     </div>
 
-    <!-- Career Timeline Section -->
+    <!-- Career Journey Section -->
     <div style="margin-bottom: 80px;">
       <div style="text-align: center; margin-bottom: 40px;">
-        <div class="section-label">Interactive Journey</div>
-        <h2 class="section-title">Milestones in Cacao</h2>
-        <p class="section-subtitle" style="max-width: 580px; margin: 0 auto;">Click on any milestone checkpoint below to expand and discover the inside stories and chocolate lessons learned at each stage of my journey.</p>
+        <div class="section-label">Our Journey</div>
+        <h2 class="section-title">Journey in Cacao</h2>
+        <p class="section-subtitle" style="max-width: 600px; margin: 0 auto;">From corporate balance sheets to artisan chocolate science, workshops, and farm consulting.</p>
       </div>
 
-      <div class="timeline-container">
-        <!-- Milestone 1 -->
-        <div class="timeline-node" onclick="toggleTimelineMilestone(this)">
-          <div class="timeline-header">
-            <span class="timeline-year">2012</span>
-            <h4 class="timeline-title">🎓 The Spreadsheet Shift</h4>
-            <span class="timeline-icon">▼</span>
+      <div class="journey-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; max-width: 1040px; margin: 0 auto;">
+        <!-- Card 1 -->
+        <div class="journey-card" style="background: var(--ivory); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--brown); background: var(--cream); padding: 5px 14px; border-radius: 20px; border: 1px solid var(--cream-dark);">2012</span>
+              <span style="font-size: 24px;">🎓</span>
+            </div>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; color: var(--brown); margin-bottom: 12px;">The Spreadsheet Shift</h3>
+            <p style="font-size: 14px; color: var(--brown-light); line-height: 1.6; margin-bottom: 16px;"><strong>Context:</strong> Finance MBA graduate, numbers enthusiast, and corporate-bound. Then came that unexpected box of handmade truffles.</p>
           </div>
-          <div class="timeline-body">
-            <p><strong>The Context:</strong> Finance MBA graduate, numbers enthusiast, and corporate-bound. Then came that unexpected box of handmade truffles.</p>
-            <p><strong>Cacao Lesson:</strong> Creativity and systems are not mutually exclusive. An analytical mindset is the secret weapon to understanding precision chocolate science.</p>
-          </div>
-        </div>
-
-        <!-- Milestone 2 -->
-        <div class="timeline-node" onclick="toggleTimelineMilestone(this)">
-          <div class="timeline-header">
-            <span class="timeline-year">2014</span>
-            <h4 class="timeline-title">🧪 Ludhiana Cacao Discovery</h4>
-            <span class="timeline-icon">▼</span>
-          </div>
-          <div class="timeline-body">
-            <p><strong>The Context:</strong> Far from home, far from spreadsheets, and enrolling in my first chocolate class in Ludhiana, Punjab. The magic of tempering curves clicked.</p>
-            <p><strong>Cacao Lesson:</strong> Tempering is not a mystery; it is crystal physics. Controlling cocoa butter crystallization curves defines professional finish.</p>
+          <div style="background: var(--cream); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: 13px; color: var(--brown); line-height: 1.5;">
+            <strong>Lesson:</strong> Creativity and systems are not mutually exclusive. An analytical mindset is the secret weapon to understanding precision chocolate science.
           </div>
         </div>
 
-        <!-- Milestone 3 -->
-        <div class="timeline-node" onclick="toggleTimelineMilestone(this)">
-          <div class="timeline-header">
-            <span class="timeline-year">2016</span>
-            <h4 class="timeline-title">🚀 Kitchen to Corporate Clients</h4>
-            <span class="timeline-icon">▼</span>
+        <!-- Card 2 -->
+        <div class="journey-card" style="background: var(--ivory); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--brown); background: var(--cream); padding: 5px 14px; border-radius: 20px; border: 1px solid var(--cream-dark);">2014</span>
+              <span style="font-size: 24px;">🧪</span>
+            </div>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; color: var(--brown); margin-bottom: 12px;">Ludhiana Cacao Discovery</h3>
+            <p style="font-size: 14px; color: var(--brown-light); line-height: 1.6; margin-bottom: 16px;"><strong>Context:</strong> Far from home, far from spreadsheets, and enrolling in my first chocolate class in Ludhiana, Punjab. The magic of tempering curves clicked.</p>
           </div>
-          <div class="timeline-body">
-            <p><strong>The Context:</strong> Scaling production in the home kitchen, supplying high-end cafes, hotels, and organizing the first hands-on workshops for women home-bakers.</p>
-            <p><strong>Cacao Lesson:</strong> True success is empowering others. Helping aspiring home-chocolatiers scale their business is as rewarding as formulating the perfect bar.</p>
-          </div>
-        </div>
-
-        <!-- Milestone 4 -->
-        <div class="timeline-node" onclick="toggleTimelineMilestone(this)">
-          <div class="timeline-header">
-            <span class="timeline-year">2020</span>
-            <h4 class="timeline-title">🌐 Going Virtual</h4>
-            <span class="timeline-icon">▼</span>
-          </div>
-          <div class="timeline-body">
-            <p><strong>The Context:</strong> Lockdowns hit. Transitioning physical workshops to high-definition live online classes, opening classrooms to international students across time zones.</p>
-            <p><strong>Cacao Lesson:</strong> Passion translates across screens. Cacao acts as a universal bridge, linking enthusiasts from Mumbai to London to New York.</p>
+          <div style="background: var(--cream); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: 13px; color: var(--brown); line-height: 1.5;">
+            <strong>Lesson:</strong> Tempering is not a mystery; it is crystal physics. Controlling cocoa butter crystallization curves defines professional finish.
           </div>
         </div>
 
-        <!-- Milestone 5 -->
-        <div class="timeline-node" onclick="toggleTimelineMilestone(this)">
-          <div class="timeline-header">
-            <span class="timeline-year">2022</span>
-            <h4 class="timeline-title">💼 Scaling up in Mumbai</h4>
-            <span class="timeline-icon">▼</span>
+        <!-- Card 3 -->
+        <div class="journey-card" style="background: var(--ivory); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--brown); background: var(--cream); padding: 5px 14px; border-radius: 20px; border: 1px solid var(--cream-dark);">2016</span>
+              <span style="font-size: 24px;">🚀</span>
+            </div>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; color: var(--brown); margin-bottom: 12px;">Kitchen to Corporate Clients</h3>
+            <p style="font-size: 14px; color: var(--brown-light); line-height: 1.6; margin-bottom: 16px;"><strong>Context:</strong> Scaling production in the home kitchen, supplying high-end cafes, hotels, and organizing the first hands-on workshops for women home-bakers.</p>
           </div>
-          <div class="timeline-body">
-            <p><strong>The Context:</strong> Joining a top Indian chocolate brand as Head of NPD (New Product Development) & Production in Mumbai. Handling industrial refining, conching, and industrial scaling.</p>
-            <p><strong>Cacao Lesson:</strong> Scalability requires rigorous science. Translating delicate kitchen formulations into consistent commercial batches is where art meets industry.</p>
+          <div style="background: var(--cream); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: 13px; color: var(--brown); line-height: 1.5;">
+            <strong>Lesson:</strong> True success is empowering others. Helping aspiring home-chocolatiers scale their business is as rewarding as formulating the perfect bar.
           </div>
         </div>
 
-        <!-- Milestone 6 -->
-        <div class="timeline-node" onclick="toggleTimelineMilestone(this)">
-          <div class="timeline-header">
-            <span class="timeline-year">Present</span>
-            <h4 class="timeline-title">🌱 Farm Consulting & Recipe Dev</h4>
-            <span class="timeline-icon">▼</span>
+        <!-- Card 4 -->
+        <div class="journey-card" style="background: var(--ivory); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--brown); background: var(--cream); padding: 5px 14px; border-radius: 20px; border: 1px solid var(--cream-dark);">2020</span>
+              <span style="font-size: 24px;">🌐</span>
+            </div>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; color: var(--brown); margin-bottom: 12px;">Going Virtual</h3>
+            <p style="font-size: 14px; color: var(--brown-light); line-height: 1.6; margin-bottom: 16px;"><strong>Context:</strong> Lockdowns hit. Transitioning physical workshops to high-definition live online classes, opening classrooms to international students across time zones.</p>
           </div>
-          <div class="timeline-body">
-            <p><strong>The Context:</strong> Operating as a freelance consultant and recipes tester, visiting cacao plantations, auditing fermentation setups, and helping craft bean-to-bar operations succeed.</p>
-            <p><strong>Cacao Lesson:</strong> Flavour starts in the orchard. The ultimate quality of chocolate is determined in the fermentation drawer and drying bed, not the laboratory.</p>
+          <div style="background: var(--cream); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: 13px; color: var(--brown); line-height: 1.5;">
+            <strong>Lesson:</strong> Passion translates across screens. Cacao acts as a universal bridge, linking enthusiasts from Mumbai to London to New York.
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="journey-card" style="background: var(--ivory); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--brown); background: var(--cream); padding: 5px 14px; border-radius: 20px; border: 1px solid var(--cream-dark);">2022</span>
+              <span style="font-size: 24px;">💼</span>
+            </div>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; color: var(--brown); margin-bottom: 12px;">Scaling up in Mumbai</h3>
+            <p style="font-size: 14px; color: var(--brown-light); line-height: 1.6; margin-bottom: 16px;"><strong>Context:</strong> Joining a top Indian chocolate brand as Head of NPD (New Product Development) & Production in Mumbai. Handling industrial refining, conching, and industrial scaling.</p>
+          </div>
+          <div style="background: var(--cream); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: 13px; color: var(--brown); line-height: 1.5;">
+            <strong>Lesson:</strong> Scalability requires rigorous science. Translating delicate kitchen formulations into consistent commercial batches is where art meets industry.
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="journey-card" style="background: var(--ivory); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--brown); background: var(--cream); padding: 5px 14px; border-radius: 20px; border: 1px solid var(--cream-dark);">Present</span>
+              <span style="font-size: 24px;">🌱</span>
+            </div>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; color: var(--brown); margin-bottom: 12px;">Farm Consulting & Recipe Dev</h3>
+            <p style="font-size: 14px; color: var(--brown-light); line-height: 1.6; margin-bottom: 16px;"><strong>Context:</strong> Operating as a freelance consultant and recipes tester, visiting cacao plantations, auditing fermentation setups, and helping craft bean-to-bar operations succeed.</p>
+          </div>
+          <div style="background: var(--cream); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: 13px; color: var(--brown); line-height: 1.5;">
+            <strong>Lesson:</strong> Flavour starts in the orchard. The ultimate quality of chocolate is determined in the fermentation drawer and drying bed, not the laboratory.
           </div>
         </div>
       </div>

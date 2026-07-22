@@ -83,6 +83,7 @@
   </div>
 </div>
 
+<?php if (get_site_setting('show_theme_tester', '0') === '1'): ?>
 <!-- Theme Switcher Widget -->
 <div id="theme-tester-widget" class="theme-tester">
   <button class="theme-tester-trigger" onclick="toggleThemeMenu()" aria-label="Toggle Color Palette Tester">
@@ -176,6 +177,7 @@
     </div>
   </div>
 </div>
+<?php endif; ?>
 
 <style>
 .theme-tester {

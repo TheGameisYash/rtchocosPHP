@@ -17,11 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             if ($action === 'update_settings') {
                 $settings = $_POST['settings'] ?? [];
+                if (!isset($settings['show_theme_tester'])) {
+                    $settings['show_theme_tester'] = '0';
+                }
                 
                 $pdo->beginTransaction();
-                $stmt = $pdo->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = ?");
+                $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
                 foreach ($settings as $key => $val) {
-                    $stmt->execute([trim($val), $key]);
+                    $stmt->execute([$key, trim($val), trim($val)]);
                 }
                 $pdo->commit();
                 
@@ -143,10 +146,18 @@ render_admin_header("Site Settings", "settings");
                 </div>
             </div>
 
-            <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Newsletter Banner Content</div>
-            <div class="form-group">
-                <label class="static-label" for="newsletter_text">Newsletter Callout Text</label>
-                <textarea id="newsletter_text" name="settings[newsletter_text]" rows="2"><?php echo htmlspecialchars($settings['newsletter_text'] ?? ''); ?></textarea>
+            <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Theme & Appearance Settings</div>
+            <div class="form-group" style="background: var(--bg-app); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <label for="show_theme_tester" style="font-weight: 600; font-size: 15px; color: var(--text-main); display: block; margin-bottom: 4px;">Frontend Theme Tester Widget</label>
+                        <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Enable or disable the floating color palette switcher widget on the public website.</p>
+                    </div>
+                    <select id="show_theme_tester" name="settings[show_theme_tester]" style="padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-weight: 600; min-width: 150px; cursor: pointer;">
+                        <option value="0" <?php echo ($settings['show_theme_tester'] ?? '0') === '0' ? 'selected' : ''; ?>>OFF (Disabled)</option>
+                        <option value="1" <?php echo ($settings['show_theme_tester'] ?? '0') === '1' ? 'selected' : ''; ?>>ON (Enabled)</option>
+                    </select>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary" style="margin-top: 12px; padding: 12px 24px; min-width: 180px;">Save Settings</button>

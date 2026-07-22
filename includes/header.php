@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/db.php';
 // Canonicals always point to the public HTTPS URL, never to a preview host or query string.
 $siteUrl = "https://www.rtchocos.com";
 if (empty($canonicalUrl)) {

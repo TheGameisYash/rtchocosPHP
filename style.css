@@ -10,53 +10,39 @@
 }
 
 :root {
-  /* --- Primary: Forest Green & Cream (Default Theme - Image 1) --- */
-  --dark-900: #e5dec9;
-  /* Warm cream */
-  --dark-800: #d8cfb7;
-  /* Slightly darker cream */
-  --dark-700: #b0c1ab;
-  /* Light sage */
-  --dark-600: #88a083;
-  /* Medium sage */
-  --dark-500: #627f5c;
-  --dark-400: #476652;
-  --dark-300: #294c36;
-  --dark-200: #1a3d2c;
-  /* Deep forest green text/bg */
-  --dark-100: #0f271c;
-  /* Bold heading forest text */
+  /* --- Primary: Forest Green & Warm Ivory (Default Theme 5) --- */
+  --dark-900: #FAF9F0;
+  --dark-800: #f2ebd9;
+  --dark-700: #e8e5cc;
+  --dark-600: #cac5a3;
+  --dark-500: #2b7a37;
+  --dark-400: #1e5a26;
+  --dark-300: #13451b;
+  --dark-200: #094616;
+  --dark-100: #052b0d;
 
-  /* --- Accent: Vibrant Forest Emerald & Sage --- */
-  --accent: #134630;
-  /* Deep forest green */
-  --accent-light: #4d6d53;
-  /* Muted sage-mint highlight */
-  --accent-dark: #0a1e14;
-  /* Deepest forest text */
-  --accent-glow: rgba(19, 70, 48, 0.08);
+  /* --- Accent: Forest Emerald & Ivory --- */
+  --accent: #2b7a37;
+  --accent-light: #cac5a3;
+  --accent-dark: #052b0d;
+  --accent-glow: rgba(43, 122, 55, 0.08);
 
   /* --- Warm Neutrals --- */
-  --cream: #e5dec9;
-  /* Warm cream card background */
-  --cream-dark: #d8cfb7;
-  /* Warm cream border/divider */
-  --ivory: #faf7ef;
-  --white: #faf7ef;
-  /* Soothing off-white instead of harsh white */
-  --brown: #1a3d2c;
-  /* Forest text */
-  --brown-light: #476652;
-  /* Muted forest text */
+  --cream: #e8e5cc;
+  --cream-dark: #cac5a3;
+  --ivory: #FAF9F0;
+  --white: #FAF9F0;
+  --brown: #094616;
+  --brown-light: #1e5a26;
 
   /* --- RGB Component Variables for Opacity --- */
-  --white-rgb: 250, 247, 239;
-  --ivory-rgb: 250, 247, 239;
-  --cream-rgb: 229, 222, 201;
-  --dark-800-rgb: 216, 207, 183;
-  --dark-900-rgb: 229, 222, 201;
-  --dark-100-rgb: 15, 39, 28;
-  --nav-bg: rgba(15, 39, 28, 0.88);
+  --white-rgb: 250, 249, 240;
+  --ivory-rgb: 250, 249, 240;
+  --cream-rgb: 232, 229, 204;
+  --dark-800-rgb: 242, 235, 217;
+  --dark-900-rgb: 250, 249, 240;
+  --dark-100-rgb: 5, 43, 13;
+  --nav-bg: rgba(5, 43, 13, 0.88);
 
   /* --- Legacy compat aliases --- */
   --gold: var(--accent);

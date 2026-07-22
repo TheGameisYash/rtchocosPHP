@@ -29,4 +29,22 @@ function get_db() {
     }
     return $pdo;
 }
+
+function get_site_setting($key, $default = '') {
+    static $settingsCache = null;
+    if ($settingsCache === null) {
+        try {
+            $pdo = get_db();
+            $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings");
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $settingsCache = [];
+            foreach ($rows as $row) {
+                $settingsCache[$row['setting_key']] = $row['setting_value'];
+            }
+        } catch (Exception $e) {
+            $settingsCache = [];
+        }
+    }
+    return $settingsCache[$key] ?? $default;
+}
 ?>

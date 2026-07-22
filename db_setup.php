@@ -199,7 +199,8 @@ try {
         'social_facebook' => 'https://facebook.com/rtchocos',
         'social_youtube' => 'https://youtube.com/rtchocos',
         'social_linkedin' => 'https://linkedin.com/company/rtchocos',
-        'newsletter_text' => 'Subscribe to our newsletter for exclusive recipes, scientific cocoa insights, and new product releases.'
+        'newsletter_text' => 'Subscribe to our newsletter for exclusive recipes, scientific cocoa insights, and new product releases.',
+        'show_theme_tester' => '0'
     ];
 
     foreach ($defaultSettings as $key => $value) {
