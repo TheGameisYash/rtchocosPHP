@@ -60,6 +60,15 @@ if (preg_match('#^/indian-chocolate-brands/?$#', $uri)) {
     return true;
 }
 
+// Clean API routing: /api/{endpoint} -> api/{endpoint}.php
+if (preg_match('#^/api/([^/]+)$#', $uri, $m)) {
+    $apiFile = __DIR__ . '/api/' . $m[1] . '.php';
+    if (file_exists($apiFile)) {
+        include $apiFile;
+        return true;
+    }
+}
+
 // Default: serve the requested URI as-is via the built-in server
 return false;
 ?>
