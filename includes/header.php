@@ -248,8 +248,8 @@ if (!empty($recipeData)) {
 <!-- Ultra-Luxury Interactive Cacao Preloader Overlay -->
 <div id="cacao-preloader" class="cacao-preloader-overlay" aria-label="Loading RT Chocos">
   <!-- Full-screen video background -->
-  <video class="preloader-video-bg" autoplay muted loop playsinline preload="auto">
-    <source src="<?php echo $pathPrefix; ?>assets/loading.mp4" type="video/mp4">
+  <video class="preloader-video-bg" id="preloader-video" autoplay muted loop playsinline preload="auto" src="<?php echo (isset($pathPrefix) ? $pathPrefix : ''); ?>assets/loading.mp4">
+    <source src="<?php echo (isset($pathPrefix) ? $pathPrefix : ''); ?>assets/loading.mp4" type="video/mp4">
   </video>
   <div class="preloader-video-scrim"></div>
   <div class="preloader-ambient-glow"></div>
@@ -345,6 +345,16 @@ if (!empty($recipeData)) {
     return;
   }
   sessionStorage.setItem('rtchocos_visited', 'true');
+
+  // Trigger Video Autoplay Explicitly for Browser Compatibility
+  var preVid = document.getElementById('preloader-video');
+  if (preVid) {
+    preVid.muted = true;
+    var playPromise = preVid.play();
+    if (playPromise && playPromise.catch) {
+      playPromise.catch(function(err) { console.log('Preloader video notice:', err); });
+    }
+  }
 
   // Spawn Golden Sparkle Particles
   var pc = document.getElementById('preloader-particles');
