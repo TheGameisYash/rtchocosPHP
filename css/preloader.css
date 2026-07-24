@@ -1,0 +1,437 @@
+/* ==========================================================================
+   LIGHT SAGE & WARM IVORY CACAO PRELOADER
+   ========================================================================== */
+.cacao-preloader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #233D2F;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  user-select: none;
+  background: #14241B;
+}
+
+.cacao-preloader-overlay.fade-out {
+  animation: sageExit 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes sageExit {
+  0% { opacity: 1; transform: scale(1); filter: blur(0); }
+  60% { opacity: 0.5; transform: scale(1.03); filter: blur(4px); }
+  100% { opacity: 0; transform: scale(1.06); filter: blur(8px); visibility: hidden; pointer-events: none; }
+}
+
+/* Video Background with Soft Brightness */
+.preloader-video-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.92) saturate(1.1) contrast(1.05);
+  opacity: 0.95;
+}
+
+/* Soft Light Sage Scrim Gradient - Balanced for Video Visibility */
+.preloader-video-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at center, rgba(235, 242, 238, 0.25) 0%, rgba(220, 232, 224, 0.45) 75%),
+    linear-gradient(180deg, rgba(20, 38, 28, 0.35) 0%, rgba(245, 248, 246, 0.3) 100%);
+  pointer-events: none;
+}
+
+/* Ambient Soft Sage Glow Behind Frame */
+.preloader-ambient-glow {
+  position: absolute;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(138, 168, 149, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 2;
+  pointer-events: none;
+  animation: ambientGlowPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes ambientGlowPulse {
+  0% { transform: scale(0.85); opacity: 0.6; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Floating Sage Particles */
+.preloader-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.preloader-particle {
+  position: absolute;
+  background: #7B9B88;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(123, 155, 136, 0.5);
+  animation: particleDrift linear infinite;
+  opacity: 0;
+}
+
+@keyframes particleDrift {
+  0% { transform: translateY(105vh) translateX(0) scale(0); opacity: 0; }
+  10% { opacity: 0.7; }
+  85% { opacity: 0.35; }
+  100% { transform: translateY(-10vh) translateX(50px) scale(1.2); opacity: 0; }
+}
+
+/* Light Ivory & Sage Glass Frame Container */
+.preloader-luxury-frame {
+  position: relative;
+  z-index: 10;
+  width: 92%;
+  max-width: 480px;
+  padding: 36px 30px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid rgba(123, 155, 136, 0.25);
+  border-radius: 28px;
+  box-shadow:
+    0 24px 60px rgba(35, 61, 47, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 0 35px rgba(123, 155, 136, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  text-align: center;
+  animation: frameEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes frameEntrance {
+  0% { opacity: 0; transform: translateY(30px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Brand Logo Header */
+.preloader-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.preloader-brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.preloader-brand-name .logo-rt {
+  color: #233D2F;
+}
+
+.preloader-brand-name .logo-chocos {
+  color: #4A6B58;
+  font-weight: 500;
+}
+
+.preloader-tagline {
+  font-size: 10.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #608671;
+  font-weight: 600;
+}
+
+/* Artisanal Phase Timeline Bar */
+.preloader-phase-timeline {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 4px;
+}
+
+.phase-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.45;
+  transform: scale(0.9);
+  transition: all 0.4s ease;
+}
+
+.phase-step.active {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.phase-icon {
+  font-size: 15px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(123, 155, 136, 0.1);
+  border: 1px solid rgba(123, 155, 136, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+}
+
+.phase-step.active .phase-icon {
+  background: #4A6B58;
+  border-color: #233D2F;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(74, 107, 88, 0.3);
+}
+
+.phase-name {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #4A6B58;
+}
+
+.phase-step.active .phase-name {
+  color: #233D2F;
+}
+
+.phase-line {
+  flex: 1;
+  height: 2px;
+  background: rgba(123, 155, 136, 0.18);
+  margin: 0 6px;
+  margin-top: -14px;
+  transition: background 0.4s ease;
+}
+
+.phase-line.active {
+  background: linear-gradient(90deg, #7B9B88, #233D2F);
+  box-shadow: 0 0 6px rgba(74, 107, 88, 0.3);
+}
+
+/* Meter Ring Container */
+.preloader-meter-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+  margin: 4px 0;
+}
+
+.preloader-meter-svg {
+  width: 120px;
+  height: 120px;
+  transform: rotate(-90deg);
+}
+
+.meter-track {
+  fill: none;
+  stroke: rgba(123, 155, 136, 0.15);
+  stroke-width: 4;
+}
+
+.meter-dashed-accent {
+  fill: none;
+  stroke: rgba(74, 107, 88, 0.2);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+  animation: meterSpin 16s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes meterSpin {
+  100% { transform: rotate(360deg); }
+}
+
+.meter-fill {
+  fill: none;
+  stroke: url(#themeGradient);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 326.7;
+  stroke-dashoffset: 326.7;
+  transition: stroke-dashoffset 0.15s ease-out;
+  filter: drop-shadow(0 2px 6px rgba(35, 61, 47, 0.2));
+}
+
+.preloader-meter-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  gap: 2px;
+}
+
+.meter-icon-emoji {
+  font-size: 32px;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: floatEmoji 3s ease-in-out infinite;
+}
+
+.preloader-meter-wrapper:hover .meter-icon-emoji {
+  transform: scale(1.2) rotate(15deg);
+}
+
+@keyframes floatEmoji {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.meter-percent-display {
+  font-size: 13px;
+  font-weight: 700;
+  color: #233D2F;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+
+/* Status Headline */
+.preloader-status-headline {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #345242;
+  letter-spacing: 0.5px;
+  min-height: 20px;
+  transition: opacity 0.3s ease;
+}
+
+/* Interactive Light Sage Fact Card */
+.preloader-fact-container {
+  width: 100%;
+  background: rgba(245, 248, 246, 0.85);
+  border: 1px solid rgba(123, 155, 136, 0.25);
+  border-radius: 16px;
+  padding: 16px 18px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(35, 61, 47, 0.04);
+}
+
+.preloader-fact-container:hover {
+  background: #ffffff;
+  border-color: #4A6B58;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(35, 61, 47, 0.08);
+}
+
+.fact-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.fact-category-tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #4A6B58;
+  letter-spacing: 1px;
+}
+
+.fact-counter {
+  font-size: 9.5px;
+  color: #608671;
+  font-weight: 600;
+}
+
+.fact-body-text {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #233D2F;
+  margin: 0;
+  min-height: 44px;
+  font-weight: 500;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.fact-body-text.animating {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.fact-tap-footer {
+  font-size: 9.5px;
+  color: #608671;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.tap-icon {
+  font-size: 10px;
+}
+
+/* Enter Button */
+.preloader-enter-btn {
+  background: rgba(123, 155, 136, 0.12);
+  border: 1px solid rgba(123, 155, 136, 0.35);
+  color: #233D2F;
+  padding: 10px 30px;
+  border-radius: 22px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.preloader-enter-btn:hover {
+  background: #233D2F;
+  border-color: #233D2F;
+  color: #FAF9F5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(35, 61, 47, 0.25);
+}
+
+.preloader-enter-btn:active {
+  transform: scale(0.96);
+}
+
+/* Sparkle animation on click */
+.click-sparkle {
+  position: fixed;
+  z-index: 1000000;
+  pointer-events: none;
+  font-size: 16px;
+  animation: sparkleUp 0.8s ease-out forwards;
+}
+
+@keyframes sparkleUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-30px) scale(1.5); }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 480px) {
+  .preloader-luxury-frame {
+    padding: 26px 20px;
+    gap: 16px;
+    border-radius: 22px;
+  }
+  .preloader-brand-name { font-size: 24px; }
+  .phase-icon { width: 28px; height: 28px; font-size: 14px; }
+  .phase-name { font-size: 8px; }
+  .preloader-meter-wrapper { width: 100px; height: 100px; }
+  .preloader-meter-svg { width: 100px; height: 100px; }
+  .meter-icon-emoji { font-size: 26px; }
+  .fact-body-text { font-size: 12px; }
+}

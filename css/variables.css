@@ -1,0 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+/* === RESET & BASE === */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* --- Primary: Forest Green & Warm Ivory (Default Theme 5) --- */
+  --dark-900: #FAF9F0;
+  --dark-800: #f2ebd9;
+  --dark-700: #e8e5cc;
+  --dark-600: #cac5a3;
+  --dark-500: #2b7a37;
+  --dark-400: #1e5a26;
+  --dark-300: #13451b;
+  --dark-200: #094616;
+  --dark-100: #052b0d;
+
+  /* --- Accent: Forest Emerald & Ivory --- */
+  --accent: #2b7a37;
+  --accent-light: #cac5a3;
+  --accent-dark: #052b0d;
+  --accent-glow: rgba(43, 122, 55, 0.08);
+
+  /* --- Warm Neutrals --- */
+  --cream: #e8e5cc;
+  --cream-dark: #cac5a3;
+  --ivory: #FAF9F0;
+  --white: #FAF9F0;
+  --brown: #094616;
+  --brown-light: #1e5a26;
+
+  /* --- RGB Component Variables for Opacity --- */
+  --white-rgb: 250, 249, 240;
+  --ivory-rgb: 250, 249, 240;
+  --cream-rgb: 232, 229, 204;
+  --dark-800-rgb: 242, 235, 217;
+  --dark-900-rgb: 250, 249, 240;
+  --dark-100-rgb: 5, 43, 13;
+  --nav-bg: rgba(5, 43, 13, 0.88);
+
+  /* --- Legacy compat aliases --- */
+  --gold: var(--accent);
+  --gold-light: var(--accent-light);
+  --green-900: var(--dark-800);
+  --green-800: var(--dark-700);
+  --green-700: var(--dark-600);
+  --green-600: var(--dark-500);
+  --green-500: var(--dark-400);
+  --green-400: var(--dark-300);
+  --green-100: var(--cream);
+  --green-5: var(--ivory);
+  --green-50: var(--ivory);
+  --green: var(--dark-600);
+  --green-dark: var(--dark-700);
+  --green-light: var(--dark-500);
+  --black: var(--brown);
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 2px 8px rgba(14, 10, 8, 0.08);
+  --shadow-md: 0 8px 32px rgba(14, 10, 8, 0.12);
+  --shadow-lg: 0 20px 60px rgba(14, 10, 8, 0.18);
+  --shadow-glow: 0 0 40px rgba(201, 149, 107, 0.08);
+  --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- THEME OVERRIDES --- */
+
+/* Palette 2: Teal Green & Sage (Image 2) */
+html.theme-teal-sage {
+  --dark-900: #c1dcd2;
+  --dark-800: #b0cdbf;
+  --dark-700: #8bb3a2;
+  --dark-600: #699684;
+  --dark-500: #4f7d6a;
+  --dark-400: #396352;
+  --dark-300: #264a3d;
+  --dark-200: #173e35;
+  --dark-100: #0d2721;
+
+  --accent: #173e35;
+  --accent-light: #699684;
+  --accent-dark: #0a1f1a;
+  --accent-glow: rgba(23, 62, 53, 0.08);
+
+  --cream: #c1dcd2;
+  --cream-dark: #b0cdbf;
+  --ivory: #ebf1ee;
+  --white: #ebf1ee;
+  --brown: #173e35;
+  --brown-light: #396352;
+
+  --white-rgb: 235, 241, 238;
+  --ivory-rgb: 235, 241, 238;
+  --cream-rgb: 193, 220, 210;
+  --dark-800-rgb: 176, 205, 191;
+  --dark-900-rgb: 193, 220, 210;
+  --dark-100-rgb: 13, 39, 33;
+  --nav-bg: rgba(13, 39, 33, 0.88);
+}
+
+/* Palette 3: Lavender & Mint Sage (Image 3) */
+html.theme-lavender-mint {
+  --dark-900: #e2ebd5;
+  --dark-800: #d2dbca;
+  --dark-700: #addabf;
+  --dark-600: #8ac09e;
+  --dark-500: #8d75af;
+  --dark-400: #765f97;
+  --dark-300: #5d487c;
+  --dark-200: #423454;
+  --dark-100: #352547;
+
+  --accent: #8d75af;
+  --accent-light: #addabf;
+  --accent-dark: #352547;
+  --accent-glow: rgba(141, 117, 175, 0.08);
+
+  --cream: #e2ebd5;
+  --cream-dark: #d2dbca;
+  --ivory: #faf7f0;
+  --white: #faf7f0;
+  --brown: #423454;
+  --brown-light: #765f97;
+
+  --white-rgb: 250, 247, 240;
+  --ivory-rgb: 250, 247, 240;
+  --cream-rgb: 226, 235, 213;
+  --dark-800-rgb: 210, 219, 202;
+  --dark-900-rgb: 226, 235, 213;
+  --dark-100-rgb: 53, 37, 71;
+  --nav-bg: rgba(53, 37, 71, 0.88);
+}
+
+/* Palette 4: Peach Orange & Mint (Image 4) */
+html.theme-peach-mint {
+  --dark-900: #e2ebd5;
+  --dark-800: #d2dbca;
+  --dark-700: #addabf;
+  --dark-600: #8ac09e;
+  --dark-500: #ebb06a;
+  --dark-400: #d39652;
+  --dark-300: #b47c3d;
+  --dark-200: #4d3728;
+  --dark-100: #3d2618;
+
+  --accent: #ebb06a;
+  --accent-light: #addabf;
+  --accent-dark: #3d2618;
+  --accent-glow: rgba(235, 176, 106, 0.08);
+
+  --cream: #e2ebd5;
+  --cream-dark: #d2dbca;
+  --ivory: #fbf4ea;
+  --white: #fbf4ea;
+  --brown: #4d3728;
+  --brown-light: #b47c3d;
+
+  --white-rgb: 251, 244, 234;
+  --ivory-rgb: 251, 244, 234;
+  --cream-rgb: 226, 235, 213;
+  --dark-800-rgb: 210, 219, 202;
+  --dark-900-rgb: 226, 235, 213;
+  --dark-100-rgb: 61, 38, 24;
+  --nav-bg: rgba(61, 38, 24, 0.88);
+}
+
+/* Palette 5: Forest Green & Warm Ivory (Image 5) */
+html.theme-cream-forest {
+  --dark-900: #FAF9F0;
+  --dark-800: #f2ebd9;
+  --dark-700: #e8e5cc;
+  --dark-600: #cac5a3;
+  --dark-500: #2b7a37;
+  --dark-400: #1e5a26;
+  --dark-300: #13451b;
+  --dark-200: #094616;
+  --dark-100: #052b0d;
+
+  --accent: #2b7a37;
+  --accent-light: #cac5a3;
+  --accent-dark: #052b0d;
+  --accent-glow: rgba(43, 122, 55, 0.08);
+
+  --cream: #e8e5cc;
+  --cream-dark: #cac5a3;
+  --ivory: #FAF9F0;
+  --white: #FAF9F0;
+  --brown: #094616;
+  --brown-light: #1e5a26;
+
+  --white-rgb: 250, 249, 240;
+  --ivory-rgb: 250, 249, 240;
+  --cream-rgb: 232, 229, 204;
+  --dark-800-rgb: 242, 235, 217;
+  --dark-900-rgb: 250, 249, 240;
+  --dark-100-rgb: 5, 43, 13;
+  --nav-bg: rgba(5, 43, 13, 0.88);
+}
+
+/* Palette 6: Original Calming Eucalyptus Sage */
+html.theme-original {
+  --dark-900: #C2D0C0;
+  --dark-800: #B5C4B2;
+  --dark-700: #99A897;
+  --dark-600: #7C8D7B;
+  --dark-500: #5E6F5D;
+  --dark-400: #465745;
+  --dark-300: #2A4230;
+  --dark-200: #0E2313;
+  --dark-100: #051509;
+
+  --accent: #124F27;
+  --accent-light: #599A6E;
+  --accent-dark: #072511;
+  --accent-glow: rgba(18, 79, 39, 0.08);
+
+  --cream: #E2ECE0;
+  --cream-dark: #C2D0C0;
+  --ivory: #E2ECE0;
+  --white: #E2ECE0;
+  --brown: #0E2313;
+  --brown-light: #2A4230;
+
+  --white-rgb: 226, 236, 224;
+  --ivory-rgb: 226, 236, 224;
+  --cream-rgb: 226, 236, 224;
+  --dark-800-rgb: 181, 196, 178;
+  --dark-900-rgb: 194, 208, 192;
+  --dark-100-rgb: 5, 21, 9;
+  --nav-bg: rgba(5, 21, 9, 0.88);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--brown);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.serif {
+  font-family: 'Playfair Display', serif;
+}
+
+strong {
+  font-weight: 700;
+}
+
