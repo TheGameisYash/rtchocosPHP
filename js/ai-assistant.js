@@ -6,6 +6,8 @@ function toggleAiDrawer() {
   const overlay = document.getElementById('ai-drawer-overlay');
   if (drawer && overlay) {
     const isOpen = drawer.classList.toggle('open');
+    drawer.setAttribute('aria-hidden', !isOpen);
+    document.querySelectorAll('.ai-drawer-trigger').forEach(btn => btn.setAttribute('aria-expanded', isOpen));
     if (isOpen) {
       overlay.classList.add('visible');
       document.body.style.overflow = 'hidden';

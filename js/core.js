@@ -7,6 +7,61 @@ function getCorrectedPath(path) {
   return isBlogSubfolder ? '../' + path : path;
 }
 
+// --- RESILIENT API FETCH WRAPPER ---
+async function fetchApi(url, options = {}) {
+  const timeout = options.timeout || 12000;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+  const fetchOptions = {
+    ...options,
+    signal: controller.signal
+  };
+
+  try {
+    const res = await fetch(url, fetchOptions);
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    return await res.json();
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      throw new Error('Request timed out. Please try again.');
+    }
+    throw err;
+  }
+}
+
+// --- GLOBAL KEYBOARD ACCESSIBILITY LISTENERS ---
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' || e.keyCode === 27) {
+    // Close AI Chat drawer if open
+    const aiDrawer = document.getElementById('ai-chat-drawer');
+    const aiOverlay = document.getElementById('ai-drawer-overlay');
+    if (aiDrawer && aiDrawer.classList.contains('open')) {
+      if (typeof toggleAiDrawer === 'function') {
+        toggleAiDrawer();
+      } else {
+        aiDrawer.classList.remove('open');
+        if (aiOverlay) aiOverlay.classList.remove('visible');
+        document.body.style.overflow = '';
+      }
+    }
+    // Close Mobile menu if open
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenu && mobileMenu.classList.contains('open')) {
+      mobileMenu.classList.remove('open');
+    }
+    // Close Theme Tester menu if open
+    const themeMenu = document.getElementById('theme-tester-menu');
+    if (themeMenu && themeMenu.classList.contains('open')) {
+      themeMenu.classList.remove('open');
+    }
+  }
+});
+
 // ----------------------------------------------------
 const WORKSHOPS = [
   {

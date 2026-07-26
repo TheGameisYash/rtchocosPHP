@@ -2,13 +2,13 @@
 // AI Chat Drawer Component
 ?>
 <!-- AI Chat Drawer -->
-<div id="ai-chat-drawer" class="ai-drawer-container">
+<div id="ai-chat-drawer" class="ai-drawer-container" role="dialog" aria-modal="true" aria-label="CocoaGenius AI Assistant" aria-hidden="true">
   <div class="ai-drawer-header">
     <div class="ai-drawer-title">
       <span class="ai-glowing-dot"></span>
       <h3>CocoaGenius AI</h3>
     </div>
-    <button class="ai-drawer-close" onclick="toggleAiDrawer()">&times;</button>
+    <button class="ai-drawer-close" onclick="toggleAiDrawer()" aria-label="Close AI Assistant">&times;</button>
   </div>
   <div class="ai-drawer-body" id="ai-chat-messages">
     <div class="ai-message system">
