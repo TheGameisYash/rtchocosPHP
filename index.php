@@ -39,7 +39,7 @@
     <div class="deco-radial"></div>
     <div class="split-hero-container">
       <div class="split-hero-content">
-        <span class="hero-tag fade-up">✨ Premium Chocolate Academy</span>
+        <span class="hero-tag fade-up">Premium Chocolate Academy</span>
         <h1 class="fade-up-d1">Unlocking Cacao's <em>Science &amp; Art</em></h1>
         <p class="fade-up-d2">An independent Indian chocolate learning academy covering bean-to-bar craftsmanship, cacao formulation science, and professional masterclasses.</p>
         <div class="hero-btns fade-up-d3">
