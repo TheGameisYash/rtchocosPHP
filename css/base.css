@@ -349,7 +349,7 @@ textarea:focus-visible,
   line-height: 1.7;
   color: var(--brown-light);
   max-width: 560px;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .divider {

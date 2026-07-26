@@ -519,6 +519,7 @@ th {
   color: var(--accent) !important;
 }
 
+/* 6. AI Chocolab Section */
 .ai-chocolab-sec {
   background: linear-gradient(180deg, rgba(var(--white-rgb), 0.58) 0%, rgba(var(--dark-800-rgb), 0.58) 100%),
     url('../assets/about_banner.png') center/cover no-repeat !important;
@@ -532,31 +533,85 @@ th {
   color: var(--brown-light) !important;
 }
 
+.ai-chocolab-sec .deco-circle-3 {
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--dark-100-rgb), 0.04) 0%, transparent 70%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.chocolab-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
 .chocolab-controls {
   background: rgba(var(--ivory-rgb), 0.6) !important;
   border: 1px solid rgba(26, 95, 53, 0.18) !important;
   box-shadow: 0 10px 40px rgba(29, 51, 34, 0.03) !important;
+  border-radius: 20px;
+  padding: 32px;
 }
 
 .chocolab-controls h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
   color: var(--brown) !important;
-  border-bottom-color: rgba(26, 95, 53, 0.15) !important;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(26, 95, 53, 0.15);
+  padding-bottom: 12px;
+}
+
+.chocolab-controls .form-group {
+  margin-bottom: 22px;
 }
 
 .chocolab-controls label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   color: var(--accent) !important;
+  margin-bottom: 8px;
 }
 
 #chocolab-base {
+  width: 100%;
+  padding: 12px 16px;
   background: var(--white) !important;
   border: 1px solid rgba(26, 95, 53, 0.25) !important;
+  border-radius: 8px;
   color: var(--brown) !important;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+}
+
+#chocolab-percent {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
 }
 
 .inclusion-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  cursor: pointer;
   background: rgba(var(--ivory-rgb), 0.8) !important;
   border: 1px solid rgba(26, 95, 53, 0.15) !important;
   color: var(--brown-light) !important;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .inclusion-checkbox:hover {
@@ -564,26 +619,111 @@ th {
   border-color: rgba(26, 95, 53, 0.3) !important;
 }
 
+.inclusion-checkbox input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
 .inclusion-checkbox input[type="checkbox"]:checked+* {
   color: var(--accent) !important;
+}
+
+.chocolab-submit-btn {
+  width: 100%;
+  justify-content: center;
+  font-size: 13.5px;
+  padding: 14px 20px;
 }
 
 .chocolab-output {
   background: rgba(var(--ivory-rgb), 0.6) !important;
   border: 1px dashed rgba(26, 95, 53, 0.3) !important;
   box-shadow: 0 10px 40px rgba(29, 51, 34, 0.03) !important;
+  border-radius: 20px;
+  padding: 36px;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+#chocolab-placeholder,
+#chocolab-loader {
+  text-align: center;
+}
+
+.chocolab-placeholder-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
 }
 
 #chocolab-placeholder h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
   color: var(--brown) !important;
+  margin-bottom: 8px;
 }
 
 #chocolab-placeholder p {
+  font-size: 13.5px;
   color: var(--brown-light) !important;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+#chocolab-loader h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--accent) !important;
+}
+
+#chocolab-loader p {
+  font-size: 13px;
+  color: var(--brown-light) !important;
+  margin-top: 6px;
+}
+
+#chocolab-loader .ai-typing-indicator {
+  margin: 0 auto 16px;
+}
+
+.chocolab-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(26, 95, 53, 0.15);
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.chocolab-results-label {
+  font-size: 11px !important;
+  font-weight: 700;
+  color: var(--accent) !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.chocolab-results-base {
+  font-size: 12px !important;
+  color: var(--accent) !important;
+  font-weight: 600;
 }
 
 #chocolab-results h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
   color: var(--brown) !important;
+  margin-bottom: 12px;
+}
+
+.chocolab-result-desc {
+  font-size: 14.5px;
+  color: var(--brown-light) !important;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-style: italic;
 }
 
 #chocolab-results p {
@@ -591,11 +731,19 @@ th {
 }
 
 .chocolab-details-grid h5 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   color: var(--accent) !important;
+  margin-bottom: 6px;
 }
 
 .chocolab-details-grid p {
+  font-size: 13.5px;
   color: var(--brown-light) !important;
+  line-height: 1.5;
+  margin: 0;
 }
 
 /* 8. AI Chat Drawer modern Fluent Acrylic style (Light Acrylic) */

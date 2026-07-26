@@ -172,83 +172,83 @@
 
   <!-- AI Chocolab Section -->
   <section class="ai-chocolab-sec section" style="position: relative; overflow: hidden; padding: 80px 24px;">
-    <div class="deco-circle-3" style="position: absolute; top: -10%; right: -10%; width: 350px; height: 350px; border-radius: 50%; background: radial-gradient(circle, rgba(201,149,107,0.08) 0%, transparent 70%); z-index: 1;"></div>
+    <div class="deco-circle-3"></div>
     
-    <div style="max-width: 1100px; margin: 0 auto; position: relative; z-index: 2;">
+    <div class="chocolab-inner">
       <div class="section-label" style="text-align: center;">Interactive Lab</div>
       <h2 class="section-title" style="text-align: center; margin-bottom: 12px;">✨ AI Chocolab Formulation Playground</h2>
       <p class="section-subtitle" style="max-width: 680px; margin: 0 auto 48px; text-align: center;">Design your dream chocolate bar. Select a base, cacao percentage, and gourmet inclusions. Our CocoaGenius AI will instantly formulate a custom recipe, tasting profile, and tempering guide for your creation.</p>
       
       <div class="chocolab-layout">
         <!-- Control Panel -->
-        <div class="chocolab-controls" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(201,149,107,0.15); border-radius: 20px; padding: 32px; backdrop-filter: blur(10px);">
-          <h3 style="font-family:'Playfair Display', serif; font-size: 20px; color: var(--white); margin-bottom: 24px; border-bottom: 1px solid rgba(201,149,107,0.15); padding-bottom: 12px;">Customize Ingredients</h3>
+        <div class="chocolab-controls">
+          <h3>Customize Ingredients</h3>
           
-          <div class="form-group" style="margin-bottom: 20px;">
-            <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-light); margin-bottom: 8px;">1. Select Cacao Base</label>
-            <select id="chocolab-base" style="width:100%; padding: 12px 16px; background: rgba(0,0,0,0.3); border: 1px solid rgba(201,149,107,0.25); border-radius: 8px; color: var(--cream); outline: none; font-family: 'Inter', sans-serif;">
+          <div class="form-group">
+            <label>1. Select Cacao Base</label>
+            <select id="chocolab-base">
               <option value="Dark Chocolate" selected>Dark Chocolate (Rich &amp; Complex)</option>
               <option value="Milk Chocolate">Milk Chocolate (Creamy &amp; Sweet)</option>
               <option value="White Chocolate">White Chocolate (Buttery &amp; Smooth)</option>
             </select>
           </div>
           
-          <div class="form-group" style="margin-bottom: 24px;">
-            <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-light); margin-bottom: 8px;">2. Cacao Percentage: <span id="chocolab-percent-val">72%</span></label>
-            <input type="range" id="chocolab-percent" min="30" max="100" value="72" oninput="document.getElementById('chocolab-percent-val').textContent = this.value + '%'" style="width: 100%; accent-color: var(--accent); cursor: pointer;">
+          <div class="form-group">
+            <label>2. Cacao Percentage: <span id="chocolab-percent-val">72%</span></label>
+            <input type="range" id="chocolab-percent" min="30" max="100" value="72" oninput="document.getElementById('chocolab-percent-val').textContent = this.value + '%'">
           </div>
           
-          <div class="form-group" style="margin-bottom: 28px;">
-            <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-light); margin-bottom: 12px;">3. Choose Inclusions (Up to 3)</label>
+          <div class="form-group">
+            <label>3. Choose Inclusions (Up to 3)</label>
             <div class="inclusions-grid">
-              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Sea Salt" name="inclusions" style="accent-color:var(--accent);"> Sea Salt</label>
-              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Cardamom" name="inclusions" style="accent-color:var(--accent);"> Cardamom</label>
-              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Lavender" name="inclusions" style="accent-color:var(--accent);"> Lavender</label>
-              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Bird's Eye Chili" name="inclusions" style="accent-color:var(--accent);"> Bird's Eye Chili</label>
-              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Orange Zest" name="inclusions" style="accent-color:var(--accent);"> Orange Zest</label>
-              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Rose Petals" name="inclusions" style="accent-color:var(--accent);"> Rose Petals</label>
-              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Peppermint" name="inclusions" style="accent-color:var(--accent);"> Peppermint</label>
-              <label class="inclusion-checkbox" style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--cream); cursor:pointer;"><input type="checkbox" value="Roasted Almonds" name="inclusions" style="accent-color:var(--accent);"> Roasted Almonds</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Sea Salt" name="inclusions"> Sea Salt</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Cardamom" name="inclusions"> Cardamom</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Lavender" name="inclusions"> Lavender</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Bird's Eye Chili" name="inclusions"> Bird's Eye Chili</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Orange Zest" name="inclusions"> Orange Zest</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Rose Petals" name="inclusions"> Rose Petals</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Peppermint" name="inclusions"> Peppermint</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Roasted Almonds" name="inclusions"> Roasted Almonds</label>
             </div>
           </div>
           
-          <button class="btn-primary" onclick="generateCustomBarFormula()" style="width: 100%; justify-content: center; font-size: 13.5px; padding: 14px 20px;">⚡ Formulate Recipe</button>
+          <button class="btn-primary chocolab-submit-btn" onclick="generateCustomBarFormula()">⚡ Formulate Recipe</button>
         </div>
         
         <!-- Formulation Output -->
-        <div class="chocolab-output" style="background: rgba(26,16,18,0.7); border: 1px dashed rgba(201,149,107,0.25); border-radius: 20px; padding: 36px; min-height: 420px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;">
-          <div id="chocolab-placeholder" style="text-align: center;">
-            <div style="font-size: 48px; margin-bottom: 16px;">🧪</div>
-            <h4 style="font-family:'Playfair Display', serif; font-size: 20px; color: var(--cream); margin-bottom: 8px;">Ready for Formulation</h4>
-            <p style="font-size: 13.5px; color: rgba(245,237,230,0.6); max-width: 320px; margin: 0 auto;">Select your custom ingredients on the left and click "Formulate Recipe" to generate your custom chocolate bar profile.</p>
+        <div class="chocolab-output">
+          <div id="chocolab-placeholder">
+            <div class="chocolab-placeholder-icon">🧪</div>
+            <h4>Ready for Formulation</h4>
+            <p>Select your custom ingredients on the left and click "Formulate Recipe" to generate your custom chocolate bar profile.</p>
           </div>
           
-          <div id="chocolab-loader" style="display: none; text-align: center;">
-            <div class="ai-typing-indicator" style="margin: 0 auto 16px;">
+          <div id="chocolab-loader" style="display: none;">
+            <div class="ai-typing-indicator">
               <span class="ai-typing-dot"></span>
               <span class="ai-typing-dot"></span>
               <span class="ai-typing-dot"></span>
             </div>
-            <h4 style="font-family:'Playfair Display', serif; font-size: 18px; color: var(--accent);">AI Alchemist at Work...</h4>
-            <p style="font-size: 13px; color: rgba(245,237,230,0.5); margin-top: 6px;">Calculating tempering ranges, flavor chemistry, and custom descriptions...</p>
+            <h4>AI Alchemist at Work...</h4>
+            <p>Calculating tempering ranges, flavor chemistry, and custom descriptions...</p>
           </div>
           
           <div id="chocolab-results" style="display: none; width: 100%;">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(201,149,107,0.15); padding-bottom: 12px; margin-bottom: 20px;">
-              <span style="font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px;">AI Dynamic Recipe Profile</span>
-              <span id="chocolab-result-base" style="font-size: 12px; color: var(--accent-light); font-weight: 600;">72% Dark Chocolate</span>
+            <div class="chocolab-results-header">
+              <span class="chocolab-results-label">AI Dynamic Recipe Profile</span>
+              <span id="chocolab-result-base" class="chocolab-results-base">72% Dark Chocolate</span>
             </div>
-            <h3 id="chocolab-result-name" style="font-family:'Playfair Display', serif; font-size: 24px; color: var(--white); margin-bottom: 12px;">Signature formulation</h3>
-            <p id="chocolab-result-desc" style="font-size: 14.5px; color: var(--cream); line-height: 1.6; margin-bottom: 24px; font-style: italic;"></p>
+            <h3 id="chocolab-result-name">Signature formulation</h3>
+            <p id="chocolab-result-desc" class="chocolab-result-desc"></p>
             
             <div class="chocolab-details-grid">
               <div>
-                <h5 style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-light); margin-bottom: 6px;">👅 Tasting Notes</h5>
-                <p id="chocolab-result-tasting" style="font-size: 13.5px; color: rgba(245,237,230,0.85); line-height: 1.5; margin: 0;"></p>
+                <h5>👅 Tasting Notes</h5>
+                <p id="chocolab-result-tasting"></p>
               </div>
               <div>
-                <h5 style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-light); margin-bottom: 6px;">🌡️ Tempering Guide</h5>
-                <p id="chocolab-result-tempering" style="font-size: 13.5px; color: rgba(245,237,230,0.85); line-height: 1.5; margin: 0;"></p>
+                <h5>🌡️ Tempering Guide</h5>
+                <p id="chocolab-result-tempering"></p>
               </div>
             </div>
           </div>
@@ -256,8 +256,6 @@
       </div>
     </div>
   </section>
-  
-  <br>
 
   <!-- Featured Workshops -->
   <section style="background:var(--ivory);">
