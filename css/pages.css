@@ -10,7 +10,7 @@
 /* === HERO (HOME) === */
 #hero {
   min-height: 100vh;
-  background: url("assets/cocoa.png") center/cover no-repeat fixed;
+  background: url("../assets/cocoa.png") center/cover no-repeat fixed;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,7 +141,7 @@
   background-color: var(--dark-800);
   background-image:
     linear-gradient(rgba(14, 10, 8, 0.55), rgba(14, 10, 8, 0.55)),
-    url('assets/workshop.jpg');
+    url('../assets/workshop.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -174,7 +174,7 @@
   background-color: var(--dark-800);
   background-image:
     linear-gradient(rgba(14, 10, 8, 0.55), rgba(14, 10, 8, 0.65)),
-    url('assets/recipeblockimage.png');
+    url('../assets/recipeblockimage.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -358,7 +358,7 @@
 .about-founder {
   background:
     linear-gradient(rgba(14, 10, 8, 0.5), rgba(14, 10, 8, 0.5)),
-    url('assets/aboutme.png.JPG') center/cover no-repeat;
+    url('../assets/aboutme.png.JPG') center/cover no-repeat;
   border: 1px solid rgba(201, 149, 107, 0.2);
   padding: 40px;
   text-align: center;

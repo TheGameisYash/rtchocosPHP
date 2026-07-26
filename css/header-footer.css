@@ -648,7 +648,7 @@ footer.footer-links-section .social-icons {
 
 #hero {
   background: linear-gradient(135deg, rgba(var(--white-rgb), 0.75) 0%, rgba(var(--dark-800-rgb), 0.75) 100%),
-    url('assets/cacao_leaves_bg.png') center/cover no-repeat !important;
+    url('../assets/cacao_leaves_bg.png') center/cover no-repeat !important;
 }
 
 .split-hero-content h1 {
@@ -697,7 +697,7 @@ footer.footer-links-section .social-icons {
 
 #why-us {
   background: linear-gradient(135deg, rgba(var(--white-rgb), 0.55) 0%, rgba(var(--white-rgb), 0.55) 100%),
-    url('assets/cocoa_beans_bg.png') center/cover no-repeat !important;
+    url('../assets/cocoa_beans_bg.png') center/cover no-repeat !important;
 }
 
 #why-us .section-title {

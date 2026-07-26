@@ -521,7 +521,7 @@ th {
 
 .ai-chocolab-sec {
   background: linear-gradient(180deg, rgba(var(--white-rgb), 0.58) 0%, rgba(var(--dark-800-rgb), 0.58) 100%),
-    url('assets/about_banner.png') center/cover no-repeat !important;
+    url('../assets/about_banner.png') center/cover no-repeat !important;
 }
 
 .ai-chocolab-sec .section-title {
