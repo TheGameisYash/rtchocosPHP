@@ -43,6 +43,11 @@
 .cred-item {
   text-align: center;
   min-width: 120px;
+  transition: transform 0.3s ease;
+}
+
+.cred-item:hover {
+  transform: translateY(-3px);
 }
 
 .cred-num {
@@ -50,6 +55,11 @@
   font-size: 32px;
   color: var(--accent);
   font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.cred-item:hover .cred-num {
+  color: var(--accent-light);
 }
 
 .cred-label {
@@ -624,7 +634,13 @@
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+}
+
+.gallery-item:hover .gallery-item-text {
+  transform: translateY(-2px) scale(1.05);
+  color: var(--accent-light);
 }
 
 /* === NEWSLETTER SECTION === */
@@ -926,6 +942,8 @@
 .ticker-track {
   display: flex;
   width: 100%;
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
 }
 
 .ticker-content {
