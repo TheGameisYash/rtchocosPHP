@@ -854,9 +854,11 @@ function initInteractiveForms() {
   );
 
   // 2. Contact Form Submit Handler
-  const contactForm = document.getElementById("contact-form");
-  if (contactForm) {
-    const feedback = document.getElementById("contact-form-feedback");
+  function bindContactForm(formId, feedbackId) {
+    const contactForm = document.getElementById(formId);
+    if (!contactForm) return;
+
+    const feedback = document.getElementById(feedbackId);
     const submitBtn = contactForm.querySelector("button[type='submit']");
 
     contactForm.addEventListener("submit", (e) => {
@@ -864,22 +866,29 @@ function initInteractiveForms() {
       
       const name = contactForm.querySelector("input[name='name']").value.trim();
       const email = contactForm.querySelector("input[name='email']").value.trim();
-      const phone = contactForm.querySelector("input[name='phone']").value.trim();
+      const phoneInput = contactForm.querySelector("input[name='phone']");
+      const phone = phoneInput ? phoneInput.value.trim() : '';
       const subject = contactForm.querySelector("input[name='subject']").value.trim();
       const message = contactForm.querySelector("textarea[name='message']").value.trim();
 
       if (!name || !email || !subject || !message) {
-        feedback.className = "form-feedback error";
-        feedback.textContent = "Please fill out all required fields.";
-        feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (feedback) {
+          feedback.className = "form-feedback error";
+          feedback.textContent = "Please fill out all required fields.";
+          feedback.style.display = "block";
+          feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
         return;
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        feedback.className = "form-feedback error";
-        feedback.textContent = "Please enter a valid email address.";
-        feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (feedback) {
+          feedback.className = "form-feedback error";
+          feedback.textContent = "Please enter a valid email address.";
+          feedback.style.display = "block";
+          feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
         return;
       }
 
@@ -888,7 +897,7 @@ function initInteractiveForms() {
         submitBtn.classList.add("loading");
         submitBtn.disabled = true;
       }
-      feedback.style.display = "none";
+      if (feedback) feedback.style.display = "none";
 
       const prefix = getSubfolderPrefix();
       fetch(prefix + 'send_contact.php', {
@@ -916,11 +925,14 @@ function initInteractiveForms() {
           submitBtn.disabled = false;
         }
 
-        feedback.className = "form-feedback success";
-        feedback.textContent = `✓ ${data.message || 'Thank you! Your message has been sent successfully.'}`;
+        if (feedback) {
+          feedback.className = "form-feedback success";
+          feedback.textContent = `✓ ${data.message || 'Thank you! Your message has been sent successfully.'}`;
+          feedback.style.display = "block";
+          feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
         
         contactForm.reset();
-        feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       })
       .catch(error => {
         // Fallback for static environments
@@ -929,14 +941,20 @@ function initInteractiveForms() {
             submitBtn.classList.remove("loading");
             submitBtn.disabled = false;
           }
-          feedback.className = "form-feedback success";
-          feedback.textContent = `✓ Thank you, ${name}! Your message has been sent successfully. We'll be in touch soon.`;
+          if (feedback) {
+            feedback.className = "form-feedback success";
+            feedback.textContent = `✓ Thank you, ${name}! Your message has been sent successfully. We'll be in touch soon.`;
+            feedback.style.display = "block";
+            feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
           contactForm.reset();
-          feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 1200);
       });
     });
   }
+
+  bindContactForm("contact-form", "contact-form-feedback");
+  bindContactForm("about-contact-form", "about-contact-form-feedback");
 }
 
 // Call interactive form initializer

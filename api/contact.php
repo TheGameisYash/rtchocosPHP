@@ -106,10 +106,18 @@ $fileExisted = file_exists($csvFile);
 $file = fopen($csvFile, 'a');
 if ($file) {
     if (!$fileExisted) {
-        fputcsv($file, ['Date Received', 'Name', 'Email Address', 'Phone Number', 'Subject', 'Message Details']);
+        fputcsv($file, ['Date Received', 'Name', 'Email Address', 'Phone Number', 'Subject', 'Message Details'], ",", '"', "\\");
     }
-    fputcsv($file, [date('Y-m-d H:i:s'), $name, $email, $phone, $subject, $message]);
+    fputcsv($file, [date('Y-m-d H:i:s'), $name, $email, $phone, $subject, $message], ",", '"', "\\");
     fclose($file);
+}
+
+// 3. SEND EMAIL NOTIFICATION TO ADMIN
+require_once $rootDir . '/includes/mailer.php';
+try {
+    send_contact_notification($name, $email, $phone, $subject, $message);
+} catch (Exception $e) {
+    error_log("Contact notification mailer error: " . $e->getMessage());
 }
 
 // Always return success — message is stored

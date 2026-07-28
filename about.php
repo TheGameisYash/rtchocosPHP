@@ -65,6 +65,32 @@
       </div>
     </div>
   </article>
+
+  <!-- Connect / Inquiry Section -->
+  <section class="section" style="background-color: #FFFFFF; border-top: 1px solid rgba(59,42,34,0.08); padding: 60px 0;">
+    <div style="max-width: 860px; margin: 0 auto; padding: 0 20px;">
+      <div style="text-align: center; margin-bottom: 32px;">
+        <div class="section-label">Get in Touch</div>
+        <h2 style="font-size: 32px; color: var(--brown); margin-bottom: 12px;">Connect with Aarti</h2>
+        <div class="divider" style="margin: 0 auto 16px;"></div>
+        <p style="font-size: 15px; color: var(--brown-light); max-width: 620px; margin: 0 auto; font-weight: 300; line-height: 1.7;">
+          Have questions about workshops, recipe formulation, bean-to-bar consulting, or just want to discuss chocolate? Send a direct message below and Aarti will get back to you.
+        </p>
+      </div>
+
+      <form class="contact-form" id="about-contact-form" novalidate style="max-width: 720px; margin: 0 auto; background: var(--cream); padding: 36px; border-radius: 20px; box-shadow: 0 16px 40px rgba(59,42,34,0.07); border: 1px solid rgba(212,175,55,0.2);">
+        <div id="about-contact-form-feedback" class="form-feedback"></div>
+        <div class="form-fields-wrapper">
+          <div class="form-group"><label class="form-label">Name</label><input class="form-input" name="name" type="text" required placeholder="Your name" /></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" name="email" type="email" required placeholder="your.email@domain.com" /></div>
+          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone" type="tel" placeholder="Your phone (optional)" /></div>
+          <div class="form-group"><label class="form-label">Subject</label><input class="form-input" name="subject" type="text" required placeholder="How can Aarti help?" /></div>
+          <div class="form-group"><label class="form-label">Message</label><textarea class="form-input form-textarea" name="message" rows="4" required placeholder="Write your message here..."></textarea></div>
+          <button class="btn-primary" type="submit" style="width:100%;justify-content:center;">Send Message to Aarti</button>
+        </div>
+      </form>
+    </div>
+  </section>
 </div>
 </main>
 
