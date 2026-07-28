@@ -19,8 +19,9 @@ function send_contact_notification($name, $email, $phone, $subject, $message) {
     $smtpHost       = getenv('SMTP_HOST') ?: 'smtp.hostinger.com';
     $smtpPort       = getenv('SMTP_PORT') ?: '465';
     $smtpUser       = getenv('SMTP_USER') ?: 'hello@rtchocos.com';
-    $smtpPass       = getenv('SMTP_PASS') ?: '';
-    $smtpEnabled    = filter_var(getenv('SMTP_ENABLED'), FILTER_VALIDATE_BOOLEAN);
+    $smtpPass       = getenv('SMTP_PASS') ?: 'Admin@rtchocos1';
+    $rawSmtpEnabled = getenv('SMTP_ENABLED');
+    $smtpEnabled    = ($rawSmtpEnabled === false || $rawSmtpEnabled === '') ? true : filter_var($rawSmtpEnabled, FILTER_VALIDATE_BOOLEAN);
 
     $safeName    = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
     $safeEmail   = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
@@ -163,7 +164,7 @@ HTML;
         $headers .= "Reply-To: $name <$email>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
 
-        if (@mail($recipientEmail, $emailSubject, $bodyHtml, $headers)) {
+        if (@mail($recipientEmail, $emailSubject, $bodyHtml, $headers, "-f " . $smtpUser)) {
             error_log("Contact notification email sent via mail() to $recipientEmail");
             return true;
         }
