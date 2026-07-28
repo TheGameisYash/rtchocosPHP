@@ -4,6 +4,16 @@
 $rootDir = dirname(__DIR__);
 require_once $rootDir . '/includes/env_loader.php';
 
+if (!function_exists('rt_get_env')) {
+    function rt_get_env($key, $default = null) {
+        $val = getenv($key);
+        if ($val !== false && $val !== '') return $val;
+        if (isset($_ENV[$key]) && $_ENV[$key] !== '') return $_ENV[$key];
+        if (isset($_SERVER[$key]) && $_SERVER[$key] !== '') return $_SERVER[$key];
+        return $default;
+    }
+}
+
 /**
  * Sends an email notification to the site administrator when a contact message is received.
  *
@@ -15,13 +25,13 @@ require_once $rootDir . '/includes/env_loader.php';
  * @return bool
  */
 function send_contact_notification($name, $email, $phone, $subject, $message) {
-    $recipientEmail = getenv('NOTIFICATION_EMAIL') ?: (getenv('SMTP_USER') ?: 'hello@rtchocos.com');
-    $smtpHost       = getenv('SMTP_HOST') ?: 'smtp.hostinger.com';
-    $smtpPort       = getenv('SMTP_PORT') ?: '465';
-    $smtpUser       = getenv('SMTP_USER') ?: 'hello@rtchocos.com';
-    $smtpPass       = getenv('SMTP_PASS') ?: 'Admin@rtchocos1';
-    $rawSmtpEnabled = getenv('SMTP_ENABLED');
-    $smtpEnabled    = ($rawSmtpEnabled === false || $rawSmtpEnabled === '') ? true : filter_var($rawSmtpEnabled, FILTER_VALIDATE_BOOLEAN);
+    $recipientEmail = rt_get_env('NOTIFICATION_EMAIL', rt_get_env('SMTP_USER', 'hello@rtchocos.com'));
+    $smtpHost       = rt_get_env('SMTP_HOST', 'smtp.hostinger.com');
+    $smtpPort       = rt_get_env('SMTP_PORT', '465');
+    $smtpUser       = rt_get_env('SMTP_USER', 'hello@rtchocos.com');
+    $smtpPass       = rt_get_env('SMTP_PASS', 'Admin@rtchocos1');
+    $rawSmtpEnabled = rt_get_env('SMTP_ENABLED');
+    $smtpEnabled    = ($rawSmtpEnabled === null || $rawSmtpEnabled === '') ? true : filter_var($rawSmtpEnabled, FILTER_VALIDATE_BOOLEAN);
 
     $safeName    = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
     $safeEmail   = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
