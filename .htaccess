@@ -63,7 +63,8 @@ RewriteRule ^sitemap\.xml$ sitemap.php [L]
 # Specifically rewrite /blog and /blog/ to blog.php to avoid directory conflict
 RewriteRule ^blog/?$ blog.php [L]
 
-# Enforce clean extensionless URLs (redirect /page.php to /page)
+# Enforce clean extensionless URLs for GET requests (redirect /page.php to /page without breaking POST APIs)
+RewriteCond %{REQUEST_METHOD} GET [NC]
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/([^/.]+)\.php [NC]
 RewriteRule ^ %1 [R=301,L]
 
