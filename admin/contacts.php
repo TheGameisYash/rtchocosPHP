@@ -103,7 +103,54 @@ try {
     $stmt->execute($params);
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
-    die("Error fetching messages: " . $e->getMessage());
+    // Auto-create contacts table if it doesn't exist on host
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS contacts (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            email VARCHAR(150) NOT NULL,
+            phone VARCHAR(50) NULL,
+            subject VARCHAR(150) NULL,
+            message TEXT NOT NULL,
+            is_read TINYINT(1) NOT NULL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+        $stmt = $pdo->prepare("SELECT * FROM contacts $whereSql ORDER BY created_at DESC LIMIT 150");
+        $stmt->execute($params);
+        $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $ex) {
+        $messages = [];
+    }
+}
+
+// Fallback CSV parser if database returns 0 messages
+if (empty($messages)) {
+    $rootDir = dirname(__DIR__);
+    $csvFile = $rootDir . '/data/contact_messages.csv';
+    if (file_exists($csvFile)) {
+        $file = fopen($csvFile, 'r');
+        if ($file) {
+            $header = fgetcsv($file); // Skip header row
+            $csvId = 1;
+            $tempMsgs = [];
+            while (($row = fgetcsv($file)) !== false) {
+                if (count($row) >= 5) {
+                    $tempMsgs[] = [
+                        'id' => $csvId++,
+                        'name' => $row[1] ?? 'Unknown',
+                        'email' => $row[2] ?? '',
+                        'phone' => $row[3] ?? '',
+                        'subject' => $row[4] ?? '(No Subject)',
+                        'message' => $row[5] ?? '',
+                        'is_read' => 0,
+                        'created_at' => $row[0] ?? date('Y-m-d H:i:s')
+                    ];
+                }
+            }
+            fclose($file);
+            $messages = array_reverse($tempMsgs);
+        }
+    }
 }
 
 render_admin_header("Contact Inbox", "contacts");
