@@ -25,10 +25,10 @@ if (!function_exists('rt_get_env')) {
  * @return bool
  */
 function send_contact_notification($name, $email, $phone, $subject, $message) {
-    $rawRecipient   = rt_get_env('NOTIFICATION_EMAIL', 'hello@rtchocos.com, Rtchocos@gmail.com');
+    $rawRecipient   = rt_get_env('NOTIFICATION_EMAIL', 'hello@rtchocos.com, Rtchocos@gmail.com, yash237yash@gmail.com');
     $recipients     = array_filter(array_map('trim', explode(',', $rawRecipient)));
     if (empty($recipients)) {
-        $recipients = ['hello@rtchocos.com', 'Rtchocos@gmail.com'];
+        $recipients = ['hello@rtchocos.com', 'Rtchocos@gmail.com', 'yash237yash@gmail.com'];
     }
     $recipientString = implode(', ', $recipients);
 
