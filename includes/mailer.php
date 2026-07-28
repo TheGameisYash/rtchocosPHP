@@ -105,24 +105,7 @@ function send_contact_notification($name, $email, $phone, $subject, $message) {
 </html>
 HTML;
 
-    // Headers for standard mail()
-    $headers  = "MIME-Version: 1.0\r\n";
-    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-    $headers .= "From: RT Chocos Website <$smtpUser>\r\n";
-    $headers .= "Reply-To: $name <$email>\r\n";
-    $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
-
-    // Attempt 1: Standard PHP mail() (Works natively on Hostinger & standard cPanel)
-    try {
-        if (@mail($recipientEmail, $emailSubject, $bodyHtml, $headers)) {
-            error_log("Contact notification email sent via mail() to $recipientEmail");
-            return true;
-        }
-    } catch (Exception $e) {
-        error_log("mail() exception: " . $e->getMessage());
-    }
-
-    // Attempt 2: Direct SSL Socket SMTP implementation (Fallback for Hostinger port 465)
+    // Attempt 1: Direct SSL Socket SMTP implementation (Primary when SMTP_ENABLED is true)
     if ($smtpEnabled && !empty($smtpHost) && !empty($smtpUser) && !empty($smtpPass)) {
         try {
             $context = stream_context_create([
@@ -164,12 +147,28 @@ HTML;
                 fputs($socket, $data); $read($socket);
                 fputs($socket, "QUIT\r\n"); fclose($socket);
 
-                error_log("Contact notification email sent via SMTP socket to $recipientEmail");
+                error_log("Contact notification email sent via Hostinger SMTP socket to $recipientEmail");
                 return true;
             }
         } catch (Exception $e) {
             error_log("SMTP socket exception: " . $e->getMessage());
         }
+    }
+
+    // Attempt 2: Standard PHP mail() (Fallback for native mail servers)
+    try {
+        $headers  = "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        $headers .= "From: RT Chocos Website <$smtpUser>\r\n";
+        $headers .= "Reply-To: $name <$email>\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
+
+        if (@mail($recipientEmail, $emailSubject, $bodyHtml, $headers)) {
+            error_log("Contact notification email sent via mail() to $recipientEmail");
+            return true;
+        }
+    } catch (Exception $e) {
+        error_log("mail() exception: " . $e->getMessage());
     }
 
     error_log("Contact notification email dispatch finished (logged for fallback)");
