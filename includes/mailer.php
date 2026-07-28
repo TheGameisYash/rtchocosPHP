@@ -25,7 +25,13 @@ if (!function_exists('rt_get_env')) {
  * @return bool
  */
 function send_contact_notification($name, $email, $phone, $subject, $message) {
-    $recipientEmail = rt_get_env('NOTIFICATION_EMAIL', rt_get_env('SMTP_USER', 'hello@rtchocos.com'));
+    $rawRecipient   = rt_get_env('NOTIFICATION_EMAIL', 'hello@rtchocos.com, Rtchocos@gmail.com');
+    $recipients     = array_filter(array_map('trim', explode(',', $rawRecipient)));
+    if (empty($recipients)) {
+        $recipients = ['hello@rtchocos.com', 'Rtchocos@gmail.com'];
+    }
+    $recipientString = implode(', ', $recipients);
+
     $smtpHost       = rt_get_env('SMTP_HOST', 'smtp.hostinger.com');
     $smtpPort       = rt_get_env('SMTP_PORT', '465');
     $smtpUser       = rt_get_env('SMTP_USER', 'hello@rtchocos.com');
@@ -144,14 +150,18 @@ HTML;
                 fputs($socket, base64_encode($smtpUser) . "\r\n"); $read($socket);
                 fputs($socket, base64_encode($smtpPass) . "\r\n"); $read($socket);
                 fputs($socket, "MAIL FROM: <{$smtpUser}>\r\n"); $read($socket);
-                fputs($socket, "RCPT TO: <{$recipientEmail}>\r\n"); $read($socket);
+                
+                foreach ($recipients as $rcpt) {
+                    fputs($socket, "RCPT TO: <{$rcpt}>\r\n"); $read($socket);
+                }
+
                 fputs($socket, "DATA\r\n"); $read($socket);
 
                 $msgId = "<" . time() . "." . md5(uniqid(microtime(), true)) . "@rtchocos.com>";
                 $data  = "Date: " . date('r') . "\r\n";
                 $data .= "Message-ID: {$msgId}\r\n";
                 $data .= "Subject: {$emailSubject}\r\n";
-                $data .= "To: {$recipientEmail}\r\n";
+                $data .= "To: {$recipientString}\r\n";
                 $data .= "From: RT Chocos Website <{$smtpUser}>\r\n";
                 $data .= "Reply-To: {$name} <{$email}>\r\n";
                 $data .= "MIME-Version: 1.0\r\n";
@@ -161,7 +171,7 @@ HTML;
                 fputs($socket, $data); $read($socket);
                 fputs($socket, "QUIT\r\n"); fclose($socket);
 
-                error_log("Contact notification email sent via Hostinger SMTP socket to $recipientEmail");
+                error_log("Contact notification email sent via Hostinger SMTP socket to $recipientString");
                 return true;
             }
         } catch (Exception $e) {
@@ -180,8 +190,8 @@ HTML;
         $headers .= "Reply-To: $name <$email>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
 
-        if (@mail($recipientEmail, $emailSubject, $bodyHtml, $headers, "-f " . $smtpUser)) {
-            error_log("Contact notification email sent via mail() to $recipientEmail");
+        if (@mail($recipientString, $emailSubject, $bodyHtml, $headers, "-f " . $smtpUser)) {
+            error_log("Contact notification email sent via mail() to $recipientString");
             return true;
         }
     } catch (Exception $e) {
