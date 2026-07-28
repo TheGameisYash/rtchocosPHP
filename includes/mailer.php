@@ -147,7 +147,10 @@ HTML;
                 fputs($socket, "RCPT TO: <{$recipientEmail}>\r\n"); $read($socket);
                 fputs($socket, "DATA\r\n"); $read($socket);
 
-                $data  = "Subject: {$emailSubject}\r\n";
+                $msgId = "<" . time() . "." . md5(uniqid(microtime(), true)) . "@rtchocos.com>";
+                $data  = "Date: " . date('r') . "\r\n";
+                $data .= "Message-ID: {$msgId}\r\n";
+                $data .= "Subject: {$emailSubject}\r\n";
                 $data .= "To: {$recipientEmail}\r\n";
                 $data .= "From: RT Chocos Website <{$smtpUser}>\r\n";
                 $data .= "Reply-To: {$name} <{$email}>\r\n";
@@ -168,7 +171,10 @@ HTML;
 
     // Attempt 2: Standard PHP mail() (Fallback for native mail servers)
     try {
-        $headers  = "MIME-Version: 1.0\r\n";
+        $msgId = "<" . time() . "." . md5(uniqid(microtime(), true)) . "@rtchocos.com>";
+        $headers  = "Date: " . date('r') . "\r\n";
+        $headers .= "Message-ID: {$msgId}\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
         $headers .= "From: RT Chocos Website <$smtpUser>\r\n";
         $headers .= "Reply-To: $name <$email>\r\n";
