@@ -27,7 +27,7 @@
 </IfModule>
 
 # ----------------------------------------------------------------------
-# | Prevent directory listings                                         |
+# | Options & Directives for LiteSpeed / Hostinger                      |
 # ----------------------------------------------------------------------
 Options +FollowSymLinks -Indexes
 
@@ -40,10 +40,11 @@ Options +FollowSymLinks -Indexes
 </FilesMatch>
 
 # ----------------------------------------------------------------------
-# | Rewrite Rules for Sitemap & Clean URLs                              |
+# | LiteSpeed / Hostinger Rewrite Engine Rules                         |
 # ----------------------------------------------------------------------
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
 
     # Prevent direct access to includes & data
     RewriteRule ^includes/ - [F,L]
@@ -52,7 +53,7 @@ Options +FollowSymLinks -Indexes
     # Sitemap rule
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
-    # Specifically rewrite /blog and /blog/ to blog.php to avoid directory conflict
+    # Handle /blog and /blog/ requests
     RewriteRule ^blog/?$ blog.php [L]
 
     # Rewrite clean blog article URLs (/blog/article-slug) to blog-article.php
@@ -79,14 +80,20 @@ Options +FollowSymLinks -Indexes
     RewriteRule ^assets/blogs/(.+)$ blog_image.php?file=$1 [L,QSA]
 
     # ------------------------------------------------------------------
-    # | Clean Extensionless URL Rewriting (Supports Root & Subfolders)  |
+    # | LiteSpeed Extensionless URL Rewriting (Hostinger Optimized)     |
     # ------------------------------------------------------------------
 
-    # Map extensionless URL requests to actual .php files
+    # Primary LiteSpeed condition (without escaped dot)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME}\.php -f
-    RewriteRule ^([^/]+)/?$ $1.php [L,QSA]
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ $1.php [L,QSA]
+
+    # Hostinger hPanel subdomain document root fallback
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+    RewriteRule ^(.*)$ $1.php [L,QSA]
 </IfModule>
 
 # ----------------------------------------------------------------------
