@@ -2,7 +2,7 @@
 // Cacao Preloader Overlay Component
 $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
 ?>
-<!-- Ultra-Luxury Interactive Cacao Preloader Overlay -->
+<!-- 3D Interactive Chocolate Bar Unwrap Preloader Overlay -->
 <div id="cacao-preloader" class="cacao-preloader-overlay" aria-label="Loading RT Chocos">
   <!-- Full-screen video background -->
   <video class="preloader-video-bg" id="preloader-video" autoplay muted loop playsinline preload="auto" src="<?php echo $pathPrefix; ?>assets/loading.mp4">
@@ -10,7 +10,6 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
   </video>
   <div class="preloader-video-scrim"></div>
   <div class="preloader-ambient-glow"></div>
-  <div class="preloader-particles" id="preloader-particles"></div>
 
   <!-- Main Luxury Content Frame -->
   <div class="preloader-luxury-frame">
@@ -22,240 +21,92 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
           <path d="M20 8C24 12.5 28 15.5 28 21.5C28 26 24.5 30 20 32C15.5 30 12 26 12 21.5C12 15.5 16 12.5 20 8Z" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
           <circle cx="20" cy="20" r="2" fill="#D4AF37"/>
         </svg>
-        <span class="logo-text"><span class="logo-rt" style="font-size:26px;">RT</span><span class="logo-chocos" style="font-size:13px;"> CHOCOS</span></span>
+        <span class="logo-text"><span class="logo-rt" style="font-size:26px;color:#FFFFFF;">RT</span><span class="logo-chocos" style="font-size:13px;color:rgba(255,255,255,0.65);"> CHOCOS</span></span>
       </div>
-      <div class="preloader-tagline">Artisanal Cacao Science · Craft · Passion</div>
+      <div class="preloader-tagline" style="color: rgba(255,255,255,0.85);">Artisanal Cacao Science · Craft · Passion</div>
     </div>
 
-    <!-- Artisanal Phase Timeline -->
-    <div class="preloader-phase-timeline">
-      <div class="phase-step active" id="phase-step-1">
-        <div class="phase-icon">🌿</div>
-        <span class="phase-name">FERMENT</span>
-      </div>
-      <div class="phase-line" id="phase-line-1"></div>
-      <div class="phase-step" id="phase-step-2">
-        <div class="phase-icon">🔥</div>
-        <span class="phase-name">ROAST</span>
-      </div>
-      <div class="phase-line" id="phase-line-2"></div>
-      <div class="phase-step" id="phase-step-3">
-        <div class="phase-icon">⚙️</div>
-        <span class="phase-name">CONCH</span>
-      </div>
-      <div class="phase-line" id="phase-line-3"></div>
-      <div class="phase-step" id="phase-step-4">
-        <div class="phase-icon">💎</div>
-        <span class="phase-name">TEMPER</span>
-      </div>
-    </div>
+    <!-- 3D Interactive Chocolate Bar Wrapper Stage -->
+    <div class="unwrap-chocolate-stage" id="unwrap-stage" onclick="perform3DUnwrapAnimation()">
+      <div class="chocolate-bar-wrapper" id="choc-wrapper-box">
+        <!-- Top Foil Flap -->
+        <div class="foil-half foil-top" id="foil-top-flap">
+          <div class="foil-shine"></div>
+        </div>
 
-    <!-- Center Progress Ring & Emblem -->
-    <div class="preloader-meter-wrapper" id="preloader-meter" onclick="triggerCacaoEmblemPulse(event)">
-      <svg class="preloader-meter-svg" viewBox="0 0 120 120">
-        <defs>
-          <linearGradient id="themeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#8AA895"/>
-            <stop offset="50%" style="stop-color:#4A6B58"/>
-            <stop offset="100%" style="stop-color:#233D2F"/>
-          </linearGradient>
-        </defs>
-        <circle class="meter-track" cx="60" cy="60" r="52"/>
-        <circle class="meter-dashed-accent" cx="60" cy="60" r="46"/>
-        <circle class="meter-fill" id="meter-fill" cx="60" cy="60" r="52"/>
-      </svg>
-      <div class="preloader-meter-center">
-        <div class="meter-icon-emoji" id="meter-icon-emoji">🍫</div>
-        <div class="meter-percent-display" id="meter-percent-display">0%</div>
+        <!-- Bottom Foil Flap -->
+        <div class="foil-half foil-bottom" id="foil-bottom-flap">
+          <div class="foil-shine"></div>
+        </div>
+
+        <!-- Inner Artisan Chocolate Bar (Revealed on Peeling) -->
+        <div class="artisan-chocolate-bar" id="artisan-bar">
+          <div class="bar-tile"><span>RT</span></div>
+          <div class="bar-tile"><span>72%</span></div>
+          <div class="bar-tile"><span>CACAO</span></div>
+          <div class="bar-tile"><span>CRAFT</span></div>
+        </div>
+
+        <!-- Center Gold Seal Button -->
+        <div class="chocolate-seal-button" id="choc-seal-btn">
+          <div class="seal-content">
+            <span class="seal-icon">✨ 🍫 ✨</span>
+            <span class="seal-title">UNWRAP CHOCOLATE</span>
+            <span class="seal-subtitle">Click to Peel &amp; Enter Website</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Status Headline -->
-    <div class="preloader-status-headline" id="preloader-status-headline">
-      Selecting Single-Origin Cacao Beans...
-    </div>
-
-    <!-- Interactive Fact Card -->
-    <div class="preloader-fact-container" id="preloader-fact-container" onclick="nextCacaoFact()">
-      <div class="fact-card-header">
-        <span class="fact-category-tag" id="fact-category-tag">🔬 CRYSTAL PHYSICS</span>
-        <span class="fact-counter" id="fact-counter">1 / 8</span>
-      </div>
-      <p class="fact-body-text" id="fact-body-text">Loading cacao science...</p>
-      <div class="fact-tap-footer">
-        <span class="tap-icon">🔄</span> Tap card to reveal next cacao secret
-      </div>
-    </div>
-
-    <!-- Skip Action -->
-    <button class="preloader-enter-btn" id="preloader-enter-btn" onclick="dismissCacaoPreloader()">
-      Explore Collection&nbsp;&nbsp;→
+    <!-- Skip / Quick Action -->
+    <button class="preloader-enter-btn" id="preloader-enter-btn" onclick="perform3DUnwrapAnimation()">
+      Unwrap &amp; Enter Website&nbsp;&nbsp;→
     </button>
   </div>
 </div>
 
 <script>
 (function() {
-  var navEntries = (performance && performance.getEntriesByType) ? performance.getEntriesByType('navigation') : [];
-  var navType = navEntries.length > 0 ? navEntries[0].type : '';
-  var isReload = (navType === 'reload') || (window.performance && window.performance.navigation && window.performance.navigation.type === 1);
-  var isFirstVisit = !sessionStorage.getItem('rtchocos_visited');
   var overlay = document.getElementById('cacao-preloader');
+  var isUnwrapped = false;
 
-  if (!isFirstVisit && !isReload) {
-    if (overlay) overlay.style.display = 'none';
-    return;
-  }
-  sessionStorage.setItem('rtchocos_visited', 'true');
-
-  // Trigger Video Autoplay Explicitly for Browser Compatibility
+  // Trigger Video Autoplay
   var preVid = document.getElementById('preloader-video');
   if (preVid) {
     preVid.muted = true;
     var playPromise = preVid.play();
     if (playPromise && playPromise.catch) {
-      playPromise.catch(function(err) { console.log('Preloader video notice:', err); });
+      playPromise.catch(function(err) {});
     }
   }
 
-  // Spawn Golden Sparkle Particles
-  var pc = document.getElementById('preloader-particles');
-  if (pc) {
-    for (var i = 0; i < 30; i++) {
-      var d = document.createElement('div');
-      d.className = 'preloader-particle';
-      d.style.left = (Math.random() * 100) + '%';
-      d.style.width = (2 + Math.random() * 4) + 'px';
-      d.style.height = d.style.width;
-      d.style.animationDuration = (6 + Math.random() * 9) + 's';
-      d.style.animationDelay = (Math.random() * 6) + 's';
-      pc.appendChild(d);
-    }
-  }
+  // 3D Anime.js Chocolate Unwrap Physics Engine
+  window.perform3DUnwrapAnimation = function() {
+    if (isUnwrapped) return;
+    isUnwrapped = true;
 
-  // Curated Luxury Cacao Science Trivia
-  var cacaoFacts = [
-    { cat: "🔬 CRYSTAL PHYSICS", text: "Form V cocoa butter crystals produce that signature mirror gloss shine and crisp, acoustic snap in high-end chocolate." },
-    { cat: "🌿 FERMENTATION", text: "Post-harvest fermentation unlocks over 600 complex aromatic volatile compounds inside raw cacao beans." },
-    { cat: "🌡️ TEMPERING CURVE", text: "Master tempering requires raising dark chocolate to 45°C, cooling to 27°C, and working precisely at 31°C." },
-    { cat: "⚙️ CONCHING ART", text: "Conching was invented in 1879 by Rodolphe Lindt — micro-refining particles under 20 microns for velvet smoothness." },
-    { cat: "🍫 PURITY SCIENCE", text: "Pure dark chocolate with 70%+ cocoa is dense with natural flavanols, polyphenols, and essential antioxidants." },
-    { cat: "🌎 EQUATORIAL BELT", text: "Theobroma Cacao trees grow exclusively within 20 degrees North and South of the Equator." },
-    { cat: "✨ MELT CHEMISTRY", text: "Pure cocoa butter melts precisely at human body temperature (34°C–37°C), giving fine chocolate its legendary melt." },
-    { cat: "📜 CACAO HERITAGE", text: "The word 'chocolate' stems from the ancient Aztec word 'xocolātl', revered as the nectar of the gods." }
-  ];
-
-  var factIdx = Math.floor(Math.random() * cacaoFacts.length);
-  var progress = 0;
-  var isDismissed = false;
-  var CIRC = 2 * Math.PI * 52; // ~326.7
-
-  function setProgress(pct) {
-    var meter = document.getElementById('meter-fill');
-    if (meter) meter.style.strokeDashoffset = CIRC - (CIRC * pct / 100);
-    var pDisp = document.getElementById('meter-percent-display');
-    if (pDisp) pDisp.textContent = Math.round(pct) + '%';
-
-    // Update Phase Timeline Steps
-    var step1 = document.getElementById('phase-step-1');
-    var step2 = document.getElementById('phase-step-2');
-    var step3 = document.getElementById('phase-step-3');
-    var step4 = document.getElementById('phase-step-4');
-
-    var line1 = document.getElementById('phase-line-1');
-    var line2 = document.getElementById('phase-line-2');
-    var line3 = document.getElementById('phase-line-3');
-
-    if (pct >= 25) { if (step2) step2.classList.add('active'); if (line1) line1.classList.add('active'); }
-    if (pct >= 55) { if (step3) step3.classList.add('active'); if (line2) line2.classList.add('active'); }
-    if (pct >= 85) { if (step4) step4.classList.add('active'); if (line3) line3.classList.add('active'); }
-
-    // Update Headline Status
-    var head = document.getElementById('preloader-status-headline');
-    if (head) {
-      if (pct < 25) head.textContent = "Selecting Single-Origin Cacao Beans...";
-      else if (pct < 55) head.textContent = "Roasting & Winnowing Pure Nibs...";
-      else if (pct < 85) head.textContent = "Conching Cocoa Liquor to Velvet Smoothness...";
-      else if (pct < 100) head.textContent = "Forming Beta Form V Crystal Network...";
-      else head.textContent = "Perfectly Tempered & Ready ✓";
-    }
-  }
-
-  function showFact(item) {
-    var tag = document.getElementById('fact-category-tag');
-    var body = document.getElementById('fact-body-text');
-    var counter = document.getElementById('fact-counter');
-
-    if (body) {
-      body.classList.add('animating');
-      setTimeout(function() {
-        if (tag) tag.textContent = item.cat;
-        body.textContent = item.text;
-        if (counter) counter.textContent = (factIdx + 1) + ' / ' + cacaoFacts.length;
-        body.classList.remove('animating');
-      }, 200);
-    }
-  }
-
-  window.nextCacaoFact = function() {
-    factIdx = (factIdx + 1) % cacaoFacts.length;
-    showFact(cacaoFacts[factIdx]);
-  };
-
-  window.triggerCacaoEmblemPulse = function(e) {
-    var icon = document.getElementById('meter-icon-emoji');
-    var emojis = ['🍫','🧪','🌱','✨','☕','👩‍🍳','🫘','💎'];
-    if (icon) {
-      icon.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      icon.style.transform = 'scale(1.35) rotate(15deg)';
-      setTimeout(function() { icon.style.transform = ''; }, 350);
-    }
-
-    // Spawn Burst Sparkles around click
-    if (e && e.clientX) {
-      for (var k = 0; k < 6; k++) {
-        var sp = document.createElement('div');
-        sp.className = 'click-sparkle';
-        sp.textContent = '✨';
-        sp.style.left = (e.clientX + (Math.random() * 40 - 20)) + 'px';
-        sp.style.top = (e.clientY + (Math.random() * 40 - 20)) + 'px';
-        document.body.appendChild(sp);
-        (function(el) {
-          setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 800);
-        })(sp);
-      }
-    }
-    window.nextCacaoFact();
-  };
-
-  window.dismissCacaoPreloader = function() {
-    if (isDismissed) return;
-    isDismissed = true;
-
-    // Anime.js Unwrapping Physics Entrance
     if (typeof anime !== 'undefined') {
-      // 1. Burst golden particles from center
-      var frame = document.querySelector('.preloader-luxury-frame');
-      var rect = frame ? frame.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
+      // 1. Particle Radial Explosion from Seal Center
+      var seal = document.getElementById('choc-seal-btn');
+      var rect = seal ? seal.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
       var centerX = rect.left + rect.width / 2;
       var centerY = rect.top + rect.height / 2;
 
-      for (var p = 0; p < 24; p++) {
+      for (var p = 0; p < 28; p++) {
         var dot = document.createElement('div');
-        dot.className = 'cacao-unwrap-particle';
         dot.style.position = 'fixed';
         dot.style.left = centerX + 'px';
         dot.style.top = centerY + 'px';
         dot.style.width = '8px';
         dot.style.height = '8px';
         dot.style.borderRadius = '50%';
-        dot.style.background = 'linear-gradient(135deg, #D4AF37, #256139)';
+        dot.style.background = p % 2 === 0 ? 'linear-gradient(135deg, #D4AF37, #F0D060)' : 'linear-gradient(135deg, #256139, #388250)';
         dot.style.zIndex = '9999999';
         dot.style.pointerEvents = 'none';
         document.body.appendChild(dot);
 
-        var angle = (p / 24) * 360;
-        var distance = 120 + Math.random() * 180;
+        var angle = (p / 28) * 360;
+        var distance = 140 + Math.random() * 180;
         var rad = (angle * Math.PI) / 180;
 
         anime({
@@ -274,20 +125,50 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
         });
       }
 
-      // 2. Anime.js Unwrap Frame Peeling & Zoom
+      // 2. Anime.js Foil Peeling Animation
       anime({
-        targets: '.preloader-luxury-frame',
-        scale: [1, 1.06, 0.88],
-        rotate: [0, -2],
-        opacity: [1, 0],
-        duration: 700,
-        easing: 'easeInOutCubic'
+        targets: '#foil-top-flap',
+        translateY: '-140%',
+        rotateZ: -15,
+        opacity: 0,
+        duration: 800,
+        easing: 'easeOutCubic'
       });
 
       anime({
+        targets: '#foil-bottom-flap',
+        translateY: '140%',
+        rotateZ: 15,
+        opacity: 0,
+        duration: 800,
+        easing: 'easeOutCubic'
+      });
+
+      anime({
+        targets: '#choc-seal-btn',
+        scale: [1, 1.3, 0],
+        rotate: [0, 180],
+        opacity: 0,
+        duration: 550,
+        easing: 'easeOutBack'
+      });
+
+      anime({
+        targets: '.bar-tile',
+        scale: [0.85, 1],
+        rotateY: [90, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(70, { start: 200 }),
+        duration: 700,
+        easing: 'easeOutCubic'
+      });
+
+      // 3. Smooth Preloader Overlay Fadeout
+      anime({
         targets: '#cacao-preloader',
         opacity: [1, 0],
-        duration: 950,
+        duration: 900,
+        delay: 600,
         easing: 'easeOutQuad',
         complete: function() {
           if (overlay && overlay.parentNode) {
@@ -296,57 +177,22 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
         }
       });
     } else {
+      // Fallback if anime.js is not loaded
       if (overlay) {
-        overlay.classList.add('fade-out');
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.6s ease';
         setTimeout(function() {
           if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-        }, 1000);
+        }, 600);
       }
     }
   };
 
-  document.addEventListener('DOMContentLoaded', function() {
-    showFact(cacaoFacts[factIdx]);
-
-    // Auto-cycle trivia every 3.2s
-    var factTimer = setInterval(function() {
-      if (isDismissed) { clearInterval(factTimer); return; }
-      window.nextCacaoFact();
-    }, 3200);
-
-    // Guaranteed Luxury Duration: minimum 6.5 seconds display time
-    var MIN_DURATION_MS = 6500;
-    var startTime = Date.now();
-    var pageLoaded = false;
-
-    window.addEventListener('load', function() {
-      pageLoaded = true;
-    });
-
-    var timer = setInterval(function() {
-      if (isDismissed) { clearInterval(timer); return; }
-      var elapsed = Date.now() - startTime;
-      var targetPct = (elapsed / MIN_DURATION_MS) * 100;
-
-      if (targetPct >= 100) {
-        // If minimum time passed and page loaded, finish up
-        if (pageLoaded || elapsed > 8000) {
-          clearInterval(timer);
-          clearInterval(factTimer);
-          setProgress(100);
-          setTimeout(function() {
-            window.dismissCacaoPreloader();
-          }, 700);
-        } else {
-          setProgress(98);
-        }
-      } else {
-        setProgress(targetPct);
-      }
-    }, 50);
-
-    // Hard safety cap (10 seconds)
-    setTimeout(function() { window.dismissCacaoPreloader(); }, 10000);
-  });
+  // Auto-unwrap after 3.5s if not clicked so it NEVER freezes
+  setTimeout(function() {
+    if (!isUnwrapped) {
+      window.perform3DUnwrapAnimation();
+    }
+  }, 3500);
 })();
 </script>

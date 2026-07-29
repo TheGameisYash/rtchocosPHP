@@ -95,21 +95,21 @@
   position: relative;
   z-index: 10;
   width: 92%;
-  max-width: 480px;
-  padding: 36px 30px;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
-  border: 1px solid rgba(123, 155, 136, 0.25);
+  max-width: 460px;
+  padding: 32px 28px;
+  background: rgba(14, 28, 18, 0.92);
+  backdrop-filter: blur(28px) saturate(1.8);
+  -webkit-backdrop-filter: blur(28px) saturate(1.8);
+  border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 28px;
   box-shadow:
-    0 24px 60px rgba(35, 61, 47, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 0 35px rgba(123, 155, 136, 0.12);
+    0 24px 60px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 40px rgba(45, 106, 63, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 22px;
+  gap: 18px;
   text-align: center;
   animation: frameEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -119,45 +119,137 @@
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Brand Logo Header */
-.preloader-brand {
+/* 3D Interactive Chocolate Bar Stage */
+.unwrap-chocolate-stage {
+  width: 100%;
+  margin: 12px 0;
+  cursor: pointer;
+  perspective: 1000px;
+}
+
+.chocolate-bar-wrapper {
+  position: relative;
+  width: 100%;
+  height: 190px;
+  border-radius: 20px;
+  background: #231308;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chocolate-bar-wrapper:hover {
+  transform: scale(1.02) rotateX(4deg) rotateY(-4deg);
+}
+
+/* Foil Flaps */
+.foil-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(135deg, #D4AF37 0%, #F0D060 40%, #AA8620 70%, #D4AF37 100%);
+  z-index: 5;
+  box-shadow: inset 0 2px 8px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.foil-top {
+  top: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.foil-bottom {
+  bottom: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.foil-shine {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+  animation: foilShimmer 3s infinite linear;
+}
+
+@keyframes foilShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Inner 3D Chocolate Bar Tiles */
+.artisan-chocolate-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  width: 88%;
+  height: 82%;
+  z-index: 2;
+}
+
+.bar-tile {
+  background: linear-gradient(145deg, #3E2412, #231308);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.1), inset 0 -2px 6px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bar-tile span {
+  font-family: 'DM Serif Display', serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: rgba(212, 175, 55, 0.85);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Gold Seal Button */
+.chocolate-seal-button {
+  position: absolute;
+  z-index: 10;
+  background: rgba(14, 26, 17, 0.95);
+  border: 1.5px solid #D4AF37;
+  border-radius: 50px;
+  padding: 10px 22px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 175, 55, 0.3);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.chocolate-seal-button:hover {
+  transform: scale(1.05);
+  background: rgba(20, 38, 25, 0.98);
+}
+
+.seal-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 
-.preloader-brand-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: 2px;
+.seal-icon {
+  font-size: 13px;
 }
 
-.preloader-brand-name .logo-rt {
-  color: #233D2F;
+.seal-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  color: #FFFFFF;
 }
 
-.preloader-brand-name .logo-chocos {
-  color: #4A6B58;
-  font-weight: 500;
-}
-
-.preloader-tagline {
-  font-size: 10.5px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #608671;
-  font-weight: 600;
-}
-
-/* Artisanal Phase Timeline Bar */
-.preloader-phase-timeline {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 4px;
+.seal-subtitle {
+  font-size: 9.5px;
+  color: rgba(212, 175, 55, 0.9);
+  letter-spacing: 0.5px;
 }
 
 .phase-step {

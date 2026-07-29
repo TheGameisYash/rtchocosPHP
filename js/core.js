@@ -549,7 +549,9 @@ function initScrollReveal() {
   initAnimeAnimations();
 }
 
-initApp();
+if (typeof initApp === 'function') {
+  initApp();
+}
 
 // --- HERO SLIDESHOW INTERACTION ---
 function initHeroSlideshow() {
