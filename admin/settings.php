@@ -147,6 +147,26 @@ render_admin_header("Site Settings", "settings");
             </div>
 
             <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Theme & Appearance Settings</div>
+            
+            <div class="form-group" style="background: var(--bg-app); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <label for="default_site_theme" style="font-weight: 600; font-size: 15px; color: var(--text-main); display: block; margin-bottom: 4px;">Active Website Theme Palette</label>
+                        <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Choose the default color theme applied across the entire public website.</p>
+                    </div>
+                    <?php $activeTheme = $settings['default_site_theme'] ?? 'theme-cream-forest'; ?>
+                    <select id="default_site_theme" name="settings[default_site_theme]" style="padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-weight: 600; min-width: 220px; cursor: pointer;">
+                        <option value="theme-cream-forest" <?php echo $activeTheme === 'theme-cream-forest' ? 'selected' : ''; ?>>🌿 Forest Green &amp; Ivory (Default)</option>
+                        <option value="theme-teal-sage" <?php echo $activeTheme === 'theme-teal-sage' ? 'selected' : ''; ?>>🌊 Teal Green &amp; Sage</option>
+                        <option value="theme-lavender-mint" <?php echo $activeTheme === 'theme-lavender-mint' ? 'selected' : ''; ?>>🪻 Lavender &amp; Mint</option>
+                        <option value="theme-peach-mint" <?php echo $activeTheme === 'theme-peach-mint' ? 'selected' : ''; ?>>🍑 Peach Orange &amp; Mint</option>
+                        <option value="theme-original" <?php echo $activeTheme === 'theme-original' ? 'selected' : ''; ?>>🍃 Eucalyptus Sage</option>
+                        <option value="theme-midnight-gold" <?php echo $activeTheme === 'theme-midnight-gold' ? 'selected' : ''; ?>>🌙 Midnight Obsidian &amp; Gold (Dark)</option>
+                        <option value="theme-royal-ruby" <?php echo $activeTheme === 'theme-royal-ruby' ? 'selected' : ''; ?>>🍷 Royal Ruby &amp; Champagne</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="form-group" style="background: var(--bg-app); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; margin-bottom: 20px;">
                 <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
                     <div>

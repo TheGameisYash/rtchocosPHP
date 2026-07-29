@@ -51,7 +51,7 @@
   $pageTitle = "Chocolate Blog India: Cocoa Science & Making | RT Chocos";
   $pageDescription = "An Indian chocolate blog with practical guides to cocoa science, tempering, ingredients, flavour, defects and bean-to-bar chocolate making.";
   $pathPrefix = "";
-  $canonicalUrl = "https://www.rtchocos.com/blog.php";
+  $canonicalUrl = "https://www.rtchocos.com/blog";
   $schemaType = "CollectionPage";
   $itemList = ['name' => 'RT Chocos chocolate articles', 'items' => array_map(function($blog) {
       return ['name' => $blog['title'], 'url' => 'https://www.rtchocos.com/blog/' . $blog['slug']];
@@ -83,8 +83,8 @@
       <nav aria-label="Chocolate learning topics">
         <a href="#blog-grid">Cocoa science</a>
         <a href="#blog-grid">Beginner guides</a>
-        <a href="gallery.php">Chocolate recipes</a>
-        <a href="workshops.php">Workshops</a>
+        <a href="gallery">Chocolate recipes</a>
+        <a href="workshops">Workshops</a>
       </nav>
     </div>
     <div class="blog-header-bar">

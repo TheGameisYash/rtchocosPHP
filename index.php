@@ -87,25 +87,25 @@
     </div>
   </div>
 
-  <!-- Credibility Strip -->
-  <div id="cred-strip">
+   <!-- Credibility & Trust Strip -->
+  <div id="cred-strip" class="trust-proof-bar">
     <div class="cred-item"><div class="cred-num">10+</div><div class="cred-label">Years of Experience</div></div>
     <div class="cred-item"><div class="cred-num">2,000+</div><div class="cred-label">Students Trained</div></div>
     <div class="cred-item"><div class="cred-num">50+</div><div class="cred-label">Workshops Conducted</div></div>
-    <div class="cred-item"><div class="cred-num">100%</div><div class="cred-label">Bean-to-Bar Crafted</div></div>
+    <div class="cred-item"><div class="cred-num">100%</div><div class="cred-label">Bean-to-Bar &amp; Science First</div></div>
   </div>
 
-  <!-- Why RT Chocos -->
+  <!-- Section 01: Why RT Chocos / Philosophy -->
   <section id="why-us">
     <div class="section" style="text-align:center;">
-      <div class="section-label">Why RT Chocos</div>
-      <h2 class="section-title">Craftsmanship Meets Education</h2>
+      <div class="section-label">01 / PHILOSOPHY</div>
+      <h2 class="section-title">Craftsmanship Meets Science</h2>
       <div class="divider" style="margin:20px auto;"></div>
       <p class="section-subtitle" style="margin:0 auto 48px;text-align:center;">We don't just make chocolate — we teach you the science, art and business behind every bar.</p>
       <div class="why-grid">
         <div class="why-card">
           <div class="why-card-img-wrapper">
-            <img src="assets/cocoabeans.png.jpg" alt="Bean-to-Bar" loading="lazy">
+            <img src="assets/cocoabeans.png.jpg" alt="Bean-to-Bar Cacao Procurement" loading="lazy">
           </div>
           <div class="why-card-text">
             <h4>Bean-to-Bar Expertise</h4>
@@ -114,7 +114,7 @@
         </div>
         <div class="why-card">
           <div class="why-card-img-wrapper">
-            <img src="assets/temepring.jpg" alt="Science-First Approach" loading="lazy">
+            <img src="assets/temepring.jpg" alt="Science-First Chocolate Approach" loading="lazy">
           </div>
           <div class="why-card-text">
             <h4>Science-First Approach</h4>
@@ -123,7 +123,7 @@
         </div>
         <div class="why-card">
           <div class="why-card-img-wrapper">
-            <img src="assets/bonbons.png" alt="10+ Years Teaching" loading="lazy">
+            <img src="assets/bonbons.png" alt="10+ Years Chocolate Teaching" loading="lazy">
           </div>
           <div class="why-card-text">
             <h4>10+ Years Teaching</h4>
@@ -134,10 +134,10 @@
     </div>
   </section>
 
-  <!-- AI Troubleshooting Section -->
+  <!-- Section 02: AI Diagnostics Tool -->
   <section class="ai-widget-sec section">
     <div class="ai-widget-container">
-      <div class="section-label">AI Diagnostics Tool</div>
+      <div class="section-label">02 / DIAGNOSTICS</div>
       <h2 class="section-title">Troubleshoot Chocolate Defects Instantly</h2>
       <p class="section-subtitle" style="margin: 0 auto 36px;">Experiencing issues with your batch? Our CocoaGenius AI can diagnose common tempering, crystallization, and texture defects in seconds. Select a symptom or chat with the AI helper.</p>
       
@@ -170,12 +170,12 @@
     </div>
   </section>
 
-  <!-- AI Chocolab Section -->
+  <!-- Section 03: AI Chocolab Section -->
   <section class="ai-chocolab-sec section" style="position: relative; overflow: hidden; padding: 80px 24px;">
     <div class="deco-circle-3"></div>
     
     <div class="chocolab-inner">
-      <div class="section-label" style="text-align: center;">Interactive Lab</div>
+      <div class="section-label" style="text-align: center;">03 / INNOVATION</div>
       <h2 class="section-title" style="text-align: center; margin-bottom: 12px;">✨ AI Chocolab Formulation Playground</h2>
       <p class="section-subtitle" style="max-width: 680px; margin: 0 auto 48px; text-align: center;">Design your dream chocolate bar. Select a base, cacao percentage, and gourmet inclusions. Our CocoaGenius AI will instantly formulate a custom recipe, tasting profile, and tempering guide for your creation.</p>
       
@@ -257,15 +257,15 @@
     </div>
   </section>
 
-  <!-- Featured Workshops -->
+  <!-- Section 04: Featured Workshops -->
   <section style="background:var(--ivory);">
     <div class="section">
       <div class="workshops-section-header">
-        <p class="section-label" style="margin-bottom:12px;">Learn With Us</p>
-        <h2 class="section-title">Workshops Coming Soon</h2>
+        <p class="section-label" style="margin-bottom:12px;">04 / ACADEMY</p>
+        <h2 class="section-title">Workshops &amp; Masterclasses</h2>
         <div class="divider"></div>
-        <p style="max-width: 540px; font-size: 16px; line-height: 1.7; color: var(--brown-light); margin-top: 18px; font-weight: 400;">
-          A collection of premium, science-first chocolate workshops and masterclasses is currently in development. Explore the upcoming sessions below and subscribe to be notified when registrations open.
+        <p style="max-width: 540px; font-size: 16px; line-height: 1.7; color: var(--brown-light); margin: 18px auto 0; font-weight: 400; text-align: center;">
+          A collection of premium, science-first chocolate workshops and masterclasses. Learn bean-to-bar making, tempering science, and recipe formulation from expert Aarti Saluja Sahni.
         </p>
       </div>
       
@@ -281,11 +281,12 @@
   </section>
 
 
-  <!-- Interactive Flavor Wheel Section -->
+  <!-- Section 05: Interactive Flavor Wheel Section -->
   <section id="flavor-wheel-sec">
     <div class="wheel-layout">
       <!-- Title Column -->
       <div class="wheel-title-col">
+        <span class="section-label" style="color:var(--gold); display:block; margin-bottom:8px;">05 / SCIENCE</span>
         <h2><span>Chocolate</span>Flavor Wheel</h2>
         <div class="gold-divider"></div>
         <p>Explore the intricate dimensions of bean-to-bar chocolate. Click on the main sectors of the wheel or the cards on the right to discover how cacao origin, farm processing, and taste profiles shape the final bar's character.</p>
@@ -355,7 +356,7 @@
 
       <!-- CTA Button beneath -->
       <div class="wheel-cta-container">
-        <a href="blog.php" class="btn-outline" style="text-decoration:none; background: rgba(38,15,6,0.35); backdrop-filter: blur(2px);">Read Latest Articles</a>
+        <a href="blog" class="btn-outline" style="text-decoration:none; background: rgba(38,15,6,0.35); backdrop-filter: blur(2px);">Read Latest Articles</a>
       </div>
     </div>
 
@@ -519,38 +520,28 @@
               <path class="wheel-sector wheel-sub-sector" 
                     d="${subPath}" 
                     fill="${category.color}" 
-                    opacity="0.85" 
                     data-category="${category.id}"
-                    data-sub="${sub.label}"
-                    style="color: ${category.accentColor}; filter: brightness(${1.0 + (subIdx - 2) * 0.08});"
+                    style="opacity: ${0.75 + (subIdx * 0.05)}; color: ${category.accentColor};"
               />
             `;
 
             const subMidAngle = (sub.startAngle + sub.endAngle) / 2;
-            const subNormMid = (subMidAngle % 360 + 360) % 360;
-            
-            // Position the text tangentially in the middle of the subsector
-            const subTextR = R2 + 22; // Center of sub-sector text (approx 160)
-            const textPos = polarToCartesian(cx, cy, subTextR, subMidAngle);
-            
-            let rotateAngle = subMidAngle + 90;
-            if (subNormMid > 0 && subNormMid < 180) {
-              rotateAngle = subMidAngle - 90;
-            }
+            const subTextR = (R2 + R3) / 2 + 2;
+            const subTextSpan = 18;
+
+            const subTextPathD = getArcPath(cx, cy, subTextR, subMidAngle - subTextSpan, subMidAngle + subTextSpan, false);
+            const subTextPathId = `textpath-sub-${category.id}-${subIdx}`;
 
             svgContent += `
-              <text class="wheel-sub-text" 
-                    x="${textPos.x}" 
-                    y="${textPos.y}" 
-                    transform="rotate(${rotateAngle}, ${textPos.x}, ${textPos.y})" 
-                    text-anchor="middle" 
-                    dominant-baseline="central" 
-                    fill="#f6f2ea">
-                ${sub.label}
+              <path id="${subTextPathId}" d="${subTextPathD}" fill="none" stroke="none" />
+              <text class="wheel-sublabel-text" fill="#f6f2ea">
+                <textPath href="#${subTextPathId}" startOffset="50%" text-anchor="middle">
+                  ${sub.label}
+                </textPath>
               </text>
             `;
 
-            const subIconR = R2 + 56; // Position the icon near the outer edge (approx 194)
+            const subIconR = R2 + 18;
             const subIconPos = polarToCartesian(cx, cy, subIconR, subMidAngle);
             const subIconRot = subMidAngle + 90;
             svgContent += `
@@ -561,20 +552,14 @@
           });
         });
 
-        svgContent += `</g>`;
+        svgContent += `</g>`; // End rotating-group
 
-        // Add static central CACAO ORIGIN hub
+        // --- 3. CENTER HUB (STATIONARY) ---
         svgContent += `
           <g id="center-hub-group">
             <circle class="wheel-center-hub" cx="${cx}" cy="${cy}" r="${R0}" />
-            <g transform="translate(${cx}, ${cy - 12}) scale(0.75)">
-              <path d="M0 -22 C12 -12 12 12 0 22 C-12 12 -12 -12 0 -22 Z" stroke="#c7a66a" fill="none" stroke-width="1.8"/>
-              <path d="M0 -22 V22" stroke="#c7a66a" fill="none" stroke-width="1.2"/>
-              <path d="M-4 -18 C4 -10 4 10 -4 18" stroke="#c7a66a" fill="none" stroke-width="1.2"/>
-              <path d="M4 -18 C-4 -10 -4 10 4 18" stroke="#c7a66a" fill="none" stroke-width="1.2"/>
-            </g>
-            <text class="wheel-center-hub-text" x="${cx}" y="${cy + 14}">Cacao</text>
-            <text class="wheel-center-hub-subtext" x="${cx}" y="${cy + 32}">Origin</text>
+            <text x="${cx}" y="${cy - 4}" text-anchor="middle" fill="#d4af37" font-family="'Playfair Display', serif" font-size="14" font-weight="700" letter-spacing="1">CACAO</text>
+            <text x="${cx}" y="${cy + 12}" text-anchor="middle" fill="#e8d8c8" font-family="'Inter', sans-serif" font-size="9" font-weight="600" letter-spacing="2">WHEEL</text>
           </g>
         `;
 
@@ -668,11 +653,46 @@
     </script>
   </section>
 
+  <!-- Section 06: Journal & Technical Deep Dives -->
+  <section style="background:var(--ivory); padding: 80px 24px;">
+    <div class="section" style="max-width:1140px; margin:0 auto; text-align:center;">
+      <div class="section-label">06 / JOURNAL</div>
+      <h2 class="section-title">Latest Cocoa Science Insights</h2>
+      <div class="divider" style="margin:16px auto 32px;"></div>
+      <p class="section-subtitle" style="max-width:540px; margin:0 auto 48px; color:var(--brown-light);">Deep-dives into cocoa powder pH, tempering crystal diagnostics, lecithin emulsion science, and bean-to-bar formulation.</p>
+      
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:28px; text-align:left;">
+        <?php
+          require_once 'includes/blog-data.php';
+          $recentBlogs = array_slice($BLOGS, 0, 3, true);
+          foreach ($recentBlogs as $slug => $b):
+            $bImg = $b['thumbnail'] ?? $b['image'] ?? 'assets/logo.png';
+        ?>
+          <a href="blog/<?php echo htmlspecialchars($slug); ?>" style="text-decoration:none; color:inherit; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.04); display:flex; flex-direction:column; transition:transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0,0,0,0.05)';">
+            <div style="height:190px; overflow:hidden; background:var(--cream-dark); position:relative;">
+              <img src="<?php echo htmlspecialchars($bImg); ?>" alt="<?php echo htmlspecialchars($b['title']); ?>" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+              <span style="position:absolute; top:12px; left:12px; background:var(--brown); color:var(--ivory); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:4px 10px; border-radius:30px;"><?php echo htmlspecialchars($b['category']); ?></span>
+            </div>
+            <div style="padding:24px; display:flex; flex-direction:column; flex-grow:1;">
+              <span style="font-size:12px; color:var(--gold); font-weight:600; margin-bottom:8px; display:block;"><?php echo htmlspecialchars($b['date']); ?> • <?php echo htmlspecialchars($b['read']); ?> read</span>
+              <h4 style="font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; color:var(--brown); margin-bottom:10px; line-height:1.35;"><?php echo htmlspecialchars($b['title']); ?></h4>
+              <p style="font-family:var(--font-sans); font-size:13.5px; line-height:1.6; color:var(--brown-light); font-weight:300; margin-bottom:16px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;"><?php echo htmlspecialchars($b['excerpt']); ?></p>
+              <span style="margin-top:auto; font-size:13px; font-weight:600; color:var(--brown); display:inline-flex; align-items:center; gap:6px;">Read Full Article &rarr;</span>
+            </div>
+          </a>
+        <?php endforeach; ?>
+      </div>
+      
+      <div style="margin-top:40px;">
+        <a href="blog" class="btn-outline-dark" style="text-decoration:none;">Browse All Journal Articles &rarr;</a>
+      </div>
+    </div>
+  </section>
 
-  <!-- SEO Content Block (Resolving Thin Content) -->
+  <!-- Section 07: SEO Content Block -->
   <section style="background:var(--cream-dark); padding: 80px 24px;">
     <div class="section" style="max-width:900px; margin:0 auto; text-align:center;">
-      <div class="section-label">Chocolate Education India</div>
+      <div class="section-label">07 / EDUCATION</div>
       <h2 class="section-title">The Science of Indian Bean-to-Bar Chocolate</h2>
       <div class="divider" style="margin:16px auto 32px;"></div>
       <div style="font-family:var(--font-sans); font-size:15.5px; line-height:1.8; color:var(--brown-light); font-weight:300; text-align:left; display:flex; flex-direction:column; gap:20px;">
@@ -692,10 +712,10 @@
     </div>
   </section>
 
-  <!-- Gallery Preview -->
+  <!-- Section 08: Craft Gallery Preview -->
   <section style="background:var(--cream);text-align:center;">
     <div class="section">
-    <div class="section-label">Our World</div>
+    <div class="section-label">08 / CRAFT</div>
     <h2 class="section-title">Gallery</h2>
     <div class="divider" style="margin:20px auto 40px;"></div>
     <div class="gallery-grid">
@@ -730,14 +750,14 @@
         <span class="gallery-item-text">Packaging</span>
       </div>
     </div>
-    <a href="gallery.php" class="btn-outline-dark" style="margin-top:32px; text-decoration:none;">View Full Gallery &rarr;</a>
+    <a href="gallery" class="btn-outline-dark" style="margin-top:32px; text-decoration:none;">View Full Gallery &rarr;</a>
     </div>
   </section>
 
-  <!-- Newsletter CTA -->
+  <!-- Section 09: Newsletter CTA -->
   <section id="newsletter-section">
     <div class="inner">
-      <div class="sub-label">Stay Connected</div>
+      <div class="sub-label">09 / COMMUNITY</div>
       <h2>The Chocolate Letter</h2>
       <p>Weekly recipes, science deep-dives, workshop announcements and exclusive offers.</p>
       <form class="newsletter-row" id="newsletter-home-form" novalidate>

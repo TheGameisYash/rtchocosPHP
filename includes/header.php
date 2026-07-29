@@ -17,15 +17,27 @@ if (strpos($ogImage, 'http') !== 0) {
 }
 $ogTitle = !empty($pageTitle) ? $pageTitle : "RT Chocos | India's Chocolate Blog & Learning";
 $ogType = !empty($pageType) ? $pageType : "website";
+
+$adminSiteTheme = 'theme-cream-forest';
+try {
+    $pdo = get_db();
+    $stmt = $pdo->query("SELECT setting_value FROM site_settings WHERE setting_key = 'default_site_theme' LIMIT 1");
+    $dbTheme = $stmt->fetchColumn();
+    if (!empty($dbTheme)) {
+        $adminSiteTheme = $dbTheme;
+    }
+} catch (Exception $e) {
+    // Fallback
+}
 ?>
 <!DOCTYPE html>
-<html lang="en-IN">
+<html lang="en-IN" class="<?php echo htmlspecialchars($adminSiteTheme, ENT_QUOTES, 'UTF-8'); ?>">
 <head>
 <script>
   (function() {
     const savedTheme = localStorage.getItem('rtchocos-color-theme');
     if (savedTheme) {
-      document.documentElement.classList.add(savedTheme);
+      document.documentElement.className = savedTheme;
     }
   })();
 </script>
@@ -268,23 +280,46 @@ if (!empty($pageSchema)) {
 <?php require_once __DIR__ . '/components/preloader.php'; ?>
 
 <!-- --- HEADER --- -->
+<?php
+  $currentURI = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+  $activeNav = 'home';
+  if (strpos($currentURI, 'about') !== false) $activeNav = 'about';
+  elseif (strpos($currentURI, 'workshops') !== false) $activeNav = 'workshops';
+  elseif (strpos($currentURI, 'blog') !== false) $activeNav = 'blog';
+  elseif (strpos($currentURI, 'chocopedia') !== false) $activeNav = 'chocopedia';
+  elseif (strpos($currentURI, 'gallery') !== false) $activeNav = 'gallery';
+  elseif (strpos($currentURI, 'contact') !== false) $activeNav = 'contact';
+?>
 <header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
   <div class="header-inner">
-    <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" title="RT Chocos — India's First Chocolate Blog & Academy">
-      <span class="logo-rt">RT</span><span class="logo-chocos"> Chocos</span>
+    <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" title="RT Chocos — Artisanal Cacao Academy & Journal">
+      <svg class="logo-svg-emblem" width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="rgba(212,175,55,0.12)" stroke="rgba(212,175,55,0.3)" stroke-width="1.2"/>
+        <path d="M20 8C24 12.5 28 15.5 28 21.5C28 26 24.5 30 20 32C15.5 30 12 26 12 21.5C12 15.5 16 12.5 20 8Z" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="20" cy="20" r="2" fill="#D4AF37"/>
+      </svg>
+      <span class="logo-text"><span class="logo-rt">RT</span><span class="logo-chocos"> CHOCOS</span></span>
     </a>
-    <nav class="header-nav-left" aria-label="Primary navigation">
-      <a class="nav-link" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
-      <a class="nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about">About</a>
-      <a class="nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops" title="Chocolate Academy & Workshops India">Workshops</a>
-    </nav>
-    <nav class="header-nav-right" aria-label="Secondary navigation">
-      <a class="nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog" title="Indian Chocolate Blog — Cocoa Science & Articles">Blog</a>
-      <a class="nav-link" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia" title="Chocopedia — Chocolate Encyclopedia">Chocopedia</a>
-      <a class="nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery" title="Chocolate Recipes India">Recipes</a>
-      <a class="nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact">Contact</a>
-      <button class="nav-ai-btn" aria-label="Ask CocoaGenius AI Chatbot" onclick="toggleAiDrawer()">
-        ✨ Ask AI
+
+    <div class="nav-command-pill">
+      <nav class="header-nav" aria-label="Primary navigation">
+        <a class="nav-link <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
+        <a class="nav-link <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about">About</a>
+        <a class="nav-link <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops" title="Chocolate Academy & Masterclasses">Workshops</a>
+        <a class="nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog" title="Indian Chocolate Journal">Blog</a>
+        <a class="nav-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia" title="Chocolate Encyclopedia">Chocopedia</a>
+        <a class="nav-link <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery" title="Tested Recipes & Formulations">Recipes</a>
+        <a class="nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact">Contact</a>
+      </nav>
+    </div>
+
+    <div class="header-actions">
+      <a href="<?php echo $pathPrefix; ?>workshops" class="nav-status-badge" title="Admissions Open for Chocolate Workshops">
+        <span class="status-pulse-dot"></span>
+        <span class="status-text">Masterclasses</span>
+      </a>
+      <button class="nav-ai-btn shimmer-btn" aria-label="Ask CocoaGenius AI Chatbot" onclick="toggleAiDrawer()">
+        ✨ <span class="ai-btn-text">Ask AI</span>
       </button>
       <button class="search-btn" aria-label="Search RT Chocos chocolate articles" onclick="openSearch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon-svg">
@@ -292,19 +327,19 @@ if (!empty($pageSchema)) {
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </button>
-    </nav>
-    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Open navigation menu">
-      <span></span><span></span><span></span>
-    </button>
+      <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Open navigation menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
   <nav id="mobile-menu" aria-label="Mobile navigation">
-    <a class="mobile-nav-link" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
-    <a class="mobile-nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about">About</a>
-    <a class="mobile-nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops">Workshops</a>
-    <a class="mobile-nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog">Blog</a>
-    <a class="mobile-nav-link" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia">Chocopedia</a>
-    <a class="mobile-nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery">Recipes</a>
-    <a class="mobile-nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact">Contact</a>
+    <a class="mobile-nav-link <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
+    <a class="mobile-nav-link <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about">About</a>
+    <a class="mobile-nav-link <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops">Workshops</a>
+    <a class="mobile-nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog">Blog</a>
+    <a class="mobile-nav-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia">Chocopedia</a>
+    <a class="mobile-nav-link <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery">Recipes</a>
+    <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact">Contact</a>
     <button class="mobile-nav-ai-btn" onclick="toggleAiDrawer(); toggleMobileMenu();">
       ✨ Ask CocoaGenius AI
     </button>

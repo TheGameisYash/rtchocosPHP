@@ -12,28 +12,28 @@
 :root {
   /* --- Primary: Forest Green & Warm Ivory (Default Theme 5) --- */
   --dark-900: #FAF9F0;
-  --dark-800: #f2ebd9;
-  --dark-700: #e8e5cc;
-  --dark-600: #cac5a3;
-  --dark-500: #2b7a37;
-  --dark-400: #1e5a26;
-  --dark-300: #13451b;
+  --dark-800: #F2EBD9;
+  --dark-700: #E8E5CC;
+  --dark-600: #CAC5A3;
+  --dark-500: #2B7A37;
+  --dark-400: #1E5A26;
+  --dark-300: #13451B;
   --dark-200: #094616;
-  --dark-100: #052b0d;
+  --dark-100: #052B0D;
 
   /* --- Accent: Forest Emerald & Ivory --- */
-  --accent: #2b7a37;
-  --accent-light: #cac5a3;
-  --accent-dark: #052b0d;
+  --accent: #2B7A37;
+  --accent-light: #CAC5A3;
+  --accent-dark: #052B0D;
   --accent-glow: rgba(43, 122, 55, 0.08);
 
   /* --- Warm Neutrals --- */
-  --cream: #e8e5cc;
-  --cream-dark: #cac5a3;
+  --cream: #E8E5CC;
+  --cream-dark: #CAC5A3;
   --ivory: #FAF9F0;
   --white: #FAF9F0;
   --brown: #094616;
-  --brown-light: #1e5a26;
+  --brown-light: #1E5A26;
 
   /* --- RGB Component Variables for Opacity --- */
   --white-rgb: 250, 249, 240;
@@ -234,6 +234,72 @@ html.theme-original {
   --dark-900-rgb: 194, 208, 192;
   --dark-100-rgb: 5, 21, 9;
   --nav-bg: rgba(5, 21, 9, 0.88);
+}
+
+/* Palette 7: Midnight Obsidian & Gold (Dark Mode) */
+html.theme-midnight-gold {
+  --dark-900: #121316;
+  --dark-800: #1C1E24;
+  --dark-700: #292D36;
+  --dark-600: #3A404D;
+  --dark-500: #D4AF37;
+  --dark-400: #F3E5AB;
+  --dark-300: #997A15;
+  --dark-200: #1C1E24;
+  --dark-100: #0D0E10;
+
+  --accent: #D4AF37;
+  --accent-light: #F3E5AB;
+  --accent-dark: #997A15;
+  --accent-glow: rgba(212, 175, 55, 0.12);
+
+  --cream: #292D36;
+  --cream-dark: #1C1E24;
+  --ivory: #F4F5F7;
+  --white: #121316;
+  --brown: #F4F5F7;
+  --brown-light: #C5C9D3;
+
+  --white-rgb: 18, 19, 22;
+  --ivory-rgb: 244, 245, 247;
+  --cream-rgb: 41, 45, 54;
+  --dark-800-rgb: 28, 30, 36;
+  --dark-900-rgb: 18, 19, 22;
+  --dark-100-rgb: 13, 14, 16;
+  --nav-bg: rgba(13, 14, 16, 0.92);
+}
+
+/* Palette 8: Royal Ruby & Champagne */
+html.theme-royal-ruby {
+  --dark-900: #FAF5F6;
+  --dark-800: #F3E6E9;
+  --dark-700: #E6CED3;
+  --dark-600: #C99AA4;
+  --dark-500: #8C2234;
+  --dark-400: #661423;
+  --dark-300: #420A14;
+  --dark-200: #2B050B;
+  --dark-100: #1A0206;
+
+  --accent: #8C2234;
+  --accent-light: #D4AF37;
+  --accent-dark: #2B050B;
+  --accent-glow: rgba(140, 34, 52, 0.08);
+
+  --cream: #E6CED3;
+  --cream-dark: #C99AA4;
+  --ivory: #FAF5F6;
+  --white: #FAF5F6;
+  --brown: #2B050B;
+  --brown-light: #661423;
+
+  --white-rgb: 250, 245, 246;
+  --ivory-rgb: 250, 245, 246;
+  --cream-rgb: 230, 206, 211;
+  --dark-800-rgb: 243, 230, 233;
+  --dark-900-rgb: 250, 245, 246;
+  --dark-100-rgb: 26, 2, 6;
+  --nav-bg: rgba(26, 2, 6, 0.88);
 }
 
 html {

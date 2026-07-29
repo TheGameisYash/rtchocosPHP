@@ -2,8 +2,13 @@
 <footer id="site-footer" class="footer-links-section">
   <div class="footer-grid">
     <div>
-      <a href="<?php echo $pathPrefix; ?>index.php" style="text-decoration:none;display:inline-block;margin-bottom:16px;">
-        <span class="logo-rt" style="font-size: 28px;">RT</span><span class="logo-chocos" style="font-size: 28px;"> Chocos</span>
+      <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" style="text-decoration:none;display:inline-flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <svg class="logo-svg-emblem" width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="rgba(212,175,55,0.12)" stroke="rgba(212,175,55,0.3)" stroke-width="1.2"/>
+          <path d="M20 8C24 12.5 28 15.5 28 21.5C28 26 24.5 30 20 32C15.5 30 12 26 12 21.5C12 15.5 16 12.5 20 8Z" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="20" cy="20" r="2" fill="#D4AF37"/>
+        </svg>
+        <span class="logo-text"><span class="logo-rt" style="font-size:24px;">RT</span><span class="logo-chocos" style="font-size:12px;"> CHOCOS</span></span>
       </a>
       <p style="color:rgba(245,237,230,0.5);font-size:13px;line-height:1.7;font-weight:300;max-width:260px;">India's chocolate learning platform for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
     </div>

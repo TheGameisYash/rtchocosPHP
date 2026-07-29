@@ -6,7 +6,7 @@ $pageDescription = "Your comprehensive guide to chocolate. Explore bean-to-bar t
 $schemaType = "CollectionPage";
 $breadcrumbs = [
     ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
-    ['name' => 'Chocopedia', 'item' => 'https://www.rtchocos.com/chocopedia.php']
+    ['name' => 'Chocopedia', 'item' => 'https://www.rtchocos.com/chocopedia']
 ];
 include 'includes/header.php';
 ?>

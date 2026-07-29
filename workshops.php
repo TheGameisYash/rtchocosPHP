@@ -2,7 +2,7 @@
   $pageTitle = "Chocolate Workshops & Bean-to-Bar Classes | RT Chocos";
   $pageDescription = "Learn chocolate making with RT Chocos in Mumbai and online. Explore upcoming bean-to-bar, tempering, bonbon and formulation workshops for every skill level.";
   $pathPrefix = "";
-  $canonicalUrl = "https://www.rtchocos.com/workshops.php";
+  $canonicalUrl = "https://www.rtchocos.com/workshops";
   $schemaType = "CollectionPage";
   
   // Load database connection and fetch the latest class fact for server-side pre-rendering

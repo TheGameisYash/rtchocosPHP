@@ -16,8 +16,13 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
   <div class="preloader-luxury-frame">
     <!-- Brand Crest -->
     <div class="preloader-brand">
-      <div class="preloader-brand-name">
-        <span class="logo-rt">RT</span><span class="logo-chocos"> CHOCOS</span>
+      <div class="preloader-brand-name" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px;">
+        <svg class="logo-svg-emblem" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="rgba(212,175,55,0.12)" stroke="rgba(212,175,55,0.3)" stroke-width="1.2"/>
+          <path d="M20 8C24 12.5 28 15.5 28 21.5C28 26 24.5 30 20 32C15.5 30 12 26 12 21.5C12 15.5 16 12.5 20 8Z" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="20" cy="20" r="2" fill="#D4AF37"/>
+        </svg>
+        <span class="logo-text"><span class="logo-rt" style="font-size:26px;">RT</span><span class="logo-chocos" style="font-size:13px;"> CHOCOS</span></span>
       </div>
       <div class="preloader-tagline">Artisanal Cacao Science · Craft · Passion</div>
     </div>

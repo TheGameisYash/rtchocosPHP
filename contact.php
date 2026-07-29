@@ -2,7 +2,7 @@
   $pageTitle = "Contact RT Chocos | Chocolate Training & Consulting India";
   $pageDescription = "Get in touch with RT Chocos for chocolate recipe development, bean-to-bar consulting, workshop bookings, and corporate chocolate training across India.";
   $pathPrefix = "";
-  $canonicalUrl = "https://www.rtchocos.com/contact.php";
+  $canonicalUrl = "https://www.rtchocos.com/contact";
   $schemaType = "ContactPage";
   
   $breadcrumbs = [
