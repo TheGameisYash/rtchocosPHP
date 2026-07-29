@@ -893,39 +893,64 @@
 }
 
 /* 9. Page Hero Overrides (Workshops, about, blog, contact) */
-.page-hero {
-  background: var(--bg-surface) !important;
-  border-bottom: 1px solid var(--border-subtle) !important;
+.page-hero,
+.chocopedia-hero,
+.workshops-page-hero,
+.about-page-hero,
+.blog-page-hero,
+.contact-page-hero {
+  background: transparent !important;
+  border-bottom: none !important;
+  padding: 40px 24px 20px 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  margin: 0 auto !important;
+  width: 100% !important;
 }
 
-.page-hero-content h1 {
+.page-hero-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  margin: 0 auto !important;
+  max-width: 800px !important;
+  width: 100% !important;
+}
+
+.page-hero h1,
+.page-hero-content h1,
+.workshops-page-hero .page-hero-content h1,
+.about-page-hero .page-hero-content h1,
+.chocopedia-hero h1 {
+  text-align: center !important;
+  margin: 0 auto 16px auto !important;
+  font-family: 'DM Serif Display', 'Playfair Display', serif !important;
+  font-size: clamp(36px, 5.5vw, 56px) !important;
   color: var(--text-heading) !important;
+  font-style: normal !important;
 }
 
-.page-hero-content p {
-  color: var(--text-secondary) !important;
+.page-hero p,
+.page-hero-content p,
+.workshops-page-hero .page-hero-content p,
+.about-page-hero .page-hero-content p,
+.chocopedia-hero p {
+  text-align: center !important;
+  margin: 0 auto !important;
+  font-size: clamp(16px, 1.4vw, 19px) !important;
+  line-height: 1.65 !important;
+  color: var(--text-primary) !important;
+  max-width: 680px !important;
 }
 
 .page-hero::after,
-.page-hero::before {
-  background: transparent !important;
-  display: none !important;
-}
-
-.chocopedia-hero {
-  background: var(--bg-surface) !important;
-  border-bottom: 1px solid var(--border-subtle) !important;
-}
-
-.chocopedia-hero h1 {
-  color: var(--text-heading) !important;
-}
-
-.chocopedia-hero p {
-  color: var(--text-secondary) !important;
-}
-
+.page-hero::before,
 .chocopedia-hero::before {
+  background: transparent !important;
   display: none !important;
 }
 

@@ -41,19 +41,15 @@
 ?>
 
 <!-- --- WORKSHOPS PAGE --- -->
-<div id="page-workshops" class="page active" style="padding-top:110px;">
-  <div class="page-hero workshops-page-hero" style="padding: 48px 24px 36px; text-align: center; display: flex; justify-content: center; align-items: center;">
-    <div class="page-hero-content" style="max-width: 840px; margin: 0 auto; text-align: center;">
-      <h1 class="fade-up" style="margin-bottom: 14px;">Workshops &amp; Masterclasses</h1>
-      <p class="fade-up-d1" style="margin: 0 auto;">Science-first chocolate learning for curious makers, professionals and food entrepreneurs.</p>
+<div id="page-workshops" class="page active" style="padding-top:76px;">
+  <div class="page-hero workshops-page-hero">
+    <div class="page-hero-content">
+      <div class="section-label">RT Chocos Learning Studio</div>
+      <h1 class="fade-up">Workshops &amp; Masterclasses</h1>
+      <p class="fade-up-d1">A collection of premium, technical chocolate workshops and masterclasses. Learn bean-to-bar making, tempering science, and recipe formulation from expert Aarti Saluja Sahni.</p>
     </div>
   </div>
   <div class="section">
-    <div id="workshop-filters" style="margin-bottom:40px;text-align:center; display:flex; flex-direction:column; align-items:center;">
-      <div class="section-label">RT Chocos Learning Studio</div>
-      <h2 class="section-title">Upcoming Learning Sessions</h2>
-      <p class="section-subtitle">A collection of premium, technical chocolate workshops is currently in development. Explore our topics below.</p>
-    </div>
 
     <!-- AI Class Insight -->
     <div class="ai-class-insight" style="background: rgba(201,149,107,0.06); border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 4px; margin-bottom: 32px; text-align: left;">
