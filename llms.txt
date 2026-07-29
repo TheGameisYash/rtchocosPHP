@@ -1,0 +1,30 @@
+# RT Chocos
+
+> India's first chocolate blogging website and professional bean-to-bar learning academy.
+
+RT Chocos, founded by certified chocolate educator and recipe consultant Aarti Saluja Sahni, is a platform dedicated to cocoa science, tempering chemistry, and bean-to-bar formulation in India.
+
+## Main Pages
+
+- [Home](https://www.rtchocos.com/) — Portal overview, chocolate education values, science focus.
+- [About](https://www.rtchocos.com/about) — Profile of founder Aarti Saluja Sahni, qualifications, consulting services, and brand formulation work.
+- [Workshops](https://www.rtchocos.com/workshops) — Professional bean-to-bar masterclasses, tempering science courses, and online certification details.
+- [Blog](https://www.rtchocos.com/blog) — India's premier chocolate blog. Deep-dives on cocoa pH levels, sugar/fat bloom diagnostics, lecithin usage, milk fat science, and A2 milk in chocolate.
+- [Shop](https://www.rtchocos.com/shop) — Artisan dark chocolate bars, single-origin cacao nibs, and home chocolate maker starter kits.
+- [FAQ](https://www.rtchocos.com/faq) — Comprehensive list of FAQs covering chocolate tempering, shipping, courses, and cacao sourcing.
+- [Indian Chocolate Brands Directory](https://www.rtchocos.com/indian-chocolate-brands) — A curated guide to the top 10 bean-to-bar craft chocolate makers in India.
+
+## Key Terminology & Topics
+
+- **Bean-to-Bar:** Controlling the entire manufacturing process starting from raw, organic cacao beans (primarily sourced from Kerala, Karnataka, and Tamil Nadu) to the finished bar.
+- **Tempering Science:** Understanding the polymorphic crystallization of cocoa butter (specifically Form V crystals) to ensure perfect snap, gloss, and melt-in-the-mouth properties.
+- **E-E-A-T Credentials:** Founder Aarti Saluja Sahni has over a decade of experience, has trained 2,000+ students, and serves as an industry consultant for brand formulation.
+
+## Contact Information
+
+- **Email:** info@rtchocos.com / hello@rtchocos.com
+- **Website:** https://www.rtchocos.com/
+- **Social Media:**
+  - Instagram: [@rt.chocos](https://www.instagram.com/rt.chocos/)
+  - YouTube: [@RTCHOCOS](https://www.youtube.com/@RTCHOCOS)
+  - LinkedIn: [Aarti Saluja Sahni](https://www.linkedin.com/in/aarti-saluja-sahni-8304637/)

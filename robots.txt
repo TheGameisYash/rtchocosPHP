@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /includes/
+Disallow: /api/
 Disallow: /data/
 Disallow: /db_setup.php
 Disallow: /test_blog.php
@@ -10,3 +12,4 @@ Disallow: /api_comments.php
 Disallow: /blog/posts/
 Disallow: /*.md$
 Sitemap: https://www.rtchocos.com/sitemap.xml
+

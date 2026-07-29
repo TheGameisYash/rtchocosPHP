@@ -649,6 +649,29 @@ include __DIR__ . '/includes/header.php';
                 <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($shareTitle . ' - ' . $articleUrl); ?>" target="_blank" class="share-btn wa" title="Share via WhatsApp">WhatsApp</a>
                 <button type="button" class="share-btn copy" onclick="copyArticleLink()" title="Copy Link">Copy Link</button>
             </div>
+
+            <!-- Author Bio Box (E-E-A-T) -->
+            <div style="background:var(--cream); border-radius:20px; padding:24px; margin-top:40px; margin-bottom:24px; box-shadow:0 4px 16px rgba(59,42,34,0.06); display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+                <img src="<?php echo $pathPrefix; ?>assets/myphoto.jpg" alt="Aarti Saluja Sahni — founder and expert chocolate educator at RT Chocos India" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid var(--brown-light); flex-shrink:0;">
+                <div style="flex:1; min-width:240px;">
+                    <span style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--gold); letter-spacing:0.08em; display:block; margin-bottom:4px;">Written By The Founder</span>
+                    <h4 style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:var(--brown); margin:0 0 8px;">Aarti Saluja Sahni</h4>
+                    <p style="font-family:var(--font-sans); font-size:13.5px; line-height:1.6; color:var(--brown-light); font-weight:300; margin:0 0 12px;">
+                        Aarti is India's first chocolate blogger and a certified chocolate educator with 10+ years of bean-to-bar and cocoa science expertise. She has trained 2,000+ students and consults for craft chocolate brands across India.
+                    </p>
+                    <a href="<?php echo $pathPrefix; ?>about" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">About Aarti</a>
+                </div>
+            </div>
+
+            <!-- Contextual FAQ Block -->
+            <?php
+            $faqCategory = 'general';
+            if (stripos($post['category'], 'Beginner') !== false || stripos($post['category'], 'Business') !== false) {
+                $faqCategory = 'courses';
+            }
+            $faqLimit = 3;
+            include __DIR__ . '/includes/faq-block.php';
+            ?>
             
             <!-- Comments Section -->
             <?php include __DIR__ . '/includes/comments.php'; ?>

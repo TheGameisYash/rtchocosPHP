@@ -9,16 +9,17 @@
     </div>
     <div>
       <div class="footer-heading">Navigation</div>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>index.php">Home</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
+      <a class="footer-link" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>about">About Aarti Saluja Sahni</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops" title="Chocolate Academy India">Chocolate Academy India</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>contact">Contact Us</a>
     </div>
     <div>
       <div class="footer-heading">Explore</div>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>blog" title="Chocolate Blog India">Chocolate Blog India</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>indian-chocolate-brands" title="Indian Chocolate Brands Directory">Indian Chocolate Brands</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>chocopedia">Chocopedia</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery" title="Chocolate Recipes India">Recipes & Formulations</a>
     </div>
     <div>
       <?php if (empty($isHome)): ?>

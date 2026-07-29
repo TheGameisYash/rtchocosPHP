@@ -34,6 +34,11 @@ $ogType = !empty($pageType) ? $pageType : "website";
 <title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></title>
 <meta name="description" content="<?php echo htmlspecialchars($pageDescription, ENT_QUOTES, 'UTF-8'); ?>" />
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+<?php if (!empty($pageKeywords)): ?>
+<meta name="keywords" content="<?php echo htmlspecialchars($pageKeywords, ENT_QUOTES, 'UTF-8'); ?>" />
+<?php else: ?>
+<meta name="keywords" content="chocolate blog india, chocolate academy india, indian bean to bar chocolate, bean to bar chocolate, chocolate course india, chocolate workshops india, learn chocolate making india, cocoa science blog india, craft chocolate india, chocolate education india, chocolate blogging india, tempering chocolate course, chocolate consultant Mumbai, RT Chocos" />
+<?php endif; ?>
 <?php if (!empty($pageType) && $pageType === 'article'): ?>
 <meta name="author" content="Aarti Saluja Sahni" />
 <?php endif; ?>
@@ -95,7 +100,7 @@ $graph = [
         "@type" => "Person",
         "@id" => "https://www.rtchocos.com/#aarti-saluja-sahni",
         "name" => "Aarti Saluja Sahni",
-        "url" => "https://www.rtchocos.com/about.php",
+        "url" => "https://www.rtchocos.com/about",
         "image" => "https://www.rtchocos.com/assets/myphoto.jpg",
         "jobTitle" => "Chocolate maker, recipe developer and educator",
         "worksFor" => ["@id" => "https://www.rtchocos.com/#organization"],
@@ -110,6 +115,11 @@ $graph = [
         "inLanguage" => "en-IN",
         "publisher" => [
             "@id" => "https://www.rtchocos.com/#organization"
+        ],
+        "potentialAction" => [
+            "@type" => "SearchAction",
+            "target" => "https://www.rtchocos.com/blog?s={search_term_string}",
+            "query-input" => "required name=search_term_string"
         ]
     ]
 ];
@@ -260,45 +270,45 @@ if (!empty($pageSchema)) {
 <!-- --- HEADER --- -->
 <header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
   <div class="header-inner">
-    <a href="<?php echo $pathPrefix; ?>index.php" class="logo">
+    <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" title="RT Chocos — India's First Chocolate Blog & Academy">
       <span class="logo-rt">RT</span><span class="logo-chocos"> Chocos</span>
     </a>
-    <div class="header-nav-left">
-      <a class="nav-link" data-page="home" href="<?php echo $pathPrefix; ?>index.php">Home</a>
-      <a class="nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
-      <a class="nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
-    </div>
-    <div class="header-nav-right">
-      <a class="nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
-      <a class="nav-link" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
-      <a class="nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
-      <a class="nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
-      <button class="nav-ai-btn" aria-label="Ask AI Chatbot" onclick="toggleAiDrawer()">
+    <nav class="header-nav-left" aria-label="Primary navigation">
+      <a class="nav-link" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
+      <a class="nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about">About</a>
+      <a class="nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops" title="Chocolate Academy & Workshops India">Workshops</a>
+    </nav>
+    <nav class="header-nav-right" aria-label="Secondary navigation">
+      <a class="nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog" title="Indian Chocolate Blog — Cocoa Science & Articles">Blog</a>
+      <a class="nav-link" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia" title="Chocopedia — Chocolate Encyclopedia">Chocopedia</a>
+      <a class="nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery" title="Chocolate Recipes India">Recipes</a>
+      <a class="nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact">Contact</a>
+      <button class="nav-ai-btn" aria-label="Ask CocoaGenius AI Chatbot" onclick="toggleAiDrawer()">
         ✨ Ask AI
       </button>
-      <button class="search-btn" aria-label="Search" onclick="openSearch()">
+      <button class="search-btn" aria-label="Search RT Chocos chocolate articles" onclick="openSearch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon-svg">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </button>
-    </div>
-    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    </nav>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Open navigation menu">
       <span></span><span></span><span></span>
     </button>
   </div>
-  <div id="mobile-menu">
-    <a class="mobile-nav-link" data-page="home" href="<?php echo $pathPrefix; ?>index.php">Home</a>
-    <a class="mobile-nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
-    <a class="mobile-nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
-    <a class="mobile-nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
-    <a class="mobile-nav-link" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
-    <a class="mobile-nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
-    <a class="mobile-nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
+  <nav id="mobile-menu" aria-label="Mobile navigation">
+    <a class="mobile-nav-link" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
+    <a class="mobile-nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about">About</a>
+    <a class="mobile-nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops">Workshops</a>
+    <a class="mobile-nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog">Blog</a>
+    <a class="mobile-nav-link" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia">Chocopedia</a>
+    <a class="mobile-nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery">Recipes</a>
+    <a class="mobile-nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact">Contact</a>
     <button class="mobile-nav-ai-btn" onclick="toggleAiDrawer(); toggleMobileMenu();">
       ✨ Ask CocoaGenius AI
     </button>
-  </div>
+  </nav>
 </header>
 
 <?php require_once __DIR__ . '/components/ai_drawer.php'; ?>

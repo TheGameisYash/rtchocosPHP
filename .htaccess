@@ -66,9 +66,22 @@ RewriteRule ^includes/ - [F,L]
 RewriteRule ^data/ - [F,L]
 
 # ----------------------------------------------------------------------
-# | Rewrite Rules for Sitemap & Blog Clean URLs                         |
+# | Rewrite Rules for Sitemap & Clean URLs                              |
 # ----------------------------------------------------------------------
 RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+# Specifically rewrite /blog and /blog/ to blog.php to avoid directory conflict
+RewriteRule ^blog/?$ blog.php [L]
+
+# Enforce clean extensionless URLs for GET requests (redirect /page.php to /page without breaking POST APIs)
+RewriteCond %{REQUEST_METHOD} GET [NC]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/([^/.]+)\.php [NC]
+RewriteRule ^ %1 [R=301,L]
+
+# Internally map extensionless requests to root-level .php files
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^([^/.]+)/?$ $1.php [NC,L]
 
 # Redirect blog/article.php?slug=xxx to clean url /blog/xxx (optional SEO improvement)
 RewriteCond %{THE_REQUEST} \s/blog/article\.php\?slug=([^\s&]+)\s [NC]
@@ -78,6 +91,24 @@ RewriteRule ^blog/article\.php$ /blog/%1? [R=301,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^blog/([^/]+)$ blog/article.php?slug=$1 [L,QSA]
+
+# Rewrite clean shop URLs
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^shop/([^/]+)$ product.php?slug=$1 [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^shop/?$ shop.php [L]
+
+# Rewrite clean listicle URL
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^indian-chocolate-brands/?$ brand-listicle.php [L]
+
+# Route missing blog images to blog_image.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^assets/blogs/(.+)$ blog_image.php?file=$1 [L,QSA]
 
 # ----------------------------------------------------------------------
 # | Security Headers                                                   |
