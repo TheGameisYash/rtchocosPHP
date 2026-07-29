@@ -935,7 +935,7 @@ section {
 }
 
 section:nth-of-type(even) {
-  background-color: var(--bg-surface) !important;
+  background-color: var(--bg-primary) !important;
 }
 
 .section-title {
@@ -948,6 +948,48 @@ section:nth-of-type(even) {
 
 .section-label {
   color: var(--accent) !important;
+}
+
+/* Seamless Non-Boxed Card Overrides (SEO FAQ & Topic Cards) */
+.seo-topic-card,
+.seo-faq details,
+.ai-class-insight {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 30px rgba(17, 34, 23, 0.03) !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease !important;
+  margin-bottom: 16px !important;
+  overflow: hidden !important;
+}
+
+.seo-topic-card:hover,
+.seo-faq details:hover {
+  border-color: var(--border-accent) !important;
+  box-shadow: 0 12px 35px var(--accent-glow) !important;
+  transform: translateY(-4px) !important;
+}
+
+.seo-faq details summary {
+  padding: 20px 24px !important;
+  font-family: 'Playfair Display', serif !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: var(--text-heading) !important;
+  cursor: pointer !important;
+  transition: color 0.3s ease !important;
+}
+
+.seo-faq details summary:hover {
+  color: var(--accent) !important;
+}
+
+.seo-faq details p {
+  padding: 0 24px 20px 24px !important;
+  color: var(--text-primary) !important;
+  font-size: 15px !important;
+  line-height: 1.7 !important;
+  margin: 0 !important;
 }
 
 /* === ABOUT PAGE INTERACTIVE TIMELINE STYLING === */

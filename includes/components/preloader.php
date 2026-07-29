@@ -67,7 +67,18 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
 
 <script>
 (function() {
+  var navEntries = (performance && performance.getEntriesByType) ? performance.getEntriesByType('navigation') : [];
+  var navType = navEntries.length > 0 ? navEntries[0].type : '';
+  var isReload = (navType === 'reload') || (window.performance && window.performance.navigation && window.performance.navigation.type === 1);
+  var hasUnwrappedSession = sessionStorage.getItem('rtchocos_unwrapped_session');
   var overlay = document.getElementById('cacao-preloader');
+
+  // Trigger ONLY on first visit or manual browser reload, NOT internal page navigation!
+  if (hasUnwrappedSession && !isReload) {
+    if (overlay) overlay.style.display = 'none';
+    return;
+  }
+
   var isUnwrapped = false;
 
   // Trigger Video Autoplay
@@ -84,6 +95,7 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
   window.perform3DUnwrapAnimation = function() {
     if (isUnwrapped) return;
     isUnwrapped = true;
+    sessionStorage.setItem('rtchocos_unwrapped_session', 'true');
 
     if (typeof anime !== 'undefined') {
       // 1. Particle Radial Explosion from Seal Center
@@ -92,7 +104,7 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
       var centerX = rect.left + rect.width / 2;
       var centerY = rect.top + rect.height / 2;
 
-      for (var p = 0; p < 28; p++) {
+      for (var p = 0; p < 32; p++) {
         var dot = document.createElement('div');
         dot.style.position = 'fixed';
         dot.style.left = centerX + 'px';
@@ -105,17 +117,17 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
         dot.style.pointerEvents = 'none';
         document.body.appendChild(dot);
 
-        var angle = (p / 28) * 360;
-        var distance = 140 + Math.random() * 180;
+        var angle = (p / 32) * 360;
+        var distance = 160 + Math.random() * 220;
         var rad = (angle * Math.PI) / 180;
 
         anime({
           targets: dot,
           translateX: Math.cos(rad) * distance,
           translateY: Math.sin(rad) * distance,
-          scale: [1, 0],
+          scale: [1.2, 0],
           opacity: [1, 0],
-          duration: 900 + Math.random() * 400,
+          duration: 1100 + Math.random() * 400,
           easing: 'easeOutExpo',
           complete: function(anim) {
             if (anim.animatables[0].target.parentNode) {
@@ -125,41 +137,41 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
         });
       }
 
-      // 2. Anime.js Foil Peeling Animation
+      // 2. Anime.js Luscious Foil Peeling Animation (1100ms)
       anime({
         targets: '#foil-top-flap',
-        translateY: '-140%',
-        rotateZ: -15,
+        translateY: '-150%',
+        rotateZ: -18,
         opacity: 0,
-        duration: 800,
-        easing: 'easeOutCubic'
+        duration: 1100,
+        easing: 'cubicBezier(0.25, 1, 0.5, 1)'
       });
 
       anime({
         targets: '#foil-bottom-flap',
-        translateY: '140%',
-        rotateZ: 15,
+        translateY: '150%',
+        rotateZ: 18,
         opacity: 0,
-        duration: 800,
-        easing: 'easeOutCubic'
+        duration: 1100,
+        easing: 'cubicBezier(0.25, 1, 0.5, 1)'
       });
 
       anime({
         targets: '#choc-seal-btn',
-        scale: [1, 1.3, 0],
+        scale: [1, 1.35, 0],
         rotate: [0, 180],
         opacity: 0,
-        duration: 550,
+        duration: 650,
         easing: 'easeOutBack'
       });
 
       anime({
         targets: '.bar-tile',
-        scale: [0.85, 1],
+        scale: [0.82, 1],
         rotateY: [90, 0],
         opacity: [0, 1],
-        delay: anime.stagger(70, { start: 200 }),
-        duration: 700,
+        delay: anime.stagger(90, { start: 250 }),
+        duration: 850,
         easing: 'easeOutCubic'
       });
 
@@ -167,8 +179,8 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
       anime({
         targets: '#cacao-preloader',
         opacity: [1, 0],
-        duration: 900,
-        delay: 600,
+        duration: 1000,
+        delay: 800,
         easing: 'easeOutQuad',
         complete: function() {
           if (overlay && overlay.parentNode) {
@@ -180,19 +192,19 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
       // Fallback if anime.js is not loaded
       if (overlay) {
         overlay.style.opacity = '0';
-        overlay.style.transition = 'opacity 0.6s ease';
+        overlay.style.transition = 'opacity 0.8s ease';
         setTimeout(function() {
           if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-        }, 600);
+        }, 800);
       }
     }
   };
 
-  // Auto-unwrap after 3.5s if not clicked so it NEVER freezes
+  // Auto-unwrap after 5.5s if not clicked so it NEVER freezes
   setTimeout(function() {
     if (!isUnwrapped) {
       window.perform3DUnwrapAnimation();
     }
-  }, 3500);
+  }, 5500);
 })();
 </script>
