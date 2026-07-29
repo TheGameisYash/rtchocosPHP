@@ -231,11 +231,77 @@ $pathPrefix = isset($pathPrefix) ? $pathPrefix : '';
   window.dismissCacaoPreloader = function() {
     if (isDismissed) return;
     isDismissed = true;
-    if (overlay) {
-      overlay.classList.add('fade-out');
-      setTimeout(function() {
-        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-      }, 1000);
+
+    // Anime.js Unwrapping Physics Entrance
+    if (typeof anime !== 'undefined') {
+      // 1. Burst golden particles from center
+      var frame = document.querySelector('.preloader-luxury-frame');
+      var rect = frame ? frame.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
+      var centerX = rect.left + rect.width / 2;
+      var centerY = rect.top + rect.height / 2;
+
+      for (var p = 0; p < 24; p++) {
+        var dot = document.createElement('div');
+        dot.className = 'cacao-unwrap-particle';
+        dot.style.position = 'fixed';
+        dot.style.left = centerX + 'px';
+        dot.style.top = centerY + 'px';
+        dot.style.width = '8px';
+        dot.style.height = '8px';
+        dot.style.borderRadius = '50%';
+        dot.style.background = 'linear-gradient(135deg, #D4AF37, #256139)';
+        dot.style.zIndex = '9999999';
+        dot.style.pointerEvents = 'none';
+        document.body.appendChild(dot);
+
+        var angle = (p / 24) * 360;
+        var distance = 120 + Math.random() * 180;
+        var rad = (angle * Math.PI) / 180;
+
+        anime({
+          targets: dot,
+          translateX: Math.cos(rad) * distance,
+          translateY: Math.sin(rad) * distance,
+          scale: [1, 0],
+          opacity: [1, 0],
+          duration: 900 + Math.random() * 400,
+          easing: 'easeOutExpo',
+          complete: function(anim) {
+            if (anim.animatables[0].target.parentNode) {
+              anim.animatables[0].target.parentNode.removeChild(anim.animatables[0].target);
+            }
+          }
+        });
+      }
+
+      // 2. Anime.js Unwrap Frame Peeling & Zoom
+      anime({
+        targets: '.preloader-luxury-frame',
+        scale: [1, 1.06, 0.88],
+        rotate: [0, -2],
+        opacity: [1, 0],
+        duration: 700,
+        easing: 'easeInOutCubic'
+      });
+
+      anime({
+        targets: '#cacao-preloader',
+        opacity: [1, 0],
+        duration: 950,
+        easing: 'easeOutQuad',
+        complete: function() {
+          if (overlay && overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
+          }
+        }
+      });
+    } else {
+      if (overlay) {
+        overlay.classList.add('fade-out');
+        setTimeout(function() {
+          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        }, 1000);
+      }
     }
   };
 

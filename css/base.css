@@ -403,3 +403,111 @@ textarea:focus-visible,
   border-radius: 30px;
 }
 
+/* === UNIVERSAL RESPONSIVE BREAKPOINTS (iPhone, Android, iPad, 720p, 1080p, 2K, 4K) === */
+
+/* Mobile Devices (iPhone & Android: 320px – 480px) */
+@media (max-width: 480px) {
+  .section {
+    padding: 50px 16px;
+  }
+  
+  .header-inner {
+    padding: 0 16px !important;
+    height: 54px !important;
+  }
+
+  .logo-rt {
+    font-size: 19px !important;
+  }
+
+  .logo-chocos {
+    font-size: 9px !important;
+    letter-spacing: 0.18em !important;
+  }
+
+  h1 { font-size: 32px !important; }
+  h2 { font-size: 24px !important; }
+  h3 { font-size: 20px !important; }
+}
+
+/* Tablet & iPad (768px – 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .section {
+    padding: 80px 32px;
+  }
+  
+  .header-inner {
+    width: 96% !important;
+    padding: 0 20px !important;
+  }
+}
+
+/* Desktop 1080p (1920px) */
+@media (min-width: 1920px) {
+  .section {
+    max-width: 1560px;
+    padding: 120px 48px;
+  }
+
+  .header-inner {
+    width: min(94%, 1560px) !important;
+    height: 66px !important;
+  }
+
+  body {
+    font-size: 17px;
+  }
+}
+
+/* Desktop 2K (2560px / 1440p) */
+@media (min-width: 2560px) {
+  .section {
+    max-width: 2100px;
+    padding: 150px 64px;
+  }
+
+  .header-inner {
+    width: min(94%, 2000px) !important;
+    height: 76px !important;
+  }
+
+  .nav-link {
+    font-size: 14px !important;
+    padding: 10px 22px !important;
+  }
+
+  body {
+    font-size: 19px;
+  }
+
+  h1 { font-size: clamp(52px, 4vw, 84px); }
+  h2 { font-size: clamp(38px, 3vw, 64px); }
+  h3 { font-size: clamp(28px, 2vw, 44px); }
+}
+
+/* Ultra HD 4K (3840px / 2160p) */
+@media (min-width: 3840px) {
+  .section {
+    max-width: 3000px;
+    padding: 200px 96px;
+  }
+
+  .header-inner {
+    width: min(92%, 2800px) !important;
+    height: 90px !important;
+  }
+
+  .nav-link {
+    font-size: 18px !important;
+    padding: 14px 30px !important;
+  }
+
+  body {
+    font-size: 22px;
+  }
+
+  h1 { font-size: 96px; }
+  h2 { font-size: 72px; }
+  h3 { font-size: 48px; }
+}
+
