@@ -4,13 +4,13 @@
     <div>
       <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" style="text-decoration:none;display:inline-flex;align-items:center;gap:12px;margin-bottom:16px;">
         <svg class="logo-svg-emblem" width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="40" height="40" rx="10" fill="rgba(212,175,55,0.12)" stroke="rgba(212,175,55,0.3)" stroke-width="1.2"/>
-          <path d="M20 8C24 12.5 28 15.5 28 21.5C28 26 24.5 30 20 32C15.5 30 12 26 12 21.5C12 15.5 16 12.5 20 8Z" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="20" cy="20" r="2" fill="#D4AF37"/>
+          <rect width="40" height="40" rx="10" fill="var(--accent-glow)" stroke="var(--border-accent)" stroke-width="1.2"/>
+          <path d="M20 8C24 12.5 28 15.5 28 21.5C28 26 24.5 30 20 32C15.5 30 12 26 12 21.5C12 15.5 16 12.5 20 8Z" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="20" cy="20" r="2" fill="var(--accent)"/>
         </svg>
-        <span class="logo-text"><span class="logo-rt" style="font-size:24px;">RT</span><span class="logo-chocos" style="font-size:12px;"> CHOCOS</span></span>
+        <span class="logo-text"><span class="footer-logo-rt" style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text-heading);font-weight:400;">RT</span><span class="footer-logo-chocos" style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.25em;color:var(--accent);"> CHOCOS</span></span>
       </a>
-      <p style="color:rgba(245,237,230,0.5);font-size:13px;line-height:1.7;font-weight:300;max-width:260px;">India's chocolate learning platform for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
+      <p style="color:var(--text-secondary);font-size:13.5px;line-height:1.75;font-weight:400;max-width:260px;">India's chocolate learning platform for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
     </div>
     <div>
       <div class="footer-heading">Navigation</div>
@@ -108,99 +108,99 @@
       <button class="theme-menu-close" onclick="toggleThemeMenu()">&times;</button>
     </div>
     <div class="theme-options">
-      <!-- Option 1: Forest Green & Warm Ivory -->
+      <!-- Option 1: Signature Roasted Cacao (Default) -->
       <div class="theme-option" onclick="selectTheme('theme-cream-forest')" data-theme-id="theme-cream-forest">
         <div class="theme-info">
-          <span class="theme-name">1. Forest Green &amp; Ivory (Default)</span>
+          <span class="theme-name">1. Signature Roasted Cacao (Default)</span>
           <div class="theme-color-preview">
-            <span style="background-color: #2b7a37;"></span>
-            <span style="background-color: #e8e5cc;"></span>
-            <span style="background-color: #FAF9F0;"></span>
-            <span style="background-color: #094616;"></span>
+            <span style="background-color: #A8521D;"></span>
+            <span style="background-color: #EEE6DA;"></span>
+            <span style="background-color: #FAF6F0;"></span>
+            <span style="background-color: #1F1209;"></span>
           </div>
         </div>
       </div>
-      <!-- Option 2: Teal Green & Sage -->
+      <!-- Option 2: Botanical Cacao &amp; Olive -->
       <div class="theme-option" onclick="selectTheme('theme-teal-sage')" data-theme-id="theme-teal-sage">
         <div class="theme-info">
-          <span class="theme-name">2. Teal Green &amp; Sage</span>
+          <span class="theme-name">2. Botanical Cacao &amp; Olive</span>
           <div class="theme-color-preview">
-            <span style="background-color: #173e35;"></span>
-            <span style="background-color: #699684;"></span>
-            <span style="background-color: #c1dcd2;"></span>
-            <span style="background-color: #0d2721;"></span>
+            <span style="background-color: #2B5838;"></span>
+            <span style="background-color: #E2ECE2;"></span>
+            <span style="background-color: #F4F7F4;"></span>
+            <span style="background-color: #122116;"></span>
           </div>
         </div>
       </div>
-      <!-- Option 3: Lavender & Mint Sage -->
+      <!-- Option 3: Velvet Plum Cocoa -->
       <div class="theme-option" onclick="selectTheme('theme-lavender-mint')" data-theme-id="theme-lavender-mint">
         <div class="theme-info">
-          <span class="theme-name">3. Lavender &amp; Mint Sage</span>
+          <span class="theme-name">3. Velvet Plum Cocoa</span>
           <div class="theme-color-preview">
-            <span style="background-color: #765f97;"></span>
-            <span style="background-color: #8ac09e;"></span>
-            <span style="background-color: #d8cee8;"></span>
-            <span style="background-color: #2c203b;"></span>
+            <span style="background-color: #663A75;"></span>
+            <span style="background-color: #E7DFEC;"></span>
+            <span style="background-color: #F6F3F8;"></span>
+            <span style="background-color: #1F0E29;"></span>
           </div>
         </div>
       </div>
-      <!-- Option 4: Peach Orange & Mint -->
+      <!-- Option 4: Dark Chocolate Espresso -->
       <div class="theme-option" onclick="selectTheme('theme-peach-mint')" data-theme-id="theme-peach-mint">
         <div class="theme-info">
-          <span class="theme-name">4. Peach Orange &amp; Mint</span>
+          <span class="theme-name">4. Dark Chocolate Espresso</span>
           <div class="theme-color-preview">
-            <span style="background-color: #c47b35;"></span>
-            <span style="background-color: #8ac09e;"></span>
-            <span style="background-color: #ebd6c5;"></span>
-            <span style="background-color: #3d2618;"></span>
+            <span style="background-color: #8B3E14;"></span>
+            <span style="background-color: #ECE0D2;"></span>
+            <span style="background-color: #F8F2EB;"></span>
+            <span style="background-color: #1C0B03;"></span>
           </div>
         </div>
       </div>
-      <!-- Option 5: Eucalyptus Sage -->
+      <!-- Option 5: Raw Cacao &amp; Pistachio -->
       <div class="theme-option" onclick="selectTheme('theme-original')" data-theme-id="theme-original">
         <div class="theme-info">
-          <span class="theme-name">5. Eucalyptus Sage</span>
+          <span class="theme-name">5. Raw Cacao &amp; Pistachio</span>
           <div class="theme-color-preview">
-            <span style="background-color: #124F27;"></span>
-            <span style="background-color: #599A6E;"></span>
-            <span style="background-color: #E2ECE0;"></span>
-            <span style="background-color: #0E2313;"></span>
+            <span style="background-color: #346142;"></span>
+            <span style="background-color: #E0E9E0;"></span>
+            <span style="background-color: #F3F6F3;"></span>
+            <span style="background-color: #122417;"></span>
           </div>
         </div>
       </div>
-      <!-- Option 6: Midnight Obsidian & Gold -->
+      <!-- Option 6: Midnight Cacao &amp; Liquid Gold -->
       <div class="theme-option" onclick="selectTheme('theme-midnight-gold')" data-theme-id="theme-midnight-gold">
         <div class="theme-info">
-          <span class="theme-name">6. Midnight Obsidian &amp; Gold</span>
+          <span class="theme-name">6. Midnight Cacao &amp; Liquid Gold</span>
           <div class="theme-color-preview">
             <span style="background-color: #D4AF37;"></span>
-            <span style="background-color: #3A404D;"></span>
-            <span style="background-color: #121316;"></span>
-            <span style="background-color: #F4F5F7;"></span>
+            <span style="background-color: #171412;"></span>
+            <span style="background-color: #0E0C0A;"></span>
+            <span style="background-color: #F5ECE3;"></span>
           </div>
         </div>
       </div>
-      <!-- Option 7: Royal Ruby & Champagne -->
+      <!-- Option 7: Vintage Ruby Cocoa -->
       <div class="theme-option" onclick="selectTheme('theme-royal-ruby')" data-theme-id="theme-royal-ruby">
         <div class="theme-info">
-          <span class="theme-name">7. Royal Ruby &amp; Champagne</span>
+          <span class="theme-name">7. Vintage Ruby Cocoa</span>
           <div class="theme-color-preview">
-            <span style="background-color: #8C2234;"></span>
-            <span style="background-color: #D4AF37;"></span>
-            <span style="background-color: #FAF5F6;"></span>
-            <span style="background-color: #2B050B;"></span>
+            <span style="background-color: #8A2234;"></span>
+            <span style="background-color: #ECE0E3;"></span>
+            <span style="background-color: #F8F3F4;"></span>
+            <span style="background-color: #21060B;"></span>
           </div>
         </div>
       </div>
-      <!-- Option 8: Sapphire Blue & Golden Honey -->
+      <!-- Option 8: Royal Sapphire Cacao -->
       <div class="theme-option" onclick="selectTheme('theme-sapphire-gold')" data-theme-id="theme-sapphire-gold">
         <div class="theme-info">
-          <span class="theme-name">8. Sapphire Blue &amp; Gold</span>
+          <span class="theme-name">8. Royal Sapphire Cacao</span>
           <div class="theme-color-preview">
-            <span style="background-color: #2B4C7E;"></span>
-            <span style="background-color: #D4AF37;"></span>
-            <span style="background-color: #F4F7FB;"></span>
-            <span style="background-color: #0B192F;"></span>
+            <span style="background-color: #1C4170;"></span>
+            <span style="background-color: #E0E8F4;"></span>
+            <span style="background-color: #F3F6FA;"></span>
+            <span style="background-color: #0A182E;"></span>
           </div>
         </div>
       </div>

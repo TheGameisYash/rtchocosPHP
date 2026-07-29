@@ -713,7 +713,7 @@
   </section>
 
   <!-- Section 08: Craft Gallery Preview -->
-  <section style="background:var(--cream);text-align:center;">
+  <section style="text-align:center;">
     <div class="section">
     <div class="section-label">08 / CRAFT</div>
     <h2 class="section-title">Gallery</h2>
@@ -738,16 +738,6 @@
         <div class="gallery-item-bg" style="background-image: url('assets/workshop.jpg');"></div>
         <div class="gallery-item-overlay"></div>
         <span class="gallery-item-text">Workshop</span>
-      </div>
-      <div class="gallery-item">
-        <div class="gallery-item-bg" style="background-image: url('assets/almondbutterphoto.jpg');"></div>
-        <div class="gallery-item-overlay"></div>
-        <span class="gallery-item-text">Finished Bars</span>
-      </div>
-      <div class="gallery-item">
-        <div class="gallery-item-bg" style="background-image: url('assets/limechillitrufflesphoto.jpeg');"></div>
-        <div class="gallery-item-overlay"></div>
-        <span class="gallery-item-text">Packaging</span>
       </div>
     </div>
     <a href="gallery" class="btn-outline-dark" style="margin-top:32px; text-decoration:none;">View Full Gallery &rarr;</a>

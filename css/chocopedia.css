@@ -177,7 +177,7 @@
 }
 
 /* ===================================================================
-   SCOPED BLOG ARTICLE STYLES â€” PRESERVED FROM ORIGINAL
+   SCOPED BLOG ARTICLE STYLES - PRESERVED FROM ORIGINAL
    =================================================================== */
 
 /* --- FAT BLOOM ARTICLE CUSTOM STYLES (SCOPED) --- */
@@ -1249,7 +1249,7 @@
 }
 
 .wheel-title-col .gold-divider::after {
-  content: "â™¦";
+  content: "\2666";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1745,7 +1745,7 @@
 }
 
 #blog-article-content ul li::before {
-  content: 'âœ¦';
+  content: '\2726';
   position: absolute;
   left: 0;
   color: var(--accent);
