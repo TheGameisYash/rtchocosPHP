@@ -163,6 +163,7 @@ render_admin_header("Site Settings", "settings");
                         <option value="theme-original" <?php echo $activeTheme === 'theme-original' ? 'selected' : ''; ?>>🍃 Eucalyptus Sage</option>
                         <option value="theme-midnight-gold" <?php echo $activeTheme === 'theme-midnight-gold' ? 'selected' : ''; ?>>🌙 Midnight Obsidian &amp; Gold (Dark)</option>
                         <option value="theme-royal-ruby" <?php echo $activeTheme === 'theme-royal-ruby' ? 'selected' : ''; ?>>🍷 Royal Ruby &amp; Champagne</option>
+                        <option value="theme-sapphire-gold" <?php echo $activeTheme === 'theme-sapphire-gold' ? 'selected' : ''; ?>>💎 Sapphire Blue &amp; Gold</option>
                     </select>
                 </div>
             </div>

@@ -108,58 +108,10 @@
       <button class="theme-menu-close" onclick="toggleThemeMenu()">&times;</button>
     </div>
     <div class="theme-options">
-      <!-- Option 1: Forest Green & Cream -->
-      <div class="theme-option" onclick="selectTheme('')" data-theme-id="">
-        <div class="theme-info">
-          <span class="theme-name">1. Forest Green & Cream (Default)</span>
-          <div class="theme-color-preview">
-            <span style="background-color: #1a3d2c;"></span>
-            <span style="background-color: #476652;"></span>
-            <span style="background-color: #e5dec9;"></span>
-            <span style="background-color: #f7f4eb;"></span>
-          </div>
-        </div>
-      </div>
-      <!-- Option 2: Teal Green & Sage -->
-      <div class="theme-option" onclick="selectTheme('theme-teal-sage')" data-theme-id="theme-teal-sage">
-        <div class="theme-info">
-          <span class="theme-name">2. Teal Green & Sage</span>
-          <div class="theme-color-preview">
-            <span style="background-color: #173e35;"></span>
-            <span style="background-color: #699684;"></span>
-            <span style="background-color: #c1dcd2;"></span>
-            <span style="background-color: #ebf1ee;"></span>
-          </div>
-        </div>
-      </div>
-      <!-- Option 3: Lavender & Mint Sage -->
-      <div class="theme-option" onclick="selectTheme('theme-lavender-mint')" data-theme-id="theme-lavender-mint">
-        <div class="theme-info">
-          <span class="theme-name">3. Lavender & Mint Sage</span>
-          <div class="theme-color-preview">
-            <span style="background-color: #8d75af;"></span>
-            <span style="background-color: #addabf;"></span>
-            <span style="background-color: #e2ebd5;"></span>
-            <span style="background-color: #faf7f0;"></span>
-          </div>
-        </div>
-      </div>
-      <!-- Option 4: Peach Orange & Mint -->
-      <div class="theme-option" onclick="selectTheme('theme-peach-mint')" data-theme-id="theme-peach-mint">
-        <div class="theme-info">
-          <span class="theme-name">4. Peach Orange & Mint</span>
-          <div class="theme-color-preview">
-            <span style="background-color: #ebb06a;"></span>
-            <span style="background-color: #addabf;"></span>
-            <span style="background-color: #e2ebd5;"></span>
-            <span style="background-color: #fbf4ea;"></span>
-          </div>
-        </div>
-      </div>
-      <!-- Option 5: Forest Green & Warm Ivory -->
+      <!-- Option 1: Forest Green & Warm Ivory -->
       <div class="theme-option" onclick="selectTheme('theme-cream-forest')" data-theme-id="theme-cream-forest">
         <div class="theme-info">
-          <span class="theme-name">5. Forest Green & Warm Ivory</span>
+          <span class="theme-name">1. Forest Green &amp; Ivory (Default)</span>
           <div class="theme-color-preview">
             <span style="background-color: #2b7a37;"></span>
             <span style="background-color: #e8e5cc;"></span>
@@ -168,15 +120,87 @@
           </div>
         </div>
       </div>
-      <!-- Option 6: Original theme -->
+      <!-- Option 2: Teal Green & Sage -->
+      <div class="theme-option" onclick="selectTheme('theme-teal-sage')" data-theme-id="theme-teal-sage">
+        <div class="theme-info">
+          <span class="theme-name">2. Teal Green &amp; Sage</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #173e35;"></span>
+            <span style="background-color: #699684;"></span>
+            <span style="background-color: #c1dcd2;"></span>
+            <span style="background-color: #0d2721;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 3: Lavender & Mint Sage -->
+      <div class="theme-option" onclick="selectTheme('theme-lavender-mint')" data-theme-id="theme-lavender-mint">
+        <div class="theme-info">
+          <span class="theme-name">3. Lavender &amp; Mint Sage</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #765f97;"></span>
+            <span style="background-color: #8ac09e;"></span>
+            <span style="background-color: #d8cee8;"></span>
+            <span style="background-color: #2c203b;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 4: Peach Orange & Mint -->
+      <div class="theme-option" onclick="selectTheme('theme-peach-mint')" data-theme-id="theme-peach-mint">
+        <div class="theme-info">
+          <span class="theme-name">4. Peach Orange &amp; Mint</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #c47b35;"></span>
+            <span style="background-color: #8ac09e;"></span>
+            <span style="background-color: #ebd6c5;"></span>
+            <span style="background-color: #3d2618;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 5: Eucalyptus Sage -->
       <div class="theme-option" onclick="selectTheme('theme-original')" data-theme-id="theme-original">
         <div class="theme-info">
-          <span class="theme-name">6. Eucalyptus Sage (Original)</span>
+          <span class="theme-name">5. Eucalyptus Sage</span>
           <div class="theme-color-preview">
             <span style="background-color: #124F27;"></span>
             <span style="background-color: #599A6E;"></span>
             <span style="background-color: #E2ECE0;"></span>
-            <span style="background-color: #C2D0C0;"></span>
+            <span style="background-color: #0E2313;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 6: Midnight Obsidian & Gold -->
+      <div class="theme-option" onclick="selectTheme('theme-midnight-gold')" data-theme-id="theme-midnight-gold">
+        <div class="theme-info">
+          <span class="theme-name">6. Midnight Obsidian &amp; Gold</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #D4AF37;"></span>
+            <span style="background-color: #3A404D;"></span>
+            <span style="background-color: #121316;"></span>
+            <span style="background-color: #F4F5F7;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 7: Royal Ruby & Champagne -->
+      <div class="theme-option" onclick="selectTheme('theme-royal-ruby')" data-theme-id="theme-royal-ruby">
+        <div class="theme-info">
+          <span class="theme-name">7. Royal Ruby &amp; Champagne</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #8C2234;"></span>
+            <span style="background-color: #D4AF37;"></span>
+            <span style="background-color: #FAF5F6;"></span>
+            <span style="background-color: #2B050B;"></span>
+          </div>
+        </div>
+      </div>
+      <!-- Option 8: Sapphire Blue & Golden Honey -->
+      <div class="theme-option" onclick="selectTheme('theme-sapphire-gold')" data-theme-id="theme-sapphire-gold">
+        <div class="theme-info">
+          <span class="theme-name">8. Sapphire Blue &amp; Gold</span>
+          <div class="theme-color-preview">
+            <span style="background-color: #2B4C7E;"></span>
+            <span style="background-color: #D4AF37;"></span>
+            <span style="background-color: #F4F7FB;"></span>
+            <span style="background-color: #0B192F;"></span>
           </div>
         </div>
       </div>
@@ -184,8 +208,6 @@
   </div>
 </div>
 <?php endif; ?>
-
-
 
 <script>
 function toggleThemeMenu() {
@@ -197,10 +219,19 @@ function toggleThemeMenu() {
 
 function selectTheme(themeClass) {
   // 1. Remove all existing theme classes from HTML element
-  const themes = ['theme-teal-sage', 'theme-lavender-mint', 'theme-peach-mint', 'theme-cream-forest', 'theme-original'];
+  const themes = [
+    'theme-cream-forest',
+    'theme-teal-sage',
+    'theme-lavender-mint',
+    'theme-peach-mint',
+    'theme-original',
+    'theme-midnight-gold',
+    'theme-royal-ruby',
+    'theme-sapphire-gold'
+  ];
   themes.forEach(t => document.documentElement.classList.remove(t));
 
-  // 2. Add the selected theme class if it's not the default
+  // 2. Add the selected theme class
   if (themeClass) {
     document.documentElement.classList.add(themeClass);
     localStorage.setItem('rtchocos-color-theme', themeClass);
