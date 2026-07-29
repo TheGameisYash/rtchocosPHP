@@ -992,6 +992,63 @@ section:nth-of-type(even) {
   margin: 0 !important;
 }
 
+/* Centered Workshops & Inner Page Components */
+.ai-class-insight {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-left: 4px solid var(--accent) !important;
+  border-radius: 20px !important;
+  padding: 20px 28px !important;
+  margin: 0 auto 40px auto !important;
+  max-width: 1000px !important;
+  width: 100% !important;
+  box-shadow: 0 8px 30px rgba(17, 34, 23, 0.03) !important;
+  box-sizing: border-box !important;
+}
+
+.seo-learning-section {
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  margin: 60px auto 40px auto !important;
+  width: 100% !important;
+}
+
+.seo-topic-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 24px !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 32px auto !important;
+  justify-content: center !important;
+  justify-items: center !important;
+}
+
+.seo-topic-card {
+  width: 100% !important;
+  text-align: left !important;
+  padding: 28px 24px !important;
+  box-sizing: border-box !important;
+}
+
+.seo-faq {
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  margin: 60px auto 40px auto !important;
+  width: 100% !important;
+  max-width: 950px !important;
+}
+
+.seo-faq details {
+  width: 100% !important;
+  text-align: left !important;
+  box-sizing: border-box !important;
+}
+
 /* === ABOUT PAGE INTERACTIVE TIMELINE STYLING === */
 .timeline-container {
   max-width: 850px;

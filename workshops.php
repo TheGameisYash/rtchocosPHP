@@ -41,11 +41,11 @@
 ?>
 
 <!-- --- WORKSHOPS PAGE --- -->
-<div id="page-workshops" class="page active" style="padding-top:80px;">
-  <div class="page-hero workshops-page-hero">
-    <div class="page-hero-content">
-      <h1 class="fade-up">Workshops &amp; Masterclasses</h1>
-      <p class="fade-up-d1">Science-first chocolate learning for curious makers, professionals and food entrepreneurs.</p>
+<div id="page-workshops" class="page active" style="padding-top:110px;">
+  <div class="page-hero workshops-page-hero" style="padding: 48px 24px 36px; text-align: center; display: flex; justify-content: center; align-items: center;">
+    <div class="page-hero-content" style="max-width: 840px; margin: 0 auto; text-align: center;">
+      <h1 class="fade-up" style="margin-bottom: 14px;">Workshops &amp; Masterclasses</h1>
+      <p class="fade-up-d1" style="margin: 0 auto;">Science-first chocolate learning for curious makers, professionals and food entrepreneurs.</p>
     </div>
   </div>
   <div class="section">
