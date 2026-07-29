@@ -2,10 +2,7 @@
 # | Gzip / Deflate Compression                                         |
 # ----------------------------------------------------------------------
 <IfModule mod_deflate.c>
-    # Force compression for XML and HTML
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
-    
-    # Decompress before storing on disk
     SetOutputFilter DEFLATE
 </IfModule>
 
@@ -15,21 +12,15 @@
 <IfModule mod_expires.c>
     ExpiresActive On
     ExpiresDefault "access plus 0 seconds"
-
-    # CSS & JavaScript
     ExpiresByType text/css "access plus 1 year"
     ExpiresByType text/javascript "access plus 1 year"
     ExpiresByType application/javascript "access plus 1 year"
-
-    # Images & Media
     ExpiresByType image/jpeg "access plus 1 year"
     ExpiresByType image/png "access plus 1 year"
     ExpiresByType image/webp "access plus 1 year"
     ExpiresByType image/gif "access plus 1 year"
     ExpiresByType image/x-icon "access plus 1 year"
     ExpiresByType image/svg+xml "access plus 1 year"
-
-    # Web Fonts
     ExpiresByType font/woff "access plus 1 year"
     ExpiresByType font/woff2 "access plus 1 year"
     ExpiresByType application/x-font-ttf "access plus 1 year"
@@ -38,10 +29,10 @@
 # ----------------------------------------------------------------------
 # | Prevent directory listings                                         |
 # ----------------------------------------------------------------------
-Options -Indexes
+Options +FollowSymLinks -Indexes
 
 # ----------------------------------------------------------------------
-# | Protect Sensitive Files (like .env, .gitignore, .git, db_setup)    |
+# | Protect Sensitive Files                                            |
 # ----------------------------------------------------------------------
 <FilesMatch "^(\.env|\.git|\.gitignore|db_setup\.php)">
     Order allow,deny
@@ -49,66 +40,54 @@ Options -Indexes
 </FilesMatch>
 
 # ----------------------------------------------------------------------
-# | Prevent direct access to includes folder                           |
-# ----------------------------------------------------------------------
-RewriteEngine On
-
-# Keep one public origin so links, analytics and ranking signals do not split.
-RewriteCond %{HTTP_HOST} !^www\.rtchocos\.com$ [NC,OR]
-RewriteCond %{HTTPS} !=on
-RewriteRule ^ https://www.rtchocos.com%{REQUEST_URI} [R=301,L,NE]
-
-# The home page canonical is the root URL.
-RewriteCond %{THE_REQUEST} \s/+index\.php[\s?] [NC]
-RewriteRule ^index\.php$ / [R=301,L]
-
-RewriteRule ^includes/ - [F,L]
-RewriteRule ^data/ - [F,L]
-
-# ----------------------------------------------------------------------
 # | Rewrite Rules for Sitemap & Clean URLs                              |
 # ----------------------------------------------------------------------
-RewriteRule ^sitemap\.xml$ sitemap.php [L]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
 
-# Specifically rewrite /blog and /blog/ to blog.php to avoid directory conflict
-RewriteRule ^blog/?$ blog.php [L]
+    # Prevent direct access to includes & data
+    RewriteRule ^includes/ - [F,L]
+    RewriteRule ^data/ - [F,L]
 
-# Enforce clean extensionless URLs for GET requests (redirect /page.php to /page without breaking POST APIs)
-RewriteCond %{REQUEST_METHOD} GET [NC]
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/([^/.]+)\.php [NC]
-RewriteRule ^ %1 [R=301,L]
+    # Sitemap rule
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
-# Internally map extensionless requests to root-level .php files
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}\.php -f
-RewriteRule ^([^/.]+)/?$ $1.php [NC,L]
+    # Specifically rewrite /blog and /blog/ to blog.php to avoid directory conflict
+    RewriteRule ^blog/?$ blog.php [L]
 
-# Redirect blog/article.php?slug=xxx to clean url /blog/xxx (optional SEO improvement)
-RewriteCond %{THE_REQUEST} \s/blog/article\.php\?slug=([^\s&]+)\s [NC]
-RewriteRule ^blog/article\.php$ /blog/%1? [R=301,L]
+    # Rewrite clean blog article URLs (/blog/article-slug) to blog-article.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^blog/([^/]+)/?$ blog-article.php?slug=$1 [L,QSA]
 
-# Rewrite clean blog URL to the actual router
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^blog/([^/]+)$ blog/article.php?slug=$1 [L,QSA]
+    # Rewrite clean shop URLs
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^shop/([^/]+)/?$ product.php?slug=$1 [L,QSA]
 
-# Rewrite clean shop URLs
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^shop/([^/]+)$ product.php?slug=$1 [L,QSA]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^shop/?$ shop.php [L]
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^shop/?$ shop.php [L]
+    # Rewrite clean listicle URL
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^indian-chocolate-brands/?$ brand-listicle.php [L]
 
-# Rewrite clean listicle URL
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^indian-chocolate-brands/?$ brand-listicle.php [L]
+    # Route missing blog images to blog_image.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^assets/blogs/(.+)$ blog_image.php?file=$1 [L,QSA]
 
-# Route missing blog images to blog_image.php
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^assets/blogs/(.+)$ blog_image.php?file=$1 [L,QSA]
+    # ------------------------------------------------------------------
+    # | Clean Extensionless URL Rewriting (Supports Root & Subfolders)  |
+    # ------------------------------------------------------------------
+
+    # Map extensionless URL requests to actual .php files
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME}\.php -f
+    RewriteRule ^([^/]+)/?$ $1.php [L,QSA]
+</IfModule>
 
 # ----------------------------------------------------------------------
 # | Security Headers                                                   |
