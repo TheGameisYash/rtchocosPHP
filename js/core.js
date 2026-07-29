@@ -437,21 +437,120 @@ window.addEventListener('scroll', () => {
 });
 
 // --- SCROLL REVEAL OBSERVER ---
-const revealObserver = new IntersectionObserver((entries, observer) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
-    }
+// --- ANIME.JS POWERED SCROLL REVEAL & STAGGER ANIMATIONS ---
+function initAnimeAnimations() {
+  if (typeof anime === 'undefined') return;
+
+  // 1. Staggered scroll entrance for sections & grid cards
+  const animeObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        
+        // Section container smooth fade up
+        anime({
+          targets: el,
+          translateY: [30, 0],
+          opacity: [0, 1],
+          duration: 900,
+          easing: 'easeOutCubic'
+        });
+
+        // Stagger child cards if present
+        const cards = el.querySelectorAll('.card, .why-card, .workshop-card, .value-item, .cred-item');
+        if (cards.length > 0) {
+          anime({
+            targets: cards,
+            translateY: [25, 0],
+            opacity: [0, 1],
+            scale: [0.97, 1],
+            delay: anime.stagger(100, { start: 150 }),
+            duration: 800,
+            easing: 'easeOutQuad'
+          });
+        }
+
+        // Counter animation for credibility numbers
+        const credNums = el.querySelectorAll('.cred-num');
+        credNums.forEach(numEl => {
+          const rawText = numEl.textContent.trim();
+          const targetVal = parseInt(rawText, 10);
+          if (!isNaN(targetVal)) {
+            const obj = { val: 0 };
+            const suffix = rawText.replace(/[0-9]/g, '');
+            anime({
+              targets: obj,
+              val: targetVal,
+              round: 1,
+              duration: 2000,
+              easing: 'easeOutExpo',
+              update: function() {
+                numEl.textContent = obj.val + suffix;
+              }
+            });
+          }
+        });
+
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('section, .reveal, #cred-strip, .split-hero-container').forEach(el => {
+    el.style.opacity = '0';
+    animeObserver.observe(el);
   });
-}, { threshold: 0.1 });
+
+  // 2. Floating leaves bobbing animation with Anime.js
+  anime({
+    targets: '.deco-leaf-left',
+    translateY: [-12, 12],
+    rotate: [-5, 8],
+    duration: 6000,
+    direction: 'alternate',
+    loop: true,
+    easing: 'easeInOutSine'
+  });
+
+  anime({
+    targets: '.deco-leaf-right',
+    translateY: [10, -14],
+    rotate: [6, -8],
+    duration: 7500,
+    direction: 'alternate',
+    loop: true,
+    easing: 'easeInOutSine'
+  });
+
+  // 3. Card 3D tilt micro-interactions on mousemove
+  document.querySelectorAll('.card, .why-card, .workshop-card, .wheel-detail-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      anime({
+        targets: card,
+        scale: 1.025,
+        duration: 350,
+        easing: 'easeOutCubic'
+      });
+    });
+
+    card.addEventListener('mouseleave', () => {
+      anime({
+        targets: card,
+        scale: 1,
+        rotateX: 0,
+        rotateY: 0,
+        duration: 450,
+        easing: 'easeOutElastic(1, .6)'
+      });
+    });
+  });
+}
 
 function initScrollReveal() {
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  initAnimeAnimations();
 }
 
 initApp();
-
 
 // --- HERO SLIDESHOW INTERACTION ---
 function initHeroSlideshow() {
@@ -465,4 +564,8 @@ function initHeroSlideshow() {
     slides[currentSlideIdx].classList.add('active');
   }, 4000);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  initAnimeAnimations();
+});
 
