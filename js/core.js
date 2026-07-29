@@ -496,8 +496,7 @@ function initAnimeAnimations() {
     });
   }, { threshold: 0.12 });
 
-  document.querySelectorAll('section, .reveal, #cred-strip, .split-hero-container').forEach(el => {
-    el.style.opacity = '0';
+  document.querySelectorAll('.reveal, #cred-strip').forEach(el => {
     animeObserver.observe(el);
   });
 
