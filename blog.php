@@ -83,8 +83,8 @@
       <nav aria-label="Chocolate learning topics">
         <a href="#blog-grid">Cocoa science</a>
         <a href="#blog-grid">Beginner guides</a>
-        <a href="gallery">Chocolate recipes</a>
-        <a href="workshops">Workshops</a>
+        <a href="gallery.php">Chocolate recipes</a>
+        <a href="workshops.php">Workshops</a>
       </nav>
     </div>
     <div class="blog-header-bar">

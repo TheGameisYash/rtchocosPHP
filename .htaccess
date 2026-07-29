@@ -44,7 +44,6 @@ Options +FollowSymLinks -Indexes
 # ----------------------------------------------------------------------
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /
 
     # Prevent direct access to includes & data
     RewriteRule ^includes/ - [F,L]
@@ -79,20 +78,10 @@ Options +FollowSymLinks -Indexes
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^assets/blogs/(.+)$ blog_image.php?file=$1 [L,QSA]
 
-    # ------------------------------------------------------------------
-    # | LiteSpeed Extensionless URL Rewriting (Hostinger Optimized)     |
-    # ------------------------------------------------------------------
-
-    # Primary LiteSpeed condition (without escaped dot)
+    # Map extensionless URL requests to actual .php files
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME}.php -f
-    RewriteRule ^(.*)$ $1.php [L,QSA]
-
-    # Hostinger hPanel subdomain document root fallback
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{DOCUMENT_ROOT}/$1.php -f
     RewriteRule ^(.*)$ $1.php [L,QSA]
 </IfModule>
 
