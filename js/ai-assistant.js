@@ -448,6 +448,33 @@ function renderChocolabRecipe(recipe) {
   const batchDisplay = document.getElementById('chocolab-batch-display');
   if (batchDisplay) batchDisplay.textContent = `${recipe.batch_grams || 500}g`;
 
+  // Parse percentages for composition bar
+  let massPct = Math.round(recipe.percent * 0.75);
+  let butterPct = Math.round(recipe.percent * 0.25);
+  let incPct = (recipe.ratios && recipe.ratios.inclusions && !recipe.ratios.inclusions.includes('0g')) ? 3 : 0;
+  let sugarPct = Math.max(0, 100 - recipe.percent - incPct);
+
+  // Update Composition Bar & Legends
+  const barMass = document.getElementById('comp-bar-mass');
+  const barButter = document.getElementById('comp-bar-butter');
+  const barSugar = document.getElementById('comp-bar-sugar');
+  const barInc = document.getElementById('comp-bar-inc');
+
+  if (barMass) barMass.style.width = `${massPct}%`;
+  if (barButter) barButter.style.width = `${butterPct}%`;
+  if (barSugar) barSugar.style.width = `${sugarPct}%`;
+  if (barInc) barInc.style.width = `${incPct}%`;
+
+  const valMass = document.getElementById('comp-val-mass');
+  const valButter = document.getElementById('comp-val-butter');
+  const valSugar = document.getElementById('comp-val-sugar');
+  const valInc = document.getElementById('comp-val-inc');
+
+  if (valMass) valMass.textContent = `${massPct}%`;
+  if (valButter) valButter.textContent = `${butterPct}%`;
+  if (valSugar) valSugar.textContent = `${sugarPct}%`;
+  if (valInc) valInc.textContent = `${incPct}%`;
+
   // Render Ratios Cards
   const ratiosContainer = document.getElementById('chocolab-result-ratios');
   if (ratiosContainer && recipe.ratios) {
@@ -455,45 +482,67 @@ function renderChocolabRecipe(recipe) {
       <div class="ratio-card">
         <span class="ratio-icon">🟤</span>
         <span class="ratio-label">Cacao Mass / Nibs</span>
-        <span class="ratio-val">${recipe.ratios.cacao_mass || '270g (54%)'}</span>
+        <span class="ratio-val">${recipe.ratios.cacao_mass || massPct + '%'}</span>
       </div>
       <div class="ratio-card">
         <span class="ratio-icon">🧈</span>
         <span class="ratio-label">Cocoa Butter</span>
-        <span class="ratio-val">${recipe.ratios.cacao_butter || '90g (18%)'}</span>
+        <span class="ratio-val">${recipe.ratios.cacao_butter || butterPct + '%'}</span>
       </div>
       <div class="ratio-card">
         <span class="ratio-icon">🍬</span>
         <span class="ratio-label">Organic Sugar / Dairy</span>
-        <span class="ratio-val">${recipe.ratios.sugar || '125g (25%)'}</span>
+        <span class="ratio-val">${recipe.ratios.sugar || sugarPct + '%'}</span>
       </div>
       <div class="ratio-card">
         <span class="ratio-icon">✨</span>
         <span class="ratio-label">Gourmet Inclusions</span>
-        <span class="ratio-val">${recipe.ratios.inclusions || '15g (3%)'}</span>
+        <span class="ratio-val">${recipe.ratios.inclusions || incPct + '%'}</span>
       </div>
     `;
   }
 
-  // Render Sensory Cards
+  // Render Sensory Profile Cards with Visual Progress Meters
   const sensoryContainer = document.getElementById('chocolab-result-sensory');
   if (sensoryContainer && recipe.sensory) {
+    const intensityVal = Math.min(100, Math.max(30, recipe.percent));
+    const sweetnessVal = Math.max(10, 100 - recipe.percent);
+
     sensoryContainer.innerHTML = `
       <div class="sensory-card">
-        <div class="sensory-card-title">👃 Aroma</div>
+        <div class="sensory-card-header">
+          <span class="sensory-card-title">👃 Aroma</span>
+          <span class="sensory-meter-badge">Bouquet</span>
+        </div>
         <div class="sensory-card-text">${recipe.sensory.aroma || 'Warm cocoa with toasted nut notes'}</div>
+        <div class="sensory-meter-bar"><div class="sensory-meter-fill" style="width: 88%;"></div></div>
       </div>
+
       <div class="sensory-card">
-        <div class="sensory-card-title">👅 Flavor Notes</div>
+        <div class="sensory-card-header">
+          <span class="sensory-card-title">👅 Flavor Notes</span>
+          <span class="sensory-meter-badge">${intensityVal}% Cacao</span>
+        </div>
         <div class="sensory-card-text">${recipe.sensory.flavor || 'Rich bittersweet chocolate balance'}</div>
+        <div class="sensory-meter-bar"><div class="sensory-meter-fill fill-accent" style="width: ${intensityVal}%;"></div></div>
       </div>
+
       <div class="sensory-card">
-        <div class="sensory-card-title">✨ Texture &amp; Snap</div>
+        <div class="sensory-card-header">
+          <span class="sensory-card-title">✨ Texture &amp; Snap</span>
+          <span class="sensory-meter-badge">Form V Beta 5</span>
+        </div>
         <div class="sensory-card-text">${recipe.sensory.texture || 'Crisp acoustic snap, silky tongue melt'}</div>
+        <div class="sensory-meter-bar"><div class="sensory-meter-fill fill-gold" style="width: 96%;"></div></div>
       </div>
+
       <div class="sensory-card">
-        <div class="sensory-card-title">🏁 Finish</div>
+        <div class="sensory-card-header">
+          <span class="sensory-card-title">🏁 Finish</span>
+          <span class="sensory-meter-badge">Long Finish</span>
+        </div>
         <div class="sensory-card-text">${recipe.sensory.finish || 'Clean long-lasting cocoa aftertaste'}</div>
+        <div class="sensory-meter-bar"><div class="sensory-meter-fill" style="width: 90%;"></div></div>
       </div>
     `;
   }

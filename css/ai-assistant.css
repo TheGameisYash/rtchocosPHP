@@ -918,6 +918,64 @@ body {
   padding-bottom: 6px;
 }
 
+/* Multi-Segment Composition Bar */
+.chocolab-bar-composition {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.comp-legend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.leg-mass .legend-dot { background: #3d2314; }
+.leg-butter .legend-dot { background: #c9956b; }
+.leg-sugar .legend-dot { background: #e2b793; }
+.leg-inc .legend-dot { background: #1a5f35; }
+
+.composition-bar-track {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.comp-segment {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.seg-mass { background: linear-gradient(90deg, #3d2314, #5a351e); }
+.seg-butter { background: linear-gradient(90deg, #c9956b, #dbab83); }
+.seg-sugar { background: linear-gradient(90deg, #e2b793, #f0d0b5); }
+.seg-inc { background: linear-gradient(90deg, #1a5f35, #2ab863); }
+
 /* Ratios Grid */
 .chocolab-ratios-grid {
   display: grid;
@@ -939,6 +997,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.ratio-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
 }
 
 .ratio-icon {
@@ -958,7 +1022,7 @@ body {
   color: var(--accent) !important;
 }
 
-/* Sensory Grid */
+/* Sensory Grid & Progress Meters */
 .chocolab-sensory-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -974,21 +1038,70 @@ body {
 .sensory-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  padding: 14px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  transition: border-color 0.25s ease;
+}
+
+.sensory-card:hover {
+  border-color: var(--accent);
+}
+
+.sensory-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sensory-card-title {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--accent) !important;
-  margin-bottom: 4px;
+}
+
+.sensory-meter-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--accent-glow);
+  color: var(--accent) !important;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border-accent);
 }
 
 .sensory-card-text {
   font-size: 13px;
   color: var(--text-primary) !important;
   line-height: 1.5;
+}
+
+.sensory-meter-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.sensory-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+  border-radius: 10px;
+  transition: width 0.8s ease;
+}
+
+.sensory-meter-fill.fill-accent {
+  background: linear-gradient(90deg, #1a5f35, #2ab863);
+}
+
+.sensory-meter-fill.fill-gold {
+  background: linear-gradient(90deg, #c9956b, #e2b793);
 }
 
 /* Timeline 5-Step Process */

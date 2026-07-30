@@ -322,6 +322,23 @@
             <!-- Section 1: Exact Batch Ratios Grid -->
             <div class="chocolab-section-block">
               <h5 class="chocolab-sub-heading">⚖️ Precision Ingredient Ratios (<span id="chocolab-batch-display">500g</span> Total)</h5>
+              
+              <!-- Multi-Segment Visual Composition Bar -->
+              <div class="chocolab-bar-composition">
+                <div class="comp-legend-row">
+                  <span class="legend-item leg-mass"><span class="legend-dot"></span> Cacao Mass (<span id="comp-val-mass">54%</span>)</span>
+                  <span class="legend-item leg-butter"><span class="legend-dot"></span> Cocoa Butter (<span id="comp-val-butter">18%</span>)</span>
+                  <span class="legend-item leg-sugar"><span class="legend-dot"></span> Organic Sugar (<span id="comp-val-sugar">25%</span>)</span>
+                  <span class="legend-item leg-inc"><span class="legend-dot"></span> Inclusions (<span id="comp-val-inc">3%</span>)</span>
+                </div>
+                <div class="composition-bar-track">
+                  <div id="comp-bar-mass" class="comp-segment seg-mass" style="width: 54%;" title="Cacao Mass"></div>
+                  <div id="comp-bar-butter" class="comp-segment seg-butter" style="width: 18%;" title="Cocoa Butter"></div>
+                  <div id="comp-bar-sugar" class="comp-segment seg-sugar" style="width: 25%;" title="Organic Sugar"></div>
+                  <div id="comp-bar-inc" class="comp-segment seg-inc" style="width: 3%;" title="Inclusions"></div>
+                </div>
+              </div>
+
               <div id="chocolab-result-ratios" class="chocolab-ratios-grid">
                 <!-- Injected by JS -->
               </div>
