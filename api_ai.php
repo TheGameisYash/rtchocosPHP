@@ -112,12 +112,12 @@ function makePostRequest($url, $headers, $payloadData, $timeoutSeconds = 5) {
 $success = false;
 $replyText = '';
 
-// Active OpenRouter Free AI Agent Pool
+// Active OpenRouter Free AI Agent Pool (Ordered by benchmarked speed & reliability)
 $openRouterFreeModels = [
+    'inclusionai/ling-3.0-flash:free',
     'openrouter/free',
     'google/gemma-4-26b-a4b-it:free',
-    'inclusionai/ling-3.0-flash:free',
-    'poolside/laguna-s-2.1:free'
+    'nvidia/nemotron-3-nano-30b-a3b:free'
 ];
 
 $orApiKey = getenv('OPENROUTER_API_KEY') ?: ($_ENV['OPENROUTER_API_KEY'] ?? '');
