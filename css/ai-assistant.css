@@ -521,31 +521,105 @@ body {
 }
 
 .chocolab-inner {
-  max-width: 1100px;
+  max-width: 1150px;
   margin: 0 auto;
   position: relative;
   z-index: 2;
 }
 
+/* Preset Quick Inspiration Bar */
+.chocolab-presets-wrapper {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 16px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.chocolab-presets-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent) !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.chocolab-presets-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chocolab-preset-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-accent);
+  color: var(--text-primary);
+  font-size: 12.5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-weight: 500;
+}
+
+.chocolab-preset-btn:hover {
+  background: var(--accent);
+  color: #FFFFFF !important;
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+/* Controls Panel */
 .chocolab-controls {
   background: var(--bg-card) !important;
   border: 1px solid var(--border-accent) !important;
   box-shadow: var(--shadow-md), 0 0 30px var(--accent-glow) !important;
   border-radius: 24px !important;
-  padding: 36px !important;
+  padding: 32px !important;
+}
+
+.chocolab-controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  padding-bottom: 14px;
 }
 
 .chocolab-controls h3 {
   font-family: 'DM Serif Display', 'Playfair Display', serif;
   font-size: 22px;
   color: var(--text-heading) !important;
-  margin-bottom: 24px;
-  border-bottom: 1px solid var(--border-subtle) !important;
-  padding-bottom: 14px;
+  margin: 0;
+}
+
+.chocolab-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--accent-glow);
+  color: var(--accent) !important;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border-accent);
 }
 
 .chocolab-controls .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 22px;
+}
+
+.chocolab-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .chocolab-controls label {
@@ -553,27 +627,37 @@ body {
   font-size: 11.5px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   color: var(--accent) !important;
-  margin-bottom: 10px;
+  margin: 0;
 }
 
-#chocolab-base {
+.chocolab-val-tag, .chocolab-count-tag {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-heading) !important;
+  background: var(--bg-surface);
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+}
+
+#chocolab-base, #chocolab-batch {
   width: 100%;
-  padding: 12px 18px;
+  padding: 12px 16px;
   background: var(--bg-surface) !important;
   border: 1.5px solid var(--border-accent) !important;
   border-radius: 12px;
   color: var(--text-heading) !important;
   outline: none;
   font-family: 'Inter', sans-serif;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-#chocolab-base:focus {
+#chocolab-base:focus, #chocolab-batch:focus {
   border-color: var(--accent) !important;
   box-shadow: 0 0 0 3px var(--accent-glow) !important;
 }
@@ -582,20 +666,36 @@ body {
   width: 100%;
   accent-color: var(--accent);
   cursor: pointer;
+  margin-top: 4px;
+}
+
+.chocolab-range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.inclusions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 8px;
 }
 
 .inclusion-checkbox {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13.5px;
+  font-size: 12.5px;
   cursor: pointer;
   background: var(--bg-surface) !important;
   border: 1px solid var(--border-subtle) !important;
   color: var(--text-primary) !important;
-  padding: 8px 16px;
-  border-radius: 30px;
-  transition: all 0.3s ease;
+  padding: 8px 14px;
+  border-radius: 12px;
+  transition: all 0.25s ease;
   font-weight: 500;
 }
 
@@ -608,20 +708,22 @@ body {
 
 .inclusion-checkbox input[type="checkbox"] {
   accent-color: var(--accent);
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
 }
 
 .chocolab-submit-btn {
   width: 100%;
   justify-content: center;
-  font-size: 13.5px;
+  font-size: 14px;
+  font-weight: 600;
   padding: 16px 28px;
-  margin-top: 10px;
+  margin-top: 12px;
   background: linear-gradient(135deg, var(--accent), var(--accent-dark)) !important;
   color: #FFFFFF !important;
   border-radius: 50px;
   box-shadow: 0 4px 20px var(--accent-glow) !important;
+  transition: all 0.3s ease;
 }
 
 .chocolab-submit-btn:hover {
@@ -629,120 +731,374 @@ body {
   box-shadow: 0 8px 30px var(--accent-glow) !important;
 }
 
+/* Formulation Output Container */
 .chocolab-output {
   background: var(--bg-card) !important;
   border: 1px solid var(--border-accent) !important;
   box-shadow: var(--shadow-md), 0 0 30px var(--accent-glow) !important;
   border-radius: 24px !important;
-  padding: 40px !important;
-  min-height: 440px;
+  padding: 36px !important;
+  min-height: 480px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
   justify-content: center;
   align-items: center;
   position: relative;
 }
 
-#chocolab-placeholder,
-#chocolab-loader {
+#chocolab-placeholder, #chocolab-loader {
   text-align: center;
 }
 
 .chocolab-placeholder-icon {
-  font-size: 48px;
+  font-size: 52px;
   margin-bottom: 16px;
+  animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
 #chocolab-placeholder h4 {
   font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  color: var(--brown) !important;
-  margin-bottom: 8px;
+  font-size: 22px;
+  color: var(--text-heading) !important;
+  margin-bottom: 10px;
 }
 
 #chocolab-placeholder p {
-  font-size: 13.5px;
-  color: var(--brown-light) !important;
-  max-width: 320px;
-  margin: 0 auto;
+  font-size: 14px;
+  color: var(--text-primary) !important;
+  max-width: 360px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+
+.chocolab-preview-pills {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.preview-pill {
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--bg-surface);
+  color: var(--accent);
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-accent);
+}
+
+/* Loader Animation */
+.chocolab-spinner {
+  width: 44px;
+  height: 44px;
+  border: 3.5px solid var(--border-accent);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: chocolabSpin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes chocolabSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 #chocolab-loader h4 {
   font-family: 'Playfair Display', serif;
-  font-size: 18px;
+  font-size: 19px;
   color: var(--accent) !important;
 }
 
 #chocolab-loader p {
-  font-size: 13px;
-  color: var(--brown-light) !important;
+  font-size: 13.5px;
+  color: var(--text-primary) !important;
   margin-top: 6px;
 }
 
-#chocolab-loader .ai-typing-indicator {
-  margin: 0 auto 16px;
-}
-
+/* Results Section Styling */
 .chocolab-results-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(26, 95, 53, 0.15);
-  padding-bottom: 12px;
-  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 14px;
+  margin-bottom: 24px;
+  width: 100%;
 }
 
-.chocolab-results-label {
-  font-size: 11px !important;
+.chocolab-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.chocolab-badge-gold {
+  font-size: 11px;
   font-weight: 700;
   color: var(--accent) !important;
+  background: var(--accent-glow);
+  padding: 4px 12px;
+  border-radius: 20px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  border: 1px solid var(--border-accent);
 }
 
 .chocolab-results-base {
-  font-size: 12px !important;
-  color: var(--accent) !important;
+  font-size: 13px;
+  color: var(--text-heading) !important;
   font-weight: 600;
+}
+
+.chocolab-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.chocolab-action-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chocolab-action-btn:hover {
+  background: var(--accent);
+  color: #FFFFFF !important;
+  border-color: var(--accent);
+}
+
+.chocolab-title-block {
+  text-align: left;
+  margin-bottom: 28px;
+  width: 100%;
 }
 
 #chocolab-results h3 {
   font-family: 'Playfair Display', serif;
-  font-size: 24px;
-  color: var(--brown) !important;
-  margin-bottom: 12px;
+  font-size: 26px;
+  color: var(--text-heading) !important;
+  margin-bottom: 8px;
 }
 
 .chocolab-result-desc {
   font-size: 14.5px;
-  color: var(--brown-light) !important;
+  color: var(--text-primary) !important;
   line-height: 1.6;
-  margin-bottom: 24px;
   font-style: italic;
+  margin: 0;
 }
 
-#chocolab-results p {
-  color: var(--brown-light) !important;
+.chocolab-section-block {
+  text-align: left;
+  width: 100%;
+  margin-bottom: 26px;
 }
 
-.chocolab-details-grid h5 {
+.chocolab-sub-heading {
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   color: var(--accent) !important;
+  margin-bottom: 12px;
+  border-bottom: 1px dashed var(--border-subtle);
+  padding-bottom: 6px;
+}
+
+/* Ratios Grid */
+.chocolab-ratios-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .chocolab-ratios-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ratio-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 14px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ratio-icon {
+  font-size: 18px;
+}
+
+.ratio-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.ratio-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent) !important;
+}
+
+/* Sensory Grid */
+.chocolab-sensory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .chocolab-sensory-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sensory-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 14px;
+  border-radius: 12px;
+}
+
+.sensory-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent) !important;
+  margin-bottom: 4px;
+}
+
+.sensory-card-text {
+  font-size: 13px;
+  color: var(--text-primary) !important;
+  line-height: 1.5;
+}
+
+/* Timeline 5-Step Process */
+.chocolab-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.timeline-step {
+  display: flex;
+  gap: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 16px;
+  border-radius: 14px;
+  transition: border-color 0.25s ease;
+}
+
+.timeline-step:hover {
+  border-color: var(--accent);
+}
+
+.step-badge {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #FFFFFF !important;
+  font-weight: 800;
+  font-size: 13px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.step-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-heading) !important;
+  margin: 0;
+}
+
+.step-temp-tag {
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--accent-glow);
+  color: var(--accent) !important;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border-accent);
+}
+
+.step-desc {
+  font-size: 13px;
+  color: var(--text-primary) !important;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Pro Tip Box */
+.chocolab-protip-box {
+  background: linear-gradient(135deg, rgba(201, 149, 107, 0.08), rgba(26, 95, 53, 0.08));
+  border: 1px solid var(--border-accent);
+  border-radius: 16px;
+  padding: 18px;
+  text-align: left;
+  width: 100%;
+}
+
+.protip-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 6px;
 }
 
-.chocolab-details-grid p {
+.protip-icon {
+  font-size: 18px;
+}
+
+.protip-header h6 {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.chocolab-protip-box p {
   font-size: 13.5px;
-  color: var(--brown-light) !important;
+  color: var(--text-primary) !important;
   line-height: 1.5;
   margin: 0;
+  font-style: italic;
 }
 
 /* 8. AI Chat Drawer modern Fluent Acrylic style (Light Acrylic) */

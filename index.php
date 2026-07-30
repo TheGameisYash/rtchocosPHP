@@ -177,79 +177,179 @@
     <div class="chocolab-inner">
       <div class="section-label" style="text-align: center;">03 / INNOVATION</div>
       <h2 class="section-title" style="text-align: center; margin-bottom: 12px;">✨ AI Chocolab Formulation Playground</h2>
-      <p class="section-subtitle" style="max-width: 680px; margin: 0 auto 48px; text-align: center;">Design your dream chocolate bar. Select a base, cacao percentage, and gourmet inclusions. Our CocoaGenius AI will instantly formulate a custom recipe, tasting profile, and tempering guide for your creation.</p>
+      <p class="section-subtitle" style="max-width: 720px; margin: 0 auto 40px; text-align: center;">
+        Design your custom artisanal chocolate bar. Choose your cacao base, target cocoa percentage, batch size, and up to 3 gourmet inclusions. 
+        Our <strong>CocoaGenius AI Alchemist</strong> formulates exact ingredient ratios, a 5-step process timeline, and professional tempering profiles.
+      </p>
+
+      <!-- Preset Quick Inspiration Chips -->
+      <div class="chocolab-presets-wrapper">
+        <span class="chocolab-presets-label">⚡ Chef's Instant Presets:</span>
+        <div class="chocolab-presets-grid">
+          <button type="button" class="chocolab-preset-btn" onclick="applyChocolabPreset('Dark Chocolate', 72, ['Bird\'s Eye Chili', 'Sea Salt'])">
+            🌶️ Aztec Fire (72% Dark + Chili &amp; Salt)
+          </button>
+          <button type="button" class="chocolab-preset-btn" onclick="applyChocolabPreset('Dark Chocolate', 85, ['Orange Zest', 'Roasted Almonds'])">
+            🍊 Citrus Almond (85% Dark + Orange &amp; Almond)
+          </button>
+          <button type="button" class="chocolab-preset-btn" onclick="applyChocolabPreset('Milk Chocolate', 48, ['Cardamom', 'Rose Petals'])">
+            🌸 Persian Rose Milk (48% Milk + Cardamom &amp; Rose)
+          </button>
+          <button type="button" class="chocolab-preset-btn" onclick="applyChocolabPreset('White Chocolate', 34, ['Peppermint', 'Sea Salt'])">
+            ❄️ Mint Frost (34% White + Peppermint &amp; Salt)
+          </button>
+        </div>
+      </div>
       
-      <div class="chocolab-layout">
+      <div class="chocolab-layout" style="margin-top: 30px;">
         <!-- Control Panel -->
         <div class="chocolab-controls">
-          <h3>Customize Ingredients</h3>
+          <div class="chocolab-controls-header">
+            <h3>🧪 Formulation Specs</h3>
+            <span class="chocolab-badge">Craft Mode</span>
+          </div>
           
           <div class="form-group">
-            <label>1. Select Cacao Base</label>
-            <select id="chocolab-base">
+            <label for="chocolab-base">1. Select Cacao Base</label>
+            <select id="chocolab-base" onchange="updatePercentRangeHint()">
               <option value="Dark Chocolate" selected>Dark Chocolate (Rich &amp; Complex)</option>
               <option value="Milk Chocolate">Milk Chocolate (Creamy &amp; Sweet)</option>
               <option value="White Chocolate">White Chocolate (Buttery &amp; Smooth)</option>
+              <option value="Ruby Chocolate">Ruby Chocolate (Fruity &amp; Tangy)</option>
+              <option value="Oat Milk Vegan">Oat Milk Vegan (Plant-Based Creamy)</option>
             </select>
           </div>
           
           <div class="form-group">
-            <label>2. Cacao Percentage: <span id="chocolab-percent-val">72%</span></label>
-            <input type="range" id="chocolab-percent" min="30" max="100" value="72" oninput="document.getElementById('chocolab-percent-val').textContent = this.value + '%'">
+            <div class="chocolab-label-row">
+              <label for="chocolab-percent">2. Target Cacao Percentage</label>
+              <span id="chocolab-percent-val" class="chocolab-val-tag">72% (Bittersweet)</span>
+            </div>
+            <input type="range" id="chocolab-percent" min="30" max="100" value="72" oninput="updatePercentRangeHint()">
+            <div class="chocolab-range-labels">
+              <span>30% (Sweet)</span>
+              <span>65% (Medium)</span>
+              <span>100% (Pure Cacao)</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="chocolab-batch">3. Batch Weight Target</label>
+            <select id="chocolab-batch">
+              <option value="500" selected>500g (Standard Craft Batch)</option>
+              <option value="1000">1000g (1 kg Professional Batch)</option>
+              <option value="250">250g (Micro Test Batch)</option>
+            </select>
           </div>
           
           <div class="form-group">
-            <label>3. Choose Inclusions (Up to 3)</label>
+            <div class="chocolab-label-row">
+              <label>4. Gourmet Inclusions</label>
+              <span id="chocolab-inc-counter" class="chocolab-count-tag">0 / 3 Selected</span>
+            </div>
             <div class="inclusions-grid">
-              <label class="inclusion-checkbox"><input type="checkbox" value="Sea Salt" name="inclusions"> Sea Salt</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Cardamom" name="inclusions"> Cardamom</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Lavender" name="inclusions"> Lavender</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Bird's Eye Chili" name="inclusions"> Bird's Eye Chili</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Orange Zest" name="inclusions"> Orange Zest</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Rose Petals" name="inclusions"> Rose Petals</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Peppermint" name="inclusions"> Peppermint</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Roasted Almonds" name="inclusions"> Roasted Almonds</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Sea Salt" name="inclusions" onchange="handleInclusionCheck(this)"> 🧂 Sea Salt</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Cardamom" name="inclusions" onchange="handleInclusionCheck(this)"> 🌿 Cardamom</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Lavender" name="inclusions" onchange="handleInclusionCheck(this)"> 🪻 Lavender</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Bird's Eye Chili" name="inclusions" onchange="handleInclusionCheck(this)"> 🌶️ Bird's Eye Chili</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Orange Zest" name="inclusions" onchange="handleInclusionCheck(this)"> 🍊 Orange Zest</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Rose Petals" name="inclusions" onchange="handleInclusionCheck(this)"> 🌹 Rose Petals</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Peppermint" name="inclusions" onchange="handleInclusionCheck(this)"> 🍃 Peppermint</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Roasted Almonds" name="inclusions" onchange="handleInclusionCheck(this)"> 🌰 Roasted Almonds</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Cacao Nibs" name="inclusions" onchange="handleInclusionCheck(this)"> 🟤 Cacao Nibs</label>
+              <label class="inclusion-checkbox"><input type="checkbox" value="Espresso Powder" name="inclusions" onchange="handleInclusionCheck(this)"> ☕ Espresso Powder</label>
             </div>
           </div>
           
-          <button class="btn-primary chocolab-submit-btn" onclick="generateCustomBarFormula()">⚡ Formulate Recipe</button>
+          <button class="btn-primary chocolab-submit-btn" onclick="generateCustomBarFormula()">
+            <span>⚡ Formulate Master Recipe</span>
+          </button>
         </div>
         
         <!-- Formulation Output -->
         <div class="chocolab-output">
+          <!-- Placeholder State -->
           <div id="chocolab-placeholder">
             <div class="chocolab-placeholder-icon">🧪</div>
-            <h4>Ready for Formulation</h4>
-            <p>Select your custom ingredients on the left and click "Formulate Recipe" to generate your custom chocolate bar profile.</p>
-          </div>
-          
-          <div id="chocolab-loader" style="display: none;">
-            <div class="ai-typing-indicator">
-              <span class="ai-typing-dot"></span>
-              <span class="ai-typing-dot"></span>
-              <span class="ai-typing-dot"></span>
-            </div>
-            <h4>AI Alchemist at Work...</h4>
-            <p>Calculating tempering ranges, flavor chemistry, and custom descriptions...</p>
-          </div>
-          
-          <div id="chocolab-results" style="display: none; width: 100%;">
-            <div class="chocolab-results-header">
-              <span class="chocolab-results-label">AI Dynamic Recipe Profile</span>
-              <span id="chocolab-result-base" class="chocolab-results-base">72% Dark Chocolate</span>
-            </div>
-            <h3 id="chocolab-result-name">Signature formulation</h3>
-            <p id="chocolab-result-desc" class="chocolab-result-desc"></p>
+            <h4>Alchemist Playground Ready</h4>
+            <p>Select your specs or click an instant preset on the left, then hit <strong>"Formulate Master Recipe"</strong> to generate your precision chocolate formula.</p>
             
-            <div class="chocolab-details-grid">
-              <div>
-                <h5>👅 Tasting Notes</h5>
-                <p id="chocolab-result-tasting"></p>
+            <div class="chocolab-preview-pills">
+              <span class="preview-pill">📊 Exact Gram Formula</span>
+              <span class="preview-pill">👅 Tasting Profile</span>
+              <span class="preview-pill">⏱️ 5-Step Process Timeline</span>
+            </div>
+          </div>
+          
+          <!-- Loader State -->
+          <div id="chocolab-loader" style="display: none;">
+            <div class="chocolab-loader-animation">
+              <div class="chocolab-spinner"></div>
+              <div class="ai-typing-indicator" style="margin-top: 15px;">
+                <span class="ai-typing-dot"></span>
+                <span class="ai-typing-dot"></span>
+                <span class="ai-typing-dot"></span>
               </div>
-              <div>
-                <h5>🌡️ Tempering Guide</h5>
-                <p id="chocolab-result-tempering"></p>
+            </div>
+            <h4>CocoaGenius AI Alchemist at Work...</h4>
+            <p id="chocolab-loader-status">Calculating fat-to-sugar crystallization ratios &amp; Form V tempering points...</p>
+          </div>
+          
+          <!-- Results State -->
+          <div id="chocolab-results" style="display: none; width: 100%;">
+            <!-- Header Bar -->
+            <div class="chocolab-results-header">
+              <div class="chocolab-header-left">
+                <span class="chocolab-badge-gold">✨ Master Formulation Sheet</span>
+                <span id="chocolab-result-base" class="chocolab-results-base">72% Dark Chocolate (500g Batch)</span>
               </div>
+              <div class="chocolab-header-actions">
+                <button type="button" class="chocolab-action-btn" onclick="copyChocolabRecipe()" title="Copy Recipe text">
+                  📋 Copy
+                </button>
+                <button type="button" class="chocolab-action-btn" onclick="printChocolabRecipe()" title="Print Recipe Sheet">
+                  🖨️ Print
+                </button>
+              </div>
+            </div>
+
+            <!-- Recipe Title & Story -->
+            <div class="chocolab-title-block">
+              <h3 id="chocolab-result-name">Aztec Velvet &amp; Bird's Eye Flame</h3>
+              <p id="chocolab-result-desc" class="chocolab-result-desc"></p>
+            </div>
+            
+            <!-- Section 1: Exact Batch Ratios Grid -->
+            <div class="chocolab-section-block">
+              <h5 class="chocolab-sub-heading">⚖️ Precision Ingredient Ratios (<span id="chocolab-batch-display">500g</span> Total)</h5>
+              <div id="chocolab-result-ratios" class="chocolab-ratios-grid">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+
+            <!-- Section 2: Sensory & Tasting Profile -->
+            <div class="chocolab-section-block">
+              <h5 class="chocolab-sub-heading">👅 Sensory Profile</h5>
+              <div id="chocolab-result-sensory" class="chocolab-sensory-grid">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+
+            <!-- Section 3: Structured 5-Step Process Timeline -->
+            <div class="chocolab-section-block">
+              <h5 class="chocolab-sub-heading">⏱️ 5-Step Master Crafting Process</h5>
+              <div id="chocolab-result-steps" class="chocolab-timeline">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+
+            <!-- Section 4: Master Chocolatier Pro Tip -->
+            <div class="chocolab-protip-box">
+              <div class="protip-header">
+                <span class="protip-icon">🎓</span>
+                <h6>Master Chocolatier Pro Tip (Aarti Saluja Sahni)</h6>
+              </div>
+              <p id="chocolab-result-protip"></p>
             </div>
           </div>
         </div>
@@ -258,18 +358,18 @@
   </section>
 
   <!-- Section 04: Featured Workshops -->
-  <section style="background:var(--ivory);">
+  <section id="featured-workshops">
     <div class="section">
       <div class="workshops-section-header">
-        <p class="section-label" style="margin-bottom:12px;">04 / ACADEMY</p>
+        <div class="section-label">04 / ACADEMY</div>
         <h2 class="section-title">Workshops &amp; Masterclasses</h2>
         <div class="divider"></div>
-        <p style="max-width: 540px; font-size: 16px; line-height: 1.7; color: var(--brown-light); margin: 18px auto 0; font-weight: 400; text-align: center;">
+        <p class="section-subtitle">
           A collection of premium, science-first chocolate workshops and masterclasses. Learn bean-to-bar making, tempering science, and recipe formulation from expert Aarti Saluja Sahni.
         </p>
       </div>
       
-      <div class="grid-3" id="home-workshops" style="margin-top: 48px;">
+      <div class="grid-3" id="home-workshops" style="margin-top: 40px;">
         <?php
           require_once 'includes/workshops_data.php';
           foreach ($workshops as $w) {

@@ -174,7 +174,29 @@
 
 /* === WORKSHOP SECTION HEADER === */
 .workshops-section-header {
-  text-align: left;
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto 36px auto !important;
+  max-width: 760px !important;
+  width: 100% !important;
+}
+
+.workshops-section-header .section-label,
+.workshops-section-header .section-title {
+  text-align: center !important;
+  margin: 0 auto 12px auto !important;
+}
+
+.workshops-section-header .divider {
+  margin: 14px auto !important;
+}
+
+.workshops-section-header p {
+  text-align: center !important;
+  margin: 14px auto 0 auto !important;
 }
 
 /* === WORKSHOP CARD === */
