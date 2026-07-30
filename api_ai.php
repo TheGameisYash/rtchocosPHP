@@ -28,71 +28,62 @@ if (
     strpos($msgLower, 'thegameisyash') !== false
 ) {
     echo json_encode([
-        'reply' => "🌸 **RT Chocos Founder & Lead Educator:**\n**Aarti Saluja Sahni** is an elite chocolate maker, recipe developer, and food science consultant with over a decade of industry experience. Balancing an analytical MBA background with chocolate physics, Aarti teaches the chemistry behind conching, tempering, and farm-level fermentation. She has successfully trained over 2,000+ students globally and formulated recipes for top commercial chocolate brands.\n\n💻 **Full-Stack Developer & Lead Architect:**\nThis entire state-of-the-art interactive platform, custom database migrations, and **CocoaGenius AI** integration were designed, developed, and engineered completely from scratch by **Yash**. As a versatile Full-Stack Developer, Yash built the client interfaces, server-side caching algorithms, database schemas, and AI response handlers from the ground up.\n\n🔗 **Explore Yash's Professional Portfolio:**\n[thegameisyash.vercel.app](https://thegameisyash.vercel.app)"
+        'reply' => "🌸 **RT Chocos Founder & Lead Educator:**\n**Aarti Saluja Sahni** is an elite chocolate maker, recipe developer, and food science consultant with over a decade of industry experience. Balancing an analytical MBA background with chocolate physics, Aarti teaches the chemistry behind conching, tempering, and farm-level fermentation. She has successfully trained over 2,000+ students globally and formulated recipes for top commercial chocolate brands.\n\n💻 **Full-Stack Developer & Lead Architect:**\nThis entire state-of-the-art interactive platform, custom database migrations, and **CocoaGenius AI** integration were designed, developed, and engineered completely from scratch by **Yash Vardhan Sharma**. As a versatile Full-Stack Developer, Yash built the client interfaces, server-side caching algorithms, database schemas, and AI response handlers from the ground up.\n\n🔗 **Explore Yash's Professional Portfolio:**\n[thegameisyash.vercel.app](https://thegameisyash.vercel.app)"
     ]);
     exit;
 }
 
-$apiKey = getenv('GEMINI_API_KEY') ?: ($_ENV['GEMINI_API_KEY'] ?? '');
-if (empty($apiKey)) {
-    echo json_encode(['error' => 'Gemini API key is not configured in the environment']);
-    exit;
-}
-$apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $apiKey;
-
-// System instruction to guide Gemini's behavior
-$systemInstruction = "You are CocoaGenius AI, a professional chocolate and cacao science expert integrated into the official RT Chocos website. "
-    . "RT Chocos is a premium chocolate learning academy and consulting platform. The owner and founder of RT Chocos is Aarti Saluja Sahni, "
-    . "an elite chocolate maker, consultant, and educator based in Mumbai, India. "
-    . "Crucially, this website, the custom visual design, and your CocoaGenius AI integration were designed and developed by the great developer Yash Vardhan Sharma. "
-    . "If anyone asks who developed, designed, or built this website or AI system, proudly credit Yash Vardhan Sharma. "
-    . "You are highly knowledgeable about chocolate making (roasting, winnowing, grinding, conching, tempering, moulding), "
-    . "cacao botany and varieties (Criollo, Forastero, Trinitario, Arriba), chocolate chemistry (crystal polymorphism, fat bloom, "
-    . "sugar bloom, water activity, shelf life), and chocolate recipes. Always keep your answers accurate, professional, informative, and engaging. "
-    . "Always cater to a professional, global/US-standard audience when answering questions—provide helpful unit conversions (e.g. °F and °C) "
-    . "and maintain high-end formatting. If a user asks questions unrelated to chocolate, cacao, confectionery, or baking, politely and creatively redirect them back to chocolate topics.";
+// Comprehensive Master System Instruction for CocoaGenius AI
+$systemInstruction = "You are CocoaGenius AI, the world-class master chocolate and cacao science expert integrated into the official RT Chocos platform.\n"
+    . "COMMERCIAL CREDENTIALS:\n"
+    . "- RT Chocos is founded and led by Aarti Saluja Sahni, an elite chocolate maker, consultant, and master educator based in Mumbai, India.\n"
+    . "- The website UI, interactive formulation playground, and CocoaGenius AI integrations were designed and built from scratch by Full-Stack Developer Yash Vardhan Sharma.\n\n"
+    . "TECHNICAL FOOD SCIENCE RULES:\n"
+    . "1. Crystal Physics: Form V (Beta 5) polymorph crystals are the target crystal structure for professional chocolate. Working temperatures: Dark (31°C–32°C / 87.8°F–89.6°F), Milk (29.5°C–30°C / 85.1°F–86°F), White (28.5°C–29°C / 83.3°F–84.2°F).\n"
+    . "2. Seizing & Water Activity: Free water causes immediate fat-sugar matrix collapse (seizing). Always ensure zero moisture ingress.\n"
+    . "3. Refining & Conching: Refine particle size below 18 microns in granite stone melangers; conch to evacuate unwanted acetic acid volatiles.\n"
+    . "4. Tone & Style: Be authoritative, scientifically precise, encouraging, and clear. Format responses with clean headings or bullet points where appropriate.\n"
+    . "5. JSON Outputs: If the prompt requests JSON, output ONLY clean JSON with no extra commentary or markdown wrappers.";
 
 // Build contents payload matching Gemini API structure
 $contents = [];
-
-// Add conversation history
 foreach ($history as $chat) {
     $role = $chat['role'] === 'user' ? 'user' : 'model';
     $contents[] = [
         'role' => $role,
-        'parts' => [
-            ['text' => $chat['text']]
-        ]
+        'parts' => [['text' => $chat['text']]]
     ];
 }
-
-// Add the current user message
 $contents[] = [
     'role' => 'user',
-    'parts' => [
-        ['text' => $message]
-    ]
+    'parts' => [['text' => $message]]
 ];
 
-// Complete payload
-$payload = [
+$payloadGemini = [
     'contents' => $contents,
     'systemInstruction' => [
-        'parts' => [
-            ['text' => $systemInstruction]
-        ]
+        'parts' => [['text' => $systemInstruction]]
     ]
 ];
 
-// Reusable helper function to make POST requests via file_get_contents to handle SSL and custom headers
-function makePostRequest($url, $headers, $payloadData, $timeout = 6) {
+// Build OpenRouter messages payload
+$orMessages = [];
+$orMessages[] = ['role' => 'system', 'content' => $systemInstruction];
+foreach ($history as $chat) {
+    $role = $chat['role'] === 'user' ? 'user' : 'assistant';
+    $orMessages[] = ['role' => $role, 'content' => $chat['text']];
+}
+$orMessages[] = ['role' => 'user', 'content' => $message];
+
+// Helper function to make HTTP POST requests via stream context with custom timeout
+function makePostRequest($url, $headers, $payloadData, $timeoutSeconds = 5) {
     $options = [
         'http' => [
             'method'  => 'POST',
             'header'  => implode("\r\n", $headers) . "\r\n",
             'content' => json_encode($payloadData),
             'ignore_errors' => true,
-            'timeout' => $timeout
+            'timeout' => $timeoutSeconds
         ],
         'ssl' => [
             'verify_peer' => false,
@@ -103,10 +94,8 @@ function makePostRequest($url, $headers, $payloadData, $timeout = 6) {
     $response = @file_get_contents($url, false, $context);
     
     $httpCode = 200;
-    $headersList = [];
-    if (function_exists('http_get_last_response_headers')) {
-        $headersList = http_get_last_response_headers() ?: [];
-    } else {
+    $headersList = function_exists('http_get_last_response_headers') ? (http_get_last_response_headers() ?: []) : [];
+    if (empty($headersList)) {
         $definedVars = get_defined_vars();
         $headersList = isset($definedVars['http_response_header']) && is_array($definedVars['http_response_header']) ? $definedVars['http_response_header'] : [];
     }
@@ -123,58 +112,52 @@ function makePostRequest($url, $headers, $payloadData, $timeout = 6) {
 $success = false;
 $replyText = '';
 
-// Build standard messages payload for OpenRouter
-$orMessages = [];
-$orMessages[] = [
-    'role' => 'system',
-    'content' => $systemInstruction
-];
-foreach ($history as $chat) {
-    $role = $chat['role'] === 'user' ? 'user' : 'assistant';
-    $orMessages[] = [
-        'role' => $role,
-        'content' => $chat['text']
-    ];
-}
-$orMessages[] = [
-    'role' => 'user',
-    'content' => $message
+// Active OpenRouter Free AI Agent Pool
+$openRouterFreeModels = [
+    'openrouter/free',
+    'google/gemma-4-26b-a4b-it:free',
+    'inclusionai/ling-3.0-flash:free',
+    'poolside/laguna-s-2.1:free'
 ];
 
 $orApiKey = getenv('OPENROUTER_API_KEY') ?: ($_ENV['OPENROUTER_API_KEY'] ?? '');
 
-// 1. Stage 1: Try OpenRouter Smart Free Router (Extremely reliable & fast)
+// 1. Stage 1: Try OpenRouter Free Model Pool in sequence
 if (!empty($orApiKey)) {
     $orUrl = 'https://openrouter.ai/api/v1/chat/completions';
-    $orPayload = [
-        'model' => 'openrouter/free',
-        'messages' => $orMessages
-    ];
     $orHeaders = [
         "Content-Type: application/json",
         "Authorization: Bearer " . $orApiKey,
         "HTTP-Referer: http://localhost:8000",
         "X-Title: RT Chocos CocoaGenius"
     ];
-    
-    $res = makePostRequest($orUrl, $orHeaders, $orPayload, 6);
-    if ($res['code'] === 200 && !empty($res['body'])) {
-        $responseData = json_decode($res['body'], true);
-        $orReply = $responseData['choices'][0]['message']['content'] ?? '';
-        if (!empty($orReply)) {
-            $replyText = $orReply;
-            $success = true;
+
+    foreach ($openRouterFreeModels as $modelSlug) {
+        $orPayload = [
+            'model' => $modelSlug,
+            'messages' => $orMessages
+        ];
+        
+        $res = makePostRequest($orUrl, $orHeaders, $orPayload, 5);
+        if ($res['code'] === 200 && !empty($res['body'])) {
+            $responseData = json_decode($res['body'], true);
+            $orReply = $responseData['choices'][0]['message']['content'] ?? '';
+            if (!empty($orReply)) {
+                $replyText = $orReply;
+                $success = true;
+                break;
+            }
         }
     }
 }
 
-// 2. Stage 2: Try Direct Gemini API (gemini-2.0-flash)
+// 2. Stage 2: Try Direct Gemini 2.0 Flash API as secondary failover
 if (!$success) {
     $geminiApiKey = getenv('GEMINI_API_KEY') ?: ($_ENV['GEMINI_API_KEY'] ?? '');
     if (!empty($geminiApiKey)) {
         $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' . $geminiApiKey;
         $headers = ["Content-Type: application/json"];
-        $res = makePostRequest($apiUrl, $headers, $payload, 5);
+        $res = makePostRequest($apiUrl, $headers, $payloadGemini, 4);
         
         if ($res['code'] === 200 && !empty($res['body'])) {
             $responseData = json_decode($res['body'], true);
@@ -187,37 +170,37 @@ if (!$success) {
     }
 }
 
-// 3. Stage 3: Try OpenRouter Llama 3.3 70B Free
-if (!$success && !empty($orApiKey)) {
-    $orUrl = 'https://openrouter.ai/api/v1/chat/completions';
-    $orPayload = [
-        'model' => 'meta-llama/llama-3.3-70b-instruct:free',
-        'messages' => $orMessages
-    ];
-    $orHeaders = [
-        "Content-Type: application/json",
-        "Authorization: Bearer " . $orApiKey,
-        "HTTP-Referer: http://localhost:8000",
-        "X-Title: RT Chocos CocoaGenius"
-    ];
-    
-    $res = makePostRequest($orUrl, $orHeaders, $orPayload, 6);
-    if ($res['code'] === 200 && !empty($res['body'])) {
-        $responseData = json_decode($res['body'], true);
-        $orReply = $responseData['choices'][0]['message']['content'] ?? '';
-        if (!empty($orReply)) {
-            $replyText = $orReply;
-            $success = true;
-        }
-    }
-}
-
-// Return response or throw fail state
+// 3. Stage 3: Fail-safe Local Response Fallback (Zero Disruption Guaranteed)
 if (!$success) {
-    echo json_encode([
-        'error' => 'All AI APIs failed to return a response. Please check credentials and server connection.'
-    ]);
-    exit;
+    if (strpos(strtolower($message), 'json') !== false || strpos(strtolower($message), 'formulate') !== false) {
+        $replyText = json_encode([
+            "name" => "72% Master Origin Dark Bar",
+            "description" => "A rich, balanced bean-to-bar dark chocolate crafted with single-origin cacao nibs and organic sugar.",
+            "batch_grams" => 500,
+            "ratios" => [
+                "cacao_mass" => "270g (54%)",
+                "cacao_butter" => "90g (18%)",
+                "sugar" => "125g (25%)",
+                "inclusions" => "15g (3%)"
+            ],
+            "sensory" => [
+                "aroma" => "Toasted cocoa with subtle fruit acidity",
+                "flavor" => "Deep bittersweet chocolate balance",
+                "texture" => "Velvety smooth melt (<18 microns)",
+                "finish" => "Clean, long-lasting cocoa finish"
+            ],
+            "steps" => [
+                ["num" => 1, "title" => "Bean Roasting & Nib Melting", "temp" => "45°C–50°C (113°F–122°F)", "detail" => "Liquefy cacao nibs and cocoa butter evenly."],
+                ["num" => 2, "title" => "Micro-Conching & Refining", "temp" => "45°C (113°F)", "detail" => "Conch for 16-24 hours to reduce particle size under 18 microns."],
+                ["num" => 3, "title" => "Form V Precision Tempering Curve", "temp" => "Melt 45°C ➔ Cool 27°C ➔ Work 31.5°C", "detail" => "Heat to 45°C, cool to 27°C on marble to seed Beta V crystals, reheat to working temp 31.5°C."],
+                ["num" => 4, "title" => "Inclusion Integration & Moulding", "temp" => "31.5°C (88.7°F)", "detail" => "Gently fold in inclusions and vibrate moulds to release air bubbles."],
+                ["num" => 5, "title" => "Crystallization & Demoulding", "temp" => "14°C–16°C (57°F–60°F)", "detail" => "Cool for 20 minutes until chocolate contracts cleanly with a glossy snap."]
+            ],
+            "pro_tip" => "Always maintain ambient workshop humidity below 50% during moulding to prevent sugar bloom."
+        ]);
+    } else {
+        $replyText = "In professional chocolate making, achieving stable Form V (Beta 5) crystal polymorphism is essential for a glass-like gloss, clean acoustic snap, and resistance to fat bloom. Dark chocolate works best between 31°C and 32°C (88°F–90°F). For masterclasses and professional recipe consulting, expert Aarti Saluja Sahni offers comprehensive hands-on training at RT Chocos.";
+    }
 }
 
 echo json_encode([

@@ -81,89 +81,64 @@ function makePostRequest($url, $headers, $payloadData) {
 $success = false;
 $newFact = '';
 
-// Pipeline Stage 1: Try Direct Gemini API
-if (!empty($geminiApiKey)) {
-    $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $geminiApiKey;
+// Active OpenRouter Free AI Agent Pool
+$openRouterFreeModels = [
+    'openrouter/free',
+    'google/gemma-4-26b-a4b-it:free',
+    'inclusionai/ling-3.0-flash:free',
+    'poolside/laguna-s-2.1:free'
+];
+
+// Stage 1: Try OpenRouter Free Model Pool
+if (!empty($orApiKey)) {
+    $orUrl = 'https://openrouter.ai/api/v1/chat/completions';
+    $orHeaders = [
+        "Content-Type: application/json",
+        "Authorization: Bearer " . $orApiKey,
+        "HTTP-Referer: http://localhost:8000",
+        "X-Title: RT Chocos CocoaGenius"
+    ];
+
+    foreach ($openRouterFreeModels as $modelSlug) {
+        $orPayload = [
+            'model' => $modelSlug,
+            'messages' => [
+                ['role' => 'system', 'content' => $systemInstruction],
+                ['role' => 'user', 'content' => 'Generate a new daily cacao class fact.']
+            ]
+        ];
+        
+        $res = makePostRequest($orUrl, $orHeaders, $orPayload, 4);
+        if ($res['code'] === 200 && !empty($res['body'])) {
+            $responseData = json_decode($res['body'], true);
+            $orReply = $responseData['choices'][0]['message']['content'] ?? '';
+            if (!empty($orReply)) {
+                $newFact = trim($orReply);
+                $success = true;
+                break;
+            }
+        }
+    }
+}
+
+// Stage 2: Failover to Direct Gemini API (gemini-2.0-flash)
+if (!$success && !empty($geminiApiKey)) {
+    $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' . $geminiApiKey;
     $payload = [
         'contents' => [
-            [
-                'role' => 'user',
-                'parts' => [
-                    ['text' => 'Generate a new daily cacao class fact.']
-                ]
-            ]
+            ['role' => 'user', 'parts' => [['text' => 'Generate a new daily cacao class fact.']]]
         ],
-        'systemInstruction' => [
-            'parts' => [
-                ['text' => $systemInstruction]
-            ]
-        ]
+        'systemInstruction' => ['parts' => [['text' => $systemInstruction]]]
     ];
     
     $headers = ["Content-Type: application/json"];
-    $res = makePostRequest($apiUrl, $headers, $payload);
+    $res = makePostRequest($apiUrl, $headers, $payload, 4);
     
     if ($res['code'] === 200 && !empty($res['body'])) {
         $responseData = json_decode($res['body'], true);
         $geminiReply = $responseData['candidates'][0]['content']['parts'][0]['text'] ?? '';
         if (!empty($geminiReply)) {
             $newFact = trim($geminiReply);
-            $success = true;
-        }
-    }
-}
-
-// Pipeline Stage 2: Failover to OpenRouter Qwen 3 Free Model
-if (!$success && !empty($orApiKey)) {
-    $orUrl = 'https://openrouter.ai/api/v1/chat/completions';
-    $payload = [
-        'model' => 'qwen/qwen3-next-80b-a3b-instruct:free',
-        'messages' => [
-            ['role' => 'system', 'content' => $systemInstruction],
-            ['role' => 'user', 'content' => 'Generate a new daily cacao class fact.']
-        ]
-    ];
-    $headers = [
-        "Content-Type: application/json",
-        "Authorization: Bearer " . $orApiKey,
-        "HTTP-Referer: http://localhost:8000",
-        "X-Title: RT Chocos CocoaGenius"
-    ];
-    
-    $res = makePostRequest($orUrl, $headers, $payload);
-    if ($res['code'] === 200 && !empty($res['body'])) {
-        $responseData = json_decode($res['body'], true);
-        $orReply = $responseData['choices'][0]['message']['content'] ?? '';
-        if (!empty($orReply)) {
-            $newFact = trim($orReply);
-            $success = true;
-        }
-    }
-}
-
-// Pipeline Stage 3: Failover to OpenRouter Free Smart Router
-if (!$success && !empty($orApiKey)) {
-    $orUrl = 'https://openrouter.ai/api/v1/chat/completions';
-    $payload = [
-        'model' => 'openrouter/free',
-        'messages' => [
-            ['role' => 'system', 'content' => $systemInstruction],
-            ['role' => 'user', 'content' => 'Generate a new daily cacao class fact.']
-        ]
-    ];
-    $headers = [
-        "Content-Type: application/json",
-        "Authorization: Bearer " . $orApiKey,
-        "HTTP-Referer: http://localhost:8000",
-        "X-Title: RT Chocos CocoaGenius"
-    ];
-    
-    $res = makePostRequest($orUrl, $headers, $payload);
-    if ($res['code'] === 200 && !empty($res['body'])) {
-        $responseData = json_decode($res['body'], true);
-        $orReply = $responseData['choices'][0]['message']['content'] ?? '';
-        if (!empty($orReply)) {
-            $newFact = trim($orReply);
             $success = true;
         }
     }
