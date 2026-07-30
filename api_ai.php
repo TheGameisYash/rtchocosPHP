@@ -85,14 +85,14 @@ $payload = [
 ];
 
 // Reusable helper function to make POST requests via file_get_contents to handle SSL and custom headers
-function makePostRequest($url, $headers, $payloadData) {
+function makePostRequest($url, $headers, $payloadData, $timeout = 6) {
     $options = [
         'http' => [
             'method'  => 'POST',
             'header'  => implode("\r\n", $headers) . "\r\n",
             'content' => json_encode($payloadData),
             'ignore_errors' => true,
-            'timeout' => 15
+            'timeout' => $timeout
         ],
         'ssl' => [
             'verify_peer' => false,
@@ -123,24 +123,7 @@ function makePostRequest($url, $headers, $payloadData) {
 $success = false;
 $replyText = '';
 
-// 1. Try Direct Gemini API
-$geminiApiKey = getenv('GEMINI_API_KEY') ?: ($_ENV['GEMINI_API_KEY'] ?? '');
-if (!empty($geminiApiKey)) {
-    $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $geminiApiKey;
-    $headers = ["Content-Type: application/json"];
-    $res = makePostRequest($apiUrl, $headers, $payload);
-    
-    if ($res['code'] === 200 && !empty($res['body'])) {
-        $responseData = json_decode($res['body'], true);
-        $geminiReply = $responseData['candidates'][0]['content']['parts'][0]['text'] ?? '';
-        if (!empty($geminiReply)) {
-            $replyText = $geminiReply;
-            $success = true;
-        }
-    }
-}
-
-// Build standard messages payload for OpenRouter fallback
+// Build standard messages payload for OpenRouter
 $orMessages = [];
 $orMessages[] = [
     'role' => 'system',
@@ -158,62 +141,73 @@ $orMessages[] = [
     'content' => $message
 ];
 
-// 2. Failover Stage 1: OpenRouter Qwen 3 free model
+$orApiKey = getenv('OPENROUTER_API_KEY') ?: ($_ENV['OPENROUTER_API_KEY'] ?? '');
+
+// 1. Stage 1: Try OpenRouter Smart Free Router (Extremely reliable & fast)
+if (!empty($orApiKey)) {
+    $orUrl = 'https://openrouter.ai/api/v1/chat/completions';
+    $orPayload = [
+        'model' => 'openrouter/free',
+        'messages' => $orMessages
+    ];
+    $orHeaders = [
+        "Content-Type: application/json",
+        "Authorization: Bearer " . $orApiKey,
+        "HTTP-Referer: http://localhost:8000",
+        "X-Title: RT Chocos CocoaGenius"
+    ];
+    
+    $res = makePostRequest($orUrl, $orHeaders, $orPayload, 6);
+    if ($res['code'] === 200 && !empty($res['body'])) {
+        $responseData = json_decode($res['body'], true);
+        $orReply = $responseData['choices'][0]['message']['content'] ?? '';
+        if (!empty($orReply)) {
+            $replyText = $orReply;
+            $success = true;
+        }
+    }
+}
+
+// 2. Stage 2: Try Direct Gemini API (gemini-2.0-flash)
 if (!$success) {
-    $orApiKey = getenv('OPENROUTER_API_KEY') ?: ($_ENV['OPENROUTER_API_KEY'] ?? '');
-    if (!empty($orApiKey)) {
-        $orUrl = 'https://openrouter.ai/api/v1/chat/completions';
-        $orPayload = [
-            'model' => 'qwen/qwen3-next-80b-a3b-instruct:free',
-            'messages' => $orMessages
-        ];
-        
-        $orHeaders = [
-            "Content-Type: application/json",
-            "Authorization: Bearer " . $orApiKey,
-            "HTTP-Referer: http://localhost:8000",
-            "X-Title: RT Chocos CocoaGenius"
-        ];
-        
-        $res = makePostRequest($orUrl, $orHeaders, $orPayload);
+    $geminiApiKey = getenv('GEMINI_API_KEY') ?: ($_ENV['GEMINI_API_KEY'] ?? '');
+    if (!empty($geminiApiKey)) {
+        $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' . $geminiApiKey;
+        $headers = ["Content-Type: application/json"];
+        $res = makePostRequest($apiUrl, $headers, $payload, 5);
         
         if ($res['code'] === 200 && !empty($res['body'])) {
             $responseData = json_decode($res['body'], true);
-            $orReply = $responseData['choices'][0]['message']['content'] ?? '';
-            if (!empty($orReply)) {
-                $replyText = $orReply;
+            $geminiReply = $responseData['candidates'][0]['content']['parts'][0]['text'] ?? '';
+            if (!empty($geminiReply)) {
+                $replyText = $geminiReply;
                 $success = true;
             }
         }
     }
 }
 
-// 3. Failover Stage 2: OpenRouter Free smart router
-if (!$success) {
-    $orApiKey = getenv('OPENROUTER_API_KEY') ?: ($_ENV['OPENROUTER_API_KEY'] ?? '');
-    if (!empty($orApiKey)) {
-        $orUrl = 'https://openrouter.ai/api/v1/chat/completions';
-        $orPayload = [
-            'model' => 'openrouter/free',
-            'messages' => $orMessages
-        ];
-        
-        $orHeaders = [
-            "Content-Type: application/json",
-            "Authorization: Bearer " . $orApiKey,
-            "HTTP-Referer: http://localhost:8000",
-            "X-Title: RT Chocos CocoaGenius"
-        ];
-        
-        $res = makePostRequest($orUrl, $orHeaders, $orPayload);
-        
-        if ($res['code'] === 200 && !empty($res['body'])) {
-            $responseData = json_decode($res['body'], true);
-            $orReply = $responseData['choices'][0]['message']['content'] ?? '';
-            if (!empty($orReply)) {
-                $replyText = $orReply;
-                $success = true;
-            }
+// 3. Stage 3: Try OpenRouter Llama 3.3 70B Free
+if (!$success && !empty($orApiKey)) {
+    $orUrl = 'https://openrouter.ai/api/v1/chat/completions';
+    $orPayload = [
+        'model' => 'meta-llama/llama-3.3-70b-instruct:free',
+        'messages' => $orMessages
+    ];
+    $orHeaders = [
+        "Content-Type: application/json",
+        "Authorization: Bearer " . $orApiKey,
+        "HTTP-Referer: http://localhost:8000",
+        "X-Title: RT Chocos CocoaGenius"
+    ];
+    
+    $res = makePostRequest($orUrl, $orHeaders, $orPayload, 6);
+    if ($res['code'] === 200 && !empty($res['body'])) {
+        $responseData = json_decode($res['body'], true);
+        $orReply = $responseData['choices'][0]['message']['content'] ?? '';
+        if (!empty($orReply)) {
+            $replyText = $orReply;
+            $success = true;
         }
     }
 }

@@ -352,11 +352,17 @@ Return ONLY valid JSON with no markdown block markers, matching this exact struc
     const isBlogSubfolder = window.location.pathname.includes('/blog/');
     const prefix = isBlogSubfolder ? '../' : '';
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     const response = await fetch(prefix + 'api_ai.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: prompt })
+      body: JSON.stringify({ message: prompt }),
+      signal: controller.signal
     });
+
+    clearTimeout(timeoutId);
 
     if (response.ok) {
       const data = await response.json();
@@ -378,7 +384,7 @@ Return ONLY valid JSON with no markdown block markers, matching this exact struc
     results.style.display = 'block';
 
   } catch (err) {
-    console.warn("AI API unreachable, rendering scientific offline formulation:", err);
+    console.warn("AI API unreachable or timed out, rendering scientific offline formulation:", err);
     const fallbackRecipe = buildScientificFallbackRecipe(base, percent, inclusions, batchGrams);
     currentChocolabRecipe = fallbackRecipe;
     renderChocolabRecipe(fallbackRecipe);
