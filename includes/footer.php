@@ -11,7 +11,7 @@
       <div class="footer-heading">Quick Links</div>
       <nav aria-label="Footer navigation">
         <a class="footer-link" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>about">About Aarti Saluja Sahni</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>about">About</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops" title="Chocolate Academy India">Chocolate Academy India</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>blog" title="Chocolate Blog India">Chocolate Blog India</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery" title="Chocolate Recipes India">Recipes & Formulations</a>
