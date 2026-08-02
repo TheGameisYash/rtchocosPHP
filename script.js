@@ -954,7 +954,6 @@ function initInteractiveForms() {
   }
 
   bindContactForm("contact-form", "contact-form-feedback");
-  bindContactForm("about-contact-form", "about-contact-form-feedback");
 }
 
 // Call interactive form initializer
