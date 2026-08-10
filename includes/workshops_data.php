@@ -12,10 +12,10 @@ $workshops = [
         'status' => "coming-soon",
         'image' => "assets/truffle_workshop.png",
         'outcomes' => [
-            "Hand-rolling and coating classic chocolate truffles",
-            "Infusing ganache with spices, herbs, and citrus",
-            "Controlling fat and water separation in fillings",
-            "Piping and decoration techniques for an artisan finish"
+            "Hand-rolling & coating classic truffles",
+            "Infusing ganache with spices, herbs & citrus",
+            "Controlling fat & water emulsion in fillings",
+            "Piping & decoration for artisan finish"
         ]
     ],
     [
@@ -28,10 +28,10 @@ $workshops = [
         'status' => "coming-soon",
         'image' => "assets/tempering_workshop.png",
         'outcomes' => [
-            "Cocoa butter crystal structures (Forms I-VI)",
-            "How to read and control tempering curves",
-            "Water activity (aw) & shelf-life chemistry",
-            "Emulsification math for silkier ganache"
+            "Cocoa butter crystal polymorphism (Forms I-VI)",
+            "Reading & controlling seed tempering curves",
+            "Water activity (aw) & shelf-life thermodynamics",
+            "Emulsification ratio math for silky ganache"
         ]
     ],
     [
@@ -44,10 +44,10 @@ $workshops = [
         'status' => "coming-soon",
         'image' => "assets/bonbon_workshop.png",
         'outcomes' => [
-            "Cocoa butter coloring & airbrushing basics",
-            "Achieving flawless, glossy bonbon shells",
-            "Layered fillings: caramels, gelées, duos",
-            "Troubleshooting cracks, dullness, and sticking"
+            "Colored cocoa butter & airbrushing basics",
+            "Moulding & achieving flawless glossy shells",
+            "Layered fillings: caramels, gelées & duos",
+            "Troubleshooting cracks, dullness & defects"
         ]
     ]
 ];
@@ -83,7 +83,7 @@ function renderWorkshopCard($w, $pathPrefix = "") {
         <ul class=\"workshop-outcomes\">
           {$outcomesHtml}
         </ul>
-        <button class=\"btn-primary\" {$buttonOnClick} style=\"width:100%;justify-content:center;\">{$buttonLabel}</button>
+        <button class=\"btn-primary\" {$buttonOnClick} style=\"width:100%;justify-content:center;margin-top:auto;\">{$buttonLabel}</button>
       </div>
     </div>";
 }

@@ -306,10 +306,24 @@ if (!empty($pageSchema)) {
       <nav class="header-nav" aria-label="Primary navigation">
         <a class="nav-link <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>">Home</a>
         <a class="nav-link <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
-        <a class="nav-link <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy & Masterclasses">Workshops</a>
+        
+        <!-- ACADEMY DROPDOWN MENU -->
+        <div class="nav-item-dropdown">
+          <a class="nav-link dropdown-toggle <?php echo ($activeNav === 'workshops' || $activeNav === 'gallery') ? 'active' : ''; ?>" data-page="academy" href="<?php echo $pathPrefix; ?>workshops.php" onclick="if(window.innerWidth > 900 && !('ontouchstart' in window)) { /* hover handles it */ }" title="RT Chocos Academy">
+            Academy <span class="dropdown-arrow">▾</span>
+          </a>
+          <div class="nav-dropdown-menu">
+            <a class="dropdown-item <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy & Masterclasses">
+              🎓 Workshops &amp; Masterclasses
+            </a>
+            <a class="dropdown-item <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php" title="Tested Recipes & Formulations">
+              🍫 Recipes &amp; Formulations
+            </a>
+          </div>
+        </div>
+
         <a class="nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php" title="Indian Chocolate Journal">Blog</a>
         <a class="nav-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Encyclopedia">Chocopedia</a>
-        <a class="nav-link <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php" title="Tested Recipes & Formulations">Recipes</a>
         <a class="nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
       </nav>
     </div>
@@ -336,10 +350,15 @@ if (!empty($pageSchema)) {
   <nav id="mobile-menu" aria-label="Mobile navigation">
     <a class="mobile-nav-link <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>">Home</a>
     <a class="mobile-nav-link <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
-    <a class="mobile-nav-link <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">Workshops</a>
+    
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-title">ACADEMY</div>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">🎓 Workshops &amp; Masterclasses</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">🍫 Recipes &amp; Formulations</a>
+    </div>
+
     <a class="mobile-nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
     <a class="mobile-nav-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
-    <a class="mobile-nav-link <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes</a>
     <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
     <button class="mobile-nav-ai-btn" onclick="toggleAiDrawer(); toggleMobileMenu();">
       ✨ Ask CocoaGenius AI

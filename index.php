@@ -33,7 +33,7 @@
   <div class="deco-leaf-right"></div>
 
   <!-- Split Hero (No Video) -->
-  <section id="hero" style="min-height: 85vh; padding: 140px 24px 80px;">
+  <section id="hero">
     <div class="deco-circle-1"></div>
     <div class="deco-circle-2"></div>
     <div class="deco-radial"></div>
@@ -68,6 +68,249 @@
       </div>
     </div>
   </section>
+
+  <!-- INTERACTIVE CHOCOLATE TABLE SECTION -->
+  <section class="chocolate-table-sec">
+    <div class="chocolate-table-inner">
+      <div class="chocolate-table-header">
+        <div class="chocolate-table-label">🌿 INTERACTIVE EXPERIENCE</div>
+        <h2 class="chocolate-table-title">Explore the Chocolate Table</h2>
+        <p class="chocolate-table-subtitle">Click any object on the artisan workbench to explore a world of chocolate knowledge, techniques, and science.</p>
+        <div class="chocolate-table-divider"></div>
+      </div>
+
+      <div class="chocolate-table-wrapper">
+        <img src="assets/chocolate_table_interactive.png" alt="Artisan Chocolate Workbench with cocoa beans, notebook, chocolate bar, and tools" class="chocolate-table-bg-img">
+
+        <!-- Interactive Hotspot Pins — positions match the generated image exactly -->
+        <!-- 1. Bean to Bar → Wooden bowl of cacao beans (top-center-left) -->
+        <div class="table-hotspot" style="top: 18%; left: 32%;" onclick="openTableModal('bean-to-bar')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Bean to Bar</span>
+          </div>
+        </div>
+
+        <!-- 2. Knowledge Hub → Open leather recipe journal (center of table) -->
+        <div class="table-hotspot" style="top: 52%; left: 48%;" onclick="openTableModal('knowledge-hub')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Knowledge Hub</span>
+          </div>
+        </div>
+
+        <!-- 3. Chocolate Lab → Brass magnifying glass / microscope (top-right) -->
+        <div class="table-hotspot" style="top: 14%; left: 80%;" onclick="openTableModal('chocolate-lab')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Chocolate Lab</span>
+          </div>
+        </div>
+
+        <!-- 4. Recipes & Formulations → Dark chocolate bar broken into pieces (right) -->
+        <div class="table-hotspot" style="top: 38%; left: 86%;" onclick="openTableModal('recipes-formulations')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Recipes &amp; Formulations</span>
+          </div>
+        </div>
+
+        <!-- 5. Techniques → Palette knife, spatula & bench scraper (bottom-left) -->
+        <div class="table-hotspot" style="top: 82%; left: 28%;" onclick="openTableModal('techniques')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Techniques</span>
+          </div>
+        </div>
+
+        <!-- 6. Origins & Atlas → Cacao pod split open + vintage map (far left) -->
+        <div class="table-hotspot" style="top: 58%; left: 10%;" onclick="openTableModal('origins-atlas')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Origins &amp; Atlas</span>
+          </div>
+        </div>
+
+        <!-- 7. Workshops & Academy → Whisk + chocolate mould (bottom-right) -->
+        <div class="table-hotspot" style="top: 82%; left: 78%;" onclick="openTableModal('workshops-academy')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Workshops &amp; Academy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Table Modal Backdrop -->
+  <div id="table-interactive-modal" class="table-modal-backdrop" onclick="if(event.target === this) closeTableModal()">
+    <div class="table-modal-box">
+      <button type="button" class="table-modal-close" onclick="closeTableModal()" title="Close Modal">&times;</button>
+      
+      <div class="table-modal-badge" id="modal-table-badge">🌿 CRAFT PROCESS</div>
+      <h3 class="table-modal-title" id="modal-table-title">Bean to Bar</h3>
+      <p class="table-modal-desc" id="modal-table-desc">
+        Explore the entire journey from raw cacao bean harvesting to precision roasting, winnowing, stone grinding, and tempering.
+      </p>
+
+      <div class="table-modal-highlights">
+        <h5>✨ KEY INSIGHTS &amp; TAKEAWAYS</h5>
+        <ul id="modal-table-list">
+          <li>Single-Origin Bean Sourcing from Kerala &amp; Karnataka</li>
+          <li>Fermentation &amp; Drying Thermodynamics</li>
+          <li>72-Hour Stone Grinding (Conching) for Silky Smooth Melt</li>
+        </ul>
+      </div>
+
+      <div class="table-modal-actions" id="modal-table-actions">
+        <a href="chocopedia.php" id="modal-table-btn-primary" class="table-modal-btn-primary">Explore Bean-to-Bar Guide &rarr;</a>
+        <a href="workshops.php" id="modal-table-btn-secondary" class="table-modal-btn-secondary">Book Workshop</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TABLE_MODAL_DATA = {
+      'bean-to-bar': {
+        badge: '🌿 CRAFT PROCESS',
+        title: 'Bean to Bar Cacao Craft',
+        desc: 'From estate cacao bean selection and post-harvest fermentation chemistry to roasting thermodynamics, winnowing, and stone grinding (conching). Learn how raw beans transform into fine chocolate.',
+        highlights: [
+          'Direct Single-Origin Procurement from Estates in Kerala & Karnataka',
+          'Fermentation & Drying Thermodynamics for Flavor Precursor Development',
+          '72-Hour Stone Grinding & Micro-Particle Size Reduction (<20 Microns)'
+        ],
+        btn1Text: 'Explore Bean-to-Bar Guide →',
+        btn1Href: 'chocopedia.php',
+        btn2Text: 'Book Workshop',
+        btn2Href: 'workshops.php'
+      },
+      'knowledge-hub': {
+        badge: '📚 ENCYCLOPEDIA & JOURNAL',
+        title: 'RT Chocos Knowledge Hub',
+        desc: 'Our comprehensive digital repository of cocoa science articles, troubleshooting manuals, research papers, and technical crystallization guides.',
+        highlights: [
+          'Fat Bloom vs Sugar Bloom Defect Diagnostics',
+          'Cocoa Butter Polymorphism & Form V Crystal Nucleation Curves',
+          'pH Balance & Alkalization in Natural vs Dutch-Processed Cocoa Powder'
+        ],
+        btn1Text: 'Browse Science Journal →',
+        btn1Href: 'blog.php',
+        btn2Text: 'Search Chocopedia',
+        btn2Href: 'chocopedia.php'
+      },
+      'chocolate-lab': {
+        badge: '🧪 AI FORMULATION & R&D',
+        title: 'Chocolate Science Lab',
+        desc: 'Our advanced R&D laboratory playground for precision ingredient analysis, crystal structure testing, and AI-powered chocolate bar formulation.',
+        highlights: [
+          'CocoaGenius AI Alchemist Recipe Engine',
+          'Water Activity & Emulsion Stability Matrix',
+          'Custom Inclusions & Fat-to-Sugar Crystallization Ratios'
+        ],
+        btn1Text: 'Launch AI Chocolab →',
+        btn1Href: '#ai-chocolab-sec',
+        btn1Action: () => { closeTableModal(); document.querySelector('.ai-chocolab-sec')?.scrollIntoView({behavior:'smooth'}); },
+        btn2Text: 'Ask CocoaGenius AI',
+        btn2Href: 'javascript:toggleAiDrawer()'
+      },
+      'recipes-formulations': {
+        badge: '🍫 PRO FORMULATIONS',
+        title: 'Recipes & Formulations',
+        desc: 'Craft precision blueprints for single-origin dark slabs, glossy hand-painted bonbons, ganache emulsions, and artisan truffles.',
+        highlights: [
+          '72% Single Origin Aztec Dark Formula',
+          'Passionfruit & Cardamom Ganache Bonbon Emulsion',
+          'Roasted Almond & Sea Salt Caramel Slab'
+        ],
+        btn1Text: 'Explore All Recipes →',
+        btn1Href: 'chocopedia.php',
+        btn2Text: 'Formulate Custom Bar',
+        btn2Href: '#ai-chocolab-sec'
+      },
+      'techniques': {
+        badge: '👩‍🍳 MASTER SKILLS',
+        title: 'Chocolatier Techniques',
+        desc: 'Master essential craft techniques: seed method tempering, tabling on granite/marble, airbrushing cocoa butter colors, and poly-carbonate shell moulding.',
+        highlights: [
+          'Marble Slab Tabling & Crystal Seeding Thermodynamics',
+          'Form V Nucleation (88°F - 90°F Working Range)',
+          'Glossy Moulding & Snap Physics'
+        ],
+        btn1Text: 'View Masterclass Courses →',
+        btn1Href: 'workshops.php',
+        btn2Text: 'Troubleshoot Defect',
+        btn2Href: 'blog.php'
+      },
+      'origins-atlas': {
+        badge: '🗺️ TERROIR & SOURCING',
+        title: 'Origins & Cacao Atlas',
+        desc: 'Trace the roots of global cacao genetics—Criollo, Trinitario, and Forastero—and explore Indian estate micro-climates and terroir profiling.',
+        highlights: [
+          'Idukki, Kerala Single Estate Terroir & Flavor Profiles',
+          'Puttur, Karnataka Cacao Fermentation Protocols',
+          'Soil Chemistry, Altitude & Solar Drying Flavor Impact'
+        ],
+        btn1Text: 'Discover Cacao Sourcing →',
+        btn1Href: 'about.php',
+        btn2Text: 'Read Origin Articles',
+        btn2Href: 'blog.php'
+      },
+      'workshops-academy': {
+        badge: '🎓 PROFESSIONAL ACADEMY',
+        title: 'Workshops & Academy',
+        desc: 'Hands-on and online certification masterclasses led by expert Aarti Saluja Sahni for home bakers, pastry chefs, and craft chocolate entrepreneurs.',
+        highlights: [
+          'Professional Bean-to-Bar Certification (Mumbai & Online)',
+          'Bonbon Spraying, Moulding & Ganache Emulsion Science',
+          'Commercial Chocolatier Setup & Scaling Blueprint'
+        ],
+        btn1Text: 'View Workshop Schedule →',
+        btn1Href: 'workshops.php',
+        btn2Text: 'Contact Aarti',
+        btn2Href: 'contact.php'
+      }
+    };
+
+    function openTableModal(key) {
+      const data = TABLE_MODAL_DATA[key];
+      if (!data) return;
+
+      document.getElementById('modal-table-badge').innerText = data.badge;
+      document.getElementById('modal-table-title').innerText = data.title;
+      document.getElementById('modal-table-desc').innerText = data.desc;
+
+      const listContainer = document.getElementById('modal-table-list');
+      listContainer.innerHTML = data.highlights.map(item => `<li>${item}</li>`).join('');
+
+      const btn1 = document.getElementById('modal-table-btn-primary');
+      btn1.innerText = data.btn1Text;
+      btn1.href = data.btn1Href;
+      if (data.btn1Action) {
+        btn1.onclick = (e) => { e.preventDefault(); data.btn1Action(); };
+      } else {
+        btn1.onclick = null;
+      }
+
+      const btn2 = document.getElementById('modal-table-btn-secondary');
+      btn2.innerText = data.btn2Text;
+      btn2.href = data.btn2Href;
+
+      const modal = document.getElementById('table-interactive-modal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeTableModal() {
+      const modal = document.getElementById('table-interactive-modal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeTableModal();
+    });
+  </script>
 
   <!-- Moving AI Insights Ticker Bar (Looping horizontal ticker) -->
   <div class="ticker-wrap">
