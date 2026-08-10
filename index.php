@@ -32,42 +32,447 @@
   <div class="deco-leaf-left"></div>
   <div class="deco-leaf-right"></div>
 
-  <!-- Split Hero (No Video) -->
-  <section id="hero" style="min-height: 85vh; padding: 140px 24px 80px;">
-    <div class="deco-circle-1"></div>
-    <div class="deco-circle-2"></div>
-    <div class="deco-radial"></div>
-    <div class="split-hero-container">
-      <div class="split-hero-content">
-        <span class="hero-tag fade-up">✨ Premier Chocolate Academy &amp; Lab</span>
-        <h1 class="fade-up-d1">Unlocking Cacao's <em>Science &amp; Art</em></h1>
-        <p class="fade-up-d2">An independent Indian chocolate learning academy covering bean-to-bar craftsmanship, cacao formulation science, and professional masterclasses.</p>
-        <div class="hero-btns fade-up-d3">
-          <a href="workshops.php" class="btn-hero-primary">Start Learning</a>
-          <button onclick="toggleAiDrawer()" class="btn-hero-outline" style="display:inline-flex; align-items:center; gap:8px;">✨ Ask CocoaGenius AI</button>
+  <!-- NEW CONCEPT HERO SECTION (Matching User Reference Image) -->
+  <section id="hero" class="hero-concept-sec">
+    <div class="hero-concept-overlay"></div>
+    
+    <div class="hero-concept-container">
+      <!-- Left Content Column -->
+      <div class="hero-concept-content">
+        <div class="hero-concept-tag">
+          <span>WELCOME TO RT CHOCOS 🌿</span>
+        </div>
+        
+        <h1 class="hero-concept-title">
+          Everything<br>
+          Chocolate.
+          <em>From Tree to Technology.</em>
+        </h1>
+        
+        <p class="hero-concept-subtitle">
+          Your world of chocolate knowledge, crafted for curious minds, creative hands &amp; passionate hearts.
+        </p>
+
+        <!-- Interactive Search Bar -->
+        <div class="hero-search-box">
+          <form onsubmit="handleHeroSearchSubmit(event)">
+            <input type="text" id="hero-search-input" class="hero-search-input" placeholder="What would you like to learn about chocolate today?" autocomplete="off">
+            <button type="submit" class="hero-search-btn" title="Search Chocolate Knowledge">
+              🔍
+            </button>
+          </form>
+        </div>
+
+        <!-- Popular Searches Pills -->
+        <div class="hero-popular-row">
+          <span class="hero-popular-label">Popular searches:</span>
+          <button type="button" class="hero-popular-pill" onclick="triggerHeroSearch('Why does chocolate bloom?')">Why does chocolate bloom?</button>
+          <button type="button" class="hero-popular-pill" onclick="triggerHeroSearch('How to temper chocolate')">How to temper chocolate</button>
+          <button type="button" class="hero-popular-pill" onclick="triggerHeroSearch('Cocoa butter crystallization')">Cocoa butter crystallization</button>
         </div>
       </div>
-      <div class="split-hero-visual fade-in">
-        <div class="split-hero-img-wrapper">
-          <div class="hero-slideshow">
-            <div class="slide active"><img src="assets/premium_chocolate.png" alt="Luxury artisanal chocolate bar craft photography" loading="eager"></div>
-            <div class="slide"><img src="assets/premium_bonbons.png" alt="Glossy hand-painted artisan chocolate bonbons"></div>
-            <div class="slide"><img src="assets/premium_pods.png" alt="Organic raw cacao pods split open displaying pulp"></div>
+
+      <!-- Right Floating Story Card Column -->
+      <div class="hero-concept-visual">
+        <div class="hero-story-card">
+          <div class="story-card-header">
+            <span>🌿 DAILY CHOCOLATE STORY</span>
           </div>
-          
-          <!-- Circular Rotating Brand Stamp -->
-          <div class="circular-stamp-container">
-            <svg class="circular-stamp" viewBox="0 0 100 100">
-              <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
-              <text>
-                <textPath href="#circlePath">🌱 100% CRAFT BEAN-TO-BAR • RT CHOCOS ACADEMY •</textPath>
-              </text>
-            </svg>
+          <h3 class="story-card-title">Why does chocolate snap?</h3>
+          <p class="story-card-desc">The science behind the perfect break &amp; Form V crystal polymorphism.</p>
+          <div class="story-card-body">
+            <img src="assets/daily_story_snap.png" alt="Chocolate Snap Science" class="story-card-img">
+            <a href="blog" class="story-card-btn">READ STORY &rarr;</a>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- CHOOSE YOUR PATH SECTION -->
+  <section id="choose-path" class="choose-path-sec">
+    <div class="choose-path-header">
+      <h2 class="choose-path-title">CHOOSE YOUR PATH</h2>
+    </div>
+    
+    <div class="choose-path-grid">
+      <!-- Card 1: LEARN -->
+      <a href="workshops.php" class="path-card">
+        <div class="path-card-img-wrapper">
+          <img src="assets/bonbon_workshop.png" alt="Learn Chocolate Making">
+        </div>
+        <h4 class="path-card-title">LEARN</h4>
+        <p class="path-card-desc">Courses, workshops &amp; learning paths</p>
+        <span class="path-card-arrow">&rarr;</span>
+      </a>
+
+      <!-- Card 2: MAKE -->
+      <a href="chocopedia.php" class="path-card">
+        <div class="path-card-img-wrapper">
+          <img src="assets/recipeblockimage.png" alt="Make Recipes">
+        </div>
+        <h4 class="path-card-title">MAKE</h4>
+        <p class="path-card-desc">Recipes, techniques &amp; formulations</p>
+        <span class="path-card-arrow">&rarr;</span>
+      </a>
+
+      <!-- Card 3: LAB -->
+      <a href="#ai-chocolab-sec" onclick="document.querySelector('.ai-chocolab-sec')?.scrollIntoView({behavior:'smooth'}); return false;" class="path-card">
+        <div class="path-card-img-wrapper">
+          <img src="assets/tempering_workshop.png" alt="Chocolate Lab">
+        </div>
+        <h4 class="path-card-title">LAB</h4>
+        <p class="path-card-desc">Chocolate science, ingredients &amp; analysis</p>
+        <span class="path-card-arrow">&rarr;</span>
+      </a>
+
+      <!-- Card 4: DISCOVER -->
+      <a href="about.php" class="path-card">
+        <div class="path-card-img-wrapper">
+          <img src="assets/cocoabeans.png.jpg" alt="Discover Stories">
+        </div>
+        <h4 class="path-card-title">DISCOVER</h4>
+        <p class="path-card-desc">Stories, origins, history &amp; industry insights</p>
+        <span class="path-card-arrow">&rarr;</span>
+      </a>
+
+      <!-- Card 5: INNOVATE -->
+      <a href="blog.php" class="path-card">
+        <div class="path-card-img-wrapper">
+          <img src="assets/premium_chocolate.png" alt="Innovate Chocolate">
+        </div>
+        <h4 class="path-card-title">INNOVATE</h4>
+        <p class="path-card-desc">R&amp;D, trends, new ideas &amp; future chocolate</p>
+        <span class="path-card-arrow">&rarr;</span>
+      </a>
+
+      <!-- Card 6: FUN ZONE -->
+      <a href="#fun-zone-sec" onclick="document.querySelector('.cacao-matcher-container')?.scrollIntoView({behavior:'smooth'}); return false;" class="path-card">
+        <div class="path-card-img-wrapper">
+          <img src="assets/premium_bonbons.png" alt="Fun Zone">
+          <span class="path-badge">NEW</span>
+        </div>
+        <h4 class="path-card-title">FUN ZONE</h4>
+        <p class="path-card-desc">Play, quiz, puzzle &amp; win rewards</p>
+        <span class="path-card-arrow">&rarr;</span>
+      </a>
+
+      <!-- Card 7: AI -->
+      <a href="javascript:void(0)" onclick="toggleAiDrawer()" class="path-card">
+        <div class="path-card-img-wrapper">
+          <img src="assets/premium_pods.png" alt="Ask AI">
+        </div>
+        <h4 class="path-card-title">AI</h4>
+        <p class="path-card-desc">Ask anything about chocolate</p>
+        <span class="path-card-arrow">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- BENTO DISCOVERY ROW -->
+  <section class="bento-discovery-sec">
+    <div class="bento-grid">
+      <!-- Bento 1: Daily Discovery -->
+      <div class="bento-card">
+        <div>
+          <div class="bento-label">DAILY DISCOVERY 🌿</div>
+          <h3 class="bento-title">What makes chocolate bloom?</h3>
+          <p class="bento-desc">Understand the science, causes and solutions in simple words.</p>
+        </div>
+        <img src="assets/bloom.png" alt="Chocolate Bloom Science" class="bento-img">
+        <a href="blog" class="bento-link">EXPLORE NOW &rarr;</a>
+      </div>
+
+      <!-- Bento 2: Live from the Lab -->
+      <div class="lab-test-card">
+        <div>
+          <div class="bento-label">LIVE FROM THE LAB 🌿</div>
+          <h3 class="bento-title" style="font-size: 20px;">Freeze-Dried Strawberry in Chocolate</h3>
+          <span class="lab-tag">Test #23</span>
+          <ul class="lab-specs-list">
+            <li><strong>Objective:</strong> Improve crunch &amp; flavor balance</li>
+            <li><strong>Observation:</strong> Intense natural strawberry aroma</li>
+            <li><strong>Result:</strong> Excellent texture &amp; crystal stability</li>
+            <li><strong>Conclusion:</strong> Works beautifully in 70% dark chocolate</li>
+          </ul>
+          <a href="blog" class="bento-link">SEE FULL EXPERIMENT &rarr;</a>
+        </div>
+        <div>
+          <img src="assets/freeze-dried-fruits.png" alt="Freeze dried strawberries in chocolate" style="width: 100%; height: 180px; object-fit: cover; border-radius: 14px;">
+        </div>
+      </div>
+
+      <!-- Bento 3: Ingredient Spotlight -->
+      <div class="bento-card">
+        <div>
+          <div class="bento-label">INGREDIENT SPOTLIGHT</div>
+          <h3 class="bento-title">Cocoa Butter</h3>
+          <p class="bento-desc">The soul of chocolate. Explore its types, properties, functions &amp; impact.</p>
+        </div>
+        <img src="assets/cocoa_butter_spotlight.png" alt="Cocoa Butter Chunks" class="bento-img">
+        <a href="blog" class="bento-link">EXPLORE MORE &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE CHOCOLATE TABLE SECTION -->
+  <section class="chocolate-table-sec">
+    <div class="chocolate-table-header">
+      <h2 class="chocolate-table-title">EXPLORE THE CHOCOLATE TABLE 🌿</h2>
+      <p class="chocolate-table-subtitle">Click any object to explore a world of knowledge.</p>
+    </div>
+
+    <div class="chocolate-table-wrapper">
+      <img src="assets/chocolate_table_interactive.png" alt="Artisan Chocolate Table" class="chocolate-table-bg-img">
+
+      <!-- Interactive Hotspot Pins -->
+      <!-- 1. Bean to Bar (bowl of cacao beans) -->
+      <div class="table-hotspot" style="top: 32%; left: 32%;" onclick="openTableModal('bean-to-bar')">
+        <div class="hotspot-pin">
+          <span class="hotspot-dot"></span>
+          <span>Bean to Bar</span>
+        </div>
+      </div>
+
+      <!-- 2. Knowledge Hub (open leather journal) -->
+      <div class="table-hotspot" style="top: 72%; left: 52%;" onclick="openTableModal('knowledge-hub')">
+        <div class="hotspot-pin">
+          <span class="hotspot-dot"></span>
+          <span>Knowledge Hub</span>
+        </div>
+      </div>
+
+      <!-- 3. Chocolate Lab (microscope) -->
+      <div class="table-hotspot" style="top: 26%; left: 74%;" onclick="openTableModal('chocolate-lab')">
+        <div class="hotspot-pin">
+          <span class="hotspot-dot"></span>
+          <span>Chocolate Lab</span>
+        </div>
+      </div>
+
+      <!-- 4. Recipes & Formulations (chocolate bar) -->
+      <div class="table-hotspot" style="top: 60%; left: 85%;" onclick="openTableModal('recipes-formulations')">
+        <div class="hotspot-pin">
+          <span class="hotspot-dot"></span>
+          <span>Recipes &amp; Formulations</span>
+        </div>
+      </div>
+
+      <!-- 5. Techniques (knife / scraper) -->
+      <div class="table-hotspot" style="top: 66%; left: 36%;" onclick="openTableModal('techniques')">
+        <div class="hotspot-pin">
+          <span class="hotspot-dot"></span>
+          <span>Techniques</span>
+        </div>
+      </div>
+
+      <!-- 6. Origins & Atlas (cacao pod / map) -->
+      <div class="table-hotspot" style="top: 66%; left: 14%;" onclick="openTableModal('origins-atlas')">
+        <div class="hotspot-pin">
+          <span class="hotspot-dot"></span>
+          <span>Origins &amp; Atlas</span>
+        </div>
+      </div>
+
+      <!-- 7. Workshops & Academy (whisk) -->
+      <div class="table-hotspot" style="top: 66%; left: 70%;" onclick="openTableModal('workshops-academy')">
+        <div class="hotspot-pin">
+          <span class="hotspot-dot"></span>
+          <span>Workshops &amp; Academy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Table Modal Backdrop -->
+  <div id="table-interactive-modal" class="table-modal-backdrop" onclick="if(event.target === this) closeTableModal()">
+    <div class="table-modal-box">
+      <button type="button" class="table-modal-close" onclick="closeTableModal()" title="Close Modal">&times;</button>
+      
+      <div class="table-modal-badge" id="modal-table-badge">🌿 CRAFT PROCESS</div>
+      <h3 class="table-modal-title" id="modal-table-title">Bean to Bar</h3>
+      <p class="table-modal-desc" id="modal-table-desc">
+        Explore the entire journey from raw cacao bean harvesting to precision roasting, winnowing, stone grinding, and tempering.
+      </p>
+
+      <div class="table-modal-highlights">
+        <h5>✨ KEY INSIGHTS &amp; TAKEAWAYS</h5>
+        <ul id="modal-table-list">
+          <li>Single-Origin Bean Sourcing from Kerala &amp; Karnataka</li>
+          <li>Fermentation &amp; Drying Thermodynamics</li>
+          <li>72-Hour Stone Grinding (Conching) for Silky Smooth Melt</li>
+        </ul>
+      </div>
+
+      <div class="table-modal-actions" id="modal-table-actions">
+        <a href="chocopedia.php" id="modal-table-btn-primary" class="table-modal-btn-primary">Explore Bean-to-Bar Guide &rarr;</a>
+        <a href="workshops.php" id="modal-table-btn-secondary" class="table-modal-btn-secondary">Book Workshop</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TABLE_MODAL_DATA = {
+      'bean-to-bar': {
+        badge: '🌿 CRAFT PROCESS',
+        title: 'Bean to Bar Cacao Craft',
+        desc: 'From estate cacao bean selection and post-harvest fermentation chemistry to roasting thermodynamics, winnowing, and stone grinding (conching). Learn how raw beans transform into fine chocolate.',
+        highlights: [
+          'Direct Single-Origin Procurement from Estates in Kerala & Karnataka',
+          'Fermentation & Drying Thermodynamics for Flavor Precursor Development',
+          '72-Hour Stone Grinding & Micro-Particle Size Reduction (<20 Microns)'
+        ],
+        btn1Text: 'Explore Bean-to-Bar Guide →',
+        btn1Href: 'chocopedia.php',
+        btn2Text: 'Book Workshop',
+        btn2Href: 'workshops.php'
+      },
+      'knowledge-hub': {
+        badge: '📚 ENCYCLOPEDIA & JOURNAL',
+        title: 'RT Chocos Knowledge Hub',
+        desc: 'Our comprehensive digital repository of cocoa science articles, troubleshooting manuals, research papers, and technical crystallization guides.',
+        highlights: [
+          'Fat Bloom vs Sugar Bloom Defect Diagnostics',
+          'Cocoa Butter Polymorphism & Form V Crystal Nucleation Curves',
+          'pH Balance & Alkalization in Natural vs Dutch-Processed Cocoa Powder'
+        ],
+        btn1Text: 'Browse Science Journal →',
+        btn1Href: 'blog.php',
+        btn2Text: 'Search Chocopedia',
+        btn2Href: 'chocopedia.php'
+      },
+      'chocolate-lab': {
+        badge: '🧪 AI FORMULATION & R&D',
+        title: 'Chocolate Science Lab',
+        desc: 'Our advanced R&D laboratory playground for precision ingredient analysis, crystal structure testing, and AI-powered chocolate bar formulation.',
+        highlights: [
+          'CocoaGenius AI Alchemist Recipe Engine',
+          'Water Activity & Emulsion Stability Matrix',
+          'Custom Inclusions & Fat-to-Sugar Crystallization Ratios'
+        ],
+        btn1Text: 'Launch AI Chocolab →',
+        btn1Href: '#ai-chocolab-sec',
+        btn1Action: () => { closeTableModal(); document.querySelector('.ai-chocolab-sec')?.scrollIntoView({behavior:'smooth'}); },
+        btn2Text: 'Ask CocoaGenius AI',
+        btn2Href: 'javascript:toggleAiDrawer()'
+      },
+      'recipes-formulations': {
+        badge: '🍫 PRO FORMULATIONS',
+        title: 'Recipes & Formulations',
+        desc: 'Craft precision blueprints for single-origin dark slabs, glossy hand-painted bonbons, ganache emulsions, and artisan truffles.',
+        highlights: [
+          '72% Single Origin Aztec Dark Formula',
+          'Passionfruit & Cardamom Ganache Bonbon Emulsion',
+          'Roasted Almond & Sea Salt Caramel Slab'
+        ],
+        btn1Text: 'Explore All Recipes →',
+        btn1Href: 'chocopedia.php',
+        btn2Text: 'Formulate Custom Bar',
+        btn2Href: '#ai-chocolab-sec'
+      },
+      'techniques': {
+        badge: '👩‍🍳 MASTER SKILLS',
+        title: 'Chocolatier Techniques',
+        desc: 'Master essential craft techniques: seed method tempering, tabling on granite/marble, airbrushing cocoa butter colors, and poly-carbonate shell moulding.',
+        highlights: [
+          'Marble Slab Tabling & Crystal Seeding Thermodynamics',
+          'Form V Nucleation (88°F - 90°F Working Range)',
+          'Glossy Moulding & Snap Physics'
+        ],
+        btn1Text: 'View Masterclass Courses →',
+        btn1Href: 'workshops.php',
+        btn2Text: 'Troubleshoot Defect',
+        btn2Href: 'blog.php'
+      },
+      'origins-atlas': {
+        badge: '🗺️ TERROIR & SOURCING',
+        title: 'Origins & Cacao Atlas',
+        desc: 'Trace the roots of global cacao genetics—Criollo, Trinitario, and Forastero—and explore Indian estate micro-climates and terroir profiling.',
+        highlights: [
+          'Idukki, Kerala Single Estate Terroir & Flavor Profiles',
+          'Puttur, Karnataka Cacao Fermentation Protocols',
+          'Soil Chemistry, Altitude & Solar Drying Flavor Impact'
+        ],
+        btn1Text: 'Discover Cacao Sourcing →',
+        btn1Href: 'about.php',
+        btn2Text: 'Read Origin Articles',
+        btn2Href: 'blog.php'
+      },
+      'workshops-academy': {
+        badge: '🎓 PROFESSIONAL ACADEMY',
+        title: 'Workshops & Academy',
+        desc: 'Hands-on and online certification masterclasses led by expert Aarti Saluja Sahni for home bakers, pastry chefs, and craft chocolate entrepreneurs.',
+        highlights: [
+          'Professional Bean-to-Bar Certification (Mumbai & Online)',
+          'Bonbon Spraying, Moulding & Ganache Emulsion Science',
+          'Commercial Chocolatier Setup & Scaling Blueprint'
+        ],
+        btn1Text: 'View Workshop Schedule →',
+        btn1Href: 'workshops.php',
+        btn2Text: 'Contact Aarti',
+        btn2Href: 'contact.php'
+      }
+    };
+
+    function openTableModal(key) {
+      const data = TABLE_MODAL_DATA[key];
+      if (!data) return;
+
+      document.getElementById('modal-table-badge').innerText = data.badge;
+      document.getElementById('modal-table-title').innerText = data.title;
+      document.getElementById('modal-table-desc').innerText = data.desc;
+
+      const listContainer = document.getElementById('modal-table-list');
+      listContainer.innerHTML = data.highlights.map(item => `<li>${item}</li>`).join('');
+
+      const btn1 = document.getElementById('modal-table-btn-primary');
+      btn1.innerText = data.btn1Text;
+      btn1.href = data.btn1Href;
+      if (data.btn1Action) {
+        btn1.onclick = (e) => { e.preventDefault(); data.btn1Action(); };
+      } else {
+        btn1.onclick = null;
+      }
+
+      const btn2 = document.getElementById('modal-table-btn-secondary');
+      btn2.innerText = data.btn2Text;
+      btn2.href = data.btn2Href;
+
+      const modal = document.getElementById('table-interactive-modal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeTableModal() {
+      const modal = document.getElementById('table-interactive-modal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function triggerHeroSearch(query) {
+      const input = document.getElementById('hero-search-input');
+      if (input) {
+        input.value = query;
+      }
+      handleHeroSearchSubmit(new Event('submit'));
+    }
+
+    function handleHeroSearchSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const query = document.getElementById('hero-search-input')?.value?.trim();
+      if (!query) return;
+
+      if (typeof sendTroubleshootQuery === 'function') {
+        sendTroubleshootQuery(query);
+      } else {
+        window.location.href = `chocopedia.php?q=${encodeURIComponent(query)}`;
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeTableModal();
+    });
+  </script>
 
   <!-- Moving AI Insights Ticker Bar (Looping horizontal ticker) -->
   <div class="ticker-wrap">
