@@ -205,7 +205,7 @@ function getCurrentUrlPage() {
 
 function updateActiveNavLinks() {
   const navPage = getCurrentUrlPage();
-  document.querySelectorAll('.nav-link, .mobile-nav-link, .dropdown-item, .mobile-nav-sublink').forEach(link => {
+  document.querySelectorAll('.nav-link, .nav-item-link, .mobile-nav-link, .dropdown-item, .mobile-nav-sublink').forEach(link => {
     link.classList.toggle('active', link.dataset.page === navPage);
   });
   const academyToggle = document.querySelector('.nav-item-dropdown .dropdown-toggle');

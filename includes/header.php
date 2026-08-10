@@ -293,76 +293,169 @@ if (!empty($pageSchema)) {
 ?>
 <header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
   <div class="header-inner">
-    <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" title="RT Chocos — Artisanal Cacao Academy & Journal">
-      <svg class="logo-svg-emblem" width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="40" height="40" rx="10" fill="rgba(212,175,55,0.12)" stroke="rgba(212,175,55,0.3)" stroke-width="1.2"/>
-        <path d="M20 8C24 12.5 28 15.5 28 21.5C28 26 24.5 30 20 32C15.5 30 12 26 12 21.5C12 15.5 16 12.5 20 8Z" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="20" cy="20" r="2" fill="#D4AF37"/>
+    <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" title="RT CHOCOS — Artisanal Cacao Academy & Journal">
+      <svg class="logo-svg-emblem" width="26" height="34" viewBox="0 0 40 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Top stem -->
+        <path d="M19 1.5C19 0.7 21 0.7 21 1.5V7.5H19V1.5Z" fill="#D4AF37"/>
+        <!-- Center segment -->
+        <path d="M20 7.5C21.8 17 21.8 35.5 20 45C18.2 35.5 18.2 17 20 7.5Z" fill="#D4AF37"/>
+        <!-- Inner right segment -->
+        <path d="M20 7.5C22.6 10 26 19 24.6 33C23.8 38 22.2 42 20 45C21.5 41.5 23.2 36.5 23.6 31.5C24.6 19 21.8 11.2 20 7.5Z" fill="#D4AF37"/>
+        <!-- Inner left segment -->
+        <path d="M20 7.5C17.4 10 14 19 15.4 33C16.2 38 17.8 42 20 45C18.5 41.5 16.8 36.5 16.4 31.5C15.4 19 18.2 11.2 20 7.5Z" fill="#D4AF37"/>
+        <!-- Outer right segment -->
+        <path d="M20 7.5C25.5 10 31.2 19 30.5 31C30 37.5 26.5 42.5 20 45C25.2 42 28.2 36.5 28.7 30.5C29.3 19.8 24.5 11.5 20 7.5Z" fill="#D4AF37"/>
+        <!-- Outer left segment -->
+        <path d="M20 7.5C14.5 10 8.8 19 9.5 31C10 37.5 13.5 42.5 20 45C14.8 42 11.8 36.5 11.3 30.5C10.7 19.8 15.5 11.5 20 7.5Z" fill="#D4AF37"/>
       </svg>
-      <span class="logo-text"><span class="logo-rt">RT</span><span class="logo-chocos"> CHOCOS</span></span>
+      <span class="logo-title">RT CHOCOS</span>
     </a>
 
-    <div class="nav-command-pill">
-      <nav class="header-nav" aria-label="Primary navigation">
-        <a class="nav-link <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>">Home</a>
-        <a class="nav-link <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
-        
-        <!-- ACADEMY DROPDOWN MENU -->
-        <div class="nav-item-dropdown">
-          <a class="nav-link dropdown-toggle <?php echo ($activeNav === 'workshops' || $activeNav === 'gallery') ? 'active' : ''; ?>" data-page="academy" href="<?php echo $pathPrefix; ?>workshops.php" onclick="if(window.innerWidth > 900 && !('ontouchstart' in window)) { /* hover handles it */ }" title="RT Chocos Academy">
-            Academy <span class="dropdown-arrow">▾</span>
-          </a>
-          <div class="nav-dropdown-menu">
-            <a class="dropdown-item <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy & Masterclasses">
-              🎓 Workshops &amp; Masterclasses
-            </a>
-            <a class="dropdown-item <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php" title="Tested Recipes & Formulations">
-              🍫 Recipes &amp; Formulations
-            </a>
-          </div>
-        </div>
+    <div class="header-divider"></div>
 
-        <a class="nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php" title="Indian Chocolate Journal">Blog</a>
-        <a class="nav-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Encyclopedia">Chocopedia</a>
-        <a class="nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
-      </nav>
-    </div>
+    <nav class="header-nav" aria-label="Primary navigation">
+      <!-- 1. EXPLORE -->
+      <a class="nav-item-link <?php echo ($activeNav === 'home' || $activeNav === 'about') ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>" title="Explore RT Chocos">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+        </svg>
+        <span class="nav-label">EXPLORE</span>
+      </a>
+
+      <!-- 2. ACADEMY -->
+      <div class="nav-item-dropdown">
+        <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'workshops' || $activeNav === 'gallery') ? 'active' : ''; ?>" data-page="academy" href="<?php echo $pathPrefix; ?>workshops.php" title="RT Chocos Academy">
+          <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"/>
+          </svg>
+          <span class="nav-label">ACADEMY</span>
+        </a>
+        <div class="nav-dropdown-menu">
+          <a class="dropdown-item <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy & Masterclasses">
+            🎓 Workshops &amp; Masterclasses
+          </a>
+          <a class="dropdown-item <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php" title="Tested Recipes & Formulations">
+            🍫 Recipes &amp; Formulations
+          </a>
+        </div>
+      </div>
+
+      <!-- 3. THE CACAO JOURNAL -->
+      <a class="nav-item-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php" title="The Cacao Journal & Blog">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        <span class="nav-label">THE CACAO JOURNAL</span>
+      </a>
+
+      <!-- 4. INNOVATION LAB -->
+      <a class="nav-item-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Innovation Lab & Encyclopedia">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/>
+          <line x1="8.5" y1="2" x2="15.5" y2="2"/>
+          <line x1="7" y1="14.5" x2="17" y2="14.5"/>
+        </svg>
+        <span class="nav-label">INNOVATION LAB</span>
+      </a>
+
+      <!-- 5. CHOCOLATE AI -->
+      <button class="nav-item-link nav-ai-trigger" aria-label="Ask CocoaGenius AI" onclick="toggleAiDrawer()">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11a2 2 0 0 1-2 2h-1"/>
+          <path d="M9.5 4.5A3.5 3.5 0 0 0 6 8c0 1.4.8 2.6 2 3.1V12a2 2 0 0 0 2 2h1"/>
+          <circle cx="12" cy="6" r="1"/>
+          <path d="M12 13v8"/>
+          <path d="M8 17h8"/>
+          <circle cx="6" cy="8" r="1"/>
+          <circle cx="18" cy="8" r="1"/>
+          <circle cx="8" cy="17" r="1"/>
+          <circle cx="16" cy="17" r="1"/>
+          <circle cx="12" cy="21" r="1"/>
+        </svg>
+        <span class="nav-label">CHOCOLATE AI</span>
+      </button>
+
+      <!-- 6. FUNZONE -->
+      <a class="nav-item-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php" title="Funzone & Interactive Features">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="6" y1="12" x2="10" y2="12"/>
+          <line x1="8" y1="10" x2="8" y2="14"/>
+          <circle cx="15" cy="11" r="0.75" fill="currentColor"/>
+          <circle cx="17" cy="13" r="0.75" fill="currentColor"/>
+          <path d="M17.8 2a2 2 0 0 1 1.8 1.1l1.8 3.6a2 2 0 0 1 .6 2.3l-2.4 7.2a3 3 0 0 1-2.8 2.1h-9.6a3 3 0 0 1-2.8-2.1l-2.4-7.2a2 2 0 0 1 .6-2.3l1.8-3.6A2 2 0 0 1 6.2 2h11.6z"/>
+        </svg>
+        <span class="nav-label">FUNZONE</span>
+      </a>
+    </nav>
+
+    <div class="header-divider"></div>
 
     <div class="header-actions">
-      <a href="<?php echo $pathPrefix; ?>workshops.php" class="nav-status-badge" title="Admissions Open for Chocolate Workshops">
-        <span class="status-pulse-dot"></span>
-        <span class="status-text">Masterclasses</span>
-      </a>
-      <button class="nav-ai-btn shimmer-btn" aria-label="Ask CocoaGenius AI Chatbot" onclick="toggleAiDrawer()">
-        ✨ <span class="ai-btn-text">Ask AI</span>
-      </button>
       <button class="search-btn" aria-label="Search RT Chocos chocolate articles" onclick="openSearch()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon-svg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </button>
+
+      <a href="<?php echo $pathPrefix; ?>admin/login.php" class="signin-join-btn" title="Sign In or Join RT Chocos">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>SIGN IN / JOIN</span>
+      </a>
+
       <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Open navigation menu">
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
+
   <nav id="mobile-menu" aria-label="Mobile navigation">
-    <a class="mobile-nav-link <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>">Home</a>
-    <a class="mobile-nav-link <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About</a>
-    
+    <a class="mobile-nav-link <?php echo ($activeNav === 'home' || $activeNav === 'about') ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+      <span>EXPLORE</span>
+    </a>
+
     <div class="mobile-nav-group">
-      <div class="mobile-nav-group-title">ACADEMY</div>
+      <div class="mobile-nav-group-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"/></svg>
+        <span>ACADEMY</span>
+      </div>
       <a class="mobile-nav-sublink <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">🎓 Workshops &amp; Masterclasses</a>
       <a class="mobile-nav-sublink <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">🍫 Recipes &amp; Formulations</a>
     </div>
 
-    <a class="mobile-nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">Blog</a>
-    <a class="mobile-nav-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
-    <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">Contact</a>
-    <button class="mobile-nav-ai-btn" onclick="toggleAiDrawer(); toggleMobileMenu();">
-      ✨ Ask CocoaGenius AI
+    <a class="mobile-nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span>THE CACAO JOURNAL</span>
+    </a>
+
+    <a class="mobile-nav-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="7" y1="14.5" x2="17" y2="14.5"/></svg>
+      <span>INNOVATION LAB</span>
+    </a>
+
+    <button class="mobile-nav-link mobile-nav-ai-btn" onclick="toggleAiDrawer(); toggleMobileMenu();">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11a2 2 0 0 1-2 2h-1"/><path d="M9.5 4.5A3.5 3.5 0 0 0 6 8c0 1.4.8 2.6 2 3.1V12a2 2 0 0 0 2 2h1"/><circle cx="12" cy="6" r="1"/><path d="M12 13v8"/><path d="M8 17h8"/><circle cx="6" cy="8" r="1"/><circle cx="18" cy="8" r="1"/><circle cx="8" cy="17" r="1"/><circle cx="16" cy="17" r="1"/><circle cx="12" cy="21" r="1"/></svg>
+      <span>CHOCOLATE AI</span>
     </button>
+
+    <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="11" r="0.75" fill="currentColor"/><circle cx="17" cy="13" r="0.75" fill="currentColor"/><path d="M17.8 2a2 2 0 0 1 1.8 1.1l1.8 3.6a2 2 0 0 1 .6 2.3l-2.4 7.2a3 3 0 0 1-2.8 2.1h-9.6a3 3 0 0 1-2.8-2.1l-2.4-7.2a2 2 0 0 1 .6-2.3l1.8-3.6A2 2 0 0 1 6.2 2h11.6z"/></svg>
+      <span>FUNZONE</span>
+    </a>
+
+    <div style="padding: 16px 20px;">
+      <a href="<?php echo $pathPrefix; ?>admin/login.php" class="signin-join-btn" style="width: 100%; justify-content: center;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>SIGN IN / JOIN</span>
+      </a>
+    </div>
   </nav>
 </header>
 
