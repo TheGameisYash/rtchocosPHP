@@ -32,140 +32,40 @@
   <div class="deco-leaf-left"></div>
   <div class="deco-leaf-right"></div>
 
-  <!-- NEW CONCEPT HERO SECTION (Matching User Reference Image) -->
-  <section id="hero" class="hero-concept-sec">
-    <div class="hero-concept-overlay"></div>
-    
-    <div class="hero-concept-container">
-      <!-- Left Content Column -->
-      <div class="hero-concept-content">
-        <div class="hero-concept-tag">
-          <span>WELCOME TO RT CHOCOS 🌿</span>
-        </div>
-        
-        <h1 class="hero-concept-title">
-          Everything<br>
-          Chocolate.
-          <em>From Tree to Technology.</em>
-        </h1>
-        
-        <p class="hero-concept-subtitle">
-          Your world of chocolate knowledge, crafted for curious minds, creative hands &amp; passionate hearts.
-        </p>
-
-        <!-- Interactive Search Bar -->
-        <div class="hero-search-box">
-          <form onsubmit="handleHeroSearchSubmit(event)">
-            <input type="text" id="hero-search-input" class="hero-search-input" placeholder="What would you like to learn about chocolate today?" autocomplete="off">
-            <button type="submit" class="hero-search-btn" title="Search Chocolate Knowledge">
-              🔍
-            </button>
-          </form>
-        </div>
-
-        <!-- Popular Searches Pills -->
-        <div class="hero-popular-row">
-          <span class="hero-popular-label">Popular searches:</span>
-          <button type="button" class="hero-popular-pill" onclick="triggerHeroSearch('Why does chocolate bloom?')">Why does chocolate bloom?</button>
-          <button type="button" class="hero-popular-pill" onclick="triggerHeroSearch('How to temper chocolate')">How to temper chocolate</button>
-          <button type="button" class="hero-popular-pill" onclick="triggerHeroSearch('Cocoa butter crystallization')">Cocoa butter crystallization</button>
+  <!-- Split Hero (No Video) -->
+  <section id="hero" style="min-height: 85vh; padding: 140px 24px 80px;">
+    <div class="deco-circle-1"></div>
+    <div class="deco-circle-2"></div>
+    <div class="deco-radial"></div>
+    <div class="split-hero-container">
+      <div class="split-hero-content">
+        <span class="hero-tag fade-up">✨ Premier Chocolate Academy &amp; Lab</span>
+        <h1 class="fade-up-d1">Unlocking Cacao's <em>Science &amp; Art</em></h1>
+        <p class="fade-up-d2">An independent Indian chocolate learning academy covering bean-to-bar craftsmanship, cacao formulation science, and professional masterclasses.</p>
+        <div class="hero-btns fade-up-d3">
+          <a href="workshops.php" class="btn-hero-primary">Start Learning</a>
+          <button onclick="toggleAiDrawer()" class="btn-hero-outline" style="display:inline-flex; align-items:center; gap:8px;">✨ Ask CocoaGenius AI</button>
         </div>
       </div>
-
-      <!-- Right Floating Story Card Column -->
-      <div class="hero-concept-visual">
-        <div class="hero-story-card">
-          <div class="story-card-header">
-            <span>🌿 DAILY CHOCOLATE STORY</span>
+      <div class="split-hero-visual fade-in">
+        <div class="split-hero-img-wrapper">
+          <div class="hero-slideshow">
+            <div class="slide active"><img src="assets/premium_chocolate.png" alt="Luxury artisanal chocolate bar craft photography" loading="eager"></div>
+            <div class="slide"><img src="assets/premium_bonbons.png" alt="Glossy hand-painted artisan chocolate bonbons"></div>
+            <div class="slide"><img src="assets/premium_pods.png" alt="Organic raw cacao pods split open displaying pulp"></div>
           </div>
-          <h3 class="story-card-title">Why does chocolate snap?</h3>
-          <p class="story-card-desc">The science behind the perfect break &amp; Form V crystal polymorphism.</p>
-          <div class="story-card-body">
-            <img src="assets/daily_story_snap.png" alt="Chocolate Snap Science" class="story-card-img">
-            <a href="blog" class="story-card-btn">READ STORY &rarr;</a>
+          
+          <!-- Circular Rotating Brand Stamp -->
+          <div class="circular-stamp-container">
+            <svg class="circular-stamp" viewBox="0 0 100 100">
+              <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
+              <text>
+                <textPath href="#circlePath">🌱 100% CRAFT BEAN-TO-BAR • RT CHOCOS ACADEMY •</textPath>
+              </text>
+            </svg>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- CHOOSE YOUR PATH SECTION -->
-  <section id="choose-path" class="choose-path-sec">
-    <div class="choose-path-header">
-      <h2 class="choose-path-title">CHOOSE YOUR PATH</h2>
-    </div>
-    
-    <div class="choose-path-grid">
-      <!-- Card 1: LEARN -->
-      <a href="workshops.php" class="path-card">
-        <div class="path-card-img-wrapper">
-          <img src="assets/bonbon_workshop.png" alt="Learn Chocolate Making">
-        </div>
-        <h4 class="path-card-title">LEARN</h4>
-        <p class="path-card-desc">Courses, workshops &amp; learning paths</p>
-        <span class="path-card-arrow">&rarr;</span>
-      </a>
-
-      <!-- Card 2: MAKE -->
-      <a href="chocopedia.php" class="path-card">
-        <div class="path-card-img-wrapper">
-          <img src="assets/recipeblockimage.png" alt="Make Recipes">
-        </div>
-        <h4 class="path-card-title">MAKE</h4>
-        <p class="path-card-desc">Recipes, techniques &amp; formulations</p>
-        <span class="path-card-arrow">&rarr;</span>
-      </a>
-
-      <!-- Card 3: LAB -->
-      <a href="#ai-chocolab-sec" onclick="document.querySelector('.ai-chocolab-sec')?.scrollIntoView({behavior:'smooth'}); return false;" class="path-card">
-        <div class="path-card-img-wrapper">
-          <img src="assets/tempering_workshop.png" alt="Chocolate Lab">
-        </div>
-        <h4 class="path-card-title">LAB</h4>
-        <p class="path-card-desc">Chocolate science, ingredients &amp; analysis</p>
-        <span class="path-card-arrow">&rarr;</span>
-      </a>
-
-      <!-- Card 4: DISCOVER -->
-      <a href="about.php" class="path-card">
-        <div class="path-card-img-wrapper">
-          <img src="assets/cocoabeans.png.jpg" alt="Discover Stories">
-        </div>
-        <h4 class="path-card-title">DISCOVER</h4>
-        <p class="path-card-desc">Stories, origins, history &amp; industry insights</p>
-        <span class="path-card-arrow">&rarr;</span>
-      </a>
-
-      <!-- Card 5: INNOVATE -->
-      <a href="blog.php" class="path-card">
-        <div class="path-card-img-wrapper">
-          <img src="assets/premium_chocolate.png" alt="Innovate Chocolate">
-        </div>
-        <h4 class="path-card-title">INNOVATE</h4>
-        <p class="path-card-desc">R&amp;D, trends, new ideas &amp; future chocolate</p>
-        <span class="path-card-arrow">&rarr;</span>
-      </a>
-
-      <!-- Card 6: FUN ZONE -->
-      <a href="#fun-zone-sec" onclick="document.querySelector('.cacao-matcher-container')?.scrollIntoView({behavior:'smooth'}); return false;" class="path-card">
-        <div class="path-card-img-wrapper">
-          <img src="assets/premium_bonbons.png" alt="Fun Zone">
-          <span class="path-badge">NEW</span>
-        </div>
-        <h4 class="path-card-title">FUN ZONE</h4>
-        <p class="path-card-desc">Play, quiz, puzzle &amp; win rewards</p>
-        <span class="path-card-arrow">&rarr;</span>
-      </a>
-
-      <!-- Card 7: AI -->
-      <a href="javascript:void(0)" onclick="toggleAiDrawer()" class="path-card">
-        <div class="path-card-img-wrapper">
-          <img src="assets/premium_pods.png" alt="Ask AI">
-        </div>
-        <h4 class="path-card-title">AI</h4>
-        <p class="path-card-desc">Ask anything about chocolate</p>
-        <span class="path-card-arrow">&rarr;</span>
-      </a>
     </div>
   </section>
 
