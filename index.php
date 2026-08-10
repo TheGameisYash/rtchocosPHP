@@ -69,52 +69,6 @@
     </div>
   </section>
 
-  <!-- BENTO DISCOVERY ROW -->
-  <section class="bento-discovery-sec">
-    <div class="bento-grid">
-      <!-- Bento 1: Daily Discovery -->
-      <div class="bento-card">
-        <div>
-          <div class="bento-label">DAILY DISCOVERY 🌿</div>
-          <h3 class="bento-title">What makes chocolate bloom?</h3>
-          <p class="bento-desc">Understand the science, causes and solutions in simple words.</p>
-        </div>
-        <img src="assets/bloom.png" alt="Chocolate Bloom Science" class="bento-img">
-        <a href="blog" class="bento-link">EXPLORE NOW &rarr;</a>
-      </div>
-
-      <!-- Bento 2: Live from the Lab -->
-      <div class="lab-test-card">
-        <div>
-          <div class="bento-label">LIVE FROM THE LAB 🌿</div>
-          <h3 class="bento-title" style="font-size: 20px;">Freeze-Dried Strawberry in Chocolate</h3>
-          <span class="lab-tag">Test #23</span>
-          <ul class="lab-specs-list">
-            <li><strong>Objective:</strong> Improve crunch &amp; flavor balance</li>
-            <li><strong>Observation:</strong> Intense natural strawberry aroma</li>
-            <li><strong>Result:</strong> Excellent texture &amp; crystal stability</li>
-            <li><strong>Conclusion:</strong> Works beautifully in 70% dark chocolate</li>
-          </ul>
-          <a href="blog" class="bento-link">SEE FULL EXPERIMENT &rarr;</a>
-        </div>
-        <div>
-          <img src="assets/freeze-dried-fruits.png" alt="Freeze dried strawberries in chocolate" style="width: 100%; height: 180px; object-fit: cover; border-radius: 14px;">
-        </div>
-      </div>
-
-      <!-- Bento 3: Ingredient Spotlight -->
-      <div class="bento-card">
-        <div>
-          <div class="bento-label">INGREDIENT SPOTLIGHT</div>
-          <h3 class="bento-title">Cocoa Butter</h3>
-          <p class="bento-desc">The soul of chocolate. Explore its types, properties, functions &amp; impact.</p>
-        </div>
-        <img src="assets/cocoa_butter_spotlight.png" alt="Cocoa Butter Chunks" class="bento-img">
-        <a href="blog" class="bento-link">EXPLORE MORE &rarr;</a>
-      </div>
-    </div>
-  </section>
-
   <!-- INTERACTIVE CHOCOLATE TABLE SECTION -->
   <section class="chocolate-table-sec">
     <div class="chocolate-table-header">
