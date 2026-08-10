@@ -33,7 +33,7 @@
   <div class="deco-leaf-right"></div>
 
   <!-- Split Hero (No Video) -->
-  <section id="hero" style="min-height: 85vh; padding: 140px 24px 80px;">
+  <section id="hero">
     <div class="deco-circle-1"></div>
     <div class="deco-circle-2"></div>
     <div class="deco-radial"></div>
@@ -71,68 +71,72 @@
 
   <!-- INTERACTIVE CHOCOLATE TABLE SECTION -->
   <section class="chocolate-table-sec">
-    <div class="chocolate-table-header">
-      <h2 class="chocolate-table-title">EXPLORE THE CHOCOLATE TABLE 🌿</h2>
-      <p class="chocolate-table-subtitle">Click any object to explore a world of knowledge.</p>
-    </div>
-
-    <div class="chocolate-table-wrapper">
-      <img src="assets/chocolate_table_interactive.png" alt="Artisan Chocolate Table" class="chocolate-table-bg-img">
-
-      <!-- Interactive Hotspot Pins -->
-      <!-- 1. Bean to Bar (bowl of cacao beans) -->
-      <div class="table-hotspot" style="top: 32%; left: 32%;" onclick="openTableModal('bean-to-bar')">
-        <div class="hotspot-pin">
-          <span class="hotspot-dot"></span>
-          <span>Bean to Bar</span>
-        </div>
+    <div class="chocolate-table-inner">
+      <div class="chocolate-table-header">
+        <div class="chocolate-table-label">🌿 INTERACTIVE EXPERIENCE</div>
+        <h2 class="chocolate-table-title">Explore the Chocolate Table</h2>
+        <p class="chocolate-table-subtitle">Click any object on the artisan workbench to explore a world of chocolate knowledge, techniques, and science.</p>
+        <div class="chocolate-table-divider"></div>
       </div>
 
-      <!-- 2. Knowledge Hub (open leather journal) -->
-      <div class="table-hotspot" style="top: 72%; left: 52%;" onclick="openTableModal('knowledge-hub')">
-        <div class="hotspot-pin">
-          <span class="hotspot-dot"></span>
-          <span>Knowledge Hub</span>
-        </div>
-      </div>
+      <div class="chocolate-table-wrapper">
+        <img src="assets/chocolate_table_interactive.png" alt="Artisan Chocolate Workbench with cocoa beans, notebook, chocolate bar, and tools" class="chocolate-table-bg-img">
 
-      <!-- 3. Chocolate Lab (microscope) -->
-      <div class="table-hotspot" style="top: 26%; left: 74%;" onclick="openTableModal('chocolate-lab')">
-        <div class="hotspot-pin">
-          <span class="hotspot-dot"></span>
-          <span>Chocolate Lab</span>
+        <!-- Interactive Hotspot Pins — positions match the generated image exactly -->
+        <!-- 1. Bean to Bar → Wooden bowl of cacao beans (top-center-left) -->
+        <div class="table-hotspot" style="top: 18%; left: 32%;" onclick="openTableModal('bean-to-bar')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Bean to Bar</span>
+          </div>
         </div>
-      </div>
 
-      <!-- 4. Recipes & Formulations (chocolate bar) -->
-      <div class="table-hotspot" style="top: 60%; left: 85%;" onclick="openTableModal('recipes-formulations')">
-        <div class="hotspot-pin">
-          <span class="hotspot-dot"></span>
-          <span>Recipes &amp; Formulations</span>
+        <!-- 2. Knowledge Hub → Open leather recipe journal (center of table) -->
+        <div class="table-hotspot" style="top: 52%; left: 48%;" onclick="openTableModal('knowledge-hub')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Knowledge Hub</span>
+          </div>
         </div>
-      </div>
 
-      <!-- 5. Techniques (knife / scraper) -->
-      <div class="table-hotspot" style="top: 66%; left: 36%;" onclick="openTableModal('techniques')">
-        <div class="hotspot-pin">
-          <span class="hotspot-dot"></span>
-          <span>Techniques</span>
+        <!-- 3. Chocolate Lab → Brass magnifying glass / microscope (top-right) -->
+        <div class="table-hotspot" style="top: 14%; left: 80%;" onclick="openTableModal('chocolate-lab')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Chocolate Lab</span>
+          </div>
         </div>
-      </div>
 
-      <!-- 6. Origins & Atlas (cacao pod / map) -->
-      <div class="table-hotspot" style="top: 66%; left: 14%;" onclick="openTableModal('origins-atlas')">
-        <div class="hotspot-pin">
-          <span class="hotspot-dot"></span>
-          <span>Origins &amp; Atlas</span>
+        <!-- 4. Recipes & Formulations → Dark chocolate bar broken into pieces (right) -->
+        <div class="table-hotspot" style="top: 38%; left: 86%;" onclick="openTableModal('recipes-formulations')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Recipes &amp; Formulations</span>
+          </div>
         </div>
-      </div>
 
-      <!-- 7. Workshops & Academy (whisk) -->
-      <div class="table-hotspot" style="top: 66%; left: 70%;" onclick="openTableModal('workshops-academy')">
-        <div class="hotspot-pin">
-          <span class="hotspot-dot"></span>
-          <span>Workshops &amp; Academy</span>
+        <!-- 5. Techniques → Palette knife, spatula & bench scraper (bottom-left) -->
+        <div class="table-hotspot" style="top: 82%; left: 28%;" onclick="openTableModal('techniques')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Techniques</span>
+          </div>
+        </div>
+
+        <!-- 6. Origins & Atlas → Cacao pod split open + vintage map (far left) -->
+        <div class="table-hotspot" style="top: 58%; left: 10%;" onclick="openTableModal('origins-atlas')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Origins &amp; Atlas</span>
+          </div>
+        </div>
+
+        <!-- 7. Workshops & Academy → Whisk + chocolate mould (bottom-right) -->
+        <div class="table-hotspot" style="top: 82%; left: 78%;" onclick="openTableModal('workshops-academy')">
+          <div class="hotspot-pin">
+            <span class="hotspot-dot"></span>
+            <span>Workshops &amp; Academy</span>
+          </div>
         </div>
       </div>
     </div>
@@ -301,26 +305,6 @@
       const modal = document.getElementById('table-interactive-modal');
       modal.classList.remove('active');
       document.body.style.overflow = '';
-    }
-
-    function triggerHeroSearch(query) {
-      const input = document.getElementById('hero-search-input');
-      if (input) {
-        input.value = query;
-      }
-      handleHeroSearchSubmit(new Event('submit'));
-    }
-
-    function handleHeroSearchSubmit(e) {
-      if (e && e.preventDefault) e.preventDefault();
-      const query = document.getElementById('hero-search-input')?.value?.trim();
-      if (!query) return;
-
-      if (typeof sendTroubleshootQuery === 'function') {
-        sendTroubleshootQuery(query);
-      } else {
-        window.location.href = `chocopedia.php?q=${encodeURIComponent(query)}`;
-      }
     }
 
     document.addEventListener('keydown', function(e) {
