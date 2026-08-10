@@ -377,48 +377,12 @@
     </div>
   </section>
 
-  <!-- Section 02: AI Diagnostics Tool -->
-  <section class="ai-widget-sec section">
-    <div class="ai-widget-container">
-      <div class="section-label">02 / DIAGNOSTICS</div>
-      <h2 class="section-title">Troubleshoot Chocolate Defects Instantly</h2>
-      <p class="section-subtitle" style="margin: 0 auto 36px;">Experiencing issues with your batch? Our CocoaGenius AI can diagnose common tempering, crystallization, and texture defects in seconds. Select a symptom or chat with the AI helper.</p>
-      
-      <div class="ai-widget-grid">
-        <div class="ai-widget-card" onclick="sendTroubleshootQuery('Why does my tempered chocolate have dull white streaks or haze on the surface?')">
-          <div class="ai-widget-icon">🔬</div>
-          <h3>Dull Streaks or Haze</h3>
-          <p>Chocolate has greyish streaks, swirls, or a dull finish instead of a glossy shine.</p>
-          <span>Diagnose Defect &rarr;</span>
-        </div>
-        <div class="ai-widget-card" onclick="sendTroubleshootQuery('Why is my chocolate soft at room temperature and refuses to snap when broken?')">
-          <div class="ai-widget-icon">🍫</div>
-          <h3>No Snap or Soft Texture</h3>
-          <p>Chocolate melts immediately in fingers, bends instead of snaps, or won\'t release from the mould.</p>
-          <span>Diagnose Temper &rarr;</span>
-        </div>
-        <div class="ai-widget-card" onclick="sendTroubleshootQuery('Why does my chocolate feel gritty, sandy, or coarse on the tongue instead of silky smooth?')">
-          <div class="ai-widget-icon">👅</div>
-          <h3>Gritty or Coarse Mouthfeel</h3>
-          <p>Particles feel sandy or rough on the palate, lacking the signature smooth melt.</p>
-          <span>Diagnose Grind &rarr;</span>
-        </div>
-        <div class="ai-widget-card" onclick="sendTroubleshootQuery('How can I safely add water-based liquid flavors or colors to chocolate without seizing it?')">
-          <div class="ai-widget-icon">⚠️</div>
-          <h3>Chocolate Seizing Risk</h3>
-          <p>Learn how to safely introduce colors or liquid flavors without thickening the batch.</p>
-          <span>Explain Process &rarr;</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section 03: AI Chocolab Section -->
+  <!-- Section 02: AI Chocolab Section -->
   <section class="ai-chocolab-sec section" style="position: relative; overflow: hidden; padding: 80px 24px;">
     <div class="deco-circle-3"></div>
     
     <div class="chocolab-inner">
-      <div class="section-label" style="text-align: center;">03 / INNOVATION</div>
+      <div class="section-label" style="text-align: center;">02 / INNOVATION</div>
       <h2 class="section-title" style="text-align: center; margin-bottom: 12px;">✨ AI Chocolab Formulation Playground</h2>
       <p class="section-subtitle" style="max-width: 720px; margin: 0 auto 40px; text-align: center;">
         Design your custom artisanal chocolate bar. Choose your cacao base, target cocoa percentage, batch size, and up to 3 gourmet inclusions. 
@@ -617,11 +581,11 @@
     </div>
   </section>
 
-  <!-- Section 04: Featured Workshops -->
+  <!-- Section 03: Featured Workshops -->
   <section id="featured-workshops">
     <div class="section">
       <div class="workshops-section-header">
-        <div class="section-label">04 / ACADEMY</div>
+        <div class="section-label">03 / ACADEMY</div>
         <h2 class="section-title">Workshops &amp; Masterclasses</h2>
         <div class="divider"></div>
         <p class="section-subtitle">
@@ -641,12 +605,12 @@
   </section>
 
 
-  <!-- Section 05: Interactive Flavor Wheel Section -->
+  <!-- Section 04: Interactive Flavor Wheel Section -->
   <section id="flavor-wheel-sec">
     <div class="wheel-layout">
       <!-- Title Column -->
       <div class="wheel-title-col">
-        <span class="section-label" style="color:var(--gold); display:block; margin-bottom:8px;">05 / SCIENCE</span>
+        <span class="section-label" style="color:var(--gold); display:block; margin-bottom:8px;">04 / SCIENCE</span>
         <h2><span>Chocolate</span>Flavor Wheel</h2>
         <div class="gold-divider"></div>
         <p>Explore the intricate dimensions of bean-to-bar chocolate. Click on the main sectors of the wheel or the cards on the right to discover how cacao origin, farm processing, and taste profiles shape the final bar's character.</p>
@@ -1013,10 +977,10 @@
     </script>
   </section>
 
-  <!-- Section 06: Journal & Technical Deep Dives -->
+  <!-- Section 05: Journal & Technical Deep Dives -->
   <section style="background:var(--ivory); padding: 80px 24px;">
     <div class="section" style="max-width:1140px; margin:0 auto; text-align:center;">
-      <div class="section-label">06 / JOURNAL</div>
+      <div class="section-label">05 / JOURNAL</div>
       <h2 class="section-title">Latest Cocoa Science Insights</h2>
       <div class="divider" style="margin:16px auto 32px;"></div>
       <p class="section-subtitle" style="max-width:540px; margin:0 auto 48px; color:var(--brown-light);">Deep-dives into cocoa powder pH, tempering crystal diagnostics, lecithin emulsion science, and bean-to-bar formulation.</p>
@@ -1049,10 +1013,10 @@
     </div>
   </section>
 
-  <!-- Section 07: SEO Content Block -->
+  <!-- Section 06: SEO Content Block -->
   <section style="background:var(--cream-dark); padding: 80px 24px;">
     <div class="section" style="max-width:900px; margin:0 auto; text-align:center;">
-      <div class="section-label">07 / EDUCATION</div>
+      <div class="section-label">06 / EDUCATION</div>
       <h2 class="section-title">The Science of Indian Bean-to-Bar Chocolate</h2>
       <div class="divider" style="margin:16px auto 32px;"></div>
       <div style="font-family:var(--font-sans); font-size:15.5px; line-height:1.8; color:var(--brown-light); font-weight:300; text-align:left; display:flex; flex-direction:column; gap:20px;">
@@ -1072,42 +1036,10 @@
     </div>
   </section>
 
-  <!-- Section 08: Craft Gallery Preview -->
-  <section style="text-align:center;">
-    <div class="section">
-    <div class="section-label">08 / CRAFT</div>
-    <h2 class="section-title">Gallery</h2>
-    <div class="divider" style="margin:20px auto 40px;"></div>
-    <div class="gallery-grid">
-      <div class="gallery-item">
-        <div class="gallery-item-bg" style="background-image: url('assets/cocoabeans.png.jpg');"></div>
-        <div class="gallery-item-overlay"></div>
-        <span class="gallery-item-text">Roasting</span>
-      </div>
-      <div class="gallery-item">
-        <div class="gallery-item-bg" style="background-image: url('assets/temepring.jpg');"></div>
-        <div class="gallery-item-overlay"></div>
-        <span class="gallery-item-text">Tempering</span>
-      </div>
-      <div class="gallery-item">
-        <div class="gallery-item-bg" style="background-image: url('assets/bonbons.png');"></div>
-        <div class="gallery-item-overlay"></div>
-        <span class="gallery-item-text">Moulding</span>
-      </div>
-      <div class="gallery-item">
-        <div class="gallery-item-bg" style="background-image: url('assets/workshop.jpg');"></div>
-        <div class="gallery-item-overlay"></div>
-        <span class="gallery-item-text">Workshop</span>
-      </div>
-    </div>
-    <a href="gallery" class="btn-outline-dark" style="margin-top:32px; text-decoration:none;">View Full Gallery &rarr;</a>
-    </div>
-  </section>
-
-  <!-- Section 09: Newsletter CTA -->
+  <!-- Section 07: Newsletter CTA -->
   <section id="newsletter-section">
     <div class="inner">
-      <div class="sub-label">09 / COMMUNITY</div>
+      <div class="sub-label">07 / COMMUNITY</div>
       <h2>The Chocolate Letter</h2>
       <p>Weekly recipes, science deep-dives, workshop announcements and exclusive offers.</p>
       <form class="newsletter-row" id="newsletter-home-form" novalidate>
