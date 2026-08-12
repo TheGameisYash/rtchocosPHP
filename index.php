@@ -32,8 +32,14 @@
   <div class="deco-leaf-left"></div>
   <div class="deco-leaf-right"></div>
 
-  <!-- Split Hero (No Video) -->
+  <!-- Split Hero with Full Video Background -->
   <section id="hero">
+    <!-- Full Background Video (orb rotates on right side) -->
+    <video class="hero-video-bg" autoplay loop muted playsinline preload="auto">
+      <source src="assets/cocuapod_circle.mp4" type="video/mp4">
+    </video>
+    <div class="hero-video-overlay"></div>
+
     <div class="deco-circle-1"></div>
     <div class="deco-circle-2"></div>
     <div class="deco-radial"></div>
@@ -47,64 +53,7 @@
           <button onclick="toggleAiDrawer()" class="btn-hero-outline" style="display:inline-flex; align-items:center; gap:8px;">✨ Ask CocoaGenius AI</button>
         </div>
       </div>
-      <div class="split-hero-constellation-visual fade-in">
-        <div class="hero-constellation-video-wrapper">
-          <video class="hero-constellation-mp4" autoplay loop muted playsinline preload="auto">
-            <source src="assets/cocuapod_circle.mp4" type="video/mp4">
-          </video>
-          
-          <!-- Interactive Floating Node Badges -->
-          <div class="hero-constellation-node node-pos-flavor" onclick="openTableModal('recipes-formulations')">
-            <div class="cacao-node-badge">
-              <span class="cacao-node-title">FLAVOR</span>
-              <span class="cacao-node-sub">Discover what we taste</span>
-              <span class="cacao-node-plus">+</span>
-            </div>
-          </div>
 
-          <div class="hero-constellation-node node-pos-science" onclick="openTableModal('chocolate-lab')">
-            <div class="cacao-node-badge">
-              <span class="cacao-node-title">SCIENCE</span>
-              <span class="cacao-node-sub">Explore the science</span>
-              <span class="cacao-node-plus">+</span>
-            </div>
-          </div>
-
-          <div class="hero-constellation-node node-pos-sustainability" onclick="openTableModal('origins-atlas')">
-            <div class="cacao-node-badge">
-              <span class="cacao-node-title">SUSTAINABILITY</span>
-              <span class="cacao-node-sub">Knowledge &amp; Craft</span>
-              <span class="cacao-node-plus">+</span>
-            </div>
-          </div>
-
-          <div class="hero-constellation-node node-pos-ingredients" onclick="openTableModal('bean-to-bar')">
-            <div class="cacao-node-badge">
-              <span class="cacao-node-title">INGREDIENTS</span>
-              <span class="cacao-node-sub">Deep dive into components</span>
-              <span class="cacao-node-plus">+</span>
-            </div>
-          </div>
-
-          <div class="hero-constellation-node node-pos-innovation" onclick="openTableModal('techniques')">
-            <div class="cacao-node-badge">
-              <span class="cacao-node-title">INNOVATION</span>
-              <span class="cacao-node-sub">Inspire &amp; Create</span>
-              <span class="cacao-node-plus">+</span>
-            </div>
-          </div>
-
-          <!-- Circular Rotating Brand Stamp -->
-          <div class="circular-stamp-container">
-            <svg class="circular-stamp" viewBox="0 0 100 100">
-              <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
-              <text>
-                <textPath href="#circlePath">🌱 100% CRAFT BEAN-TO-BAR • RT CHOCOS ACADEMY •</textPath>
-              </text>
-            </svg>
-          </div>
-        </div>
-      </div>
 
     </div>
 

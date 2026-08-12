@@ -878,20 +878,19 @@ footer.footer-links-section .social-icons {
 }
 
 #hero {
-  background: linear-gradient(135deg, rgba(var(--white-rgb), 0.75) 0%, rgba(var(--dark-800-rgb), 0.75) 100%),
-    url('../assets/cacao_leaves_bg.png') center/cover no-repeat !important;
+  background: radial-gradient(circle at 65% 50%, #0b281b 0%, #061a12 55%, #030e09 100%) !important;
 }
 
 .split-hero-content h1 {
-  color: var(--brown) !important;
+  color: #ffffff !important;
 }
 
 .split-hero-content h1 em {
-  color: var(--accent) !important;
+  color: #d4af37 !important;
 }
 
 .split-hero-content p {
-  color: var(--brown-light) !important;
+  color: rgba(245, 237, 230, 0.85) !important;
 }
 
 .split-hero-img-wrapper {
