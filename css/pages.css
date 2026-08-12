@@ -714,6 +714,216 @@
   align-items: center;
 }
 
+/* --- HERO CONSTELLATION VIDEO VISUAL --- */
+.split-hero-constellation-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.hero-constellation-video-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-constellation-mp4 {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.35));
+  pointer-events: none;
+  background: transparent;
+}
+
+/* FLOATING INTERACTIVE NODES AROUND VIDEO */
+.hero-constellation-node {
+  position: absolute;
+  cursor: pointer;
+  z-index: 25;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hero-constellation-node:hover {
+  transform: scale(1.08);
+}
+
+.cacao-node-badge {
+  background: rgba(6, 26, 18, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-radius: 24px;
+  padding: 7px 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45), 0 0 15px rgba(212, 175, 55, 0.25);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero-constellation-node:hover .cacao-node-badge {
+  border-color: #d4af37;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 22px rgba(212, 175, 55, 0.5);
+}
+
+.cacao-node-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.cacao-node-sub {
+  font-size: 9px;
+  color: #a4c4b5;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.cacao-node-plus {
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #f6e27a 0%, #d4af37 100%);
+  color: #051811;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+}
+
+/* NODE POSITIONS AROUND CIRCLE */
+.node-pos-flavor {
+  top: 2%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.node-pos-flavor:hover {
+  transform: translateX(-50%) scale(1.08);
+}
+
+.node-pos-science {
+  top: 22%;
+  left: -2%;
+}
+
+.node-pos-sustainability {
+  bottom: 20%;
+  left: 2%;
+}
+
+.node-pos-ingredients {
+  top: 22%;
+  right: -2%;
+}
+
+.node-pos-innovation {
+  bottom: 20%;
+  right: 2%;
+}
+
+/* --- INGREDIENT SPOTLIGHT HERO CARD --- */
+.hero-ingredient-spotlight-card {
+  position: absolute;
+  top: 75%;
+  right: 28px;
+  transform: translateY(-50%);
+  width: 220px;
+  background: rgba(6, 24, 16, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 20px rgba(212, 175, 55, 0.15);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  cursor: pointer;
+  transition: all 0.35s ease;
+}
+
+.hero-ingredient-spotlight-card:hover {
+  transform: translateY(-54%) scale(1.03);
+  border-color: #d4af37;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55), 0 0 25px rgba(212, 175, 55, 0.35);
+}
+
+.spotlight-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #d4af37;
+  margin-bottom: 8px;
+}
+
+.spotlight-icon-wrapper {
+  margin-bottom: 6px;
+}
+
+.spotlight-leaf-icon {
+  font-size: 16px;
+}
+
+.spotlight-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 21px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  line-height: 1.25;
+}
+
+.spotlight-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(230, 240, 235, 0.8);
+  margin: 0 0 16px 0;
+  font-weight: 300;
+}
+
+.spotlight-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #d4af37;
+  text-decoration: none;
+  transition: gap 0.25s ease, color 0.25s ease;
+}
+
+.spotlight-link .link-arrow {
+  transition: transform 0.25s ease;
+}
+
+.hero-ingredient-spotlight-card:hover .spotlight-link {
+  color: #f6e27a;
+}
+
+.hero-ingredient-spotlight-card:hover .spotlight-link .link-arrow {
+  transform: translateX(4px);
+}
+
 .split-hero-img-wrapper {
   position: relative;
   width: 100%;
@@ -1186,7 +1396,7 @@ section:nth-of-type(even) {
   min-height: 80vh;
   padding: 120px 24px 70px;
   background: radial-gradient(circle at 70% 30%, rgba(20, 45, 30, 0.4) 0%, rgba(10, 20, 14, 0.85) 100%),
-              url("../assets/hero_cocoa_tree_bg.png") center/cover no-repeat;
+    url("../assets/hero_cocoa_tree_bg.png") center/cover no-repeat;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -1401,7 +1611,7 @@ section:nth-of-type(even) {
   border-radius: 14px;
   object-fit: cover;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .story-card-btn {
@@ -1473,10 +1683,12 @@ section:nth-of-type(even) {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
 @media (max-width: 768px) {
   .choose-path-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .hero-concept-container {
     grid-template-columns: 1fr;
   }
@@ -1842,8 +2054,15 @@ section:nth-of-type(even) {
 }
 
 @keyframes pulseDotRing {
-  0% { transform: scale(0.7); opacity: 1; }
-  100% { transform: scale(2.4); opacity: 0; }
+  0% {
+    transform: scale(0.7);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
 }
 
 .table-hotspot:hover .hotspot-pin {
@@ -1863,9 +2082,11 @@ section:nth-of-type(even) {
     font-size: 10px;
     gap: 5px;
   }
+
   .hotspot-pin span:not(.hotspot-dot) {
     display: none;
   }
+
   .hotspot-dot {
     width: 12px;
     height: 12px;
@@ -2062,14 +2283,14 @@ section:nth-of-type(even) {
   .table-modal-box {
     padding: 28px 22px;
   }
+
   .table-modal-actions {
     flex-direction: column;
   }
+
   .table-modal-btn-primary,
   .table-modal-btn-secondary {
     width: 100%;
     justify-content: center;
   }
 }
-
-

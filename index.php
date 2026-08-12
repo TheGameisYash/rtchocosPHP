@@ -47,14 +47,53 @@
           <button onclick="toggleAiDrawer()" class="btn-hero-outline" style="display:inline-flex; align-items:center; gap:8px;">✨ Ask CocoaGenius AI</button>
         </div>
       </div>
-      <div class="split-hero-visual fade-in">
-        <div class="split-hero-img-wrapper">
-          <div class="hero-slideshow">
-            <div class="slide active"><img src="assets/premium_chocolate.png" alt="Luxury artisanal chocolate bar craft photography" loading="eager"></div>
-            <div class="slide"><img src="assets/premium_bonbons.png" alt="Glossy hand-painted artisan chocolate bonbons"></div>
-            <div class="slide"><img src="assets/premium_pods.png" alt="Organic raw cacao pods split open displaying pulp"></div>
-          </div>
+      <div class="split-hero-constellation-visual fade-in">
+        <div class="hero-constellation-video-wrapper">
+          <video class="hero-constellation-mp4" autoplay loop muted playsinline preload="auto">
+            <source src="assets/cocuapod_circle.mp4" type="video/mp4">
+          </video>
           
+          <!-- Interactive Floating Node Badges -->
+          <div class="hero-constellation-node node-pos-flavor" onclick="openTableModal('recipes-formulations')">
+            <div class="cacao-node-badge">
+              <span class="cacao-node-title">FLAVOR</span>
+              <span class="cacao-node-sub">Discover what we taste</span>
+              <span class="cacao-node-plus">+</span>
+            </div>
+          </div>
+
+          <div class="hero-constellation-node node-pos-science" onclick="openTableModal('chocolate-lab')">
+            <div class="cacao-node-badge">
+              <span class="cacao-node-title">SCIENCE</span>
+              <span class="cacao-node-sub">Explore the science</span>
+              <span class="cacao-node-plus">+</span>
+            </div>
+          </div>
+
+          <div class="hero-constellation-node node-pos-sustainability" onclick="openTableModal('origins-atlas')">
+            <div class="cacao-node-badge">
+              <span class="cacao-node-title">SUSTAINABILITY</span>
+              <span class="cacao-node-sub">Knowledge &amp; Craft</span>
+              <span class="cacao-node-plus">+</span>
+            </div>
+          </div>
+
+          <div class="hero-constellation-node node-pos-ingredients" onclick="openTableModal('bean-to-bar')">
+            <div class="cacao-node-badge">
+              <span class="cacao-node-title">INGREDIENTS</span>
+              <span class="cacao-node-sub">Deep dive into components</span>
+              <span class="cacao-node-plus">+</span>
+            </div>
+          </div>
+
+          <div class="hero-constellation-node node-pos-innovation" onclick="openTableModal('techniques')">
+            <div class="cacao-node-badge">
+              <span class="cacao-node-title">INNOVATION</span>
+              <span class="cacao-node-sub">Inspire &amp; Create</span>
+              <span class="cacao-node-plus">+</span>
+            </div>
+          </div>
+
           <!-- Circular Rotating Brand Stamp -->
           <div class="circular-stamp-container">
             <svg class="circular-stamp" viewBox="0 0 100 100">
@@ -66,6 +105,21 @@
           </div>
         </div>
       </div>
+
+    </div>
+
+    <!-- Ingredient Spotlight Feature Card placed in far right corner of hero section -->
+    <div class="hero-ingredient-spotlight-card" onclick="openTableModal('bean-to-bar')">
+      <span class="spotlight-tag">INGREDIENT SPOTLIGHT</span>
+      <div class="spotlight-icon-wrapper">
+        <span class="spotlight-leaf-icon">🌱</span>
+      </div>
+      <h3 class="spotlight-title">Cocoa Butter</h3>
+      <p class="spotlight-desc">The golden fat that gives chocolate its smoothness and soul.</p>
+      <a href="javascript:void(0)" class="spotlight-link" onclick="openTableModal('bean-to-bar'); event.stopPropagation();">
+        <span>Explore Ingredient</span>
+        <span class="link-arrow">→</span>
+      </a>
     </div>
   </section>
 
