@@ -338,254 +338,11 @@
     <div class="cred-item"><div class="cred-num">100%</div><div class="cred-label">Bean-to-Bar &amp; Science First</div></div>
   </div>
 
-  <!-- Section 01: Why RT Chocos / Philosophy -->
-  <section id="why-us">
-    <div class="section" style="text-align:center;">
-      <div class="section-label">01 / PHILOSOPHY</div>
-      <h2 class="section-title">Craftsmanship Meets Science</h2>
-      <div class="divider" style="margin:20px auto;"></div>
-      <p class="section-subtitle" style="margin:0 auto 48px;text-align:center;">We don't just make chocolate — we teach you the science, art and business behind every bar.</p>
-      <div class="why-grid">
-        <div class="why-card">
-          <div class="why-card-img-wrapper">
-            <img src="assets/cocoabeans.png.jpg" alt="Bean-to-Bar Cacao Procurement" loading="lazy">
-          </div>
-          <div class="why-card-text">
-            <h4>Bean-to-Bar Expertise</h4>
-            <p>Direct cacao procurement from Kerala &amp; Karnataka. We control every step — from roast to wrap.</p>
-          </div>
-        </div>
-        <div class="why-card">
-          <div class="why-card-img-wrapper">
-            <img src="assets/temepring.jpg" alt="Science-First Chocolate Approach" loading="lazy">
-          </div>
-          <div class="why-card-text">
-            <h4>Science-First Approach</h4>
-            <p>Tempering curves, water activity, crystal polymorphism — we teach the why, not just the how.</p>
-          </div>
-        </div>
-        <div class="why-card">
-          <div class="why-card-img-wrapper">
-            <img src="assets/bonbons.png" alt="10+ Years Chocolate Teaching" loading="lazy">
-          </div>
-          <div class="why-card-text">
-            <h4>10+ Years Teaching</h4>
-            <p>From curious home bakers to aspiring entrepreneurs, our workshops transform skill and confidence.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section 02: AI Chocolab Section -->
-  <section class="ai-chocolab-sec section" style="position: relative; overflow: hidden; padding: 80px 24px;">
-    <div class="deco-circle-3"></div>
-    
-    <div class="chocolab-inner">
-      <div class="section-label" style="text-align: center;">02 / INNOVATION</div>
-      <h2 class="section-title" style="text-align: center; margin-bottom: 12px;">✨ AI Chocolab Formulation Playground</h2>
-      <p class="section-subtitle" style="max-width: 720px; margin: 0 auto 40px; text-align: center;">
-        Design your custom artisanal chocolate bar. Choose your cacao base, target cocoa percentage, batch size, and up to 3 gourmet inclusions. 
-        Our <strong>CocoaGenius AI Alchemist</strong> formulates exact ingredient ratios, a 5-step process timeline, and professional tempering profiles.
-      </p>
-
-      <!-- Preset Quick Inspiration Chips -->
-      <div class="chocolab-presets-wrapper">
-        <span class="chocolab-presets-label">⚡ Chef's Instant Presets:</span>
-        <div class="chocolab-presets-grid">
-          <button type="button" class="chocolab-preset-btn" onclick="applyChocolabPreset('Dark Chocolate', 72, ['Bird\'s Eye Chili', 'Sea Salt'])">
-            🌶️ Aztec Fire (72% Dark + Chili &amp; Salt)
-          </button>
-          <button type="button" class="chocolab-preset-btn" onclick="applyChocolabPreset('Dark Chocolate', 85, ['Orange Zest', 'Roasted Almonds'])">
-            🍊 Citrus Almond (85% Dark + Orange &amp; Almond)
-          </button>
-          <button type="button" class="chocolab-preset-btn" onclick="applyChocolabPreset('Milk Chocolate', 48, ['Cardamom', 'Rose Petals'])">
-            🌸 Persian Rose Milk (48% Milk + Cardamom &amp; Rose)
-          </button>
-          <button type="button" class="chocolab-preset-btn" onclick="applyChocolabPreset('White Chocolate', 34, ['Peppermint', 'Sea Salt'])">
-            ❄️ Mint Frost (34% White + Peppermint &amp; Salt)
-          </button>
-        </div>
-      </div>
-      
-      <div class="chocolab-layout" style="margin-top: 30px;">
-        <!-- Control Panel -->
-        <div class="chocolab-controls">
-          <div class="chocolab-controls-header">
-            <h3>🧪 Formulation Specs</h3>
-            <span class="chocolab-badge">Craft Mode</span>
-          </div>
-          
-          <div class="form-group">
-            <label for="chocolab-base">1. Select Cacao Base</label>
-            <select id="chocolab-base" onchange="updatePercentRangeHint()">
-              <option value="Dark Chocolate" selected>Dark Chocolate (Rich &amp; Complex)</option>
-              <option value="Milk Chocolate">Milk Chocolate (Creamy &amp; Sweet)</option>
-              <option value="White Chocolate">White Chocolate (Buttery &amp; Smooth)</option>
-              <option value="Ruby Chocolate">Ruby Chocolate (Fruity &amp; Tangy)</option>
-              <option value="Oat Milk Vegan">Oat Milk Vegan (Plant-Based Creamy)</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <div class="chocolab-label-row">
-              <label for="chocolab-percent">2. Target Cacao Percentage</label>
-              <span id="chocolab-percent-val" class="chocolab-val-tag">72% (Bittersweet)</span>
-            </div>
-            <input type="range" id="chocolab-percent" min="30" max="100" value="72" oninput="updatePercentRangeHint()">
-            <div class="chocolab-range-labels">
-              <span>30% (Sweet)</span>
-              <span>65% (Medium)</span>
-              <span>100% (Pure Cacao)</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="chocolab-batch">3. Batch Weight Target</label>
-            <select id="chocolab-batch">
-              <option value="500" selected>500g (Standard Craft Batch)</option>
-              <option value="1000">1000g (1 kg Professional Batch)</option>
-              <option value="250">250g (Micro Test Batch)</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <div class="chocolab-label-row">
-              <label>4. Gourmet Inclusions</label>
-              <span id="chocolab-inc-counter" class="chocolab-count-tag">0 / 3 Selected</span>
-            </div>
-            <div class="inclusions-grid">
-              <label class="inclusion-checkbox"><input type="checkbox" value="Sea Salt" name="inclusions" onchange="handleInclusionCheck(this)"> 🧂 Sea Salt</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Cardamom" name="inclusions" onchange="handleInclusionCheck(this)"> 🌿 Cardamom</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Lavender" name="inclusions" onchange="handleInclusionCheck(this)"> 🪻 Lavender</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Bird's Eye Chili" name="inclusions" onchange="handleInclusionCheck(this)"> 🌶️ Bird's Eye Chili</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Orange Zest" name="inclusions" onchange="handleInclusionCheck(this)"> 🍊 Orange Zest</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Rose Petals" name="inclusions" onchange="handleInclusionCheck(this)"> 🌹 Rose Petals</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Peppermint" name="inclusions" onchange="handleInclusionCheck(this)"> 🍃 Peppermint</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Roasted Almonds" name="inclusions" onchange="handleInclusionCheck(this)"> 🌰 Roasted Almonds</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Cacao Nibs" name="inclusions" onchange="handleInclusionCheck(this)"> 🟤 Cacao Nibs</label>
-              <label class="inclusion-checkbox"><input type="checkbox" value="Espresso Powder" name="inclusions" onchange="handleInclusionCheck(this)"> ☕ Espresso Powder</label>
-            </div>
-          </div>
-          
-          <button class="btn-primary chocolab-submit-btn" onclick="generateCustomBarFormula()">
-            <span>⚡ Formulate Master Recipe</span>
-          </button>
-        </div>
-        
-        <!-- Formulation Output -->
-        <div class="chocolab-output">
-          <!-- Placeholder State -->
-          <div id="chocolab-placeholder">
-            <div class="chocolab-placeholder-icon">🧪</div>
-            <h4>Alchemist Playground Ready</h4>
-            <p>Select your specs or click an instant preset on the left, then hit <strong>"Formulate Master Recipe"</strong> to generate your precision chocolate formula.</p>
-            
-            <div class="chocolab-preview-pills">
-              <span class="preview-pill">📊 Exact Gram Formula</span>
-              <span class="preview-pill">👅 Tasting Profile</span>
-              <span class="preview-pill">⏱️ 5-Step Process Timeline</span>
-            </div>
-          </div>
-          
-          <!-- Loader State -->
-          <div id="chocolab-loader" style="display: none;">
-            <div class="chocolab-loader-animation">
-              <div class="chocolab-spinner"></div>
-              <div class="ai-typing-indicator" style="margin-top: 15px;">
-                <span class="ai-typing-dot"></span>
-                <span class="ai-typing-dot"></span>
-                <span class="ai-typing-dot"></span>
-              </div>
-            </div>
-            <h4>CocoaGenius AI Alchemist at Work...</h4>
-            <p id="chocolab-loader-status">Calculating fat-to-sugar crystallization ratios &amp; Form V tempering points...</p>
-          </div>
-          
-          <!-- Results State -->
-          <div id="chocolab-results" style="display: none; width: 100%;">
-            <!-- Header Bar -->
-            <div class="chocolab-results-header">
-              <div class="chocolab-header-left">
-                <span class="chocolab-badge-gold">✨ Master Formulation Sheet</span>
-                <span id="chocolab-result-base" class="chocolab-results-base">72% Dark Chocolate (500g Batch)</span>
-              </div>
-              <div class="chocolab-header-actions">
-                <button type="button" class="chocolab-action-btn" onclick="copyChocolabRecipe()" title="Copy Recipe text">
-                  📋 Copy
-                </button>
-                <button type="button" class="chocolab-action-btn" onclick="printChocolabRecipe()" title="Print Recipe Sheet">
-                  🖨️ Print
-                </button>
-              </div>
-            </div>
-
-            <!-- Recipe Title & Story -->
-            <div class="chocolab-title-block">
-              <h3 id="chocolab-result-name">Aztec Velvet &amp; Bird's Eye Flame</h3>
-              <p id="chocolab-result-desc" class="chocolab-result-desc"></p>
-            </div>
-            
-            <!-- Section 1: Exact Batch Ratios Grid -->
-            <div class="chocolab-section-block">
-              <h5 class="chocolab-sub-heading">⚖️ Precision Ingredient Ratios (<span id="chocolab-batch-display">500g</span> Total)</h5>
-              
-              <!-- Multi-Segment Visual Composition Bar -->
-              <div class="chocolab-bar-composition">
-                <div class="comp-legend-row">
-                  <span class="legend-item leg-mass"><span class="legend-dot"></span> Cacao Mass (<span id="comp-val-mass">54%</span>)</span>
-                  <span class="legend-item leg-butter"><span class="legend-dot"></span> Cocoa Butter (<span id="comp-val-butter">18%</span>)</span>
-                  <span class="legend-item leg-sugar"><span class="legend-dot"></span> Organic Sugar (<span id="comp-val-sugar">25%</span>)</span>
-                  <span class="legend-item leg-inc"><span class="legend-dot"></span> Inclusions (<span id="comp-val-inc">3%</span>)</span>
-                </div>
-                <div class="composition-bar-track">
-                  <div id="comp-bar-mass" class="comp-segment seg-mass" style="width: 54%;" title="Cacao Mass"></div>
-                  <div id="comp-bar-butter" class="comp-segment seg-butter" style="width: 18%;" title="Cocoa Butter"></div>
-                  <div id="comp-bar-sugar" class="comp-segment seg-sugar" style="width: 25%;" title="Organic Sugar"></div>
-                  <div id="comp-bar-inc" class="comp-segment seg-inc" style="width: 3%;" title="Inclusions"></div>
-                </div>
-              </div>
-
-              <div id="chocolab-result-ratios" class="chocolab-ratios-grid">
-                <!-- Injected by JS -->
-              </div>
-            </div>
-
-            <!-- Section 2: Sensory & Tasting Profile -->
-            <div class="chocolab-section-block">
-              <h5 class="chocolab-sub-heading">👅 Sensory Profile</h5>
-              <div id="chocolab-result-sensory" class="chocolab-sensory-grid">
-                <!-- Injected by JS -->
-              </div>
-            </div>
-
-            <!-- Section 3: Structured 5-Step Process Timeline -->
-            <div class="chocolab-section-block">
-              <h5 class="chocolab-sub-heading">⏱️ 5-Step Master Crafting Process</h5>
-              <div id="chocolab-result-steps" class="chocolab-timeline">
-                <!-- Injected by JS -->
-              </div>
-            </div>
-
-            <!-- Section 4: Master Chocolatier Pro Tip -->
-            <div class="chocolab-protip-box">
-              <div class="protip-header">
-                <span class="protip-icon">🎓</span>
-                <h6>Master Chocolatier Pro Tip (Aarti Saluja Sahni)</h6>
-              </div>
-              <p id="chocolab-result-protip"></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section 03: Featured Workshops -->
+  <!-- Section 01: Featured Workshops -->
   <section id="featured-workshops">
     <div class="section">
       <div class="workshops-section-header">
-        <div class="section-label">03 / ACADEMY</div>
+        <div class="section-label">01 / ACADEMY</div>
         <h2 class="section-title">Workshops &amp; Masterclasses</h2>
         <div class="divider"></div>
         <p class="section-subtitle">
@@ -605,12 +362,12 @@
   </section>
 
 
-  <!-- Section 04: Interactive Flavor Wheel Section -->
+  <!-- Section 02: Interactive Flavor Wheel Section -->
   <section id="flavor-wheel-sec">
     <div class="wheel-layout">
       <!-- Title Column -->
       <div class="wheel-title-col">
-        <span class="section-label" style="color:var(--gold); display:block; margin-bottom:8px;">04 / SCIENCE</span>
+        <span class="section-label" style="color:var(--gold); display:block; margin-bottom:8px;">02 / SCIENCE</span>
         <h2><span>Chocolate</span>Flavor Wheel</h2>
         <div class="gold-divider"></div>
         <p>Explore the intricate dimensions of bean-to-bar chocolate. Click on the main sectors of the wheel or the cards on the right to discover how cacao origin, farm processing, and taste profiles shape the final bar's character.</p>
@@ -977,10 +734,10 @@
     </script>
   </section>
 
-  <!-- Section 05: Journal & Technical Deep Dives -->
+  <!-- Section 03: Journal & Technical Deep Dives -->
   <section style="background:var(--ivory); padding: 80px 24px;">
     <div class="section" style="max-width:1140px; margin:0 auto; text-align:center;">
-      <div class="section-label">05 / JOURNAL</div>
+      <div class="section-label">03 / JOURNAL</div>
       <h2 class="section-title">Latest Cocoa Science Insights</h2>
       <div class="divider" style="margin:16px auto 32px;"></div>
       <p class="section-subtitle" style="max-width:540px; margin:0 auto 48px; color:var(--brown-light);">Deep-dives into cocoa powder pH, tempering crystal diagnostics, lecithin emulsion science, and bean-to-bar formulation.</p>
@@ -1013,33 +770,29 @@
     </div>
   </section>
 
-  <!-- Section 06: SEO Content Block -->
-  <section style="background:var(--cream-dark); padding: 80px 24px;">
-    <div class="section" style="max-width:900px; margin:0 auto; text-align:center;">
-      <div class="section-label">06 / EDUCATION</div>
-      <h2 class="section-title">The Science of Indian Bean-to-Bar Chocolate</h2>
-      <div class="divider" style="margin:16px auto 32px;"></div>
-      <div style="font-family:var(--font-sans); font-size:15.5px; line-height:1.8; color:var(--brown-light); font-weight:300; text-align:left; display:flex; flex-direction:column; gap:20px;">
-        <p>
-          Welcome to <strong>RT Chocos</strong>, India's first chocolate blogging website and premier bean-to-bar learning academy. Founded by certified chocolate educator and recipe developer <strong>Aarti Saluja Sahni</strong>, RT Chocos is dedicated to demystifying the complex chemistry, tempering science, and formulation metrics behind craft chocolate making.
-        </p>
-        <p>
-          The chocolate landscape in India is undergoing a massive transformation. Craft chocolate makers are shifting away from mass-produced compound coatings to source single-origin organic cacao beans directly from estates in Kerala, Karnataka, and Tamil Nadu. At our academy, we believe that understanding the science of cacao fermentation, roasting thermodynamics, stone grinding (conching), and tempering curves is the key to creating award-winning artisan bars.
-        </p>
-        <p>
-          Whether you are a home baker wanting to learn how to temper chocolate, an entrepreneur looking to launch your own brand of Indian craft chocolate, or a hobbyist searching for authentic cocoa science resources, our blog and workshops provide the technical blueprints you need. We cover everything from pH levels in cocoa powder, FAT bloom versus SUGAR bloom diagnostics, and organic sugar alternatives, to hands-on tempering masterclasses in Mumbai and online.
-        </p>
-        <p>
-          Explore our professional <a href="workshops" style="color:var(--brown); font-weight:600; text-decoration:none; border-bottom:1px solid var(--brown);">Chocolate Academy India Workshops</a>, browse our curated <a href="shop" style="color:var(--brown); font-weight:600; text-decoration:none; border-bottom:1px solid var(--brown);">Chocolate Shop</a> for starter kits and single-origin ingredients, or read our latest <a href="blog" style="color:var(--brown); font-weight:600; text-decoration:none; border-bottom:1px solid var(--brown);">Chocolate Blog India articles</a> to start your craft chocolate learning journey.
-        </p>
-      </div>
+  <!-- Visually Hidden SEO Content Block for Search Engines -->
+  <section class="visually-hidden-seo-block" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">
+    <div class="section">
+      <h2>The Science of Indian Bean-to-Bar Chocolate</h2>
+      <p>
+        Welcome to <strong>RT Chocos</strong>, India's first chocolate blogging website and premier bean-to-bar learning academy. Founded by certified chocolate educator and recipe developer <strong>Aarti Saluja Sahni</strong>, RT Chocos is dedicated to demystifying the complex chemistry, tempering science, and formulation metrics behind craft chocolate making.
+      </p>
+      <p>
+        The chocolate landscape in India is undergoing a massive transformation. Craft chocolate makers are shifting away from mass-produced compound coatings to source single-origin organic cacao beans directly from estates in Kerala, Karnataka, and Tamil Nadu. At our academy, we believe that understanding the science of cacao fermentation, roasting thermodynamics, stone grinding (conching), and tempering curves is the key to creating award-winning artisan bars.
+      </p>
+      <p>
+        Whether you are a home baker wanting to learn how to temper chocolate, an entrepreneur looking to launch your own brand of Indian craft chocolate, or a hobbyist searching for authentic cocoa science resources, our blog and workshops provide the technical blueprints you need. We cover everything from pH levels in cocoa powder, FAT bloom versus SUGAR bloom diagnostics, and organic sugar alternatives, to hands-on tempering masterclasses in Mumbai and online.
+      </p>
+      <p>
+        Explore our professional <a href="workshops">Chocolate Academy India Workshops</a>, browse our curated <a href="shop">Chocolate Shop</a> for starter kits and single-origin ingredients, or read our latest <a href="blog">Chocolate Blog India articles</a> to start your craft chocolate learning journey.
+      </p>
     </div>
   </section>
 
-  <!-- Section 07: Newsletter CTA -->
+  <!-- Section 04: Newsletter CTA -->
   <section id="newsletter-section">
     <div class="inner">
-      <div class="sub-label">07 / COMMUNITY</div>
+      <div class="sub-label">04 / COMMUNITY</div>
       <h2>The Chocolate Letter</h2>
       <p>Weekly recipes, science deep-dives, workshop announcements and exclusive offers.</p>
       <form class="newsletter-row" id="newsletter-home-form" novalidate>

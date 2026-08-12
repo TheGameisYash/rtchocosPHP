@@ -278,7 +278,6 @@ if (!empty($pageSchema)) {
 </script>
 </head>
 <body<?php echo !empty($bodyClass) ? ' class="' . $bodyClass . '"' : ''; ?>>
-<?php require_once __DIR__ . '/components/preloader.php'; ?>
 
 <!-- --- HEADER --- -->
 <?php
