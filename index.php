@@ -436,8 +436,11 @@
       </div>
 
       <!-- CTA Button beneath -->
-      <div class="wheel-cta-container">
-        <a href="blog" class="btn-outline" style="text-decoration:none; background: rgba(38,15,6,0.35); backdrop-filter: blur(2px);">Read Latest Articles</a>
+      <div class="wheel-cta-container" style="grid-column: 1 / -1; margin-top: 45px; text-align: center;">
+        <a href="blog.php" class="btn-hero-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+          <span>Read Latest Articles</span>
+          <span>→</span>
+        </a>
       </div>
     </div>
 

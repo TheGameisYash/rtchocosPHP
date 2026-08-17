@@ -2975,58 +2975,60 @@
 }
 
 .wheel-title-col p {
-  color: var(--brown-light) !important;
+  color: rgba(245, 237, 230, 0.85) !important;
 }
 
 .wheel-detail-card {
-  background: rgba(var(--white-rgb), 0.6) !important;
-  border: 1px solid rgba(18, 79, 39, 0.15) !important;
-  box-shadow: 0 4px 15px rgba(18, 79, 39, 0.03) !important;
+  background: rgba(14, 32, 22, 0.65) !important;
+  border: 1px solid rgba(212, 175, 55, 0.22) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
 }
 
 .wheel-detail-card:hover {
-  background: rgba(var(--white-rgb), 0.85) !important;
-  border-color: rgba(18, 79, 39, 0.3) !important;
-  box-shadow: 0 8px 25px rgba(18, 79, 39, 0.08) !important;
+  background: rgba(20, 46, 30, 0.85) !important;
+  border-color: rgba(212, 175, 55, 0.5) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 20px rgba(212, 175, 55, 0.15) !important;
 }
 
 .wheel-detail-card.active-flavor {
-  border-color: rgba(184, 46, 70, 0.4) !important;
-  box-shadow: 0 8px 30px rgba(184, 46, 70, 0.08) !important;
-  background: rgba(var(--white-rgb), 0.9) !important;
+  border-color: rgba(255, 107, 107, 0.5) !important;
+  box-shadow: 0 12px 35px rgba(255, 107, 107, 0.25) !important;
+  background: rgba(38, 14, 20, 0.85) !important;
 }
 
 .wheel-detail-card.active-process {
-  border-color: rgba(200, 90, 23, 0.4) !important;
-  box-shadow: 0 8px 30px rgba(200, 90, 23, 0.08) !important;
-  background: rgba(var(--white-rgb), 0.9) !important;
+  border-color: rgba(248, 165, 50, 0.5) !important;
+  box-shadow: 0 12px 35px rgba(248, 165, 50, 0.25) !important;
+  background: rgba(38, 24, 12, 0.85) !important;
 }
 
 .wheel-detail-card.active-taste {
-  border-color: rgba(71, 107, 60, 0.4) !important;
-  box-shadow: 0 8px 30px rgba(71, 107, 60, 0.08) !important;
-  background: rgba(var(--white-rgb), 0.9) !important;
+  border-color: rgba(105, 219, 124, 0.5) !important;
+  box-shadow: 0 12px 35px rgba(105, 219, 124, 0.25) !important;
+  background: rgba(14, 38, 22, 0.85) !important;
 }
 
 .card-icon-container {
-  background: rgba(18, 79, 39, 0.06) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
 .wheel-detail-card:hover .card-icon-container {
-  background: rgba(18, 79, 39, 0.12) !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
 }
 
 .card-title-text {
-  color: var(--brown) !important;
+  color: #ffffff !important;
 }
 
 .wheel-detail-card p {
-  color: var(--brown-light) !important;
+  color: rgba(245, 237, 230, 0.85) !important;
 }
 
 .wheel-detail-card.active-flavor p,
 .wheel-detail-card.active-process p,
 .wheel-detail-card.active-taste p {
-  color: var(--brown) !important;
+  color: #ffffff !important;
 }
 
