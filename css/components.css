@@ -1053,7 +1053,7 @@
   }
 }
 
-/* === FLAVOR WHEEL LUXURY STYLING OVERRIDES === */
+/* === FLAVOR WHEEL LUXURY TITLE COLUMN & SECTION === */
 #flavor-wheel-sec {
   background: radial-gradient(circle at 50% 50%, #0c2417 0%, #06140c 60%, #030a06 100%) !important;
   padding: 90px 0 100px !important;
@@ -1064,27 +1064,56 @@
   border-bottom: 1px solid rgba(212, 175, 55, 0.15) !important;
 }
 
-.wheel-title-col h2 {
-  color: #ffffff !important;
-  font-family: 'Playfair Display', serif !important;
-  font-size: clamp(34px, 3.8vw, 48px) !important;
+.wheel-section-badge {
+  background: rgba(212, 175, 55, 0.12) !important;
+  border: 1px solid rgba(212, 175, 55, 0.4) !important;
+  color: #d4af37 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
   font-weight: 700 !important;
+  letter-spacing: 2.5px !important;
+  padding: 6px 16px !important;
+  border-radius: 30px !important;
+  display: inline-block !important;
+  margin-bottom: 16px !important;
 }
 
-.wheel-title-col h2 span {
+.wheel-sub-prefix {
+  display: block !important;
   color: #d4af37 !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 13px !important;
-  letter-spacing: 3px !important;
   font-weight: 700 !important;
+  letter-spacing: 3.5px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 6px !important;
 }
 
-.wheel-title-col p {
+.wheel-main-heading {
+  color: #ffffff !important;
+  font-family: 'Playfair Display', serif !important;
+  font-size: clamp(38px, 4vw, 52px) !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  margin-bottom: 18px !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6) !important;
+}
+
+.wheel-gold-bar {
+  width: 70px !important;
+  height: 3px !important;
+  background: linear-gradient(90deg, #d4af37 0%, rgba(212, 175, 55, 0.15) 100%) !important;
+  border-radius: 3px !important;
+  margin: 16px 0 24px 0 !important;
+}
+
+.wheel-desc {
   color: #f3edd7 !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 15px !important;
-  line-height: 1.7 !important;
+  line-height: 1.75 !important;
   font-weight: 300 !important;
+  margin-bottom: 0 !important;
 }
 
 .wheel-detail-card {
@@ -1179,6 +1208,13 @@
   font-size: 11.5px !important;
   letter-spacing: 0.8px !important;
   fill: #ffffff !important;
+}
+
+.wheel-center-hub {
+  fill: #091e13 !important;
+  stroke: #d4af37 !important;
+  stroke-width: 2.5px !important;
+  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)) !important;
 }
 
 /* === SOCIAL ICONS CONTRAST OVERRIDES === */

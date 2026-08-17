@@ -27,18 +27,14 @@
       <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes & Formulations</a>
     </div>
     <div>
-      <?php if (empty($isHome)): ?>
-        <div class="footer-heading">Newsletter</div>
-        <p style="margin-bottom:12px; color: rgba(246,242,234,0.6); font-size:13px;">Recipes, science &amp; exclusive workshop updates.</p>
-        <form class="footer-newsletter-row" id="newsletter-footer-form" novalidate>
-          <input class="footer-newsletter-input" type="email" placeholder="Email" required />
-          <button class="footer-newsletter-btn" type="submit">→</button>
-        </form>
-        <div id="newsletter-footer-feedback" style="margin-top: 10px; display: none; font-size: 13px; font-weight: 300; line-height: 1.5; color: rgba(246,242,234,0.85); animation: fadeIn 0.3s ease;"></div>
-        <div class="footer-heading" style="margin-top: 24px;">Connect With Us</div>
-      <?php else: ?>
-        <div class="footer-heading">Connect With Us</div>
-      <?php endif; ?>
+      <div class="footer-heading">Newsletter</div>
+      <p style="margin-bottom:14px; color:var(--text-secondary); font-size:13.5px; line-height:1.6; font-weight:400; max-width:280px;">Recipes, science &amp; exclusive workshop updates.</p>
+      <form class="footer-newsletter-row" id="newsletter-footer-form" novalidate>
+        <input class="footer-newsletter-input" type="email" placeholder="Email" required />
+        <button class="footer-newsletter-btn" type="submit" aria-label="Subscribe">→</button>
+      </form>
+      <div id="newsletter-footer-feedback" style="margin-top: 10px; display: none; font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--accent); animation: fadeIn 0.3s ease;"></div>
+      <div class="footer-heading" style="margin-top: 26px;">Connect With Us</div>
       <div class="social-icons">
         <a class="social-icon" href="https://www.instagram.com/rt.chocos/?hl=en" target="_blank" rel="noopener" aria-label="Instagram">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

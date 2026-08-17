@@ -367,10 +367,13 @@
     <div class="wheel-layout">
       <!-- Title Column -->
       <div class="wheel-title-col">
-        <span class="section-label" style="color:var(--gold); display:block; margin-bottom:8px;">02 / SCIENCE</span>
-        <h2><span>Chocolate</span>Flavor Wheel</h2>
-        <div class="gold-divider"></div>
-        <p>Explore the intricate dimensions of bean-to-bar chocolate. Click on the main sectors of the wheel or the cards on the right to discover how cacao origin, farm processing, and taste profiles shape the final bar's character.</p>
+        <div class="wheel-section-badge">02 / SCIENCE</div>
+        <h2 class="wheel-main-heading">
+          <span class="wheel-sub-prefix">CHOCOLATE</span>
+          Flavor Wheel
+        </h2>
+        <div class="wheel-gold-bar"></div>
+        <p class="wheel-desc">Explore the intricate dimensions of bean-to-bar chocolate. Click on the main sectors of the wheel or the cards on the right to discover how cacao origin, farm processing, and taste profiles shape the final bar's character.</p>
       </div>
 
       <!-- Wheel Column -->
@@ -435,13 +438,7 @@
         </div>
       </div>
 
-      <!-- CTA Button beneath -->
-      <div class="wheel-cta-container" style="grid-column: 1 / -1; margin-top: 45px; text-align: center;">
-        <a href="blog.php" class="btn-hero-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
-          <span>Read Latest Articles</span>
-          <span>→</span>
-        </a>
-      </div>
+
     </div>
 
     <!-- Inline Script for interactive wheel logic -->
@@ -565,17 +562,23 @@
             <path class="wheel-sector wheel-main-sector" 
                   d="${mainPath}" 
                   fill="${category.color}" 
+                  stroke="rgba(212, 175, 55, 0.35)"
+                  stroke-width="1.5"
                   data-category="${category.id}"
                   style="color: ${category.accentColor};"
             />
           `;
 
           const midAngle = (category.startAngle + category.endAngle) / 2;
-          const textR = (R1 + R2) / 2 - 3;
-          const textSpan = 45;
+          const normAngle = ((midAngle % 360) + 360) % 360;
+          const isBottom = (normAngle > 0 && normAngle < 180);
+          const textR = (R1 + R2) / 2 + 2;
+          const textSpan = 42;
           
-          // Always draw clockwise so text is right-side up when rotated to the top (12 o'clock)
-          const textPathD = getArcPath(cx, cy, textR, midAngle - textSpan, midAngle + textSpan, false);
+          // Draw counter-clockwise if in bottom half so text is always right-side up
+          const textPathD = isBottom
+            ? getArcPath(cx, cy, textR, midAngle + textSpan, midAngle - textSpan, true)
+            : getArcPath(cx, cy, textR, midAngle - textSpan, midAngle + textSpan, false);
 
           const textPathId = `textpath-${category.id}`;
           svgContent += `
@@ -587,9 +590,9 @@
             </text>
           `;
 
-          const iconR = (R1 + R2) / 2 - 22;
+          const iconR = (R1 + R2) / 2 - 20;
           const iconPos = polarToCartesian(cx, cy, iconR, midAngle);
-          const iconRot = midAngle + 90;
+          const iconRot = isBottom ? midAngle - 90 : midAngle + 90;
           svgContent += `
             <g transform="translate(${iconPos.x}, ${iconPos.y}) rotate(${iconRot})">
               ${category.icon}
@@ -603,21 +606,28 @@
               <path class="wheel-sector wheel-sub-sector" 
                     d="${subPath}" 
                     fill="${category.color}" 
+                    stroke="rgba(212, 175, 55, 0.25)"
+                    stroke-width="1"
                     data-category="${category.id}"
                     style="opacity: ${0.75 + (subIdx * 0.05)}; color: ${category.accentColor};"
               />
             `;
 
             const subMidAngle = (sub.startAngle + sub.endAngle) / 2;
+            const normSubAngle = ((subMidAngle % 360) + 360) % 360;
+            const isSubBottom = (normSubAngle > 0 && normSubAngle < 180);
             const subTextR = (R2 + R3) / 2 + 2;
             const subTextSpan = 18;
 
-            const subTextPathD = getArcPath(cx, cy, subTextR, subMidAngle - subTextSpan, subMidAngle + subTextSpan, false);
+            const subTextPathD = isSubBottom
+              ? getArcPath(cx, cy, subTextR, subMidAngle + subTextSpan, subMidAngle - subTextSpan, true)
+              : getArcPath(cx, cy, subTextR, subMidAngle - subTextSpan, subMidAngle + subTextSpan, false);
+            
             const subTextPathId = `textpath-sub-${category.id}-${subIdx}`;
 
             svgContent += `
               <path id="${subTextPathId}" d="${subTextPathD}" fill="none" stroke="none" />
-              <text class="wheel-sublabel-text" fill="#f6f2ea">
+              <text class="wheel-sublabel-text" fill="#ffffff">
                 <textPath href="#${subTextPathId}" startOffset="50%" text-anchor="middle">
                   ${sub.label}
                 </textPath>
@@ -626,7 +636,7 @@
 
             const subIconR = R2 + 18;
             const subIconPos = polarToCartesian(cx, cy, subIconR, subMidAngle);
-            const subIconRot = subMidAngle + 90;
+            const subIconRot = isSubBottom ? subMidAngle - 90 : subMidAngle + 90;
             svgContent += `
               <g transform="translate(${subIconPos.x}, ${subIconPos.y}) rotate(${subIconRot})">
                 ${sub.icon}
@@ -791,19 +801,7 @@
     </div>
   </section>
 
-  <!-- Section 04: Newsletter CTA -->
-  <section id="newsletter-section">
-    <div class="inner">
-      <div class="sub-label">04 / COMMUNITY</div>
-      <h2>The Chocolate Letter</h2>
-      <p>Weekly recipes, science deep-dives, workshop announcements and exclusive offers.</p>
-      <form class="newsletter-row" id="newsletter-home-form" novalidate>
-        <input class="newsletter-input" type="email" placeholder="Enter your email" required />
-        <button class="btn-gold" type="submit">Subscribe</button>
-      </form>
-      <div id="newsletter-home-feedback" style="margin-top: 18px; display: none; font-size: 14.5px; font-weight: 400; line-height: 1.6; animation: fadeIn 0.3s ease;"></div>
-    </div>
-  </section>
+
 
 </div><!-- end home -->
 
