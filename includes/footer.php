@@ -17,6 +17,7 @@
       <a class="footer-link" href="<?php echo $pathPrefix ?: 'index.php'; ?>">Home</a>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About Aarti Saluja Sahni</a>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy India">Chocolate Academy India</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>work-with-us.php" title="Work With Us — B2B & Consulting">Work With Us</a>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact Us</a>
     </div>
     <div>
