@@ -22,10 +22,10 @@
 
 .hero-video-bg {
   position: absolute;
-  top: -5%;
+  top: 5%;
   right: -15%;
   width: 85%;
-  height: 110%;
+  height: 100%;
   object-fit: contain;
   z-index: 1;
   pointer-events: none;
