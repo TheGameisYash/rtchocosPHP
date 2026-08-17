@@ -52,23 +52,20 @@
           <a href="workshops.php" class="btn-hero-primary">Start Learning</a>
           <button onclick="toggleAiDrawer()" class="btn-hero-outline" style="display:inline-flex; align-items:center; gap:8px;">✨ Ask CocoaGenius AI</button>
         </div>
+
+        <!-- Ingredient Spotlight Feature Card integrated into left hero column -->
+        <div class="hero-ingredient-spotlight-card fade-up-d3" onclick="openTableModal('bean-to-bar')">
+          <div class="spotlight-header-row">
+            <span class="spotlight-tag">🌱 INGREDIENT SPOTLIGHT</span>
+          </div>
+          <h3 class="spotlight-title">Cocoa Butter</h3>
+          <p class="spotlight-desc">The golden fat that gives chocolate its smoothness and soul.</p>
+          <a href="javascript:void(0)" class="spotlight-link" onclick="openTableModal('bean-to-bar'); event.stopPropagation();">
+            <span>Explore Ingredient</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </div>
       </div>
-
-
-    </div>
-
-    <!-- Ingredient Spotlight Feature Card placed in far right corner of hero section -->
-    <div class="hero-ingredient-spotlight-card" onclick="openTableModal('bean-to-bar')">
-      <span class="spotlight-tag">INGREDIENT SPOTLIGHT</span>
-      <div class="spotlight-icon-wrapper">
-        <span class="spotlight-leaf-icon">🌱</span>
-      </div>
-      <h3 class="spotlight-title">Cocoa Butter</h3>
-      <p class="spotlight-desc">The golden fat that gives chocolate its smoothness and soul.</p>
-      <a href="javascript:void(0)" class="spotlight-link" onclick="openTableModal('bean-to-bar'); event.stopPropagation();">
-        <span>Explore Ingredient</span>
-        <span class="link-arrow">→</span>
-      </a>
     </div>
   </section>
 

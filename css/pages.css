@@ -843,65 +843,66 @@
   right: 2%;
 }
 
-/* --- INGREDIENT SPOTLIGHT HERO CARD --- */
+/* --- INGREDIENT SPOTLIGHT HERO CARD (INTEGRATED LEFT COLUMN EMBED) --- */
 .hero-ingredient-spotlight-card {
-  position: absolute;
-  bottom: 28px;
-  right: 32px;
-  width: 185px;
-  background: rgba(4, 18, 12, 0.78);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  position: relative;
+  inset: auto;
+  transform: none;
+  margin-top: 32px;
+  max-width: 380px;
+  width: 100%;
+  background: rgba(14, 34, 22, 0.55);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
   border: 1px solid rgba(212, 175, 55, 0.28);
-  border-radius: 14px;
-  padding: 14px 16px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 16px rgba(212, 175, 55, 0.1);
-  z-index: 30;
+  border-radius: 16px;
+  padding: 14px 18px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
 }
 
 .hero-ingredient-spotlight-card:hover {
-  transform: translateY(-4px);
-  background: rgba(6, 24, 16, 0.9);
-  border-color: #d4af37;
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.55), 0 0 22px rgba(212, 175, 55, 0.25);
+  transform: translateY(-3px);
+  background: rgba(20, 46, 30, 0.75);
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 0 0 20px rgba(212, 175, 55, 0.15);
+}
+
+.spotlight-header-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
 .spotlight-tag {
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
   color: #d4af37;
-  margin-bottom: 4px;
-}
-
-.spotlight-icon-wrapper {
-  margin-bottom: 2px;
-}
-
-.spotlight-leaf-icon {
-  font-size: 14px;
 }
 
 .spotlight-title {
   font-family: 'Playfair Display', serif;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   color: #ffffff;
   margin: 0 0 4px 0;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .spotlight-desc {
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  line-height: 1.45;
-  color: rgba(230, 240, 235, 0.75);
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(245, 237, 230, 0.9);
   margin: 0 0 10px 0;
   font-weight: 300;
 }
@@ -909,16 +910,16 @@
 .spotlight-link {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 10.5px;
+  gap: 5px;
+  font-size: 11px;
   font-weight: 600;
   color: #d4af37;
   text-decoration: none;
-  transition: gap 0.2s ease, color 0.2s ease;
+  transition: gap 0.25s ease, color 0.25s ease;
 }
 
 .spotlight-link .link-arrow {
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease;
 }
 
 .hero-ingredient-spotlight-card:hover .spotlight-link {
@@ -926,7 +927,7 @@
 }
 
 .hero-ingredient-spotlight-card:hover .spotlight-link .link-arrow {
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
 .split-hero-img-wrapper {
