@@ -451,6 +451,8 @@
         const cy = 250;
         const R0 = 62; // Center hub radius
         const R1 = 62;
+        const R2 = 138; // Main sector outer radius
+        const R3 = 220; // Subsector outer radius
         const WHEEL_DATA = [
           {
             id: "flavor",
