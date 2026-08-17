@@ -22,14 +22,18 @@
 
 .hero-video-bg {
   position: absolute;
-  top: -5%;
-  right: -15%;
-  width: 85%;
-  height: 110%;
+  top: 52%;
+  right: 0%;
+  transform: translateY(-50%);
+  width: 66%;
+  max-width: 920px;
+  height: 86%;
   object-fit: contain;
+  object-position: center right;
   z-index: 1;
   pointer-events: none;
   opacity: 1;
+  transition: all 0.3s ease;
 }
 
 #hero::after {
@@ -143,11 +147,38 @@
   flex-wrap: wrap;
 }
 
+@media (max-width: 1280px) {
+  .hero-video-bg {
+    width: 64%;
+    right: 0%;
+    height: 82%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero-video-bg {
+    width: 60%;
+    right: 0%;
+    height: 78%;
+  }
+}
+
 @media (max-width: 900px) {
   #hero .hero-bg-cacao {
     width: min(64vw, 420px);
     height: 68%;
     opacity: 0.16;
+  }
+
+  .hero-video-bg {
+    position: relative;
+    top: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    margin: 20px auto 0;
   }
 }
 
