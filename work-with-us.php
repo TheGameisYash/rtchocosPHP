@@ -109,10 +109,13 @@
    ============================================================ */
 #page-wwu .wwu-hero {
   position: relative !important;
-  padding: 135px 40px 115px !important;
-  background: radial-gradient(ellipse 950px 750px at 68% 45%, rgba(184, 134, 11, 0.14) 0%, rgba(12, 26, 17, 0.96) 55%, #07130b 100%) !important;
+  padding: 100px 48px 75px !important;
+  background: 
+    radial-gradient(circle 650px at 70% 50%, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.05) 50%, transparent 80%),
+    radial-gradient(circle 500px at 20% 30%, rgba(26, 54, 34, 0.6) 0%, transparent 70%),
+    linear-gradient(180deg, #06110a 0%, #0a1b11 50%, #07130b 100%) !important;
   overflow: hidden !important;
-  min-height: 90vh !important;
+  min-height: calc(100vh - 75px) !important;
   display: flex !important;
   align-items: center !important;
 }
@@ -126,11 +129,11 @@
   right: 0 !important;
   bottom: 0 !important;
   background-image: 
-    radial-gradient(circle 2px at 20% 30%, rgba(212, 175, 55, 0.4) 0%, transparent 100%),
-    radial-gradient(circle 2.5px at 75% 25%, rgba(212, 175, 55, 0.5) 0%, transparent 100%),
+    radial-gradient(circle 2px at 20% 30%, rgba(212, 175, 55, 0.45) 0%, transparent 100%),
+    radial-gradient(circle 2.5px at 75% 25%, rgba(212, 175, 55, 0.55) 0%, transparent 100%),
     radial-gradient(circle 1.5px at 40% 70%, rgba(212, 175, 55, 0.35) 0%, transparent 100%),
-    radial-gradient(circle 2px at 85% 65%, rgba(212, 175, 55, 0.4) 0%, transparent 100%),
-    radial-gradient(circle 2px at 15% 80%, rgba(212, 175, 55, 0.3) 0%, transparent 100%) !important;
+    radial-gradient(circle 2px at 85% 65%, rgba(212, 175, 55, 0.45) 0%, transparent 100%),
+    radial-gradient(circle 2px at 15% 80%, rgba(212, 175, 55, 0.35) 0%, transparent 100%) !important;
   pointer-events: none !important;
   z-index: 1 !important;
 }
@@ -140,9 +143,9 @@
   position: absolute !important;
   top: 0 !important;
   right: 0 !important;
-  width: 65% !important;
+  width: 70% !important;
   height: 100% !important;
-  opacity: 0.18 !important;
+  opacity: 0.22 !important;
   pointer-events: none !important;
   overflow: hidden !important;
   z-index: 1 !important;
@@ -153,11 +156,11 @@
 }
 
 #page-wwu .wwu-hero-inner {
-  max-width: 1320px !important;
+  max-width: 1420px !important;
   margin: 0 auto !important;
   display: grid !important;
-  grid-template-columns: 1.15fr 1fr !important;
-  gap: 60px !important;
+  grid-template-columns: 1.08fr 1fr !important;
+  gap: 40px !important;
   align-items: center !important;
   position: relative !important;
   z-index: 2 !important;
@@ -175,17 +178,18 @@
   align-items: center !important;
   gap: 8px !important;
   align-self: flex-start !important;
-  padding: 6px 14px !important;
-  background: rgba(212, 175, 55, 0.08) !important;
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  padding: 6px 15px !important;
+  background: rgba(212, 175, 55, 0.1) !important;
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
   border-radius: 30px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
   letter-spacing: 2px !important;
   text-transform: uppercase !important;
   color: #d4af37 !important;
-  margin-bottom: 22px !important;
+  margin-bottom: 18px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
 }
 
 #page-wwu .wwu-hero-tag-pill .pill-dot {
@@ -197,9 +201,9 @@
 }
 
 #page-wwu .wwu-hero h1 {
-  font-size: clamp(44px, 5.2vw, 74px) !important;
-  line-height: 1.04 !important;
-  margin-bottom: 24px !important;
+  font-size: clamp(40px, 4.6vw, 68px) !important;
+  line-height: 1.05 !important;
+  margin-bottom: 14px !important;
   letter-spacing: -1.5px !important;
   color: #fbf8f0 !important;
   font-weight: 700 !important;
@@ -213,107 +217,122 @@
   display: inline-block !important;
 }
 
-/* Interactive Question Pillars */
-#page-wwu .wwu-hero-pillars {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 10px !important;
-  margin-bottom: 30px !important;
-}
-
-#page-wwu .hero-pill-item {
-  display: flex !important;
-  align-items: flex-start !important;
-  gap: 12px !important;
-  padding: 10px 14px !important;
-  background: rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid rgba(212, 175, 55, 0.12) !important;
-  border-radius: 10px !important;
-  cursor: pointer !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-#page-wwu .hero-pill-item:hover {
-  background: rgba(212, 175, 55, 0.08) !important;
-  border-color: rgba(212, 175, 55, 0.4) !important;
-  transform: translateX(5px) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
-}
-
-#page-wwu .hero-pill-item .pill-marker {
-  color: #d4af37 !important;
-  font-size: 13px !important;
-  margin-top: 2px !important;
-  flex-shrink: 0 !important;
-  transition: transform 0.3s ease !important;
-}
-
-#page-wwu .hero-pill-item:hover .pill-marker {
-  transform: scale(1.3) rotate(45deg) !important;
-}
-
-#page-wwu .hero-pill-item .pill-txt {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 2px !important;
-}
-
-#page-wwu .hero-pill-item .pill-txt strong {
-  font-family: 'Playfair Display', serif !important;
-  font-size: 16px !important;
-  font-style: italic !important;
-  font-weight: 600 !important;
-  color: #f0e6d2 !important;
-}
-
-#page-wwu .hero-pill-item:hover .pill-txt strong {
-  color: #ffffff !important;
-}
-
-#page-wwu .hero-pill-item .pill-txt span {
-  font-size: 12px !important;
-  color: #9f9683 !important;
-  line-height: 1.4 !important;
-}
-
-/* Tagline Banner */
-#page-wwu .wwu-hero-tagline-bar {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: center !important;
-  gap: 8px !important;
+/* Sub-headline Paragraph */
+#page-wwu .wwu-hero-sublead {
   font-family: 'Inter', sans-serif !important;
-  font-size: 11.5px !important;
-  font-weight: 700 !important;
+  font-size: 14.5px !important;
+  line-height: 1.6 !important;
+  color: #b8af9c !important;
+  max-width: 580px !important;
+  margin-bottom: 22px !important;
+  font-weight: 400 !important;
+}
+
+/* 2x2 Grid of Interactive Question Cards */
+#page-wwu .wwu-hero-pillars-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  margin-bottom: 24px !important;
+  max-width: 620px !important;
+}
+
+#page-wwu .hero-pillar-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+  padding: 13px 15px !important;
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1px solid rgba(212, 175, 55, 0.16) !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+#page-wwu .hero-pillar-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 3px !important;
+  height: 100% !important;
+  background: #d4af37 !important;
+  opacity: 0.35 !important;
+  transition: all 0.3s ease !important;
+}
+
+#page-wwu .hero-pillar-card:hover {
+  background: rgba(212, 175, 55, 0.09) !important;
+  border-color: rgba(212, 175, 55, 0.45) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35), 0 0 14px rgba(212, 175, 55, 0.12) !important;
+}
+
+#page-wwu .hero-pillar-card:hover::before {
+  opacity: 1 !important;
+  width: 4px !important;
+}
+
+#page-wwu .card-icon-tag {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
   letter-spacing: 1.5px !important;
   color: #d4af37 !important;
-  margin-bottom: 30px !important;
   text-transform: uppercase !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
 }
 
-#page-wwu .wwu-hero-tagline-bar .t-dot {
-  opacity: 0.5 !important;
-  color: #8b6b3d !important;
+#page-wwu .hero-pillar-card strong {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+  color: #fcf8f0 !important;
+  line-height: 1.25 !important;
+  transition: color 0.3s ease !important;
 }
 
-/* Hero Action Buttons */
+#page-wwu .hero-pillar-card:hover strong {
+  color: #d4af37 !important;
+}
+
+#page-wwu .hero-pillar-card p {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  color: #9f9683 !important;
+  line-height: 1.35 !important;
+  margin: 0 !important;
+}
+
+/* Actions Wrap & Trust Spec Strip */
+#page-wwu .wwu-hero-actions-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
 #page-wwu .wwu-hero-actions {
   display: flex !important;
   flex-wrap: wrap !important;
   align-items: center !important;
-  gap: 16px !important;
-  margin-bottom: 35px !important;
+  gap: 14px !important;
 }
 
 #page-wwu .wwu-hero-btn-gold {
   display: inline-flex !important;
   align-items: center !important;
   gap: 10px !important;
-  padding: 15px 32px !important;
+  padding: 13px 28px !important;
   background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%) !important;
   color: #0c1a11 !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 12.5px !important;
+  font-size: 12px !important;
   font-weight: 800 !important;
   letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
@@ -325,7 +344,7 @@
 }
 
 #page-wwu .wwu-hero-btn-gold:hover {
-  transform: translateY(-3px) !important;
+  transform: translateY(-2px) !important;
   box-shadow: 0 10px 28px rgba(212, 175, 55, 0.45) !important;
   background: linear-gradient(135deg, #e5c158 0%, #c99718 100%) !important;
 }
@@ -333,8 +352,8 @@
 #page-wwu .wwu-hero-btn-gold svg {
   stroke: #0c1a11 !important;
   stroke-width: 2.5 !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 13px !important;
+  height: 13px !important;
   fill: none !important;
   transition: transform 0.3s ease !important;
 }
@@ -346,12 +365,12 @@
   display: inline-flex !important;
   align-items: center !important;
   gap: 10px !important;
-  padding: 14px 28px !important;
+  padding: 12px 24px !important;
   background: rgba(255, 255, 255, 0.04) !important;
   border: 1.5px solid rgba(212, 175, 55, 0.4) !important;
   color: #f5efe1 !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 12.5px !important;
+  font-size: 12px !important;
   font-weight: 700 !important;
   letter-spacing: 1px !important;
   text-transform: uppercase !important;
@@ -370,8 +389,8 @@
 #page-wwu .wwu-hero-btn-outline svg {
   stroke: #d4af37 !important;
   stroke-width: 2.2 !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 13px !important;
+  height: 13px !important;
   fill: none !important;
   transition: transform 0.3s ease !important;
 }
@@ -379,32 +398,69 @@
   transform: translateY(3px) !important;
 }
 
-/* Trust / Key Metrics Row */
-#page-wwu .wwu-hero-metrics {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 20px !important;
-  padding-top: 24px !important;
-  border-top: 1px solid rgba(212, 175, 55, 0.15) !important;
-}
-
-#page-wwu .wwu-metric-item {
+#page-wwu .wwu-hero-spec-strip {
   display: flex !important;
-  flex-direction: column !important;
-  gap: 3px !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 9px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  color: #8c826e !important;
+  letter-spacing: 0.5px !important;
 }
 
-#page-wwu .wwu-metric-num {
-  font-family: 'Playfair Display', serif !important;
-  font-size: 24px !important;
-  font-weight: 700 !important;
+#page-wwu .wwu-hero-spec-strip .spec-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+#page-wwu .wwu-hero-spec-strip .spec-dot {
+  color: #d4af37 !important;
+  font-size: 9px !important;
+}
+
+#page-wwu .wwu-hero-spec-strip .spec-sep {
+  opacity: 0.35 !important;
   color: #d4af37 !important;
 }
 
-#page-wwu .wwu-metric-lbl {
-  font-size: 11.5px !important;
-  color: #9f9683 !important;
-  line-height: 1.3 !important;
+/* Radar Badge on Visual */
+#page-wwu .wwu-radar-tag {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 5px 12px !important;
+  background: rgba(12, 26, 17, 0.75) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  border-radius: 20px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  color: #d4af37 !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
+}
+
+#page-wwu .wwu-radar-tag .radar-beacon {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: #2ecc71 !important;
+  box-shadow: 0 0 8px #2ecc71 !important;
+  animation: wwuBeaconPulse 2s infinite !important;
+}
+
+@keyframes wwuBeaconPulse {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
 }
 
 /* --- HERO RIGHT COLUMN: KINETIC CACAO CONSTELLATION --- */
@@ -413,16 +469,34 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  min-height: 520px !important;
+  min-height: 680px !important;
+  width: 100% !important;
 }
 
 #page-wwu .wwu-pod-constellation {
   position: relative !important;
-  width: 500px !important;
-  height: 500px !important;
+  width: 680px !important;
+  height: 680px !important;
+  max-width: 100% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+}
+
+/* Ambient Golden Energy Halo */
+#page-wwu .wwu-pod-constellation::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 580px !important;
+  height: 580px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.16) 0%, rgba(184, 134, 11, 0.08) 45%, transparent 72%) !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  filter: blur(28px) !important;
 }
 
 /* SVG Orbit Backdrop & Spoke Rays */
@@ -467,21 +541,21 @@
 }
 
 #page-wwu .wwu-pod-artwork {
-  width: 175px !important;
+  width: 255px !important;
   height: auto !important;
-  filter: drop-shadow(0 15px 35px rgba(212, 175, 55, 0.25)) drop-shadow(0 5px 15px rgba(0, 0, 0, 0.6)) !important;
+  filter: drop-shadow(0 22px 50px rgba(212, 175, 55, 0.38)) drop-shadow(0 10px 28px rgba(0, 0, 0, 0.75)) !important;
   animation: wwuPodFloat 6s ease-in-out infinite alternate !important;
   transition: transform 0.4s ease, filter 0.4s ease !important;
 }
 
 #page-wwu .wwu-cacao-nucleus:hover .wwu-pod-artwork {
   transform: scale(1.06) !important;
-  filter: drop-shadow(0 20px 45px rgba(212, 175, 55, 0.4)) drop-shadow(0 8px 25px rgba(0, 0, 0, 0.7)) !important;
+  filter: drop-shadow(0 30px 65px rgba(212, 175, 55, 0.55)) drop-shadow(0 14px 38px rgba(0, 0, 0, 0.85)) !important;
 }
 
 @keyframes wwuPodFloat {
   0% { transform: translateY(0px) rotate(0deg); }
-  100% { transform: translateY(-10px) rotate(1.5deg); }
+  100% { transform: translateY(-12px) rotate(1.5deg); }
 }
 
 /* Satellite Science Badges */
@@ -495,29 +569,29 @@
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
-  padding: 6px 13px !important;
-  background: rgba(12, 26, 17, 0.85) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
-  border-radius: 20px !important;
+  padding: 8px 16px !important;
+  background: rgba(12, 26, 17, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1.2px solid rgba(212, 175, 55, 0.38) !important;
+  border-radius: 24px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 9.5px !important;
+  font-size: 10.5px !important;
   font-weight: 800 !important;
   letter-spacing: 2px !important;
   text-transform: uppercase !important;
   color: #dfd3bf !important;
   white-space: nowrap !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45) !important;
 }
 
 #page-wwu .wwu-satellite-pill .node-glow-dot {
-  width: 5px !important;
-  height: 5px !important;
+  width: 6px !important;
+  height: 6px !important;
   border-radius: 50% !important;
   background: #d4af37 !important;
-  box-shadow: 0 0 6px rgba(212, 175, 55, 0.9) !important;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.95) !important;
 }
 
 #page-wwu .wwu-satellite-node:hover .wwu-satellite-pill {
@@ -571,109 +645,123 @@
   transform: translateX(-50%) translateY(0) !important;
 }
 
-/* --- PRECISE POSITIONS FOR 7 SATELLITE NODES ON 500x500 CANVAS --- */
+/* --- PRECISE POSITIONS FOR 7 SATELLITE NODES ON 680x680 CANVAS --- */
 /* 1. INGREDIENTS (Top Left) */
-#page-wwu .node-ingredients { top: 12% !important; left: 6% !important; }
+#page-wwu .node-ingredients { top: 9% !important; left: 6% !important; }
 
 /* 2. FORMULATION (Top Right) */
-#page-wwu .node-formulation { top: 12% !important; right: 4% !important; }
+#page-wwu .node-formulation { top: 9% !important; right: 4% !important; }
 
 /* 3. TEXTURE (Mid Left) */
-#page-wwu .node-texture     { top: 40% !important; left: -4% !important; }
+#page-wwu .node-texture     { top: 41% !important; left: -4% !important; }
 
 /* 4. FLAVOUR (Mid Right) */
-#page-wwu .node-flavour     { top: 38% !important; right: -6% !important; }
+#page-wwu .node-flavour     { top: 39% !important; right: -6% !important; }
 
 /* 5. PROCESS (Lower Left) */
-#page-wwu .node-process     { bottom: 22% !important; left: 2% !important; }
+#page-wwu .node-process     { bottom: 19% !important; left: 2% !important; }
 
 /* 6. EXPERIMENT (Lower Right) */
-#page-wwu .node-experiment  { bottom: 20% !important; right: -4% !important; }
+#page-wwu .node-experiment  { bottom: 17% !important; right: -4% !important; }
 
 /* 7. SENSORY (Bottom Center) */
-#page-wwu .node-sensory     { bottom: 6% !important; left: 50% !important; transform: translateX(-50%) !important; }
+#page-wwu .node-sensory     { bottom: 4% !important; left: 50% !important; transform: translateX(-50%) !important; }
 
 
 /* ============================================================
-   SECTION 2: HOW WE COLLABORATE (cream/light with botanical sketch)
+   SECTION 2: HOW WE COLLABORATE (compact luxury cream with botanical sketch)
    ============================================================ */
 #page-wwu .wwu-collab {
   position: relative !important;
-  padding: 110px 40px 100px !important;
-  background: #f5f0e6 !important;
-  border-top: 1px solid rgba(212,175,55,0.15) !important;
+  padding: 48px 44px !important;
+  background: #f7f3eb !important;
+  border-top: 1px solid rgba(212, 175, 55, 0.22) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.14) !important;
   overflow: hidden !important;
 }
 
-/* Botanical Sketch in background right corner matching reference */
+/* Botanical Sketch in background right corner fitted completely inside */
 #page-wwu .wwu-collab-sketch {
   position: absolute !important;
-  top: -40px !important;
-  right: -30px !important;
-  width: 440px !important;
-  height: auto !important;
-  opacity: 0.88 !important;
+  top: 50% !important;
+  right: 55px !important;
+  transform: translateY(-50%) !important;
+  height: calc(100% - 20px) !important;
+  max-height: 165px !important;
+  width: auto !important;
+  object-fit: contain !important;
+  opacity: 0.92 !important;
   mix-blend-mode: multiply !important;
   pointer-events: none !important;
   z-index: 1 !important;
-  filter: contrast(1.08) sepia(0.08) !important;
+  filter: contrast(1.12) brightness(1.03) sepia(0.04) !important;
   transition: opacity 0.4s ease !important;
 }
 
 #page-wwu .wwu-collab-inner {
-  max-width: 1200px !important;
+  max-width: 1260px !important;
   margin: 0 auto !important;
   display: grid !important;
-  grid-template-columns: 1fr auto 1.35fr !important;
-  gap: 45px !important;
+  grid-template-columns: 1fr auto 1.3fr !important;
+  gap: 36px !important;
   align-items: center !important;
   position: relative !important;
   z-index: 2 !important;
-  padding-right: 140px !important;
+  padding-right: 180px !important;
 }
 
 #page-wwu .wwu-collab-left {
-  max-width: 460px !important;
+  max-width: 440px !important;
 }
 
 #page-wwu .wwu-collab .wwu-tag {
-  color: #8b6b3d !important;
-  margin-bottom: 18px !important;
-  letter-spacing: 2.5px !important;
+  color: #926926 !important;
+  margin-bottom: 8px !important;
+  letter-spacing: 2.2px !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
 }
 
 #page-wwu .wwu-collab h2 {
-  font-size: clamp(34px, 4vw, 54px) !important;
-  line-height: 1.1 !important;
-  color: #1a1a14 !important;
+  font-family: 'Playfair Display', serif !important;
+  font-size: clamp(25px, 2.8vw, 35px) !important;
+  line-height: 1.15 !important;
+  color: #1a1711 !important;
   margin: 0 !important;
+  font-weight: 700 !important;
+}
+
+#page-wwu .wwu-collab h2 .collab-hl {
+  color: #8b5f1a !important;
+  font-style: italic !important;
 }
 
 /* Center vertical divider */
 #page-wwu .wwu-collab-divider {
-  width: 1px !important;
-  background: #d8cca8 !important;
+  width: 1.5px !important;
+  background: linear-gradient(180deg, transparent, rgba(184, 134, 11, 0.4) 20%, rgba(184, 134, 11, 0.4) 80%, transparent) !important;
   align-self: stretch !important;
-  min-height: 130px !important;
+  min-height: 80px !important;
 }
 
 #page-wwu .wwu-collab-right {
-  max-width: 580px !important;
+  max-width: 540px !important;
 }
 
 #page-wwu .wwu-collab-right p {
-  font-size: 15px !important;
-  line-height: 1.85 !important;
-  color: #3d3a30 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13.5px !important;
+  line-height: 1.65 !important;
+  color: #454035 !important;
   font-weight: 400 !important;
-  margin: 0 0 18px 0 !important;
+  margin: 0 0 10px 0 !important;
 }
 #page-wwu .wwu-collab-right p:last-child {
   margin-bottom: 0 !important;
 }
 #page-wwu .wwu-collab-right strong {
-  color: #1a1a14 !important;
-  font-weight: 600 !important;
+  color: #1a1711 !important;
+  font-weight: 700 !important;
 }
 
 
@@ -805,22 +893,35 @@
    ============================================================ */
 #page-wwu .wwu-areas {
   position: relative !important;
-  padding: 120px 40px !important;
-  background: radial-gradient(ellipse at 70% 50%, #fdfbf7 0%, #f6f0e4 50%, #eee5d3 100%) !important;
+  padding: 60px 36px 65px !important;
+  background: radial-gradient(ellipse at 70% 50%, #fdfbf7 0%, #f7f2e8 50%, #ede4d2 100%) !important;
   border-top: 1px solid #dfd4bf !important;
   border-bottom: 1px solid #dfd4bf !important;
   overflow: hidden !important;
 }
 
-/* Subtle background luxury watermark */
+/* Subtle background luxury watermark & coordinate grid */
 #page-wwu .wwu-areas::before {
   content: '' !important;
   position: absolute !important;
-  top: -100px !important;
-  right: -100px !important;
-  width: 600px !important;
-  height: 600px !important;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0) 70%) !important;
+  top: -80px !important;
+  right: -80px !important;
+  width: 650px !important;
+  height: 650px !important;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.09) 0%, rgba(212, 175, 55, 0) 70%) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+/* Left background ambient glow */
+#page-wwu .wwu-areas::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: -60px !important;
+  left: -60px !important;
+  width: 500px !important;
+  height: 500px !important;
+  background: radial-gradient(circle, rgba(139, 90, 43, 0.06) 0%, transparent 70%) !important;
   pointer-events: none !important;
   z-index: 1 !important;
 }
@@ -831,8 +932,8 @@
   max-width: 1320px !important;
   margin: 0 auto !important;
   display: grid !important;
-  grid-template-columns: 380px 1fr !important;
-  gap: 70px !important;
+  grid-template-columns: 360px 1fr !important;
+  gap: 46px !important;
   align-items: center !important;
 }
 
@@ -841,39 +942,40 @@
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
+  position: relative !important;
 }
 
 #page-wwu .wwu-areas-left .wwu-tag-pill {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 7px !important;
   align-self: flex-start !important;
-  padding: 6px 14px !important;
+  padding: 5px 13px !important;
   background: rgba(139, 90, 43, 0.08) !important;
   border: 1px solid rgba(212, 175, 55, 0.35) !important;
   border-radius: 30px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
   letter-spacing: 2px !important;
   text-transform: uppercase !important;
   color: #8b5a2b !important;
-  margin-bottom: 18px !important;
+  margin-bottom: 14px !important;
 }
 
 #page-wwu .wwu-areas-left .wwu-tag-pill .pill-dot {
-  width: 6px !important;
-  height: 6px !important;
+  width: 5px !important;
+  height: 5px !important;
   border-radius: 50% !important;
   background: #d4af37 !important;
   box-shadow: 0 0 6px rgba(212, 175, 55, 0.8) !important;
 }
 
 #page-wwu .wwu-areas-left h2 {
-  font-size: clamp(32px, 3.4vw, 46px) !important;
+  font-size: clamp(28px, 2.7vw, 38px) !important;
   line-height: 1.15 !important;
   color: #1a1a14 !important;
-  margin-bottom: 22px !important;
+  margin-bottom: 14px !important;
   font-weight: 700 !important;
 }
 
@@ -886,18 +988,18 @@
 }
 
 #page-wwu .wwu-areas-left .wwu-areas-desc {
-  font-size: 15.5px !important;
-  line-height: 1.75 !important;
-  color: #4a4538 !important;
-  margin-bottom: 28px !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #524d40 !important;
+  margin-bottom: 20px !important;
 }
 
 /* Feature bullets */
 #page-wwu .wwu-areas-features {
   display: flex !important;
   flex-direction: column !important;
-  gap: 12px !important;
-  margin-bottom: 34px !important;
+  gap: 10px !important;
+  margin-bottom: 24px !important;
   padding-left: 0 !important;
   list-style: none !important;
 }
@@ -905,15 +1007,15 @@
 #page-wwu .wwu-areas-features li {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
-  font-size: 13.5px !important;
+  gap: 10px !important;
+  font-size: 13px !important;
   font-weight: 600 !important;
   color: #2c271e !important;
 }
 
 #page-wwu .wwu-areas-features li svg {
-  width: 18px !important;
-  height: 18px !important;
+  width: 15px !important;
+  height: 15px !important;
   flex-shrink: 0 !important;
   fill: #b8941e !important;
 }
@@ -922,17 +1024,17 @@
 #page-wwu .wwu-btn-areas-cta {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 10px !important;
+  gap: 8px !important;
   align-self: flex-start !important;
-  padding: 14px 30px !important;
+  padding: 12px 24px !important;
   background: #1a1a14 !important;
   color: #f6f0e4 !important;
   border: 1.5px solid #1a1a14 !important;
-  border-radius: 8px !important;
+  border-radius: 7px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 12.5px !important;
+  font-size: 11.5px !important;
   font-weight: 700 !important;
-  letter-spacing: 1.5px !important;
+  letter-spacing: 1.2px !important;
   text-transform: uppercase !important;
   cursor: pointer !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -944,7 +1046,7 @@
   color: #1a1a14 !important;
   border-color: #d4af37 !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35) !important;
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35) !important;
 }
 
 #page-wwu .wwu-btn-areas-cta svg {
@@ -960,8 +1062,8 @@
 #page-wwu .wwu-diagram-stage {
   position: relative !important;
   width: 100% !important;
-  max-width: 720px !important;
-  min-height: 640px !important;
+  max-width: 680px !important;
+  height: 460px !important;
   margin: 0 auto !important;
   display: flex !important;
   align-items: center !important;
@@ -982,8 +1084,8 @@
 
 /* Rotating dashed orbit */
 #page-wwu .wwu-orbit-dash {
-  transform-origin: 360px 320px !important;
-  animation: wwuRotateOrbit 120s linear infinite !important;
+  transform-origin: 340px 230px !important;
+  animation: wwuRotateOrbit 110s linear infinite !important;
 }
 
 @keyframes wwuRotateOrbit {
@@ -991,82 +1093,86 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Center Core Nucleus */
+/* Center Core Nucleus — Refined & Elegant Luxury Seal */
 #page-wwu .wwu-diagram-center {
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
-  width: 150px !important;
-  height: 150px !important;
+  width: 98px !important;
+  height: 98px !important;
   border-radius: 50% !important;
-  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f7f2e7 65%, #eadfc9 100%) !important;
-  border: 2px solid rgba(212, 175, 55, 0.45) !important;
+  background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.98) 0%, #fbf8f0 65%, #eee3cb 100%) !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.55) !important;
   box-shadow: 
-    0 0 0 6px rgba(212, 175, 55, 0.08),
-    0 0 35px rgba(212, 175, 55, 0.22),
-    0 12px 30px rgba(26, 26, 20, 0.08) !important;
+    0 0 0 5px rgba(212, 175, 55, 0.08),
+    0 0 24px rgba(212, 175, 55, 0.24),
+    0 5px 14px rgba(26, 26, 20, 0.05) !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
   text-align: center !important;
-  padding: 14px !important;
+  padding: 8px !important;
   z-index: 5 !important;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: default !important;
 }
 
 #page-wwu .wwu-diagram-center:hover {
-  transform: translate(-50%, -50%) scale(1.05) !important;
+  transform: translate(-50%, -50%) scale(1.08) !important;
   border-color: #d4af37 !important;
   box-shadow: 
-    0 0 0 10px rgba(212, 175, 55, 0.12),
-    0 0 50px rgba(212, 175, 55, 0.35),
-    0 16px 36px rgba(26, 26, 20, 0.12) !important;
+    0 0 0 7px rgba(212, 175, 55, 0.16),
+    0 0 32px rgba(212, 175, 55, 0.38),
+    0 8px 20px rgba(26, 26, 20, 0.08) !important;
 }
 
 #page-wwu .wwu-diagram-center .dc-pulse-ring {
   position: absolute !important;
-  top: -8px !important;
-  left: -8px !important;
-  right: -8px !important;
-  bottom: -8px !important;
+  top: -5px !important;
+  left: -5px !important;
+  right: -5px !important;
+  bottom: -5px !important;
   border-radius: 50% !important;
-  border: 1.5px dashed rgba(184, 148, 30, 0.4) !important;
-  animation: wwuPulseCore 4s ease-in-out infinite alternate !important;
+  border: 1px dashed rgba(184, 148, 30, 0.45) !important;
+  animation: wwuPulseCore 3.5s ease-in-out infinite alternate !important;
   pointer-events: none !important;
 }
 
 @keyframes wwuPulseCore {
-  0% { transform: scale(0.96); opacity: 0.5; }
-  100% { transform: scale(1.06); opacity: 0.9; }
+  0% { transform: scale(0.96); opacity: 0.4; }
+  100% { transform: scale(1.08); opacity: 0.9; }
 }
 
 #page-wwu .wwu-diagram-center .dc-the {
   font-family: 'Inter', sans-serif !important;
-  font-size: 8.5px !important;
+  font-size: 7px !important;
   font-weight: 800 !important;
-  letter-spacing: 2.5px !important;
+  letter-spacing: 1.8px !important;
   text-transform: uppercase !important;
   color: #8b5a2b !important;
   margin-bottom: 2px !important;
+  transition: color 0.3s ease !important;
 }
 
 #page-wwu .wwu-diagram-center .dc-title {
   font-family: 'Playfair Display', serif !important;
-  font-size: 16px !important;
+  font-size: 11.5px !important;
   font-weight: 800 !important;
   color: #1a1a14 !important;
   line-height: 1.15 !important;
-  letter-spacing: 0.5px !important;
+  letter-spacing: 0.3px !important;
+  transition: all 0.3s ease !important;
 }
 
 #page-wwu .wwu-diagram-center .dc-sub {
-  font-size: 9.5px !important;
-  color: #6b614e !important;
+  font-size: 7.5px !important;
+  color: #726855 !important;
   font-style: italic !important;
-  margin-top: 4px !important;
-  line-height: 1.25 !important;
+  margin-top: 2px !important;
+  line-height: 1.15 !important;
+  transition: color 0.3s ease !important;
 }
 
 /* ============================================================
@@ -1074,44 +1180,48 @@
    ============================================================ */
 #page-wwu .wwu-area-card {
   position: absolute !important;
-  width: 220px !important;
-  background: rgba(255, 255, 255, 0.88) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+  width: 196px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
   border: 1px solid rgba(212, 175, 55, 0.3) !important;
-  border-radius: 14px !important;
-  padding: 14px 16px !important;
+  border-radius: 12px !important;
+  padding: 10px 13px !important;
   box-shadow: 
-    0 6px 20px rgba(26, 26, 20, 0.05),
-    0 2px 6px rgba(139, 90, 43, 0.04) !important;
+    0 4px 16px rgba(26, 26, 20, 0.04),
+    0 1px 4px rgba(139, 90, 43, 0.04) !important;
   z-index: 4 !important;
   cursor: pointer !important;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-#page-wwu .wwu-area-card:hover {
-  transform: translateY(-5px) scale(1.03) !important;
+/* Hover on general cards */
+#page-wwu .card-solve:hover,
+#page-wwu .card-explore:hover,
+#page-wwu .card-connect:hover,
+#page-wwu .card-learn:hover {
+  transform: translateY(-3px) scale(1.02) !important;
   background: rgba(255, 255, 255, 0.98) !important;
   border-color: #d4af37 !important;
   box-shadow: 
-    0 14px 32px rgba(212, 175, 55, 0.22),
-    0 4px 12px rgba(26, 26, 20, 0.08) !important;
+    0 8px 24px rgba(212, 175, 55, 0.22),
+    0 2px 8px rgba(26, 26, 20, 0.06) !important;
 }
 
 /* Card Header (Icon + Tag) */
 #page-wwu .wwu-area-card .card-head {
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
-  margin-bottom: 8px !important;
+  gap: 8px !important;
+  margin-bottom: 5px !important;
 }
 
 #page-wwu .wwu-area-card .area-icon {
-  width: 36px !important;
-  height: 36px !important;
-  border-radius: 10px !important;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.18) 0%, rgba(139, 90, 43, 0.1) 100%) !important;
-  border: 1px solid rgba(212, 175, 55, 0.4) !important;
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 7px !important;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.16) 0%, rgba(139, 90, 43, 0.08) 100%) !important;
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -1125,11 +1235,11 @@
 }
 
 #page-wwu .wwu-area-card .area-icon svg {
-  width: 18px !important;
-  height: 18px !important;
+  width: 13px !important;
+  height: 13px !important;
   stroke: #8b5a2b !important;
   fill: none !important;
-  stroke-width: 1.8 !important;
+  stroke-width: 2 !important;
   transition: stroke 0.3s ease !important;
 }
 
@@ -1139,9 +1249,9 @@
 
 #page-wwu .wwu-area-card .area-label {
   font-family: 'Inter', sans-serif !important;
-  font-size: 9px !important;
+  font-size: 8.5px !important;
   font-weight: 800 !important;
-  letter-spacing: 2px !important;
+  letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
   color: #8b5a2b !important;
   display: block !important;
@@ -1149,11 +1259,11 @@
 
 #page-wwu .wwu-area-card h4 {
   font-family: 'Playfair Display', serif !important;
-  font-size: 14.5px !important;
+  font-size: 13px !important;
   color: #1a1a14 !important;
-  margin-bottom: 5px !important;
+  margin: 0 0 3px 0 !important;
   font-weight: 700 !important;
-  line-height: 1.25 !important;
+  line-height: 1.2 !important;
   transition: color 0.3s ease !important;
 }
 
@@ -1162,18 +1272,18 @@
 }
 
 #page-wwu .wwu-area-card p {
-  font-size: 11px !important;
-  line-height: 1.5 !important;
+  font-size: 10px !important;
+  line-height: 1.38 !important;
   color: #555043 !important;
-  margin: 0 0 8px 0 !important;
+  margin: 0 0 6px 0 !important;
 }
 
 #page-wwu .wwu-area-card .card-action {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 5px !important;
+  gap: 4px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 10.5px !important;
+  font-size: 9px !important;
   font-weight: 700 !important;
   letter-spacing: 0.5px !important;
   color: #8b5a2b !important;
@@ -1183,53 +1293,184 @@
 
 #page-wwu .wwu-area-card:hover .card-action {
   color: #1a1a14 !important;
-  gap: 8px !important;
+  gap: 6px !important;
 }
 
-/* --- PRECISE TRIGONOMETRIC POSITIONS (5 Nodes on 640px height canvas) --- */
-/* 1. CREATE (0° / Top Center) */
+/* --- PRECISE POSITIONS (5 Nodes on 680x460px canvas with center at 340, 230) --- */
+/* 1. CREATE (Top Center) — FIXED CENTER HOVER */
 #page-wwu .card-create {
-  top: 10px !important;
+  top: 0px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   text-align: center !important;
-  width: 250px !important;
+  width: 204px !important;
 }
 #page-wwu .card-create .card-head {
   justify-content: center !important;
 }
+#page-wwu .card-create:hover {
+  transform: translateX(-50%) translateY(-3px) scale(1.02) !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-color: #d4af37 !important;
+  box-shadow: 
+    0 8px 24px rgba(212, 175, 55, 0.22),
+    0 2px 8px rgba(26, 26, 20, 0.06) !important;
+}
 
-/* 2. SOLVE (72° / Top Right) */
+/* 2. SOLVE (Top Right) */
 #page-wwu .card-solve {
-  top: 130px !important;
+  top: 70px !important;
   right: 0px !important;
+  width: 196px !important;
   text-align: left !important;
 }
 
-/* 3. EXPLORE (144° / Bottom Right) */
+/* 3. EXPLORE (Bottom Right) */
 #page-wwu .card-explore {
-  bottom: 20px !important;
-  right: 35px !important;
+  bottom: 0px !important;
+  right: 15px !important;
+  width: 196px !important;
   text-align: left !important;
 }
 
-/* 4. CONNECT (216° / Bottom Left) */
+/* 4. CONNECT (Bottom Left) */
 #page-wwu .card-connect {
-  bottom: 20px !important;
-  left: 35px !important;
+  bottom: 0px !important;
+  left: 15px !important;
+  width: 196px !important;
   text-align: left !important;
 }
 
-/* 5. LEARN (288° / Top Left) */
+/* 5. LEARN (Top Left) */
 #page-wwu .card-learn {
-  top: 130px !important;
+  top: 70px !important;
   left: 0px !important;
+  width: 196px !important;
   text-align: left !important;
 }
 
-/* Mobile Timeline Container (hidden on desktop) */
+/* Mobile Flow & Stepper Architecture */
 #page-wwu .wwu-mobile-areas-flow {
   display: none !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  width: 100% !important;
+}
+
+#page-wwu .wwu-mob-center-badge {
+  text-align: center !important;
+  padding: 16px 20px !important;
+  background: radial-gradient(circle at 50% 50%, #ffffff 0%, #fbf8f0 60%, #eee4d0 100%) !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.4) !important;
+  border-radius: 12px !important;
+  margin-bottom: 8px !important;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.12) !important;
+}
+
+#page-wwu .mob-badge-tag {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 8.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: #8b5a2b !important;
+  display: block !important;
+  margin-bottom: 2px !important;
+}
+
+#page-wwu .mob-badge-title {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  color: #1a1a14 !important;
+  margin: 0 0 2px 0 !important;
+}
+
+#page-wwu .mob-badge-desc {
+  font-size: 9.5px !important;
+  color: #6b614e !important;
+  font-style: italic !important;
+}
+
+#page-wwu .wwu-mob-cards-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+#page-wwu .wwu-mob-card {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+}
+
+#page-wwu .wwu-mob-card:hover {
+  border-color: #d4af37 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.18) !important;
+}
+
+#page-wwu .mob-card-side .mob-icon {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  background: rgba(212, 175, 55, 0.12) !important;
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#page-wwu .mob-card-side .mob-icon svg {
+  width: 15px !important;
+  height: 15px !important;
+  stroke: #8b5a2b !important;
+  fill: none !important;
+  stroke-width: 2 !important;
+}
+
+#page-wwu .mob-card-content {
+  flex: 1 !important;
+}
+
+#page-wwu .mob-card-content .mob-tag {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 8.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+  color: #8b5a2b !important;
+  text-transform: uppercase !important;
+  display: block !important;
+  margin-bottom: 2px !important;
+}
+
+#page-wwu .mob-card-content h4 {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 13.5px !important;
+  color: #1a1a14 !important;
+  margin: 0 0 3px 0 !important;
+  font-weight: 700 !important;
+}
+
+#page-wwu .mob-card-content p {
+  font-size: 10.5px !important;
+  line-height: 1.4 !important;
+  color: #555043 !important;
+  margin: 0 0 6px 0 !important;
+}
+
+#page-wwu .mob-card-content .mob-btn {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  color: #8b5a2b !important;
+  text-transform: uppercase !important;
 }
 
 
@@ -1332,126 +1573,96 @@
 
 
 /* ============================================================
-   SECTION 7: THE CHOCOLATE CHALLENGE (dark, bottom CTA with sketch watermark)
+   CONSULTATION MODAL POPUP (Ultra-Luxury Dialog)
    ============================================================ */
-#page-wwu .wwu-challenge {
-  padding: 100px 40px !important;
-  background: #0a1610 !important;
-  border-top: 1px solid rgba(212,175,55,0.08) !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-/* Botanical Sketch watermark on bottom left matching reference */
-#page-wwu .wwu-challenge-sketch {
-  position: absolute !important;
-  bottom: -30px !important;
-  left: -20px !important;
-  width: 280px !important;
-  height: auto !important;
-  opacity: 0.12 !important;
-  pointer-events: none !important;
-  filter: invert(1) brightness(1.5) sepia(1) hue-rotate(5deg) !important;
-  mix-blend-mode: screen !important;
-}
-
-#page-wwu .wwu-challenge-inner {
-  max-width: 1100px !important;
-  margin: 0 auto !important;
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 80px !important;
-  align-items: start !important;
-  position: relative !important;
-  z-index: 1 !important;
-}
-#page-wwu .wwu-challenge h2 {
-  font-size: clamp(24px, 2.8vw, 36px) !important;
-  line-height: 1.3 !important;
-  color: #f5efe1 !important;
-  margin-bottom: 20px !important;
-}
-#page-wwu .wwu-challenge h2 strong {
-  color: #d4af37 !important;
-}
-#page-wwu .wwu-challenge-left > p {
-  font-size: 14px !important;
-  line-height: 1.7 !important;
-  color: #a09882 !important;
-  margin-bottom: 28px !important;
-}
-
-/* Gold CTA button */
-#page-wwu .wwu-btn-gold {
-  display: inline-flex !important;
+#page-wwu .wwu-modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(5, 14, 9, 0.84) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  z-index: 999999 !important;
+  display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
-  padding: 14px 32px !important;
-  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%) !important;
-  color: #0c1a11 !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  letter-spacing: 1px !important;
-  text-transform: uppercase !important;
-  border-radius: 6px !important;
-  border: none !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-}
-#page-wwu .wwu-btn-gold span {
-  color: #0c1a11 !important;
-}
-#page-wwu .wwu-btn-gold:hover {
-  box-shadow: 0 8px 30px rgba(212,175,55,0.35) !important;
-  transform: translateY(-2px) !important;
-}
-
-/* Challenge right-side pillars */
-#page-wwu .wwu-ch-pillars {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 20px !important;
-}
-#page-wwu .wwu-ch-pill {
+  justify-content: center !important;
   padding: 24px !important;
-  border-radius: 12px !important;
-  background: rgba(212,175,55,0.03) !important;
-  border: 1px solid rgba(212,175,55,0.1) !important;
-}
-#page-wwu .wwu-ch-pill h4 {
-  font-family: 'Inter', sans-serif !important;
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  letter-spacing: 1px !important;
-  text-transform: uppercase !important;
-  color: #d4af37 !important;
-  margin-bottom: 8px !important;
-}
-#page-wwu .wwu-ch-pill p {
-  font-size: 12.5px !important;
-  line-height: 1.6 !important;
-  color: #8a8272 !important;
-  margin: 0 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s !important;
+  box-sizing: border-box !important;
 }
 
-
-/* ============================================================
-   SECTION 8: CONSULTATION FORM (dark)
-   ============================================================ */
-#page-wwu .wwu-form-sec {
-  padding: 100px 40px !important;
-  background: #0c1a11 !important;
-  border-top: 1px solid rgba(212,175,55,0.12) !important;
+#page-wwu .wwu-modal-backdrop.is-open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
-#page-wwu .wwu-form-card {
-  max-width: 820px !important;
-  margin: 0 auto !important;
-  background: rgba(10, 26, 17, 0.95) !important;
-  border: 1px solid rgba(212, 175, 55, 0.28) !important;
+
+#page-wwu .wwu-modal-dialog {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 760px !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  background: #0a1a11 !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.35) !important;
   border-radius: 20px !important;
-  padding: 56px 44px !important;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important;
+  padding: 44px 40px 40px !important;
+  box-shadow: 
+    0 30px 80px rgba(0, 0, 0, 0.8),
+    0 0 50px rgba(212, 175, 55, 0.15) !important;
+  transform: scale(0.92) translateY(24px) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#page-wwu .wwu-modal-backdrop.is-open .wwu-modal-dialog {
+  transform: scale(1) translateY(0) !important;
+}
+
+/* Modal Close Button */
+#page-wwu .wwu-modal-close {
+  position: absolute !important;
+  top: 18px !important;
+  right: 18px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  color: #d4af37 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  z-index: 10 !important;
+  outline: none !important;
+}
+
+#page-wwu .wwu-modal-close:hover {
+  background: #d4af37 !important;
+  color: #0a1a11 !important;
+  transform: rotate(90deg) scale(1.08) !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.6) !important;
+}
+
+#page-wwu .wwu-modal-close svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+}
+
+#page-wwu .wwu-form-card {
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
 }
 #page-wwu .wwu-form-card .wwu-tag {
   text-align: center !important;
@@ -1459,28 +1670,28 @@
 }
 #page-wwu .wwu-form-card h2 {
   text-align: center !important;
-  font-size: clamp(28px, 3.5vw, 38px) !important;
-  margin-bottom: 12px !important;
+  font-size: clamp(26px, 3vw, 34px) !important;
+  margin-bottom: 8px !important;
   color: #ffffff !important;
 }
 #page-wwu .wwu-form-subtitle {
   text-align: center !important;
-  font-size: 14.5px !important;
+  font-size: 13.5px !important;
   color: #a09882 !important;
   font-weight: 400 !important;
-  max-width: 560px !important;
-  margin: 0 auto 36px !important;
-  line-height: 1.7 !important;
+  max-width: 520px !important;
+  margin: 0 auto 28px !important;
+  line-height: 1.6 !important;
 }
 #page-wwu .wwu-form-card label {
   display: block !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   font-weight: 700 !important;
   letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
   color: #d4af37 !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 6px !important;
 }
 #page-wwu .wwu-form-card input,
 #page-wwu .wwu-form-card select,
@@ -1490,9 +1701,9 @@
   border: 1px solid rgba(212,175,55,0.22) !important;
   color: #f5efe1 !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 14px !important;
+  font-size: 13.5px !important;
   border-radius: 8px !important;
-  padding: 13px 16px !important;
+  padding: 11px 14px !important;
   outline: none !important;
   transition: border-color 0.3s ease !important;
 }
@@ -1504,6 +1715,7 @@
 #page-wwu .wwu-form-card select:focus,
 #page-wwu .wwu-form-card textarea:focus {
   border-color: #d4af37 !important;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.25) !important;
 }
 #page-wwu .wwu-form-card select option {
   background: #0c1a11 !important;
@@ -1511,23 +1723,23 @@
 }
 #page-wwu .form-grid {
   display: grid !important;
-  gap: 22px !important;
+  gap: 18px !important;
 }
 #page-wwu .form-row {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 20px !important;
+  gap: 18px !important;
 }
 #page-wwu .form-submit-btn {
   display: block !important;
   width: 100% !important;
-  max-width: 340px !important;
-  margin: 12px auto 0 !important;
-  padding: 16px 40px !important;
+  max-width: 320px !important;
+  margin: 10px auto 0 !important;
+  padding: 14px 36px !important;
   background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%) !important;
   color: #0c1a11 !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 14px !important;
+  font-size: 13.5px !important;
   font-weight: 700 !important;
   letter-spacing: 0.5px !important;
   border: none !important;
@@ -1544,23 +1756,23 @@
   background: rgba(212,175,55,0.12) !important;
   border: 1px solid #d4af37 !important;
   color: #f5efe1 !important;
-  padding: 20px 24px !important;
-  border-radius: 12px !important;
+  padding: 16px 20px !important;
+  border-radius: 10px !important;
   text-align: center !important;
-  font-size: 15px !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
-  margin-bottom: 28px !important;
+  margin-bottom: 20px !important;
 }
 #page-wwu .alert-err {
   background: rgba(255,107,107,0.12) !important;
   border: 1px solid #ff6b6b !important;
   color: #ff6b6b !important;
-  padding: 16px 20px !important;
-  border-radius: 12px !important;
+  padding: 14px 18px !important;
+  border-radius: 10px !important;
   text-align: center !important;
-  font-size: 14px !important;
+  font-size: 13.5px !important;
   font-weight: 600 !important;
-  margin-bottom: 28px !important;
+  margin-bottom: 20px !important;
 }
 
 
@@ -1571,7 +1783,7 @@
   #page-wwu .wwu-hero-inner {
     grid-template-columns: 1fr !important;
     text-align: center !important;
-    gap: 50px !important;
+    gap: 45px !important;
   }
   #page-wwu .wwu-hero-text {
     max-width: 100% !important;
@@ -1580,29 +1792,32 @@
   #page-wwu .wwu-hero-tag-pill {
     align-self: center !important;
   }
-  #page-wwu .wwu-hero-actions {
-    justify-content: center !important;
-  }
-  #page-wwu .wwu-hero-tagline-bar {
-    justify-content: center !important;
-  }
-  #page-wwu .wwu-hero-pillars {
-    text-align: left !important;
-    max-width: 580px !important;
+  #page-wwu .wwu-hero-sublead {
+    text-align: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
-  #page-wwu .wwu-hero-metrics {
-    max-width: 540px !important;
-    margin: 0 auto !important;
-    width: 100% !important;
+  #page-wwu .wwu-hero-pillars-grid {
+    max-width: 580px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: left !important;
+  }
+  #page-wwu .wwu-hero-actions {
+    justify-content: center !important;
+  }
+  #page-wwu .wwu-hero-spec-strip {
+    justify-content: center !important;
   }
   #page-wwu .wwu-hero-visual {
-    min-height: 440px !important;
+    min-height: 480px !important;
   }
   #page-wwu .wwu-pod-constellation {
-    width: 420px !important;
-    height: 420px !important;
+    width: 460px !important;
+    height: 460px !important;
+  }
+  #page-wwu .wwu-pod-artwork {
+    width: 180px !important;
   }
   #page-wwu .wwu-collab-sketch {
     width: 300px !important;
@@ -1646,8 +1861,12 @@
 
 @media (max-width: 680px) {
   #page-wwu .wwu-hero {
-    padding: 110px 20px 70px !important;
+    padding: 100px 20px 60px !important;
     min-height: auto !important;
+  }
+  #page-wwu .wwu-hero-pillars-grid {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
   }
   #page-wwu .wwu-hero-actions {
     flex-direction: column !important;
@@ -1658,9 +1877,13 @@
     width: 100% !important;
     justify-content: center !important;
   }
-  #page-wwu .wwu-hero-metrics {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
+  #page-wwu .wwu-hero-spec-strip {
+    flex-direction: column !important;
+    gap: 6px !important;
+    align-items: center !important;
+  }
+  #page-wwu .wwu-hero-spec-strip .spec-sep {
+    display: none !important;
   }
   #page-wwu .wwu-pod-constellation {
     width: 320px !important;
@@ -1739,85 +1962,69 @@
       <div class="wwu-hero-text">
         <div class="wwu-hero-tag-pill">
           <span class="pill-dot"></span>
-          <span>B2B CHOCOLATE R&amp;D &amp; FORMULATION PLATFORM</span>
+          <span>Work With RT Chocos</span>
         </div>
 
         <h1>Bring us<br><span class="hl-hero-gold">the question.</span></h1>
 
-        <!-- Interactive Question Pillars -->
-        <div class="wwu-hero-pillars">
-          <div class="hero-pill-item" onclick="selectCollabArea('R&D & Product Innovation')">
-            <span class="pill-marker">✦</span>
-            <div class="pill-txt">
-              <strong>A product to rethink.</strong>
-              <span>Formulation, sensory profile &amp; market repositioning.</span>
-            </div>
+        <p class="wwu-hero-sublead">
+          From precision crystal matrix stabilization to clean-label sweeteners and rapid pilot formulation — we collaborate with visionary confectioners and brands to turn complex chocolate challenges into market-defining realities.
+        </p>
+
+        <!-- 2x2 Interactive Question Pillars Grid -->
+        <div class="wwu-hero-pillars-grid">
+          <div class="hero-pillar-card" onclick="selectCollabArea('R&D & Product Innovation')">
+            <span class="card-icon-tag">✦ ARCHITECTURE</span>
+            <strong>A product to rethink.</strong>
+            <p>Formulation, sensory profiling &amp; market repositioning.</p>
           </div>
-          <div class="hero-pill-item" onclick="selectCollabArea('Ingredients & Application Lab')">
-            <span class="pill-marker">✦</span>
-            <div class="pill-txt">
-              <strong>An ingredient to explore.</strong>
-              <span>Novel fats, clean-label sweeteners &amp; functional inclusions.</span>
-            </div>
+          <div class="hero-pillar-card" onclick="selectCollabArea('Ingredients & Application Lab')">
+            <span class="card-icon-tag">✦ INGREDIENTS</span>
+            <strong>An ingredient to explore.</strong>
+            <p>Novel fats, clean-label sweeteners &amp; botanicals.</p>
           </div>
-          <div class="hero-pill-item" onclick="selectCollabArea('Chocolate Problem Solving')">
-            <span class="pill-marker">✦</span>
-            <div class="pill-txt">
-              <strong>A problem to solve.</strong>
-              <span>Fat bloom, viscosity drift, tempering &amp; shelf-life defects.</span>
-            </div>
+          <div class="hero-pillar-card" onclick="selectCollabArea('Chocolate Problem Solving')">
+            <span class="card-icon-tag">✦ STABILITY</span>
+            <strong>A problem to solve.</strong>
+            <p>Fat bloom, viscosity drift &amp; shelf-life stabilization.</p>
           </div>
-          <div class="hero-pill-item" onclick="selectCollabArea('R&D & Product Innovation')">
-            <span class="pill-marker">✦</span>
-            <div class="pill-txt">
-              <strong>An idea that hasn't been tried yet.</strong>
-              <span>Translating blue-sky concepts into pilot prototypes.</span>
-            </div>
+          <div class="hero-pillar-card" onclick="selectCollabArea('R&D & Product Innovation')">
+            <span class="card-icon-tag">✦ INNOVATION</span>
+            <strong>An idea not tried yet.</strong>
+            <p>Translating blue-sky concepts into pilot lab prototypes.</p>
           </div>
         </div>
 
-        <!-- Tagline Banner -->
-        <div class="wwu-hero-tagline-bar">
-          <span>Chocolate Science</span>
-          <span class="t-dot">•</span>
-          <span>Formulation R&amp;D</span>
-          <span class="t-dot">•</span>
-          <span>Application Lab</span>
-          <span class="t-dot">•</span>
-          <span>Knowledge Collabs</span>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="wwu-hero-actions">
-          <a href="#inquiry-form" class="wwu-hero-btn-gold">
-            <span>START A CONSULTATION</span>
-            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
-          <a href="#collaboration-areas" class="wwu-hero-btn-outline">
-            <span>EXPLORE 5 AREAS</span>
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
-          </a>
-        </div>
-
-        <!-- Trust / Metrics Bar -->
-        <div class="wwu-hero-metrics">
-          <div class="wwu-metric-item">
-            <span class="wwu-metric-num">10+ Years</span>
-            <span class="wwu-metric-lbl">Formulation R&amp;D Mastery</span>
+        <!-- Action Buttons & Quick Specs -->
+        <div class="wwu-hero-actions-wrap">
+          <div class="wwu-hero-actions">
+            <button type="button" onclick="openConsultationModal()" class="wwu-hero-btn-gold">
+              <span>START A CONSULTATION</span>
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+            <a href="#collaboration-areas" class="wwu-hero-btn-outline">
+              <span>EXPLORE 5 AREAS</span>
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+            </a>
           </div>
-          <div class="wwu-metric-item">
-            <span class="wwu-metric-num">50+ Projects</span>
-            <span class="wwu-metric-lbl">Custom Formulations Tested</span>
-          </div>
-          <div class="wwu-metric-item">
-            <span class="wwu-metric-num">100% IP</span>
-            <span class="wwu-metric-lbl">Strict NDA &amp; Confidentiality</span>
+
+          <div class="wwu-hero-spec-strip">
+            <span class="spec-item"><span class="spec-dot">✦</span> Strict NDA Confidentiality</span>
+            <span class="spec-sep">•</span>
+            <span class="spec-item"><span class="spec-dot">✦</span> Rapid Pilot Formulations</span>
+            <span class="spec-sep">•</span>
+            <span class="spec-item"><span class="spec-dot">✦</span> ISO-Grade Analytical Lab</span>
           </div>
         </div>
       </div>
 
       <!-- Right Column: Interactive Cacao Constellation -->
       <div class="wwu-hero-visual">
+        <div class="wwu-radar-tag">
+          <span class="radar-beacon"></span>
+          <span>7 R&amp;D Vectors</span>
+        </div>
+
         <div class="wwu-pod-constellation">
           
           <!-- SVG Orbit Tracks & Laser Spokes -->
@@ -1829,30 +2036,32 @@
               </linearGradient>
             </defs>
 
-            <!-- Outer Celestial Guide Ring -->
-            <circle cx="250" cy="250" r="235" stroke="#d4af37" stroke-width="0.8" stroke-opacity="0.15" stroke-dasharray="4 8"/>
+            <!-- Outer Fine Concentric Rings & Crosshair Guides -->
+            <circle cx="250" cy="250" r="242" stroke="#d4af37" stroke-width="0.6" stroke-opacity="0.12" stroke-dasharray="2 6"/>
+            <circle cx="250" cy="250" r="232" stroke="#d4af37" stroke-width="1" stroke-opacity="0.22" stroke-dasharray="4 8"/>
+            <circle cx="250" cy="250" r="140" stroke="#d4af37" stroke-width="0.7" stroke-opacity="0.16" stroke-dasharray="3 6"/>
             
             <!-- Rotating Dash Orbit -->
             <g class="constellation-orbit-spin">
-              <circle cx="250" cy="250" r="185" stroke="#d4af37" stroke-width="1.2" stroke-opacity="0.3" stroke-dasharray="6 6"/>
-              <circle cx="250" cy="65" r="3.5" fill="#d4af37" opacity="0.8"/>
-              <circle cx="426" cy="193" r="3.5" fill="#d4af37" opacity="0.8"/>
-              <circle cx="359" cy="399" r="3.5" fill="#d4af37" opacity="0.8"/>
-              <circle cx="141" cy="399" r="3.5" fill="#d4af37" opacity="0.8"/>
-              <circle cx="74" cy="193" r="3.5" fill="#d4af37" opacity="0.8"/>
+              <circle cx="250" cy="250" r="185" stroke="#d4af37" stroke-width="1.3" stroke-opacity="0.38" stroke-dasharray="6 6"/>
+              <circle cx="250" cy="65" r="4" fill="#d4af37" opacity="0.9"/>
+              <circle cx="426" cy="193" r="4" fill="#d4af37" opacity="0.9"/>
+              <circle cx="359" cy="399" r="4" fill="#d4af37" opacity="0.9"/>
+              <circle cx="141" cy="399" r="4" fill="#d4af37" opacity="0.9"/>
+              <circle cx="74" cy="193" r="4" fill="#d4af37" opacity="0.9"/>
             </g>
 
             <!-- Inner Pulsing Orbit -->
-            <circle cx="250" cy="250" r="110" stroke="#d4af37" stroke-width="0.8" stroke-opacity="0.25" stroke-dasharray="2 4"/>
+            <circle cx="250" cy="250" r="105" stroke="#d4af37" stroke-width="0.9" stroke-opacity="0.28" stroke-dasharray="2 4"/>
 
             <!-- 7 Fine Laser Spokes to Satellite Nodes -->
-            <line x1="250" y1="250" x2="100" y2="90" stroke="rgba(212,175,55,0.35)" stroke-width="1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="400" y2="90" stroke="rgba(212,175,55,0.35)" stroke-width="1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="70" y2="220" stroke="rgba(212,175,55,0.35)" stroke-width="1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="430" y2="210" stroke="rgba(212,175,55,0.35)" stroke-width="1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="95" y2="380" stroke="rgba(212,175,55,0.35)" stroke-width="1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="410" y2="385" stroke="rgba(212,175,55,0.35)" stroke-width="1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="250" y2="455" stroke="rgba(212,175,55,0.35)" stroke-width="1" stroke-dasharray="3 3"/>
+            <line x1="250" y1="250" x2="100" y2="90" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
+            <line x1="250" y1="250" x2="400" y2="90" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
+            <line x1="250" y1="250" x2="70" y2="220" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
+            <line x1="250" y1="250" x2="430" y2="210" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
+            <line x1="250" y1="250" x2="95" y2="380" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
+            <line x1="250" y1="250" x2="410" y2="385" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
+            <line x1="250" y1="250" x2="250" y2="455" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
           </svg>
 
           <!-- Central Levitating Botanical Cacao Pod -->
@@ -1976,16 +2185,16 @@
 
     <div class="wwu-collab-inner">
       <div class="wwu-collab-left">
-        <span class="wwu-tag">HOW WE COLLABORATE</span>
-        <h2>Not a predefined answer.<br>A better question.</h2>
+        <span class="wwu-tag">✦ HOW WE COLLABORATE</span>
+        <h2>Not a predefined answer.<br><span class="collab-hl">A better question.</span></h2>
       </div>
 
       <!-- Center Vertical Divider Line -->
       <div class="wwu-collab-divider"></div>
 
       <div class="wwu-collab-right">
-        <p>Every meaningful collaboration begins somewhere different—<br>a formulation that isn't behaving, an ingredient worth investigating,<br>a product waiting to be created, or simply a question worth understanding.</p>
-        <p><strong>RT Chocos</strong> brings together chocolate knowledge, experimentation,<br>formulation and practical experience to explore what comes next.</p>
+        <p>Every meaningful collaboration begins somewhere different — a formulation that isn't behaving, an ingredient worth investigating, a product waiting to be created, or simply a question worth understanding.</p>
+        <p><strong>RT Chocos</strong> brings together deep chocolate science, experimentation, formulation R&amp;D, and hands-on pilot mastery to explore what comes next.</p>
       </div>
     </div>
   </section>
@@ -2058,7 +2267,6 @@
     </div>
   </section>
 
-
   <!-- ====== 4. FIVE COLLABORATION AREAS ====== -->
   <section class="wwu-areas" id="collaboration-areas">
     <div class="wwu-areas-inner">
@@ -2070,7 +2278,10 @@
           <span>COLLABORATION FRAMEWORK</span>
         </div>
         <h2>Different Needs.<br><span class="hl-gold">One Collaborative</span><br>Mindset.</h2>
-        <p class="wwu-areas-desc">Curiosity is where breakthroughs begin. Whether you need deep scientific troubleshooting, novel ingredient testing, or formulation masterclasses, we partner with you to turn ambitious questions into commercially viable reality.</p>
+        <p class="wwu-areas-desc">
+          Five ways we collaborate with you.<br>
+          Many outcomes we can create together.
+        </p>
         
         <ul class="wwu-areas-features">
           <li>
@@ -2087,76 +2298,79 @@
           </li>
         </ul>
 
-        <a href="#inquiry-form" class="wwu-btn-areas-cta">
+        <button type="button" onclick="openConsultationModal()" class="wwu-btn-areas-cta">
           <span>START A PROJECT</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>
+        </button>
       </div>
 
       <!-- Desktop Radial Orbital Hub (Rendered on >= 880px) -->
       <div class="wwu-diagram-stage">
         
         <!-- SVG Orbit Rings, Radial Glow Rays and Connection Lines -->
-        <svg class="wwu-orbital-svg" viewBox="0 0 720 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="wwu-orbital-svg" viewBox="0 0 680 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="spokeGradGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#8b5a2b" stop-opacity="0.35"/>
+            </linearGradient>
+            <radialGradient id="dockGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
           <!-- Outer faint guide ring -->
-          <circle cx="360" cy="320" r="285" stroke="#d4af37" stroke-width="1" stroke-opacity="0.15" stroke-dasharray="4 8"/>
+          <circle cx="340" cy="230" r="205" stroke="#d4af37" stroke-width="0.8" stroke-opacity="0.16" stroke-dasharray="4 6"/>
           
           <!-- Main Orbital Track (Rotating) -->
           <g class="wwu-orbit-dash">
-            <circle cx="360" cy="320" r="225" stroke="#8b5a2b" stroke-width="1.5" stroke-opacity="0.25" stroke-dasharray="6 6"/>
-            <!-- Orbital satellite node dots -->
-            <circle cx="360" cy="95" r="4" fill="#d4af37" opacity="0.7"/>
-            <circle cx="574" cy="250" r="4" fill="#d4af37" opacity="0.7"/>
-            <circle cx="492" cy="502" r="4" fill="#d4af37" opacity="0.7"/>
-            <circle cx="228" cy="502" r="4" fill="#d4af37" opacity="0.7"/>
-            <circle cx="146" cy="250" r="4" fill="#d4af37" opacity="0.7"/>
+            <circle cx="340" cy="230" r="148" stroke="#8b5a2b" stroke-width="1.2" stroke-opacity="0.22" stroke-dasharray="5 5"/>
           </g>
 
           <!-- Inner pulse halo ring -->
-          <circle cx="360" cy="320" r="115" stroke="#d4af37" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="2 4"/>
+          <circle cx="340" cy="230" r="60" stroke="#d4af37" stroke-width="1" stroke-opacity="0.35" stroke-dasharray="2 4"/>
 
           <!-- 5 Radial Connector Spokes with Gold Gradients -->
-          <defs>
-            <linearGradient id="spokeGrad1" x1="360" y1="320" x2="360" y2="95" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.8"/>
-              <stop offset="100%" stop-color="#8b5a2b" stop-opacity="0.2"/>
-            </linearGradient>
-            <linearGradient id="spokeGrad2" x1="360" y1="320" x2="574" y2="250" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.8"/>
-              <stop offset="100%" stop-color="#8b5a2b" stop-opacity="0.2"/>
-            </linearGradient>
-            <linearGradient id="spokeGrad3" x1="360" y1="320" x2="492" y2="502" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.8"/>
-              <stop offset="100%" stop-color="#8b5a2b" stop-opacity="0.2"/>
-            </linearGradient>
-            <linearGradient id="spokeGrad4" x1="360" y1="320" x2="228" y2="502" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.8"/>
-              <stop offset="100%" stop-color="#8b5a2b" stop-opacity="0.2"/>
-            </linearGradient>
-            <linearGradient id="spokeGrad5" x1="360" y1="320" x2="146" y2="250" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.8"/>
-              <stop offset="100%" stop-color="#8b5a2b" stop-opacity="0.2"/>
-            </linearGradient>
-          </defs>
+          <!-- Top: to Card 1 (Create) -->
+          <line id="spoke-1" x1="340" y1="181" x2="340" y2="98" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="340" cy="98" r="7" fill="url(#dockGlow)"/>
+          <circle cx="340" cy="98" r="3" fill="#d4af37"/>
 
-          <!-- Spokes -->
-          <line x1="360" y1="245" x2="360" y2="125" stroke="url(#spokeGrad1)" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <line x1="425" y1="295" x2="520" y2="260" stroke="url(#spokeGrad2)" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <line x1="410" y1="375" x2="470" y2="445" stroke="url(#spokeGrad3)" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <line x1="310" y1="375" x2="250" y2="445" stroke="url(#spokeGrad4)" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <line x1="295" y1="295" x2="200" y2="260" stroke="url(#spokeGrad5)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <!-- Top-Right: to Card 2 (Solve) -->
+          <line id="spoke-2" x1="380" y1="201" x2="484" y2="117" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="484" cy="117" r="7" fill="url(#dockGlow)"/>
+          <circle cx="484" cy="117" r="3" fill="#d4af37"/>
+
+          <!-- Bottom-Right: to Card 3 (Explore) -->
+          <line id="spoke-3" x1="380" y1="259" x2="469" y2="365" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="469" cy="365" r="7" fill="url(#dockGlow)"/>
+          <circle cx="469" cy="365" r="3" fill="#d4af37"/>
+
+          <!-- Bottom-Left: to Card 4 (Connect) -->
+          <line id="spoke-4" x1="300" y1="259" x2="211" y2="365" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="211" cy="365" r="7" fill="url(#dockGlow)"/>
+          <circle cx="211" cy="365" r="3" fill="#d4af37"/>
+
+          <!-- Top-Left: to Card 5 (Learn) -->
+          <line id="spoke-5" x1="300" y1="201" x2="196" y2="117" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="196" cy="117" r="7" fill="url(#dockGlow)"/>
+          <circle cx="196" cy="117" r="3" fill="#d4af37"/>
         </svg>
 
-        <!-- Center Core: THE QUESTION -->
-        <div class="wwu-diagram-center">
+        <!-- Center Core: THE QUESTION (Interactive Reactive Nucleus) -->
+        <div class="wwu-diagram-center" id="orbital-nucleus">
           <div class="dc-pulse-ring"></div>
-          <span class="dc-the">THE NUCLEUS</span>
-          <span class="dc-title">THE QUESTION</span>
-          <span class="dc-sub">Curiosity is the starting point.</span>
+          <span class="dc-the" id="nucleus-tag">THE NUCLEUS</span>
+          <span class="dc-title" id="nucleus-title">THE<br>QUESTION</span>
+          <span class="dc-sub" id="nucleus-sub">Curiosity starts here</span>
         </div>
 
         <!-- Node 1: CREATE -->
-        <div class="wwu-area-card card-create" onclick="selectCollabArea('R&D & Product Innovation')">
+        <div class="wwu-area-card card-create" 
+             onmouseenter="highlightHubNode(1, '01 • CREATE', 'R&amp;D LAB', 'Custom prototypes & trials')"
+             onmouseleave="resetHubNode()"
+             onclick="selectCollabArea('R&D & Product Innovation')">
           <div class="card-head">
             <div class="area-icon">
               <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.5 6V17H9v-2c-2.2-1.3-3.5-3.5-3.5-6a7 7 0 0 1 7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
@@ -2171,7 +2385,10 @@
         </div>
 
         <!-- Node 2: SOLVE -->
-        <div class="wwu-area-card card-solve" onclick="selectCollabArea('Chocolate Problem Solving')">
+        <div class="wwu-area-card card-solve" 
+             onmouseenter="highlightHubNode(2, '02 • SOLVE', 'DEFECT LAB', 'Root cause diagnostics')"
+             onmouseleave="resetHubNode()"
+             onclick="selectCollabArea('Chocolate Problem Solving')">
           <div class="card-head">
             <div class="area-icon">
               <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
@@ -2186,7 +2403,10 @@
         </div>
 
         <!-- Node 3: EXPLORE -->
-        <div class="wwu-area-card card-explore" onclick="selectCollabArea('Ingredients & Application Lab')">
+        <div class="wwu-area-card card-explore" 
+             onmouseenter="highlightHubNode(3, '03 • EXPLORE', 'NOVEL LAB', 'Functional ingredients')"
+             onmouseleave="resetHubNode()"
+             onclick="selectCollabArea('Ingredients & Application Lab')">
           <div class="card-head">
             <div class="area-icon">
               <svg viewBox="0 0 24 24"><path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/></svg>
@@ -2201,7 +2421,10 @@
         </div>
 
         <!-- Node 4: CONNECT -->
-        <div class="wwu-area-card card-connect" onclick="selectCollabArea('Knowledge & Industry Collaboration')">
+        <div class="wwu-area-card card-connect" 
+             onmouseenter="highlightHubNode(4, '04 • CONNECT', 'COLLAB HUB', 'Strategic partnerships')"
+             onmouseleave="resetHubNode()"
+             onclick="selectCollabArea('Knowledge & Industry Collaboration')">
           <div class="card-head">
             <div class="area-icon">
               <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -2216,7 +2439,10 @@
         </div>
 
         <!-- Node 5: LEARN -->
-        <div class="wwu-area-card card-learn" onclick="selectCollabArea('Education & Masterclasses')">
+        <div class="wwu-area-card card-learn" 
+             onmouseenter="highlightHubNode(5, '05 • LEARN', 'ACADEMY', 'Formulation & rheology')"
+             onmouseleave="resetHubNode()"
+             onclick="selectCollabArea('Education & Masterclasses')">
           <div class="card-head">
             <div class="area-icon">
               <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -2360,146 +2586,198 @@
   </section>
 
 
-  <!-- ====== 7. THE CHOCOLATE CHALLENGE ====== -->
-  <section class="wwu-challenge">
-    <!-- Botanical Watermark Sketch on bottom-left matching reference -->
-    <img src="assets/cacao_botanical_sketch.jpg" alt="Botanical Sketch" class="wwu-challenge-sketch" />
+  <!-- ====== LUXURY CONSULTATION MODAL POPUP ====== -->
+  <div id="consultation-modal" class="wwu-modal-backdrop" aria-hidden="true" onclick="handleModalBackdropClick(event)">
+    <div class="wwu-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      
+      <!-- Close Button -->
+      <button class="wwu-modal-close" onclick="closeConsultationModal()" aria-label="Close Consultation Form">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
 
-    <div class="wwu-challenge-inner">
-      <div class="wwu-challenge-left">
-        <h2>Something isn't working?<br>Something could work better?<br>Or perhaps nobody has tried it yet.<br><strong>Bring us the question.</strong></h2>
-        <p>You don't need to have the answer.<br>That's what the R&D is for.</p>
-        <a href="#inquiry-form" class="wwu-btn-gold">
-          <span>START A CHOCOLATE CHALLENGE</span>
-          <span>→</span>
-        </a>
+      <div class="wwu-form-card">
+        <span class="wwu-tag">GET STARTED</span>
+        <h2 id="modal-title">Start a Conversation</h2>
+        <p class="wwu-form-subtitle">Tell us about your challenge, idea, or question. We'll review it and get back to you with how we can help.</p>
+
+        <?php if ($submissionSuccess): ?>
+          <div class="alert-ok">✓ Thank you! Your inquiry has been received. We will get in touch with you within 24 hours.</div>
+        <?php elseif (!empty($submissionError)): ?>
+          <div class="alert-err"><?php echo htmlspecialchars($submissionError); ?></div>
+        <?php endif; ?>
+
+        <form method="POST" action="work-with-us.php" id="inquiry-form">
+          <div class="form-grid">
+            <div class="form-row">
+              <div>
+                <label>Your Full Name *</label>
+                <input type="text" name="name" required placeholder="e.g. Aarti Sahni" />
+              </div>
+              <div>
+                <label>Work Email Address *</label>
+                <input type="email" name="email" required placeholder="name@company.com" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label>Phone / WhatsApp</label>
+                <input type="text" name="phone" placeholder="+91 98765 43210" />
+              </div>
+              <div>
+                <label>Company / Brand Name</label>
+                <input type="text" name="company" placeholder="e.g. Artisan Cacao Ltd." />
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label>Primary Area of Interest</label>
+                <select name="service" id="modal-service-select">
+                  <option value="R&D & Product Innovation">🔬 R&D &amp; Product Innovation</option>
+                  <option value="Chocolate Problem Solving">🧩 Chocolate Problem Solving</option>
+                  <option value="Ingredients & Application Lab">⚗️ Ingredients &amp; Application Lab</option>
+                  <option value="Education & Masterclasses">🎓 Education &amp; Masterclasses</option>
+                  <option value="Knowledge & Industry Collaboration">🤝 Knowledge &amp; Industry Collaboration</option>
+                  <option value="General Inquiry">✨ General Inquiry</option>
+                </select>
+              </div>
+              <div>
+                <label>Budget Range</label>
+                <select name="budget">
+                  <option value="₹50,000 - ₹1,50,000">₹50,000 – ₹1,50,000</option>
+                  <option value="₹1,50,000 - ₹3,50,000">₹1,50,000 – ₹3,50,000</option>
+                  <option value="₹3,50,000+">₹3,50,000+ (Enterprise)</option>
+                  <option value="Flexible / Undecided">Flexible / Undecided</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label>Describe Your Challenge or Question *</label>
+              <textarea name="message" rows="4" required placeholder="What's the question you're trying to answer? Tell us about the product, formulation, or idea you're working on..."></textarea>
+            </div>
+            <div style="text-align:center; margin-top:8px;">
+              <button type="submit" class="form-submit-btn">Submit Inquiry →</button>
+            </div>
+          </div>
+        </form>
       </div>
-      <div class="wwu-ch-pillars">
-        <div class="wwu-ch-pill">
-          <h4>Any Challenge</h4>
-          <p>Product, formulation, ingredient, process, concept or idea.</p>
-        </div>
-        <div class="wwu-ch-pill">
-          <h4>Expert Review</h4>
-          <p>We review, understand and identify the areas worth exploring.</p>
-        </div>
-        <div class="wwu-ch-pill">
-          <h4>R&D Approach</h4>
-          <p>Experimentation, analysis and validation through chocolate science.</p>
-        </div>
-        <div class="wwu-ch-pill">
-          <h4>Clear Direction</h4>
-          <p>Insights, possibilities and practical next steps for you.</p>
-        </div>
-      </div>
+
     </div>
-  </section>
-
-
-  <!-- ====== 8. CONSULTATION FORM ====== -->
-  <section id="inquiry-form" class="wwu-form-sec">
-    <div class="wwu-form-card">
-      <span class="wwu-tag">GET STARTED</span>
-      <h2>Start a Conversation</h2>
-      <p class="wwu-form-subtitle">Tell us about your challenge, idea, or question. We'll review it and get back to you with how we can help.</p>
-
-      <?php if ($submissionSuccess): ?>
-        <div class="alert-ok">✓ Thank you! Your inquiry has been received. We will get in touch with you within 24 hours.</div>
-      <?php elseif (!empty($submissionError)): ?>
-        <div class="alert-err"><?php echo htmlspecialchars($submissionError); ?></div>
-      <?php endif; ?>
-
-      <form method="POST" action="work-with-us.php#inquiry-form">
-        <div class="form-grid">
-          <div class="form-row">
-            <div>
-              <label>Your Full Name *</label>
-              <input type="text" name="name" required placeholder="e.g. Aarti Sahni" />
-            </div>
-            <div>
-              <label>Work Email Address *</label>
-              <input type="email" name="email" required placeholder="name@company.com" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div>
-              <label>Phone / WhatsApp</label>
-              <input type="text" name="phone" placeholder="+91 98765 43210" />
-            </div>
-            <div>
-              <label>Company / Brand Name</label>
-              <input type="text" name="company" placeholder="e.g. Artisan Cacao Ltd." />
-            </div>
-          </div>
-          <div class="form-row">
-            <div>
-              <label>Primary Area of Interest</label>
-              <select name="service">
-                <option value="R&D & Product Innovation">🔬 R&D &amp; Product Innovation</option>
-                <option value="Chocolate Problem Solving">🧩 Chocolate Problem Solving</option>
-                <option value="Ingredients & Application Lab">⚗️ Ingredients &amp; Application Lab</option>
-                <option value="Education & Masterclasses">🎓 Education &amp; Masterclasses</option>
-                <option value="Knowledge & Industry Collaboration">🤝 Knowledge &amp; Industry Collaboration</option>
-                <option value="General Inquiry">✨ General Inquiry</option>
-              </select>
-            </div>
-            <div>
-              <label>Budget Range</label>
-              <select name="budget">
-                <option value="₹50,000 - ₹1,50,000">₹50,000 – ₹1,50,000</option>
-                <option value="₹1,50,000 - ₹3,50,000">₹1,50,000 – ₹3,50,000</option>
-                <option value="₹3,50,000+">₹3,50,000+ (Enterprise)</option>
-                <option value="Flexible / Undecided">Flexible / Undecided</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label>Describe Your Challenge or Question *</label>
-            <textarea name="message" rows="5" required placeholder="What's the question you're trying to answer? Tell us about the product, formulation, or idea you're working on..."></textarea>
-          </div>
-          <div style="text-align:center; margin-top:8px;">
-            <button type="submit" class="form-submit-btn">Submit Inquiry →</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </section>
+  </div>
 
 </div>
 
 <script>
 /**
- * Smoothly scrolls to the consultation form, auto-selects the chosen collaboration area,
- * and adds an ambient golden glow pulse to the select field.
+ * Interactive Hub Nucleus Dynamic Focus on Card Hover
  */
-function selectCollabArea(areaName) {
-  const formSec = document.getElementById('inquiry-form');
-  if (!formSec) return;
+function highlightHubNode(nodeId, tag, title, sub) {
+  const nucleus = document.getElementById('orbital-nucleus');
+  const tagEl = document.getElementById('nucleus-tag');
+  const titleEl = document.getElementById('nucleus-title');
+  const subEl = document.getElementById('nucleus-sub');
+  const spoke = document.getElementById('spoke-' + nodeId);
   
-  const selectElem = formSec.querySelector('select[name="service"]');
-  if (selectElem) {
-    for (let i = 0; i < selectElem.options.length; i++) {
-      const opt = selectElem.options[i];
-      if (opt.value.toLowerCase().includes(areaName.toLowerCase()) || 
-          opt.text.toLowerCase().includes(areaName.toLowerCase())) {
-        selectElem.selectedIndex = i;
-        break;
+  if (nucleus && tagEl && titleEl && subEl) {
+    nucleus.style.borderColor = '#d4af37';
+    nucleus.style.boxShadow = '0 0 0 7px rgba(212, 175, 55, 0.2), 0 0 35px rgba(212, 175, 55, 0.45)';
+    nucleus.style.transform = 'translate(-50%, -50%) scale(1.08)';
+    tagEl.innerText = tag;
+    tagEl.style.color = '#d4af37';
+    titleEl.innerHTML = title;
+    subEl.innerText = sub;
+    subEl.style.color = '#8b5a2b';
+  }
+  if (spoke) {
+    spoke.style.stroke = '#d4af37';
+    spoke.style.strokeWidth = '2.2';
+    spoke.style.strokeDasharray = 'none';
+  }
+}
+
+function resetHubNode() {
+  const nucleus = document.getElementById('orbital-nucleus');
+  const tagEl = document.getElementById('nucleus-tag');
+  const titleEl = document.getElementById('nucleus-title');
+  const subEl = document.getElementById('nucleus-sub');
+  
+  if (nucleus && tagEl && titleEl && subEl) {
+    nucleus.style.borderColor = '';
+    nucleus.style.boxShadow = '';
+    nucleus.style.transform = '';
+    tagEl.innerText = 'THE NUCLEUS';
+    tagEl.style.color = '';
+    titleEl.innerHTML = 'THE<br>QUESTION';
+    subEl.innerText = 'Curiosity starts here';
+    subEl.style.color = '';
+  }
+  for (let i = 1; i <= 5; i++) {
+    const spoke = document.getElementById('spoke-' + i);
+    if (spoke) {
+      spoke.style.stroke = '';
+      spoke.style.strokeWidth = '';
+      spoke.style.strokeDasharray = '';
+    }
+  }
+}
+
+/**
+ * Consultation Modal Management (Open, Close, Pre-select)
+ */
+function openConsultationModal(serviceArea) {
+  const modal = document.getElementById('consultation-modal');
+  if (!modal) return;
+
+  if (serviceArea) {
+    const selectElem = document.getElementById('modal-service-select');
+    if (selectElem) {
+      for (let i = 0; i < selectElem.options.length; i++) {
+        const opt = selectElem.options[i];
+        if (opt.value.toLowerCase().includes(serviceArea.toLowerCase()) || 
+            opt.text.toLowerCase().includes(serviceArea.toLowerCase())) {
+          selectElem.selectedIndex = i;
+          break;
+        }
       }
     }
-    
-    // Add visual spotlight pulse to the select element
-    selectElem.style.transition = 'all 0.4s ease';
-    selectElem.style.borderColor = '#d4af37';
-    selectElem.style.boxShadow = '0 0 20px rgba(212, 175, 55, 0.6)';
-    setTimeout(() => {
-      selectElem.style.borderColor = '';
-      selectElem.style.boxShadow = '';
-    }, 2500);
   }
-  
-  // Smooth scroll to form
-  formSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  modal.classList.add('is-open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
 }
+
+function closeConsultationModal() {
+  const modal = document.getElementById('consultation-modal');
+  if (!modal) return;
+  modal.classList.remove('is-open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+function handleModalBackdropClick(e) {
+  if (e.target.id === 'consultation-modal') {
+    closeConsultationModal();
+  }
+}
+
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeConsultationModal();
+  }
+});
+
+// Alias for backwards-compatibility with existing card click handlers
+function selectCollabArea(areaName) {
+  openConsultationModal(areaName);
+}
+
+// Auto-open modal if there was a form submission response
+<?php if ($submissionSuccess || !empty($submissionError)): ?>
+window.addEventListener('DOMContentLoaded', function() {
+  openConsultationModal();
+});
+<?php endif; ?>
 </script>
 
 <?php
