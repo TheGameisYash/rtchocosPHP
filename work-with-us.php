@@ -541,16 +541,19 @@
 }
 
 #page-wwu .wwu-pod-artwork {
-  width: 255px !important;
-  height: auto !important;
-  filter: drop-shadow(0 22px 50px rgba(212, 175, 55, 0.38)) drop-shadow(0 10px 28px rgba(0, 0, 0, 0.75)) !important;
+  width: 250px !important;
+  height: 440px !important;
+  object-fit: contain !important;
+  -webkit-mask-image: radial-gradient(ellipse 43% 76% at 50% 50%, black 40%, transparent 92%) !important;
+  mask-image: radial-gradient(ellipse 43% 76% at 50% 50%, black 40%, transparent 92%) !important;
+  filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.45)) drop-shadow(0 20px 50px rgba(0, 0, 0, 0.95)) !important;
   animation: wwuPodFloat 6s ease-in-out infinite alternate !important;
   transition: transform 0.4s ease, filter 0.4s ease !important;
 }
 
 #page-wwu .wwu-cacao-nucleus:hover .wwu-pod-artwork {
-  transform: scale(1.06) !important;
-  filter: drop-shadow(0 30px 65px rgba(212, 175, 55, 0.55)) drop-shadow(0 14px 38px rgba(0, 0, 0, 0.85)) !important;
+  transform: scale(1.05) !important;
+  filter: drop-shadow(0 0 55px rgba(212, 175, 55, 0.7)) drop-shadow(0 25px 65px rgba(0, 0, 0, 1)) !important;
 }
 
 @keyframes wwuPodFloat {
@@ -1999,7 +2002,7 @@
         <div class="wwu-hero-actions-wrap">
           <div class="wwu-hero-actions">
             <button type="button" onclick="openConsultationModal()" class="wwu-hero-btn-gold">
-              <span>START A CONSULTATION</span>
+              <span>DISCUSS YOUR IDEA</span>
               <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
             <a href="#collaboration-areas" class="wwu-hero-btn-outline">
@@ -2008,13 +2011,7 @@
             </a>
           </div>
 
-          <div class="wwu-hero-spec-strip">
-            <span class="spec-item"><span class="spec-dot">✦</span> Strict NDA Confidentiality</span>
-            <span class="spec-sep">•</span>
-            <span class="spec-item"><span class="spec-dot">✦</span> Rapid Pilot Formulations</span>
-            <span class="spec-sep">•</span>
-            <span class="spec-item"><span class="spec-dot">✦</span> ISO-Grade Analytical Lab</span>
-          </div>
+          
         </div>
       </div>
 
@@ -2064,47 +2061,9 @@
             <line x1="250" y1="250" x2="250" y2="455" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
           </svg>
 
-          <!-- Central Levitating Botanical Cacao Pod -->
-          <div class="wwu-cacao-nucleus" onclick="selectCollabArea('R&D & Product Innovation')">
-            <svg class="wwu-pod-artwork" viewBox="0 0 140 300" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="podGoldBody" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#4a3014"/>
-                  <stop offset="25%" stop-color="#7c5324"/>
-                  <stop offset="50%" stop-color="#b8860b"/>
-                  <stop offset="75%" stop-color="#936427"/>
-                  <stop offset="100%" stop-color="#3d240d"/>
-                </linearGradient>
-                <radialGradient id="podCoreGlow" cx="45%" cy="45%" r="55%">
-                  <stop offset="0%" stop-color="rgba(255,230,150,0.35)"/>
-                  <stop offset="60%" stop-color="rgba(212,175,55,0.12)"/>
-                  <stop offset="100%" stop-color="transparent"/>
-                </radialGradient>
-              </defs>
-
-              <!-- Golden Stem & Leaf -->
-              <path d="M70 2 C67 12, 64 28, 66 46 C68 56, 70 60, 70 64" stroke="#d4af37" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <path d="M68 22 C60 14, 50 16, 48 24 C50 26, 60 26, 68 22Z" fill="#3a5a30" stroke="#d4af37" stroke-width="0.8" opacity="0.7"/>
-
-              <!-- Outer Cacao Pod Shell -->
-              <path d="M70 55 C34 78, 18 128, 22 178 C24 220, 40 262, 70 294 C100 262, 116 220, 118 178 C122 128, 106 78, 70 55Z" fill="url(#podGoldBody)" stroke="#d4af37" stroke-width="1.6"/>
-
-              <!-- Ambient Highlight Oval -->
-              <ellipse cx="52" cy="168" rx="16" ry="74" fill="url(#podCoreGlow)" transform="rotate(-4 52 168)"/>
-
-              <!-- Embossed Seed Ridges with Gilded Lines -->
-              <path d="M70 60 C68 125, 68 220, 70 288" stroke="#f5e4b2" stroke-width="1.4" fill="none" opacity="0.85"/>
-              <path d="M70 60 C52 94, 34 152, 32 190 C31 218, 41 256, 70 288" stroke="#d4af37" stroke-width="1.1" fill="none" opacity="0.65"/>
-              <path d="M70 60 C88 94, 106 152, 108 190 C109 218, 99 256, 70 288" stroke="#d4af37" stroke-width="1.1" fill="none" opacity="0.65"/>
-              <path d="M70 60 C44 90, 24 142, 23 180 C22 212, 36 262, 70 288" stroke="#b8860b" stroke-width="0.9" fill="none" opacity="0.45"/>
-              <path d="M70 60 C96 90, 116 142, 117 180 C118 212, 104 262, 70 288" stroke="#b8860b" stroke-width="0.9" fill="none" opacity="0.45"/>
-
-              <!-- Golden Micro Seed Pores -->
-              <circle cx="48" cy="135" r="1.5" fill="#f5e4b2" opacity="0.6"/>
-              <circle cx="84" cy="155" r="1.5" fill="#f5e4b2" opacity="0.5"/>
-              <circle cx="58" cy="225" r="1.5" fill="#f5e4b2" opacity="0.5"/>
-              <circle cx="80" cy="115" r="1.2" fill="#f5e4b2" opacity="0.5"/>
-            </svg>
+          <!-- Central Levitating Real Botanical Cacao Pod -->
+          <div class="wwu-cacao-nucleus" onclick="openConsultationModal('R&D & Product Innovation')">
+            <img src="assets/real_cacao_pod.jpg" alt="Natural Ripe Chocolate Cacao Pod" class="wwu-pod-artwork wwu-real-pod" />
           </div>
 
           <!-- 7 Satellite Science Nodes -->
@@ -2181,11 +2140,11 @@
   <!-- ====== 2. HOW WE COLLABORATE ====== -->
   <section class="wwu-collab">
     <!-- Botanical Cacao Sketch Illustration in Corner -->
-    <img src="assets/cacao_botanical_sketch.jpg" alt="Botanical Cacao Drawing" class="wwu-collab-sketch" />
+   
 
     <div class="wwu-collab-inner">
       <div class="wwu-collab-left">
-        <span class="wwu-tag">✦ HOW WE COLLABORATE</span>
+        <span class="wwu-tag">HOW WE COLLABORATE</span>
         <h2>Not a predefined answer.<br><span class="collab-hl">A better question.</span></h2>
       </div>
 
@@ -2283,23 +2242,10 @@
           Many outcomes we can create together.
         </p>
         
-        <ul class="wwu-areas-features">
-          <li>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <span>Custom R&amp;D Formulation &amp; Pilot Trials</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <span>Dedicated Ingredient Behavior Lab</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <span>Strict Confidentiality &amp; IP Protection</span>
-          </li>
-        </ul>
+        
 
         <button type="button" onclick="openConsultationModal()" class="wwu-btn-areas-cta">
-          <span>START A PROJECT</span>
+          <span>SEE HOW WE COLLABORATE</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
       </div>
@@ -2361,7 +2307,7 @@
         <!-- Center Core: THE QUESTION (Interactive Reactive Nucleus) -->
         <div class="wwu-diagram-center" id="orbital-nucleus">
           <div class="dc-pulse-ring"></div>
-          <span class="dc-the" id="nucleus-tag">THE NUCLEUS</span>
+          
           <span class="dc-title" id="nucleus-title">THE<br>QUESTION</span>
           <span class="dc-sub" id="nucleus-sub">Curiosity starts here</span>
         </div>
