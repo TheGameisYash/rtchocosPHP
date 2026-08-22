@@ -2300,3 +2300,172 @@ section:nth-of-type(even) {
     justify-content: center;
   }
 }
+
+/* ==========================================================================
+   MASTER UNIVERSAL MULTI-DEVICE RESPONSIVE ENGINE (ALL PAGES & RESOLUTIONS)
+   ========================================================================== */
+
+/* --- 1. UNIVERSAL IMAGE & MEDIA FIT --- */
+.page img,
+.page video,
+.page iframe,
+.page canvas {
+  max-width: 100% !important;
+  height: auto;
+}
+
+/* --- 2. HOME PAGE RESPONSIVE REFINEMENTS --- */
+#hero {
+  padding: 120px 20px 70px !important;
+  min-height: calc(100vh - 72px);
+}
+
+@media (max-width: 768px) {
+  #hero {
+    padding: 95px 16px 50px !important;
+    min-height: auto;
+  }
+  #hero .hero-content {
+    padding: 32px 20px !important;
+    border-radius: 20px !important;
+  }
+  #hero h1 {
+    font-size: clamp(30px, 8vw, 44px) !important;
+    margin-bottom: 14px !important;
+  }
+  #hero p {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    margin-bottom: 24px !important;
+  }
+  #hero .hero-btns {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  #hero .hero-btns a,
+  #hero .hero-btns button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* --- 3. GRIDS & CARDS ACROSS ALL PAGES --- */
+@media (max-width: 1024px) {
+  .blog-grid,
+  .articles-grid,
+  .workshop-grid,
+  .recipes-grid,
+  .products-grid,
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 24px !important;
+  }
+  .about-grid,
+  .contact-grid,
+  .checkout-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .blog-grid,
+  .articles-grid,
+  .workshop-grid,
+  .recipes-grid,
+  .products-grid,
+  .features-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .page-hero {
+    padding: 90px 16px 40px !important;
+  }
+  .page-hero h1 {
+    font-size: clamp(26px, 7.5vw, 36px) !important;
+  }
+  .page-hero p {
+    font-size: 13.5px !important;
+  }
+}
+
+/* --- 4. THE CACAO JOURNAL & ARTICLE READING VIEW --- */
+.article-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 48px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .article-layout {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+  }
+  .article-sidebar {
+    order: 2;
+    width: 100% !important;
+  }
+}
+
+.article-content {
+  max-width: 100% !important;
+  overflow-x: hidden;
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.8;
+}
+
+.article-content pre,
+.article-content table {
+  max-width: 100% !important;
+  overflow-x: auto;
+  display: block;
+}
+
+/* --- 5. INTERACTIVE WIDGETS & MODALS --- */
+.modal-dialog,
+.recipe-modal,
+.workshop-modal,
+.quick-view-modal {
+  width: min(94vw, 760px) !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 480px) {
+  .modal-dialog,
+  .recipe-modal,
+  .workshop-modal,
+  .quick-view-modal {
+    padding: 24px 16px !important;
+    border-radius: 16px !important;
+  }
+}
+
+/* --- 6. FORMS & INPUTS --- */
+input,
+select,
+textarea {
+  max-width: 100% !important;
+}
+
+@media (max-width: 600px) {
+  .form-row,
+  .input-group-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* --- 7. ULTRA-WIDE & 4K OPTIMIZATION (>= 2560px) --- */
+@media (min-width: 2560px) {
+  #hero .hero-content {
+    max-width: 1100px;
+    padding: 64px 48px;
+  }
+  .article-layout {
+    max-width: 1560px;
+  }
+}

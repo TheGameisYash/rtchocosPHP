@@ -3032,3 +3032,39 @@
   color: #ffffff !important;
 }
 
+/* === CHOCOPEDIA UNIVERSAL RESPONSIVE EXTENSIONS === */
+.chocopedia-search-box {
+  width: min(94vw, 680px) !important;
+  margin: 0 auto 32px !important;
+}
+
+.chocopedia-matrix-wrap {
+  width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 16px;
+}
+
+@media (max-width: 900px) {
+  .wheel-grid-layout {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+  }
+  .wheel-svg-stage {
+    max-width: 360px !important;
+    margin: 0 auto !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .chocopedia-item-card {
+    padding: 16px 14px !important;
+  }
+  .chocopedia-alpha-nav {
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    justify-content: flex-start !important;
+    padding: 8px 12px !important;
+  }
+}
+

@@ -1478,100 +1478,754 @@
 
 
 /* ============================================================
-   SECTION 5: WHO IS THIS FOR (warm cream)
+   SECTION 5: WHO IS THIS FOR (Ultra-Luxury Ivory & Warm Gold)
    ============================================================ */
 #page-wwu .wwu-audience {
-  padding: 80px 40px !important;
-  background: #ede7d9 !important;
-  border-top: 1px solid #ddd4c2 !important;
+  position: relative !important;
+  padding: 100px 48px !important;
+  background: 
+    radial-gradient(circle 800px at 85% 20%, rgba(212, 175, 55, 0.09) 0%, transparent 70%),
+    radial-gradient(circle 600px at 15% 80%, rgba(139, 90, 43, 0.05) 0%, transparent 60%),
+    linear-gradient(180deg, #f7f3eb 0%, #eee6d8 50%, #f4ede0 100%) !important;
+  border-top: 1px solid rgba(212, 175, 55, 0.28) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
+  overflow: hidden !important;
 }
+
+#page-wwu .wwu-audience::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-image: 
+    radial-gradient(circle 1.5px at 10% 20%, rgba(184, 134, 11, 0.2) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 90% 75%, rgba(184, 134, 11, 0.25) 0%, transparent 100%),
+    radial-gradient(circle 2px at 50% 90%, rgba(184, 134, 11, 0.15) 0%, transparent 100%) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
 #page-wwu .wwu-audience-inner {
-  max-width: 1100px !important;
+  max-width: 1380px !important;
   margin: 0 auto !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
+
 #page-wwu .wwu-audience-top {
   display: grid !important;
-  grid-template-columns: 1fr 1.5fr !important;
-  gap: 50px !important;
+  grid-template-columns: 1fr 1.35fr !important;
+  gap: 60px !important;
   align-items: center !important;
 }
-#page-wwu .wwu-audience .wwu-tag {
-  color: #8b6b3d !important;
-  margin-bottom: 12px !important;
+
+#page-wwu .wwu-audience-left {
+  display: flex !important;
+  flex-direction: column !important;
+  padding-right: 20px !important;
 }
+
+#page-wwu .wwu-audience-left .wwu-aud-tag-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  align-self: flex-start !important;
+  padding: 6px 14px !important;
+  background: rgba(139, 90, 43, 0.08) !important;
+  border: 1px solid rgba(184, 134, 11, 0.3) !important;
+  border-radius: 30px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: #8b5a2b !important;
+  margin-bottom: 18px !important;
+}
+
+#page-wwu .wwu-audience-left .wwu-aud-tag-pill .pill-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: #b8860b !important;
+  box-shadow: 0 0 6px rgba(184, 134, 11, 0.6) !important;
+}
+
 #page-wwu .wwu-audience h2 {
-  font-size: clamp(28px, 3vw, 40px) !important;
-  color: #1a1a14 !important;
-  line-height: 1.15 !important;
+  font-size: clamp(32px, 3.4vw, 48px) !important;
+  color: #1a1712 !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.02em !important;
+  margin-bottom: 18px !important;
+  font-weight: 700 !important;
 }
-#page-wwu .wwu-aud-tags {
+
+#page-wwu .wwu-audience h2 .hl-cream-gold {
+  color: #8b5a2b !important;
+  background: linear-gradient(135deg, #8b5a2b 0%, #c89524 50%, #6b4010 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  display: inline-block !important;
+}
+
+#page-wwu .wwu-audience-lead {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+  color: #574e40 !important;
+  margin-bottom: 22px !important;
+  font-weight: 400 !important;
+}
+
+#page-wwu .wwu-audience-badges {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 10px !important;
+  margin-bottom: 24px !important;
 }
-#page-wwu .wwu-aud-tags .at {
+
+#page-wwu .wwu-aud-trait {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  color: #3d3a30 !important;
-  padding: 10px 22px !important;
-  border-radius: 30px !important;
-  border: 1px solid #c4b89a !important;
-  background: #f5f0e6 !important;
-  transition: all 0.3s ease !important;
-  cursor: default !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+  color: #6b4d1b !important;
+  padding: 6px 12px !important;
+  background: rgba(212, 175, 55, 0.12) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(184, 134, 11, 0.22) !important;
 }
-#page-wwu .wwu-aud-tags .at:hover {
-  border-color: #d4af37 !important;
-  background: rgba(212,175,55,0.08) !important;
-  color: #1a1a14 !important;
+
+#page-wwu .wwu-aud-cta-wrap {
+  display: flex !important;
+}
+
+#page-wwu .wwu-aud-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 13px 26px !important;
+  background: linear-gradient(135deg, #8b5a2b 0%, #b8860b 100%) !important;
+  color: #ffffff !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 18px rgba(139, 90, 43, 0.25) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#page-wwu .wwu-aud-btn:hover {
+  background: linear-gradient(135deg, #70441d 0%, #9e7307 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(139, 90, 43, 0.35) !important;
+}
+
+#page-wwu .wwu-aud-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+  stroke: currentColor !important;
+  stroke-width: 2.5 !important;
+  fill: none !important;
+  transition: transform 0.3s ease !important;
+}
+
+#page-wwu .wwu-aud-btn:hover svg {
+  transform: translateX(3px) !important;
+}
+
+/* Right Column: Balanced Luxury Audience Grid */
+#page-wwu .wwu-aud-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 12px !important;
+}
+
+#page-wwu .wwu-aud-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 13px 18px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(184, 134, 11, 0.22) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 3px 12px rgba(100, 70, 20, 0.05) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+#page-wwu .wwu-aud-item::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 3px !important;
+  height: 100% !important;
+  background: linear-gradient(180deg, #d4af37 0%, #8b5a2b 100%) !important;
+  opacity: 0 !important;
+  transition: opacity 0.3s ease !important;
+}
+
+#page-wwu .wwu-aud-item:hover {
+  transform: translateY(-2.5px) !important;
+  border-color: #b8860b !important;
+  background: #fffdf9 !important;
+  box-shadow: 0 8px 24px rgba(139, 90, 43, 0.12), 0 0 15px rgba(212, 175, 55, 0.15) !important;
+}
+
+#page-wwu .wwu-aud-item:hover::before {
+  opacity: 1 !important;
+}
+
+#page-wwu .wwu-aud-icon-wrap {
+  width: 34px !important;
+  height: 34px !important;
+  flex-shrink: 0 !important;
+  border-radius: 8px !important;
+  background: rgba(212, 175, 55, 0.1) !important;
+  border: 1px solid rgba(184, 134, 11, 0.2) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #8b5a2b !important;
+  transition: all 0.3s ease !important;
+}
+
+#page-wwu .wwu-aud-item:hover .wwu-aud-icon-wrap {
+  background: #8b5a2b !important;
+  color: #ffffff !important;
+  border-color: #8b5a2b !important;
+}
+
+#page-wwu .wwu-aud-icon-wrap svg {
+  width: 17px !important;
+  height: 17px !important;
+  stroke: currentColor !important;
+  stroke-width: 1.8 !important;
+  fill: none !important;
+}
+
+#page-wwu .wwu-aud-info {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+}
+
+#page-wwu .wwu-aud-name {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  color: #1a1712 !important;
+  line-height: 1.25 !important;
+  transition: color 0.3s ease !important;
+}
+
+#page-wwu .wwu-aud-item:hover .wwu-aud-name {
+  color: #8b5a2b !important;
+}
+
+#page-wwu .wwu-aud-role {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  color: #7a7060 !important;
+  line-height: 1.3 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#page-wwu .wwu-aud-arrow {
+  margin-left: auto !important;
+  color: #c4b89a !important;
+  transition: all 0.3s ease !important;
+  font-size: 12px !important;
+  opacity: 0.6 !important;
+}
+
+#page-wwu .wwu-aud-item:hover .wwu-aud-arrow {
+  color: #8b5a2b !important;
+  transform: translateX(3px) !important;
+  opacity: 1 !important;
 }
 
 
 /* ============================================================
-   SECTION 6: WHY RT CHOCOS (dark)
+   SECTION 6: WHY RT CHOCOS (Dark Luxury Editorial & Pillars)
    ============================================================ */
 #page-wwu .wwu-why {
-  padding: 90px 40px !important;
-  background: #0c1a11 !important;
-  border-top: 1px solid rgba(212,175,55,0.12) !important;
+  position: relative !important;
+  padding: 100px 48px 90px !important;
+  background: 
+    radial-gradient(circle 900px at 15% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 65%),
+    radial-gradient(circle 750px at 85% 70%, rgba(26, 64, 40, 0.45) 0%, transparent 60%),
+    linear-gradient(180deg, #050e08 0%, #0a170f 45%, #06110a 100%) !important;
+  border-top: 1px solid rgba(212, 175, 55, 0.25) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15) !important;
+  overflow: hidden !important;
 }
+
+#page-wwu .wwu-why::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-image: 
+    radial-gradient(circle 1.5px at 15% 25%, rgba(212, 175, 55, 0.35) 0%, transparent 100%),
+    radial-gradient(circle 2px at 80% 40%, rgba(212, 175, 55, 0.3) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 45% 85%, rgba(212, 175, 55, 0.25) 0%, transparent 100%) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
 #page-wwu .wwu-why-inner {
-  max-width: 1100px !important;
+  max-width: 1360px !important;
   margin: 0 auto !important;
+  position: relative !important;
+  z-index: 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 40px !important;
+}
+
+/* --- TOP SPLIT: HERO LEFT + 2x2 PILLARS RIGHT --- */
+#page-wwu .wwu-why-main-grid {
   display: grid !important;
-  grid-template-columns: 1fr 1.2fr !important;
-  gap: 80px !important;
-  align-items: start !important;
+  grid-template-columns: 1fr 1.28fr !important;
+  gap: 52px !important;
+  align-items: stretch !important;
 }
-#page-wwu .wwu-why h2 {
-  font-size: clamp(28px, 3.2vw, 44px) !important;
-  line-height: 1.15 !important;
-  color: #f5efe1 !important;
+
+/* --- LEFT HERO COLUMN --- */
+#page-wwu .wwu-why-hero-col {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
 }
-#page-wwu .wwu-why-right {
-  display: grid !important;
-  grid-template-columns: repeat(3,1fr) !important;
-  gap: 28px !important;
-}
-#page-wwu .wwu-why-pillar {
-  padding: 0 !important;
-}
-#page-wwu .wwu-why-pillar h4 {
+
+#page-wwu .wwu-why-eyebrow {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 13px !important;
-  font-weight: 700 !important;
-  letter-spacing: 1px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 3px !important;
   text-transform: uppercase !important;
   color: #d4af37 !important;
-  margin-bottom: 12px !important;
+  margin-bottom: 18px !important;
 }
-#page-wwu .wwu-why-pillar p {
+
+#page-wwu .wwu-why-eyebrow::after {
+  content: '' !important;
+  display: inline-block !important;
+  width: 32px !important;
+  height: 1px !important;
+  background: rgba(212, 175, 55, 0.45) !important;
+}
+
+#page-wwu .wwu-why-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: clamp(34px, 3.5vw, 50px) !important;
+  line-height: 1.12 !important;
+  color: #ffffff !important;
+  margin-bottom: 20px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.015em !important;
+}
+
+#page-wwu .wwu-why-title .hl-why-serif {
+  color: #d4af37 !important;
+  background: linear-gradient(135deg, #d4af37 0%, #f6e6b5 50%, #b8860b 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  font-style: italic !important;
+  font-weight: 700 !important;
+  display: inline-block !important;
+}
+
+#page-wwu .wwu-why-manifesto {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.8px !important;
+  text-transform: uppercase !important;
+  line-height: 1.75 !important;
+  color: #dfd3bf !important;
+  margin-bottom: 26px !important;
+  max-width: 500px !important;
+}
+
+#page-wwu .wwu-why-manifesto .manifesto-hl {
+  color: #d4af37 !important;
+}
+
+/* Cacao Pod Image Presentation Frame */
+#page-wwu .wwu-why-pod-frame {
+  position: relative !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  background: radial-gradient(circle at center, rgba(30, 20, 10, 0.6) 0%, rgba(10, 15, 10, 0.9) 100%) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 175, 55, 0.1) !important;
+  margin-bottom: 24px !important;
+  transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease !important;
+}
+
+#page-wwu .wwu-why-pod-frame:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(212, 175, 55, 0.5) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(212, 175, 55, 0.22) !important;
+}
+
+#page-wwu .wwu-why-pod-img {
+  width: 100% !important;
+  height: 230px !important;
+  object-fit: cover !important;
+  display: block !important;
+  filter: contrast(1.08) brightness(0.98) !important;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#page-wwu .wwu-why-pod-frame:hover .wwu-why-pod-img {
+  transform: scale(1.03) !important;
+}
+
+/* Brand Seal / Logo at bottom left */
+#page-wwu .wwu-why-brand-seal {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+  padding: 10px 18px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  border-radius: 12px !important;
+  align-self: flex-start !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+#page-wwu .seal-icon-wrap {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  border: 1.2px solid #d4af37 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(212, 175, 55, 0.1) !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.25) !important;
+}
+
+#page-wwu .seal-icon-wrap svg {
+  width: 22px !important;
+  height: 22px !important;
+  fill: none !important;
+  stroke: #d4af37 !important;
+  stroke-width: 1.5 !important;
+}
+
+#page-wwu .seal-text-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+#page-wwu .seal-brand {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  color: #fbf8f0 !important;
+  text-transform: uppercase !important;
+  line-height: 1.2 !important;
+}
+
+#page-wwu .seal-sub {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 8.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  color: #d4af37 !important;
+  text-transform: uppercase !important;
+}
+
+/* --- RIGHT 2x2 PILLARS GRID WITH GOLD CROSSHAIR LINES --- */
+#page-wwu .wwu-why-pillars-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  position: relative !important;
+  border: 1px solid rgba(212, 175, 55, 0.22) !important;
+  border-radius: 18px !important;
+  background: rgba(10, 24, 15, 0.5) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  overflow: hidden !important;
+}
+
+/* Pillar Card */
+#page-wwu .wwu-pillar-card {
+  padding: 38px 30px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  position: relative !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Grid Crosshair Internal Divider Borders */
+#page-wwu .wwu-pillar-card:nth-child(1) {
+  border-right: 1px solid rgba(212, 175, 55, 0.22) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.22) !important;
+}
+#page-wwu .wwu-pillar-card:nth-child(2) {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.22) !important;
+}
+#page-wwu .wwu-pillar-card:nth-child(3) {
+  border-right: 1px solid rgba(212, 175, 55, 0.22) !important;
+}
+#page-wwu .wwu-pillar-card:nth-child(4) {
+  /* bottom-right: no inner borders */
+}
+
+#page-wwu .wwu-pillar-card:hover {
+  background: rgba(212, 175, 55, 0.06) !important;
+}
+
+/* Card Circular Icon */
+#page-wwu .pillar-icon-wrap {
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(212, 175, 55, 0.45) !important;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, rgba(212, 175, 55, 0.02) 70%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 14px !important;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.15) !important;
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease !important;
+}
+
+#page-wwu .wwu-pillar-card:hover .pillar-icon-wrap {
+  transform: scale(1.1) translateY(-2px) !important;
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.35) !important;
+}
+
+#page-wwu .pillar-icon-wrap svg {
+  width: 28px !important;
+  height: 28px !important;
+  stroke: #d4af37 !important;
+  fill: none !important;
+  stroke-width: 1.5 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+/* Number 01, 02, etc */
+#page-wwu .pillar-num {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #d4af37 !important;
+  margin-bottom: 10px !important;
+  letter-spacing: 1px !important;
+  display: block !important;
+}
+
+/* Card Heading */
+#page-wwu .wwu-pillar-card h3 {
+  font-family: 'Inter', sans-serif !important;
   font-size: 13.5px !important;
-  line-height: 1.7 !important;
-  color: #a09882 !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: #ffffff !important;
+  margin-bottom: 12px !important;
+  line-height: 1.3 !important;
+}
+
+/* Card Description */
+#page-wwu .wwu-pillar-card p {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12.5px !important;
+  line-height: 1.65 !important;
+  color: #b8af9c !important;
   font-weight: 400 !important;
-  margin: 0 !important;
+  margin-bottom: 18px !important;
+  max-width: 270px !important;
+}
+
+/* Card Tagline / Punchline */
+#page-wwu .pillar-tagline {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 9.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  color: #d4af37 !important;
+  margin-top: auto !important;
+  line-height: 1.4 !important;
+  opacity: 0.95 !important;
+}
+
+/* --- BOTTOM FRAMED BANNER STRIP --- */
+#page-wwu .wwu-why-banner-strip {
+  border: 1px solid rgba(212, 175, 55, 0.45) !important;
+  border-radius: 16px !important;
+  background: 
+    linear-gradient(135deg, rgba(212, 175, 55, 0.07) 0%, rgba(10, 24, 15, 0.85) 50%, rgba(212, 175, 55, 0.05) 100%) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  padding: 22px 32px !important;
+  display: grid !important;
+  grid-template-columns: 1.15fr 1.15fr 1fr !important;
+  gap: 24px !important;
+  align-items: center !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(212, 175, 55, 0.08) !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+#page-wwu .wwu-why-banner-strip:hover {
+  border-color: rgba(212, 175, 55, 0.7) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5), 0 0 28px rgba(212, 175, 55, 0.16) !important;
+}
+
+/* Banner Item Columns */
+#page-wwu .banner-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+#page-wwu .banner-icon-wrap {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 10px !important;
+  background: rgba(212, 175, 55, 0.1) !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  color: #d4af37 !important;
+}
+
+#page-wwu .banner-icon-wrap svg {
+  width: 20px !important;
+  height: 20px !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  stroke-width: 1.8 !important;
+}
+
+#page-wwu .banner-text {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+#page-wwu .banner-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+  color: #fcf9f2 !important;
+  line-height: 1.3 !important;
+}
+
+#page-wwu .banner-sub {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12px !important;
+  color: #b8af9c !important;
+  line-height: 1.35 !important;
+}
+
+#page-wwu .gold-accent {
+  color: #d4af37 !important;
+  font-weight: 600 !important;
+}
+
+/* Banner Third Column (CTA & Action) */
+#page-wwu .banner-cta-col {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-left: 20px !important;
+  border-left: 1px solid rgba(212, 175, 55, 0.25) !important;
+  cursor: pointer !important;
+  transition: transform 0.3s ease !important;
+}
+
+#page-wwu .banner-cta-col:hover {
+  transform: translateX(4px) !important;
+}
+
+#page-wwu .banner-punch {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#page-wwu .punch-sub {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 14px !important;
+  font-style: italic !important;
+  color: #e8dcc8 !important;
+  line-height: 1.25 !important;
+}
+
+#page-wwu .punch-main {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 19px !important;
+  font-weight: 700 !important;
+  color: #d4af37 !important;
+  background: linear-gradient(135deg, #d4af37 0%, #f7e7b7 50%, #c18e11 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  line-height: 1.2 !important;
+}
+
+#page-wwu .banner-arrow-btn {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: rgba(212, 175, 55, 0.12) !important;
+  border: 1px solid rgba(212, 175, 55, 0.4) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #d4af37 !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  flex-shrink: 0 !important;
+}
+
+#page-wwu .banner-cta-col:hover .banner-arrow-btn {
+  background: #d4af37 !important;
+  color: #0c1a11 !important;
+  transform: translateX(4px) !important;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.5) !important;
+}
+
+#page-wwu .banner-arrow-btn svg {
+  width: 17px !important;
+  height: 17px !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  stroke-width: 2 !important;
 }
 
 
@@ -1841,15 +2495,29 @@
     grid-template-columns: 1fr !important;
     gap: 40px !important;
   }
+  #page-wwu .wwu-why-main-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  #page-wwu .wwu-why-banner-strip {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  #page-wwu .banner-cta-col {
+    grid-column: span 2 !important;
+    border-left: none !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.25) !important;
+    padding-left: 0 !important;
+    padding-top: 16px !important;
+  }
+  #page-wwu .wwu-audience-left {
+    padding-right: 0 !important;
+  }
   #page-wwu .wwu-begin-grid {
     grid-template-columns: 1fr 1fr !important;
   }
   #page-wwu .wwu-areas-inner {
     grid-template-columns: 1fr !important;
     gap: 50px !important;
-  }
-  #page-wwu .wwu-why-right {
-    grid-template-columns: repeat(3,1fr) !important;
   }
 }
 
@@ -1889,11 +2557,12 @@
     display: none !important;
   }
   #page-wwu .wwu-pod-constellation {
-    width: 320px !important;
-    height: 330px !important;
+    width: min(320px, 90vw) !important;
+    height: min(330px, 90vw) !important;
+    max-width: 100% !important;
   }
   #page-wwu .wwu-pod-artwork {
-    width: 120px !important;
+    width: min(120px, 35vw) !important;
   }
   #page-wwu .wwu-satellite-pill {
     font-size: 8px !important;
@@ -1912,6 +2581,29 @@
   #page-wwu .wwu-begin-grid {
     grid-template-columns: 1fr !important;
   }
+  #page-wwu .wwu-aud-grid {
+    grid-template-columns: 1fr !important;
+  }
+  #page-wwu .wwu-why-pillars-grid {
+    grid-template-columns: 1fr !important;
+  }
+  #page-wwu .wwu-pillar-card:nth-child(1),
+  #page-wwu .wwu-pillar-card:nth-child(2),
+  #page-wwu .wwu-pillar-card:nth-child(3) {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.22) !important;
+  }
+  #page-wwu .wwu-pillar-card {
+    padding: 30px 20px !important;
+  }
+  #page-wwu .wwu-why-banner-strip {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    padding: 18px !important;
+  }
+  #page-wwu .banner-cta-col {
+    grid-column: span 1 !important;
+  }
   #page-wwu .form-row {
     grid-template-columns: 1fr !important;
   }
@@ -1919,9 +2611,6 @@
     padding: 36px 24px !important;
   }
   #page-wwu .wwu-ch-pillars {
-    grid-template-columns: 1fr !important;
-  }
-  #page-wwu .wwu-why-right {
     grid-template-columns: 1fr !important;
   }
   #page-wwu .wwu-collab,
@@ -1970,9 +2659,7 @@
 
         <h1>Bring us<br><span class="hl-hero-gold">the question.</span></h1>
 
-        <p class="wwu-hero-sublead">
-          From precision crystal matrix stabilization to clean-label sweeteners and rapid pilot formulation — we collaborate with visionary confectioners and brands to turn complex chocolate challenges into market-defining realities.
-        </p>
+        
 
         <!-- 2x2 Interactive Question Pillars Grid -->
         <div class="wwu-hero-pillars-grid">
@@ -2485,22 +3172,171 @@
   <section class="wwu-audience">
     <div class="wwu-audience-inner">
       <div class="wwu-audience-top">
-        <div>
-          <span class="wwu-tag">WHO IS THIS FOR?</span>
-          <h2>Different disciplines.<br>One shared curiosity.</h2>
+        <div class="wwu-audience-left">
+          <div class="wwu-aud-tag-pill">
+            <span class="pill-dot"></span>
+            <span>WHO IS THIS FOR?</span>
+          </div>
+          <h2>Different disciplines.<br><span class="hl-cream-gold">One shared curiosity.</span></h2>
+          <p class="wwu-audience-lead">
+            Whether you are crafting single-origin micro-batches, scaling industrial confectionery lines, developing novel functional ingredients, or researching cocoa physics — we provide the formulation depth and scientific framework to accelerate your goals.
+          </p>
+          <div class="wwu-audience-badges">
+            <span class="wwu-aud-trait">✦ 11+ Sectors Supported</span>
+            <span class="wwu-aud-trait">✦ Artisan to Industrial Scale</span>
+          </div>
+          <div class="wwu-aud-cta-wrap">
+            <button type="button" onclick="openConsultationModal()" class="wwu-aud-btn">
+              <span>EXPLORE COLLABORATION</span>
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
         </div>
-        <div class="wwu-aud-tags">
-          <span class="at">Chocolate Brands</span>
-          <span class="at">Food Companies</span>
-          <span class="at">Ingredient Innovators</span>
-          <span class="at">Founders &amp; Startups</span>
-          <span class="at">Chocolatiers</span>
-          <span class="at">Manufacturers</span>
-          <span class="at">Researchers</span>
-          <span class="at">Restaurants &amp; Hospitality</span>
-          <span class="at">Educators</span>
-          <span class="at">Creators &amp; Media</span>
-          <span class="at">Industry Professionals</span>
+
+        <div class="wwu-aud-grid">
+          <!-- Item 1 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Chocolate Brands')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Chocolate Brands</span>
+              <span class="wwu-aud-role">Artisan &amp; commercial chocolate makers</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Food Companies')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Food Companies</span>
+              <span class="wwu-aud-role">FMCG &amp; packaged food innovators</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Ingredient Innovators')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Ingredient Innovators</span>
+              <span class="wwu-aud-role">Fats, botanicals &amp; sugar alternatives</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Founders & Startups')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Founders &amp; Startups</span>
+              <span class="wwu-aud-role">Emerging D2C &amp; confectionery ventures</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Chocolatiers')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Chocolatiers</span>
+              <span class="wwu-aud-role">Bean-to-bar masters &amp; pastry chefs</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 6 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Manufacturers')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="m2 20 6-6V8l6-6v6l6-6v18H2z"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Manufacturers</span>
+              <span class="wwu-aud-role">Industrial processors &amp; co-packers</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 7 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Researchers')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Researchers</span>
+              <span class="wwu-aud-role">Food scientists &amp; confectionery labs</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 8 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Restaurants & Hospitality')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Restaurants &amp; Hospitality</span>
+              <span class="wwu-aud-role">Luxury dining &amp; hotel culinary teams</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 9 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Educators')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Educators</span>
+              <span class="wwu-aud-role">Culinary academies &amp; technical trainers</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 10 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Creators & Media')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="m12 8-9.04 9.06a2.82 2.82 0 1 0 3.98 3.98L16 12"/><circle cx="17" cy="7" r="5"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Creators &amp; Media</span>
+              <span class="wwu-aud-role">Confectionery writers &amp; journalists</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 11 -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Industry Professionals')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Industry Professionals</span>
+              <span class="wwu-aud-role">Suppliers, QA specialists &amp; consultants</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
+
+          <!-- Item 12: Custom Collaboration Partner -->
+          <div class="wwu-aud-item" onclick="openConsultationModal('Custom Inquiry')">
+            <div class="wwu-aud-icon-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </div>
+            <div class="wwu-aud-info">
+              <span class="wwu-aud-name">Visionary Creators</span>
+              <span class="wwu-aud-role">Have a novel question? Let's talk</span>
+            </div>
+            <span class="wwu-aud-arrow">→</span>
+          </div>
         </div>
       </div>
     </div>
@@ -2508,31 +3344,162 @@
 
 
   <!-- ====== 6. WHY RT CHOCOS ====== -->
-  <section class="wwu-why">
+  <section class="wwu-why" id="why-rt-chocos">
     <div class="wwu-why-inner">
-      <div>
-        <span class="wwu-tag">WHY RT CHOCOS?</span>
-        <h2>Knowledge is only useful when it can be applied.</h2>
+
+      <!-- Top Main Grid: Left Narrative + Right 2x2 Pillars -->
+      <div class="wwu-why-main-grid">
+
+        <!-- Left Hero Narrative Column -->
+        <div class="wwu-why-hero-col">
+          <div class="wwu-why-hero-text">
+            <span class="wwu-why-eyebrow">WHY RT CHOCOS?</span>
+            <h2 class="wwu-why-title">
+              We just don't<br>
+              work with chocolate,<br>
+              <span class="hl-why-serif">we understand it.</span>
+            </h2>
+            <p class="wwu-why-manifesto">
+              WE BRING TOGETHER EXPERIENCE, SCIENCE AND CURIOSITY TO HELP YOU CREATE BETTER CHOCOLATE—WITH <span class="manifesto-hl">CLARITY AND CONFIDENCE.</span>
+            </p>
+          </div>
+
+          <!-- Real Cacao Pod on Slate Artwork Frame -->
+          <div class="wwu-why-pod-frame">
+            <img src="assets/why_rt_cacao_pod.jpg" alt="RT Chocos Artisan Cacao Pod, Roasted Nibs & Dark Chocolate" class="wwu-why-pod-img" />
+          </div>
+
+          
+        </div>
+
+        <!-- Right 2x2 Pillars Grid -->
+        <div class="wwu-why-pillars-grid">
+
+          <!-- Pillar 01: Deep Expertise -->
+          <div class="wwu-pillar-card">
+            <div class="pillar-icon-wrap">
+              <!-- Botanical Cacao Fruit SVG -->
+              <svg viewBox="0 0 32 32">
+                <path d="M16 5 C12 8, 8 13, 8 18 C8 23, 12 27, 16 27 C20 27, 24 23, 24 18 C24 13, 20 8, 16 5 Z"/>
+                <path d="M16 5 C13.5 8.5, 12 13, 12 18 C12 23, 13.5 26.5, 16 27"/>
+                <path d="M16 5 C18.5 8.5, 20 13, 20 18 C20 23, 18.5 26.5, 16 27"/>
+                <path d="M16 5 C16 3, 17 2, 19 2"/>
+                <path d="M22 6 C26 8, 27 12, 25 14 C23 16, 21 14, 20 11"/>
+              </svg>
+            </div>
+            <span class="pillar-num">01</span>
+            <h3>DEEP EXPERTISE</h3>
+            <p>From ingredients to innovation—decades of hands-on experience across formulation, process, texture, flavour and product development.</p>
+            <span class="pillar-tagline">WE KNOW CHOCOLATE. IN DETAIL.</span>
+          </div>
+
+          <!-- Pillar 02: Science First -->
+          <div class="wwu-pillar-card">
+            <div class="pillar-icon-wrap">
+              <!-- Microscope SVG -->
+              <svg viewBox="0 0 32 32">
+                <path d="M16 4 L22 10 L19 13 L13 7 Z"/>
+                <path d="M14 8 L10 12"/>
+                <path d="M18 12 C21 15, 22 19, 21 23 L24 23 C26 23, 26 25, 26 26 L6 26 C6 25, 6 23, 8 23 L18 23"/>
+                <circle cx="16" cy="18" r="3"/>
+                <line x1="12" y1="20" x2="16" y2="20"/>
+              </svg>
+            </div>
+            <span class="pillar-num">02</span>
+            <h3>SCIENCE FIRST</h3>
+            <p>We question, test and analyse before we recommend. Decisions backed by evidence, not assumptions.</p>
+            <span class="pillar-tagline">WE SEEK THE WHY. THEN FIND THE HOW.</span>
+          </div>
+
+          <!-- Pillar 03: Real-World Impact -->
+          <div class="wwu-pillar-card">
+            <div class="pillar-icon-wrap">
+              <!-- Chocolate Bar & Leaf SVG -->
+              <svg viewBox="0 0 32 32">
+                <rect x="7" y="7" width="14" height="18" rx="2"/>
+                <line x1="7" y1="13" x2="21" y2="13"/>
+                <line x1="7" y1="19" x2="21" y2="19"/>
+                <line x1="14" y1="7" x2="14" y2="25"/>
+                <path d="M21 14 C25 14, 27 18, 25 22 C23 26, 19 24, 18 21"/>
+                <path d="M20 22 C22 20, 24 18, 25 16"/>
+              </svg>
+            </div>
+            <span class="pillar-num">03</span>
+            <h3>REAL-WORLD IMPACT</h3>
+            <p>Knowledge means impact only when it works in the real world—practical, scalable and viable.</p>
+            <span class="pillar-tagline">FROM IDEAS TO SOLUTIONS THAT WORK.</span>
+          </div>
+
+          <!-- Pillar 04: Independent Platform -->
+          <div class="wwu-pillar-card">
+            <div class="pillar-icon-wrap">
+              <!-- Open Book SVG -->
+              <svg viewBox="0 0 32 32">
+                <path d="M5 8 C9 6, 13 7, 16 9 C19 7, 23 6, 27 8 L27 24 C23 22, 19 23, 16 25 C13 23, 9 22, 5 24 Z"/>
+                <line x1="16" y1="9" x2="16" y2="25"/>
+              </svg>
+            </div>
+            <span class="pillar-num">04</span>
+            <h3>INDEPENDENT PLATFORM</h3>
+            <p>An independent space for research, education and industry knowledge. No agenda. No bias.</p>
+            <span class="pillar-tagline">NO AGENDA. JUST ADVANCEMENT.</span>
+          </div>
+
+        </div>
+
       </div>
-      <div class="wwu-why-right">
-        <div class="wwu-why-pillar">
-          <h4>Experience</h4>
-          <p>10+ years working with chocolate formulation, product development and experimentation across brands, formats and categories.</p>
+
+      <!-- Bottom Interactive Framed Banner Strip -->
+      <div class="wwu-why-banner-strip">
+
+        <!-- Column 1: Challenge -->
+        <div class="banner-item">
+          <div class="banner-icon-wrap">
+            <svg viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="7"/>
+              <line x1="16.5" y1="16.5" x2="21" y2="21"/>
+            </svg>
+          </div>
+          <div class="banner-text">
+            <span class="banner-title">Bring us your challenge.</span>
+            <span class="banner-sub">We'll explore what <strong class="gold-accent">lies beneath it.</strong></span>
+          </div>
         </div>
-        <div class="wwu-why-pillar">
-          <h4>R&D Mindset</h4>
-          <p>Questions first. Hypotheses next. Testing before assumptions. Learning that leads to measurable improvement.</p>
+
+        <!-- Column 2: Thinking -->
+        <div class="banner-item">
+          <div class="banner-icon-wrap">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 22 V14"/>
+              <path d="M12 14 C12 8, 6 6, 4 8 C3 12, 7 14, 12 14 Z"/>
+              <path d="M12 14 C12 8, 18 6, 20 8 C21 12, 17 14, 12 14 Z"/>
+              <path d="M12 10 C12 4, 8 2, 7 4 C6 7, 9 9, 12 10 Z"/>
+            </svg>
+          </div>
+          <div class="banner-text">
+            <span class="banner-title">Your challenge may be specific.</span>
+            <span class="banner-sub">Our thinking <strong class="gold-accent">doesn't have to be.</strong></span>
+          </div>
         </div>
-        <div class="wwu-why-pillar">
-          <h4>Knowledge Platform</h4>
-          <p>A space where research, education and industry knowledge meet practical application and real-world outcomes.</p>
+
+        <!-- Column 3: Interactive Punchline CTA -->
+        <div class="banner-cta-col" onclick="openConsultationModal('General Inquiry')" title="Start a conversation with RT Chocos">
+          <div class="banner-punch">
+            <span class="punch-sub">Better understanding.</span>
+            <span class="punch-main">Better chocolate.</span>
+          </div>
+          <div class="banner-arrow-btn">
+            <svg viewBox="0 0 24 24">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
         </div>
+
       </div>
+
     </div>
   </section>
-
-
-  <!-- ====== LUXURY CONSULTATION MODAL POPUP ====== -->
   <div id="consultation-modal" class="wwu-modal-backdrop" aria-hidden="true" onclick="handleModalBackdropClick(event)">
     <div class="wwu-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       
