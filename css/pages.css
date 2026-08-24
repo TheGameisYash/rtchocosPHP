@@ -9,47 +9,44 @@
 
 /* === HERO (HOME) === */
 #hero {
+  height: 100vh;
   min-height: 100vh;
-  background: radial-gradient(circle at 65% 50%, #021f11 0%, #01170d 55%, #00130a 100%);
+  background: #01170b;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 120px 24px 80px;
+  text-align: left;
+  padding: 80px 40px 30px;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .hero-video-bg {
   position: absolute;
-  top: 5%;
-  right: -15%;
-  width: 85%;
-  height: 100%;
+  top: calc(50% + 32px);
+  right: -4vw;
+  transform: translateY(-50%);
+  width: 66vw;
+  max-width: none !important;
+  height: 82%;
+  max-height: 740px;
   object-fit: contain;
+  object-position: right center;
   z-index: 1;
   pointer-events: none;
   opacity: 1;
-}
-
-#hero::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 300px;
-  height: 140px;
-  background: radial-gradient(ellipse at 100% 100%, rgba(0, 19, 10, 1) 0%, rgba(0, 19, 10, 0.6) 55%, transparent 100%);
-  z-index: 3;
-  pointer-events: none;
+  mix-blend-mode: lighten;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 100%),
+    radial-gradient(ellipse 20% 14% at 99% 99%, transparent 80%, black 95%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0%, black 12%, black 100%),
+    radial-gradient(ellipse 20% 14% at 99% 99%, transparent 80%, black 95%);
+  mask-composite: intersect;
 }
 
 .hero-video-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, rgba(1, 23, 13, 0.94) 0%, rgba(1, 23, 13, 0.75) 35%, rgba(2, 31, 17, 0.15) 55%, transparent 70%);
-  z-index: 2;
-  pointer-events: none;
+  display: none;
 }
 
 #hero .deco-circle-1 {
@@ -77,10 +74,7 @@
 }
 
 #hero .deco-radial {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 30% 50%, rgba(201, 149, 107, 0.06) 0%, transparent 60%);
-  z-index: 2;
+  display: none;
 }
 
 #hero .hero-content {
@@ -2325,23 +2319,28 @@ section:nth-of-type(even) {
     padding: 95px 16px 50px !important;
     min-height: auto;
   }
+
   #hero .hero-content {
     padding: 32px 20px !important;
     border-radius: 20px !important;
   }
+
   #hero h1 {
     font-size: clamp(30px, 8vw, 44px) !important;
     margin-bottom: 14px !important;
   }
+
   #hero p {
     font-size: 14px !important;
     line-height: 1.6 !important;
     margin-bottom: 24px !important;
   }
+
   #hero .hero-btns {
     flex-direction: column !important;
     width: 100% !important;
   }
+
   #hero .hero-btns a,
   #hero .hero-btns button {
     width: 100% !important;
@@ -2351,6 +2350,7 @@ section:nth-of-type(even) {
 
 /* --- 3. GRIDS & CARDS ACROSS ALL PAGES --- */
 @media (max-width: 1024px) {
+
   .blog-grid,
   .articles-grid,
   .workshop-grid,
@@ -2360,6 +2360,7 @@ section:nth-of-type(even) {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 24px !important;
   }
+
   .about-grid,
   .contact-grid,
   .checkout-grid {
@@ -2369,6 +2370,7 @@ section:nth-of-type(even) {
 }
 
 @media (max-width: 680px) {
+
   .blog-grid,
   .articles-grid,
   .workshop-grid,
@@ -2378,12 +2380,15 @@ section:nth-of-type(even) {
     grid-template-columns: 1fr !important;
     gap: 20px !important;
   }
+
   .page-hero {
     padding: 90px 16px 40px !important;
   }
+
   .page-hero h1 {
     font-size: clamp(26px, 7.5vw, 36px) !important;
   }
+
   .page-hero p {
     font-size: 13.5px !important;
   }
@@ -2403,6 +2408,7 @@ section:nth-of-type(even) {
     grid-template-columns: 1fr !important;
     gap: 36px !important;
   }
+
   .article-sidebar {
     order: 2;
     width: 100% !important;
@@ -2435,6 +2441,7 @@ section:nth-of-type(even) {
 }
 
 @media (max-width: 480px) {
+
   .modal-dialog,
   .recipe-modal,
   .workshop-modal,
@@ -2452,6 +2459,7 @@ textarea {
 }
 
 @media (max-width: 600px) {
+
   .form-row,
   .input-group-row {
     grid-template-columns: 1fr !important;
@@ -2465,6 +2473,7 @@ textarea {
     max-width: 1100px;
     padding: 64px 48px;
   }
+
   .article-layout {
     max-width: 1560px;
   }

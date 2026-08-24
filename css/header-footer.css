@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: #04160f !important;
+  background: #01170b !important;
   border-bottom: 1px solid rgba(212, 175, 55, 0.2);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
   padding: 0;
@@ -15,7 +15,7 @@
 #site-header.scrolled,
 #site-header.not-home {
   padding: 0;
-  background: #03120c !important;
+  background: #001308 !important;
   box-shadow: 0 6px 30px rgba(0, 0, 0, 0.6);
   border-bottom-color: rgba(212, 175, 55, 0.3);
 }
@@ -979,7 +979,7 @@ footer.footer-links-section .social-icons {
 }
 
 #hero {
-  background: radial-gradient(circle at 65% 50%, #021f11 0%, #01170d 55%, #00130a 100%) !important;
+  background: #01170b !important;
 }
 
 .split-hero-content h1 {

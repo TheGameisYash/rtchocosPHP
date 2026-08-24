@@ -34,11 +34,10 @@
 
   <!-- Split Hero with Full Video Background -->
   <section id="hero">
-    <!-- Full Background Video (orb rotates on right side) -->
+    <!-- Full Native Resolution Video Background -->
     <video class="hero-video-bg" autoplay loop muted playsinline preload="auto">
       <source src="assets/cocuapod_circle.mp4" type="video/mp4">
     </video>
-    <div class="hero-video-overlay"></div>
 
     <div class="deco-circle-1"></div>
     <div class="deco-circle-2"></div>
