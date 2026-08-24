@@ -34,6 +34,7 @@ try {
 <html lang="en-IN" class="<?php echo htmlspecialchars($adminSiteTheme, ENT_QUOTES, 'UTF-8'); ?>">
 <head>
 <script>
+  var pathPrefix = "<?php echo isset($pathPrefix) ? addslashes($pathPrefix) : ''; ?>";
   (function() {
     const savedTheme = localStorage.getItem('rtchocos-color-theme');
     if (savedTheme) {
@@ -281,14 +282,23 @@ if (!empty($pageSchema)) {
 
 <!-- --- HEADER --- -->
 <?php
+  if (session_status() === PHP_SESSION_NONE) {
+    @session_start();
+  }
   $currentURI = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
   $activeNav = 'home';
   if (strpos($currentURI, 'about') !== false) $activeNav = 'about';
+  elseif (strpos($currentURI, 'shop') !== false || strpos($currentURI, 'product') !== false || strpos($currentURI, 'cart') !== false || strpos($currentURI, 'checkout') !== false) $activeNav = 'shop';
   elseif (strpos($currentURI, 'workshops') !== false) $activeNav = 'workshops';
   elseif (strpos($currentURI, 'blog') !== false) $activeNav = 'blog';
   elseif (strpos($currentURI, 'chocopedia') !== false) $activeNav = 'chocopedia';
   elseif (strpos($currentURI, 'gallery') !== false) $activeNav = 'gallery';
   elseif (strpos($currentURI, 'contact') !== false) $activeNav = 'contact';
+
+  $cartCount = 0;
+  if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+    $cartCount = array_sum($_SESSION['cart']);
+  }
 ?>
 <header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
   <div class="header-inner">
@@ -322,7 +332,134 @@ if (!empty($pageSchema)) {
         <span class="nav-label">EXPLORE</span>
       </a>
 
-      <!-- 2. ACADEMY -->
+      <!-- 2. PRODUCTS / BOUTIQUE (MEGA-MENU) -->
+      <div class="nav-item-dropdown nav-item-products">
+        <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'shop') ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php" title="Artisanal Chocolate Boutique & Shop">
+          <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2.5"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="3" y1="15" x2="21" y2="15"/>
+            <line x1="9" y1="3" x2="9" y2="21"/>
+            <line x1="15" y1="3" x2="15" y2="21"/>
+          </svg>
+          <span class="nav-label">PRODUCTS</span>
+        </a>
+
+        <div class="nav-dropdown-menu products-mega-menu">
+          <div class="mega-menu-grid">
+            <!-- Left Panel: Curated Collections -->
+            <div class="mega-categories-col">
+              <div class="mega-col-header">
+                <span class="mega-col-tag">ARTISANAL CREATIONS</span>
+                <h4 class="mega-col-title">Curated Collections</h4>
+              </div>
+
+              <div class="mega-categories-list">
+                <!-- 1. Bean-to-Bar Bars -->
+                <a href="<?php echo $pathPrefix; ?>shop.php?category=Chocolates" class="mega-product-item">
+                  <div class="mega-item-icon-box">
+                    <span class="mega-item-emoji">🍫</span>
+                  </div>
+                  <div class="mega-item-info">
+                    <div class="mega-item-top">
+                      <span class="mega-item-name">Bean-to-Bar Chocolate Bars</span>
+                      <span class="mega-badge-pill">Single Estate</span>
+                    </div>
+                    <p class="mega-item-desc">72% Idukki Dark, 55% Craft Milk &amp; roasted nib inclusions</p>
+                  </div>
+                  <span class="mega-item-arrow">→</span>
+                </a>
+
+                <!-- 2. Starter & Masterclass Kits -->
+                <a href="<?php echo $pathPrefix; ?>shop.php?category=Kits" class="mega-product-item">
+                  <div class="mega-item-icon-box">
+                    <span class="mega-item-emoji">🎁</span>
+                  </div>
+                  <div class="mega-item-info">
+                    <div class="mega-item-top">
+                      <span class="mega-item-name">Starter &amp; Tempering Kits</span>
+                      <span class="mega-badge-pill gold">Academy Pick</span>
+                    </div>
+                    <p class="mega-item-desc">Polycarbonate moulds, thermometers &amp; bean-to-bar maker sets</p>
+                  </div>
+                  <span class="mega-item-arrow">→</span>
+                </a>
+
+                <!-- 3. Raw Cacao & Pantry -->
+                <a href="<?php echo $pathPrefix; ?>shop.php?category=Cacao" class="mega-product-item">
+                  <div class="mega-item-icon-box">
+                    <span class="mega-item-emoji">🌱</span>
+                  </div>
+                  <div class="mega-item-info">
+                    <div class="mega-item-top">
+                      <span class="mega-item-name">Pure Cacao &amp; Pantry</span>
+                      <span class="mega-badge-pill">Direct Farm</span>
+                    </div>
+                    <p class="mega-item-desc">Single-origin roasted nibs, pure cacao butter &amp; husk tea</p>
+                  </div>
+                  <span class="mega-item-arrow">→</span>
+                </a>
+
+                <!-- 4. Bonbons & Truffles -->
+                <a href="<?php echo $pathPrefix; ?>shop.php?category=Bonbons" class="mega-product-item">
+                  <div class="mega-item-icon-box">
+                    <span class="mega-item-emoji">🍬</span>
+                  </div>
+                  <div class="mega-item-info">
+                    <div class="mega-item-top">
+                      <span class="mega-item-name">Artisan Bonbons &amp; Truffles</span>
+                      <span class="mega-badge-pill">Fresh Made</span>
+                    </div>
+                    <p class="mega-item-desc">Hand-painted cocoa butter gems with passion fruit &amp; spice ganache</p>
+                  </div>
+                  <span class="mega-item-arrow">→</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Right Panel: Featured Product Spotlight -->
+            <div class="mega-featured-col">
+              <div class="mega-featured-card">
+                <div class="mega-featured-img-wrap">
+                  <img src="<?php echo $pathPrefix; ?>assets/recipe_single_origin.png" alt="Signature 72% Bean-to-Bar Dark Chocolate Bar" loading="lazy" />
+                  <span class="mega-featured-badge">⭐ BESTSELLER</span>
+                </div>
+                <div class="mega-featured-body">
+                  <div class="mega-featured-origin">🇮🇳 Kerala Single-Estate Cacao</div>
+                  <h5 class="mega-featured-title">Signature 72% Bean-to-Bar Dark Chocolate</h5>
+                  <p class="mega-featured-desc">Stone-ground for 48 hours. Rich notes of dark raisins, vanilla pod &amp; roasted hazelnuts.</p>
+                  <div class="mega-featured-pricing">
+                    <span class="mega-price-current">₹250</span>
+                    <span class="mega-price-old">₹295</span>
+                    <span class="mega-discount-tag">Save 15%</span>
+                  </div>
+                  <a href="<?php echo $pathPrefix; ?>shop/signature-dark-chocolate-72" class="mega-order-btn">
+                    <span>Order Now</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Trust & Perks Bar -->
+          <div class="mega-menu-footer">
+            <div class="mega-trust-badges">
+              <span class="trust-item"><span class="trust-icon">🌿</span> 100% Indian Estate Cacao</span>
+              <span class="trust-item"><span class="trust-icon">🚚</span> Free Shipping above ₹999</span>
+              <span class="trust-item"><span class="trust-icon">❄️</span> Insulated Fresh Delivery</span>
+            </div>
+            <div class="mega-footer-actions">
+              <a href="<?php echo $pathPrefix; ?>shop.php" class="mega-all-link">
+                <span>View Full Boutique (All Items)</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. ACADEMY -->
       <div class="nav-item-dropdown">
         <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'workshops' || $activeNav === 'gallery') ? 'active' : ''; ?>" data-page="academy" href="<?php echo $pathPrefix; ?>workshops.php" title="RT Chocos Academy">
           <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -341,7 +478,7 @@ if (!empty($pageSchema)) {
         </div>
       </div>
 
-      <!-- 3. THE CACAO JOURNAL -->
+      <!-- 4. THE CACAO JOURNAL -->
       <a class="nav-item-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php" title="The Cacao Journal & Blog">
         <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
@@ -350,7 +487,7 @@ if (!empty($pageSchema)) {
         <span class="nav-label">THE CACAO JOURNAL</span>
       </a>
 
-      <!-- 4. INNOVATION LAB -->
+      <!-- 5. INNOVATION LAB -->
       <a class="nav-item-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Innovation Lab & Encyclopedia">
         <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/>
@@ -360,7 +497,7 @@ if (!empty($pageSchema)) {
         <span class="nav-label">INNOVATION LAB</span>
       </a>
 
-      <!-- 5. CHOCOLATE AI -->
+      <!-- 6. CHOCOLATE AI -->
       <button class="nav-item-link nav-ai-trigger" aria-label="Ask CocoaGenius AI" onclick="toggleAiDrawer()">
         <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11a2 2 0 0 1-2 2h-1"/>
@@ -377,7 +514,7 @@ if (!empty($pageSchema)) {
         <span class="nav-label">CHOCOLATE AI</span>
       </button>
 
-      <!-- 6. FUNZONE -->
+      <!-- 7. FUNZONE -->
       <a class="nav-item-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php" title="Funzone & Interactive Features">
         <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <line x1="6" y1="12" x2="10" y2="12"/>
@@ -393,6 +530,7 @@ if (!empty($pageSchema)) {
     <div class="header-divider"></div>
 
     <div class="header-actions">
+      <!-- Search Button -->
       <button class="search-btn" aria-label="Search RT Chocos chocolate articles" onclick="openSearch()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
@@ -400,6 +538,17 @@ if (!empty($pageSchema)) {
         </svg>
       </button>
 
+      <!-- Cart Icon Button with dynamic badge -->
+      <a href="<?php echo $pathPrefix; ?>cart.php" class="nav-cart-btn" title="View Shopping Cart (<?php echo $cartCount; ?> items)" aria-label="Shopping Cart">
+        <svg class="cart-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <span class="cart-count-badge <?php echo $cartCount > 0 ? '' : 'hidden'; ?>" id="header-cart-count"><?php echo $cartCount; ?></span>
+      </a>
+
+      <!-- Work with Us CTA -->
       <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="signin-join-btn work-with-us-btn" title="Work With RT Chocos — Consulting, R&D & Workshops">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
@@ -420,6 +569,21 @@ if (!empty($pageSchema)) {
       <span>EXPLORE</span>
     </a>
 
+    <!-- Mobile Products Group -->
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+        <span>BOUTIQUE &amp; PRODUCTS</span>
+      </div>
+      <a class="mobile-nav-sublink <?php echo ($activeNav === 'shop' && empty($_GET['category'])) ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php">🍫 All Products &amp; Boutique</a>
+      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Chocolates">🏷️ Bean-to-Bar Chocolate Bars</a>
+      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Kits">🎁 Starter &amp; Tempering Kits</a>
+      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Cacao">🌱 Single-Origin Cacao Nibs &amp; Butter</a>
+      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Bonbons">🍬 Hand-Painted Bonbons &amp; Truffles</a>
+      <a class="mobile-nav-sublink <?php echo $currentURI === '/cart.php' ? 'active' : ''; ?>" href="<?php echo $pathPrefix; ?>cart.php">🛒 Shopping Cart (<?php echo $cartCount; ?>)</a>
+    </div>
+
+    <!-- Mobile Academy Group -->
     <div class="mobile-nav-group">
       <div class="mobile-nav-group-title">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"/></svg>

@@ -37,8 +37,32 @@ if (preg_match('#^/blog/([^/]+)$#', $uri, $m)) {
     return true;
 }
 
+// Serve static files requested from subpaths like /shop/css/... or /blog/js/...
+if (preg_match('#^/(?:shop|blog)/(css|js|assets|data)/(.+)$#', $uri, $m)) {
+    $realStaticPath = __DIR__ . '/' . $m[1] . '/' . $m[2];
+    if (file_exists($realStaticPath)) {
+        $mimeTypes = [
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'svg' => 'image/svg+xml',
+            'webp' => 'image/webp',
+            'woff2' => 'font/woff2',
+            'woff' => 'font/woff'
+        ];
+        $ext = strtolower(pathinfo($realStaticPath, PATHINFO_EXTENSION));
+        if (isset($mimeTypes[$ext])) {
+            header('Content-Type: ' . $mimeTypes[$ext]);
+        }
+        readfile($realStaticPath);
+        return true;
+    }
+}
+
 // Route clean shop product URLs: /shop/{slug}
-if (preg_match('#^/shop/([^/]+)$#', $uri, $m)) {
+if (preg_match('#^/shop/([a-zA-Z0-9_\-]+)/?$#', $uri, $m)) {
     $_GET['slug'] = $m[1];
     include __DIR__ . '/product.php';
     return true;

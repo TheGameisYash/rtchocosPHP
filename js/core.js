@@ -142,6 +142,10 @@ const DEFAULT_ARTICLE_KEY = null;
 const PAGE_FILE_MAP = {
   home: HOME_FILE_NAME,
   about: 'about.php',
+  shop: 'shop.php',
+  product: 'product.php',
+  cart: 'cart.php',
+  checkout: 'checkout.php',
   workshops: 'workshops.php',
   blog: 'blog.php',
   chocopedia: 'chocopedia.php',
@@ -200,7 +204,9 @@ function getCurrentFileName() {
 
 function getCurrentUrlPage() {
   const route = getRouteFromFileName();
-  return route.page === 'blog-article' ? 'blog' : (route.page || 'home');
+  if (route.page === 'blog-article') return 'blog';
+  if (route.page === 'product' || route.page === 'cart' || route.page === 'checkout') return 'shop';
+  return route.page || 'home';
 }
 
 function updateActiveNavLinks() {
@@ -208,10 +214,15 @@ function updateActiveNavLinks() {
   document.querySelectorAll('.nav-link, .nav-item-link, .mobile-nav-link, .dropdown-item, .mobile-nav-sublink').forEach(link => {
     link.classList.toggle('active', link.dataset.page === navPage);
   });
-  const academyToggle = document.querySelector('.nav-item-dropdown .dropdown-toggle');
+  const academyToggle = document.querySelector('.nav-item-dropdown:not(.nav-item-products) .dropdown-toggle');
   if (academyToggle) {
     const isAcademyActive = (navPage === 'workshops' || navPage === 'gallery' || navPage === 'academy');
     academyToggle.classList.toggle('active', isAcademyActive);
+  }
+  const productsToggle = document.querySelector('.nav-item-products .dropdown-toggle');
+  if (productsToggle) {
+    const isProductsActive = (navPage === 'shop' || navPage === 'product' || navPage === 'cart' || navPage === 'checkout');
+    productsToggle.classList.toggle('active', isProductsActive);
   }
 }
 

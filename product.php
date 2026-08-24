@@ -31,7 +31,8 @@
   $pageTitle = !empty($product['meta_title']) ? $product['meta_title'] : $autoTitle;
   $pageDescription = !empty($product['meta_description']) ? $product['meta_description'] : $autoDesc;
   $pageKeywords = !empty($product['meta_keywords']) ? $product['meta_keywords'] : "buy " . strtolower($product['name']) . ", " . strtolower($product['category']) . " India, bean to bar chocolate online, RT Chocos shop, craft chocolate India";
-  $pathPrefix = "";
+  $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+  $pathPrefix = (strpos($requestPath, '/shop/') !== false) ? '../' : '';
   $pageImage = $product['image_main'] ?: '';
 
   $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
@@ -44,7 +45,7 @@
       ['name' => $product['name'], 'item' => $canonicalUrl]
   ];
 
-  include $pathPrefix . 'includes/header.php';
+  include __DIR__ . '/includes/header.php';
 
   // Parse image gallery
   $gallery = [];
@@ -83,23 +84,33 @@
   <div class="section">
     <!-- Breadcrumb text -->
     <div style="font-family:'Jost',sans-serif; font-size:13px; color:var(--brown-light); margin-bottom:24px; font-weight:300;">
-      <a href="index.php" style="color:var(--brown-light); text-decoration:none;">Home</a> › 
-      <a href="shop.php" style="color:var(--brown-light); text-decoration:none;">Shop</a> › 
-      <a href="shop.php?category=<?php echo urlencode($product['category']); ?>" style="color:var(--brown-light); text-decoration:none;"><?php echo htmlspecialchars($product['category']); ?></a> › 
+      <a href="<?php echo $pathPrefix; ?>index.php" style="color:var(--brown-light); text-decoration:none;">Home</a> › 
+      <a href="<?php echo $pathPrefix; ?>shop.php" style="color:var(--brown-light); text-decoration:none;">Shop</a> › 
+      <a href="<?php echo $pathPrefix; ?>shop.php?category=<?php echo urlencode($product['category']); ?>" style="color:var(--brown-light); text-decoration:none;"><?php echo htmlspecialchars($product['category']); ?></a> › 
       <span style="color:var(--brown);"><?php echo htmlspecialchars($product['name']); ?></span>
     </div>
 
     <div class="contact-grid">
       <!-- Image Gallery Column -->
       <div>
-        <?php if (!empty($allImages)): ?>
+        <?php if (!empty($allImages)): 
+          $mainImgSrc = $allImages[0];
+          if ($mainImgSrc && strpos($mainImgSrc, 'http') !== 0 && strpos($mainImgSrc, '/') !== 0 && strpos($mainImgSrc, '../') !== 0) {
+            $mainImgSrc = $pathPrefix . $mainImgSrc;
+          }
+        ?>
         <div id="product-main-image" style="border-radius:20px; overflow:hidden; margin-bottom:16px; box-shadow:0 8px 32px rgba(59,42,34,0.10);">
-          <img id="main-img" src="<?php echo htmlspecialchars($allImages[0]); ?>" alt="<?php echo htmlspecialchars($product['name']); ?> — bean-to-bar chocolate, RT Chocos India" style="width:100%; height:auto; display:block; object-fit:cover;" loading="lazy">
+          <img id="main-img" src="<?php echo htmlspecialchars($mainImgSrc); ?>" alt="<?php echo htmlspecialchars($product['name']); ?> — bean-to-bar chocolate, RT Chocos India" style="width:100%; height:auto; display:block; object-fit:cover;" loading="lazy">
         </div>
         <?php if (count($allImages) > 1): ?>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <?php foreach ($allImages as $idx => $img): ?>
-          <img src="<?php echo htmlspecialchars($img); ?>" 
+          <?php foreach ($allImages as $idx => $img): 
+            $thumbSrc = $img;
+            if ($thumbSrc && strpos($thumbSrc, 'http') !== 0 && strpos($thumbSrc, '/') !== 0 && strpos($thumbSrc, '../') !== 0) {
+              $thumbSrc = $pathPrefix . $thumbSrc;
+            }
+          ?>
+          <img src="<?php echo htmlspecialchars($thumbSrc); ?>" 
                alt="<?php echo htmlspecialchars($product['name']); ?> view <?php echo $idx + 1; ?>" 
                loading="lazy"
                onclick="document.getElementById('main-img').src=this.src"
@@ -146,7 +157,7 @@
           <button class="btn-primary" onclick="addToCart(<?php echo $product['id']; ?>)" style="padding:10px 28px;">
             Add to Cart
           </button>
-          <a href="cart.php" class="btn-outline" style="text-decoration:none; padding:10px 20px;">View Cart</a>
+          <a href="<?php echo $pathPrefix; ?>cart.php" class="btn-outline" style="text-decoration:none; padding:10px 20px;">View Cart</a>
         </div>
         <div id="cart-feedback" style="display:none; font-size:13px; color:#27ae60; font-weight:500; margin-bottom:16px;"></div>
         <?php else: ?>
@@ -167,11 +178,11 @@
         <div style="margin-top:24px; padding-top:20px; border-top:1px solid rgba(59,42,34,0.08);">
           <?php if ($relatedBlog): ?>
           <p style="font-size:13px; color:var(--brown-light); margin-bottom:6px;">
-            📖 Related Article: <a href="blog/<?php echo htmlspecialchars($relatedBlog['slug']); ?>" style="color:var(--brown); font-weight:500;"><?php echo htmlspecialchars($relatedBlog['title']); ?></a>
+            📖 Related Article: <a href="<?php echo $pathPrefix; ?>blog/<?php echo htmlspecialchars($relatedBlog['slug']); ?>" style="color:var(--brown); font-weight:500;"><?php echo htmlspecialchars($relatedBlog['title']); ?></a>
           </p>
           <?php endif; ?>
           <p style="font-size:13px; color:var(--brown-light);">
-            ❓ Have questions? See our <a href="faq.php" style="color:var(--brown); font-weight:500;">Shipping & Delivery FAQ</a>
+            ❓ Have questions? See our <a href="<?php echo $pathPrefix; ?>faq.php" style="color:var(--brown); font-weight:500;">Shipping & Delivery FAQ</a>
           </p>
         </div>
       </div>
@@ -188,12 +199,16 @@
       <div class="grid-3">
         <?php foreach ($relatedProducts as $rp): 
           $rpPrice = ($rp['sale_price'] && $rp['sale_price'] > 0) ? $rp['sale_price'] : $rp['price'];
+          $rpImg = $rp['image_main'];
+          if ($rpImg && strpos($rpImg, 'http') !== 0 && strpos($rpImg, '/') !== 0 && strpos($rpImg, '../') !== 0) {
+            $rpImg = $pathPrefix . $rpImg;
+          }
         ?>
-        <a href="shop/<?php echo htmlspecialchars($rp['slug']); ?>" style="text-decoration:none;">
+        <a href="<?php echo $pathPrefix; ?>shop/<?php echo htmlspecialchars($rp['slug']); ?>" style="text-decoration:none;">
           <div class="why-card" style="cursor:pointer; height:100%;">
             <div class="why-card-img-wrapper">
               <?php if ($rp['image_main']): ?>
-              <img src="<?php echo htmlspecialchars($rp['image_main']); ?>" alt="<?php echo htmlspecialchars($rp['name']); ?> — bean-to-bar chocolate, RT Chocos India" loading="lazy" style="width:100%; height:200px; object-fit:cover;">
+              <img src="<?php echo htmlspecialchars($rpImg); ?>" alt="<?php echo htmlspecialchars($rp['name']); ?> — bean-to-bar chocolate, RT Chocos India" loading="lazy" style="width:100%; height:200px; object-fit:cover;">
               <?php endif; ?>
             </div>
             <div class="why-card-text">
@@ -231,7 +246,7 @@ function updateQty(delta) {
 
 function addToCart(productId) {
   var qty = parseInt(document.getElementById('qty-input').value) || 1;
-  fetch('api_cart.php', {
+  fetch('<?php echo $pathPrefix; ?>api_cart.php', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({action: 'add', product_id: productId, quantity: qty})
@@ -242,6 +257,13 @@ function addToCart(productId) {
     if (data.success) {
       fb.style.color = '#27ae60';
       fb.textContent = '✓ ' + (data.message || 'Added to cart');
+      var badge = document.getElementById('header-cart-count');
+      if (badge && typeof data.cart_count !== 'undefined') {
+        badge.textContent = data.cart_count;
+        badge.classList.remove('hidden');
+        badge.style.transform = 'scale(1.35)';
+        setTimeout(function() { badge.style.transform = ''; }, 300);
+      }
     } else {
       fb.style.color = '#c0392b';
       fb.textContent = '✗ ' + (data.error || 'Could not add to cart');
@@ -311,5 +333,5 @@ if (!empty($GLOBALS['faqSchemaItems'])) {
     echo "\n" . '</script>' . "\n";
 }
 
-include $pathPrefix . 'includes/footer.php';
+include __DIR__ . '/includes/footer.php';
 ?>
