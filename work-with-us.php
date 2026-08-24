@@ -527,7 +527,7 @@
   100% { transform: rotate(-360deg); }
 }
 
-/* Central Floating Cacao Pod */
+/* Central Floating 3D Cacao Pod */
 #page-wwu .wwu-cacao-nucleus {
   position: absolute !important;
   top: 50% !important;
@@ -538,6 +538,21 @@
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
+}
+
+#page-wwu .wwu-pod-3d-canvas {
+  width: 280px !important;
+  height: 440px !important;
+  display: block !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.75)) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease !important;
+}
+
+#page-wwu .wwu-cacao-nucleus:hover .wwu-pod-3d-canvas {
+  transform: scale(1.05) !important;
+  filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.9)) !important;
 }
 
 #page-wwu .wwu-pod-artwork {
@@ -672,99 +687,250 @@
 
 
 /* ============================================================
-   SECTION 2: HOW WE COLLABORATE (compact luxury cream with botanical sketch)
+   SECTION 2: HOW WE COLLABORATE & WHAT WE HELP WITH
    ============================================================ */
-#page-wwu .wwu-collab {
+#page-wwu .wwu-collab-section {
   position: relative !important;
-  padding: 48px 44px !important;
-  background: #f7f3eb !important;
+  padding: 38px 40px 42px !important;
+  background: #faf6ef !important;
   border-top: 1px solid rgba(212, 175, 55, 0.22) !important;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.14) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.16) !important;
   overflow: hidden !important;
 }
 
-/* Botanical Sketch in background right corner fitted completely inside */
-#page-wwu .wwu-collab-sketch {
-  position: absolute !important;
-  top: 50% !important;
-  right: 55px !important;
-  transform: translateY(-50%) !important;
-  height: calc(100% - 20px) !important;
-  max-height: 165px !important;
-  width: auto !important;
-  object-fit: contain !important;
-  opacity: 0.92 !important;
-  mix-blend-mode: multiply !important;
-  pointer-events: none !important;
-  z-index: 1 !important;
-  filter: contrast(1.12) brightness(1.03) sepia(0.04) !important;
-  transition: opacity 0.4s ease !important;
+#page-wwu .wwu-collab-container {
+  max-width: 1360px !important;
+  margin: 0 auto !important;
 }
 
-#page-wwu .wwu-collab-inner {
-  max-width: 1260px !important;
-  margin: 0 auto !important;
+/* TOP PART: Intro + 6-Step Journey Flow */
+#page-wwu .wwu-collab-top-row {
   display: grid !important;
-  grid-template-columns: 1fr auto 1.3fr !important;
+  grid-template-columns: 280px 1fr !important;
   gap: 36px !important;
   align-items: center !important;
-  position: relative !important;
-  z-index: 2 !important;
-  padding-right: 180px !important;
+  margin-bottom: 28px !important;
 }
 
-#page-wwu .wwu-collab-left {
-  max-width: 440px !important;
+#page-wwu .wwu-collab-intro {
+  display: flex !important;
+  flex-direction: column !important;
 }
 
-#page-wwu .wwu-collab .wwu-tag {
-  color: #926926 !important;
-  margin-bottom: 8px !important;
-  letter-spacing: 2.2px !important;
+#page-wwu .wwu-collab-tag {
+  color: #8b6b23 !important;
+  font-family: 'Inter', sans-serif !important;
   font-size: 10px !important;
   font-weight: 800 !important;
+  letter-spacing: 2.2px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 8px !important;
 }
 
-#page-wwu .wwu-collab h2 {
+#page-wwu .wwu-collab-heading {
   font-family: 'Playfair Display', serif !important;
-  font-size: clamp(25px, 2.8vw, 35px) !important;
-  line-height: 1.15 !important;
+  font-size: clamp(23px, 2.3vw, 29px) !important;
+  line-height: 1.18 !important;
   color: #1a1711 !important;
-  margin: 0 !important;
-  font-weight: 700 !important;
-}
-
-#page-wwu .wwu-collab h2 .collab-hl {
-  color: #8b5f1a !important;
-  font-style: italic !important;
-}
-
-/* Center vertical divider */
-#page-wwu .wwu-collab-divider {
-  width: 1.5px !important;
-  background: linear-gradient(180deg, transparent, rgba(184, 134, 11, 0.4) 20%, rgba(184, 134, 11, 0.4) 80%, transparent) !important;
-  align-self: stretch !important;
-  min-height: 80px !important;
-}
-
-#page-wwu .wwu-collab-right {
-  max-width: 540px !important;
-}
-
-#page-wwu .wwu-collab-right p {
-  font-family: 'Inter', sans-serif !important;
-  font-size: 13.5px !important;
-  line-height: 1.65 !important;
-  color: #454035 !important;
-  font-weight: 400 !important;
   margin: 0 0 10px 0 !important;
-}
-#page-wwu .wwu-collab-right p:last-child {
-  margin-bottom: 0 !important;
-}
-#page-wwu .wwu-collab-right strong {
-  color: #1a1711 !important;
   font-weight: 700 !important;
+}
+
+#page-wwu .wwu-collab-gold-dash {
+  width: 32px !important;
+  height: 2px !important;
+  background: #c59b27 !important;
+  margin-bottom: 12px !important;
+}
+
+#page-wwu .wwu-collab-subtext {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12.5px !important;
+  line-height: 1.55 !important;
+  color: #4a453b !important;
+  margin: 0 !important;
+  font-weight: 400 !important;
+}
+
+/* 6-Step Process Flow */
+#page-wwu .wwu-process-track-wrap {
+  position: relative !important;
+  width: 100% !important;
+}
+
+#page-wwu .wwu-process-line {
+  position: absolute !important;
+  top: 41px !important;
+  left: 6% !important;
+  right: 6% !important;
+  height: 1px !important;
+  background: rgba(184, 134, 11, 0.28) !important;
+  z-index: 1 !important;
+}
+
+#page-wwu .wwu-process-steps {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 10px !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+#page-wwu .wwu-step-node {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  padding: 0 4px !important;
+}
+
+#page-wwu .wwu-step-num {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #b8860b !important;
+  margin-bottom: 6px !important;
+  line-height: 1 !important;
+}
+
+#page-wwu .wwu-step-badge {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
+  background: #052014 !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 10px !important;
+  box-shadow: 0 4px 14px rgba(4, 25, 15, 0.22) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: default !important;
+}
+
+#page-wwu .wwu-step-node:hover .wwu-step-badge {
+  transform: translateY(-3px) scale(1.06) !important;
+  border-color: #d4af37 !important;
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35) !important;
+  background: #072e1d !important;
+}
+
+#page-wwu .wwu-step-badge svg {
+  width: 20px !important;
+  height: 20px !important;
+  stroke: #e8e2d5 !important;
+}
+
+#page-wwu .wwu-step-title {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.2px !important;
+  color: #1a1711 !important;
+  text-transform: uppercase !important;
+  margin: 0 0 5px 0 !important;
+}
+
+#page-wwu .wwu-step-desc {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  color: #554f43 !important;
+  margin: 0 !important;
+  font-weight: 400 !important;
+}
+
+/* MIDDLE DIVIDER: WHAT WE HELP WITH */
+#page-wwu .wwu-help-divider-wrap {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  margin: 24px 0 22px 0 !important;
+}
+
+#page-wwu .wwu-help-rule-line {
+  flex: 1 !important;
+  height: 1px !important;
+  background: rgba(184, 134, 11, 0.22) !important;
+}
+
+#page-wwu .wwu-help-tag {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2.5px !important;
+  color: #7d5f1c !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+/* BOTTOM PART: 6 CAPABILITY CARDS WITH SLEEK VERTICAL DIVIDERS */
+#page-wwu .wwu-help-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 0 !important;
+}
+
+#page-wwu .wwu-help-col {
+  padding: 4px 14px !important;
+  border-right: 1px solid rgba(184, 134, 11, 0.18) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  transition: all 0.3s ease !important;
+}
+
+#page-wwu .wwu-help-col:last-child {
+  border-right: none !important;
+}
+
+#page-wwu .wwu-help-icon {
+  width: 38px !important;
+  height: 38px !important;
+  margin-bottom: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #5c5242 !important;
+  transition: all 0.3s ease !important;
+}
+
+#page-wwu .wwu-help-icon svg {
+  width: 30px !important;
+  height: 30px !important;
+  stroke: #5c5242 !important;
+  transition: all 0.3s ease !important;
+}
+
+#page-wwu .wwu-help-col:hover .wwu-help-icon svg {
+  stroke: #b8860b !important;
+  transform: translateY(-2px) scale(1.05) !important;
+}
+
+#page-wwu .wwu-help-col h4 {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.8px !important;
+  color: #1a1711 !important;
+  text-transform: uppercase !important;
+  margin: 0 0 6px 0 !important;
+  line-height: 1.3 !important;
+  min-height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#page-wwu .wwu-help-col p {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+  color: #554f43 !important;
+  margin: 0 !important;
+  font-weight: 400 !important;
 }
 
 
@@ -1478,286 +1644,141 @@
 
 
 /* ============================================================
-   SECTION 5: WHO IS THIS FOR (Ultra-Luxury Ivory & Warm Gold)
+   SECTION 5: WE COLLABORATE ACROSS THE CHOCOLATE ECOSYSTEM
    ============================================================ */
-#page-wwu .wwu-audience {
+#page-wwu .wwu-ecosystem-section {
   position: relative !important;
-  padding: 100px 48px !important;
-  background: 
-    radial-gradient(circle 800px at 85% 20%, rgba(212, 175, 55, 0.09) 0%, transparent 70%),
-    radial-gradient(circle 600px at 15% 80%, rgba(139, 90, 43, 0.05) 0%, transparent 60%),
-    linear-gradient(180deg, #f7f3eb 0%, #eee6d8 50%, #f4ede0 100%) !important;
-  border-top: 1px solid rgba(212, 175, 55, 0.28) !important;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
+  padding: 44px 36px 46px !important;
+  background: #faf6ee !important;
+  border-top: 1px solid rgba(212, 175, 55, 0.22) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.18) !important;
   overflow: hidden !important;
+  text-align: center !important;
 }
 
-#page-wwu .wwu-audience::before {
-  content: '' !important;
+/* Botanical sketches on left and right borders matching design */
+#page-wwu .wwu-eco-sketch-left,
+#page-wwu .wwu-eco-sketch-right {
   position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background-image: 
-    radial-gradient(circle 1.5px at 10% 20%, rgba(184, 134, 11, 0.2) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 90% 75%, rgba(184, 134, 11, 0.25) 0%, transparent 100%),
-    radial-gradient(circle 2px at 50% 90%, rgba(184, 134, 11, 0.15) 0%, transparent 100%) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  height: 100% !important;
+  max-height: 240px !important;
+  width: auto !important;
+  object-fit: contain !important;
+  opacity: 0.2 !important;
+  mix-blend-mode: multiply !important;
   pointer-events: none !important;
   z-index: 1 !important;
+  filter: contrast(1.1) brightness(1.02) sepia(0.1) !important;
 }
 
-#page-wwu .wwu-audience-inner {
-  max-width: 1380px !important;
+#page-wwu .wwu-eco-sketch-left {
+  left: -20px !important;
+}
+
+#page-wwu .wwu-eco-sketch-right {
+  right: -20px !important;
+  transform: translateY(-50%) scaleX(-1) !important;
+}
+
+#page-wwu .wwu-ecosystem-inner {
+  max-width: 1200px !important;
   margin: 0 auto !important;
   position: relative !important;
   z-index: 2 !important;
 }
 
-#page-wwu .wwu-audience-top {
-  display: grid !important;
-  grid-template-columns: 1fr 1.35fr !important;
-  gap: 60px !important;
-  align-items: center !important;
+#page-wwu .wwu-ecosystem-heading {
+  font-family: 'Playfair Display', serif !important;
+  font-size: clamp(14px, 1.4vw, 17px) !important;
+  font-weight: 700 !important;
+  letter-spacing: 2.2px !important;
+  color: #1a1712 !important;
+  text-transform: uppercase !important;
+  margin: 0 0 24px 0 !important;
 }
 
-#page-wwu .wwu-audience-left {
+/* 7-Column Box Grid with outer border and inner dividers */
+#page-wwu .wwu-ecosystem-grid {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  background: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(184, 134, 11, 0.28) !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 10px rgba(100, 70, 20, 0.03) !important;
+}
+
+#page-wwu .wwu-eco-card {
+  padding: 22px 10px 18px !important;
+  border-right: 1px solid rgba(184, 134, 11, 0.28) !important;
   display: flex !important;
   flex-direction: column !important;
-  padding-right: 20px !important;
-}
-
-#page-wwu .wwu-audience-left .wwu-aud-tag-pill {
-  display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important;
-  align-self: flex-start !important;
-  padding: 6px 14px !important;
-  background: rgba(139, 90, 43, 0.08) !important;
-  border: 1px solid rgba(184, 134, 11, 0.3) !important;
-  border-radius: 30px !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 10.5px !important;
-  font-weight: 800 !important;
-  letter-spacing: 2px !important;
-  text-transform: uppercase !important;
-  color: #8b5a2b !important;
-  margin-bottom: 18px !important;
-}
-
-#page-wwu .wwu-audience-left .wwu-aud-tag-pill .pill-dot {
-  width: 6px !important;
-  height: 6px !important;
-  border-radius: 50% !important;
-  background: #b8860b !important;
-  box-shadow: 0 0 6px rgba(184, 134, 11, 0.6) !important;
-}
-
-#page-wwu .wwu-audience h2 {
-  font-size: clamp(32px, 3.4vw, 48px) !important;
-  color: #1a1712 !important;
-  line-height: 1.12 !important;
-  letter-spacing: -0.02em !important;
-  margin-bottom: 18px !important;
-  font-weight: 700 !important;
-}
-
-#page-wwu .wwu-audience h2 .hl-cream-gold {
-  color: #8b5a2b !important;
-  background: linear-gradient(135deg, #8b5a2b 0%, #c89524 50%, #6b4010 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  display: inline-block !important;
-}
-
-#page-wwu .wwu-audience-lead {
-  font-family: 'Inter', sans-serif !important;
-  font-size: 15px !important;
-  line-height: 1.65 !important;
-  color: #574e40 !important;
-  margin-bottom: 22px !important;
-  font-weight: 400 !important;
-}
-
-#page-wwu .wwu-audience-badges {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 10px !important;
-  margin-bottom: 24px !important;
-}
-
-#page-wwu .wwu-aud-trait {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 11.5px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.5px !important;
-  color: #6b4d1b !important;
-  padding: 6px 12px !important;
-  background: rgba(212, 175, 55, 0.12) !important;
-  border-radius: 6px !important;
-  border: 1px solid rgba(184, 134, 11, 0.22) !important;
-}
-
-#page-wwu .wwu-aud-cta-wrap {
-  display: flex !important;
-}
-
-#page-wwu .wwu-aud-btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  padding: 13px 26px !important;
-  background: linear-gradient(135deg, #8b5a2b 0%, #b8860b 100%) !important;
-  color: #ffffff !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  letter-spacing: 1.5px !important;
-  text-transform: uppercase !important;
-  border: none !important;
-  border-radius: 8px !important;
+  justify-content: center !important;
+  text-align: center !important;
   cursor: pointer !important;
-  box-shadow: 0 4px 18px rgba(139, 90, 43, 0.25) !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  background: transparent !important;
 }
 
-#page-wwu .wwu-aud-btn:hover {
-  background: linear-gradient(135deg, #70441d 0%, #9e7307 100%) !important;
+#page-wwu .wwu-eco-card:last-child {
+  border-right: none !important;
+}
+
+#page-wwu .wwu-eco-card:hover {
+  background: rgba(255, 255, 255, 0.92) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 24px rgba(139, 90, 43, 0.35) !important;
+  box-shadow: 0 6px 16px rgba(139, 90, 43, 0.08) !important;
 }
 
-#page-wwu .wwu-aud-btn svg {
-  width: 14px !important;
-  height: 14px !important;
-  stroke: currentColor !important;
-  stroke-width: 2.5 !important;
-  fill: none !important;
-  transition: transform 0.3s ease !important;
-}
-
-#page-wwu .wwu-aud-btn:hover svg {
-  transform: translateX(3px) !important;
-}
-
-/* Right Column: Balanced Luxury Audience Grid */
-#page-wwu .wwu-aud-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 12px !important;
-}
-
-#page-wwu .wwu-aud-item {
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  padding: 13px 18px !important;
-  background: #ffffff !important;
-  border: 1px solid rgba(184, 134, 11, 0.22) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 3px 12px rgba(100, 70, 20, 0.05) !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  cursor: pointer !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-#page-wwu .wwu-aud-item::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 3px !important;
-  height: 100% !important;
-  background: linear-gradient(180deg, #d4af37 0%, #8b5a2b 100%) !important;
-  opacity: 0 !important;
-  transition: opacity 0.3s ease !important;
-}
-
-#page-wwu .wwu-aud-item:hover {
-  transform: translateY(-2.5px) !important;
-  border-color: #b8860b !important;
-  background: #fffdf9 !important;
-  box-shadow: 0 8px 24px rgba(139, 90, 43, 0.12), 0 0 15px rgba(212, 175, 55, 0.15) !important;
-}
-
-#page-wwu .wwu-aud-item:hover::before {
-  opacity: 1 !important;
-}
-
-#page-wwu .wwu-aud-icon-wrap {
-  width: 34px !important;
-  height: 34px !important;
-  flex-shrink: 0 !important;
-  border-radius: 8px !important;
-  background: rgba(212, 175, 55, 0.1) !important;
-  border: 1px solid rgba(184, 134, 11, 0.2) !important;
+#page-wwu .wwu-eco-icon {
+  width: 44px !important;
+  height: 44px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  color: #8b5a2b !important;
+  margin-bottom: 12px !important;
+  color: #3b352b !important;
   transition: all 0.3s ease !important;
 }
 
-#page-wwu .wwu-aud-item:hover .wwu-aud-icon-wrap {
-  background: #8b5a2b !important;
-  color: #ffffff !important;
-  border-color: #8b5a2b !important;
+#page-wwu .wwu-eco-icon svg {
+  width: 32px !important;
+  height: 32px !important;
+  stroke: #3b352b !important;
+  transition: all 0.3s ease !important;
 }
 
-#page-wwu .wwu-aud-icon-wrap svg {
-  width: 17px !important;
-  height: 17px !important;
-  stroke: currentColor !important;
-  stroke-width: 1.8 !important;
-  fill: none !important;
+#page-wwu .wwu-eco-card:hover .wwu-eco-icon svg {
+  stroke: #b8860b !important;
+  transform: scale(1.08) !important;
 }
 
-#page-wwu .wwu-aud-info {
-  display: flex !important;
-  flex-direction: column !important;
-  min-width: 0 !important;
-}
-
-#page-wwu .wwu-aud-name {
+#page-wwu .wwu-eco-label {
   font-family: 'Inter', sans-serif !important;
-  font-size: 13.5px !important;
-  font-weight: 700 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.8px !important;
   color: #1a1712 !important;
-  line-height: 1.25 !important;
+  text-transform: uppercase !important;
+  line-height: 1.35 !important;
+  display: block !important;
   transition: color 0.3s ease !important;
 }
 
-#page-wwu .wwu-aud-item:hover .wwu-aud-name {
+#page-wwu .wwu-eco-card:hover .wwu-eco-label {
   color: #8b5a2b !important;
 }
 
-#page-wwu .wwu-aud-role {
+#page-wwu .wwu-ecosystem-footer-note {
   font-family: 'Inter', sans-serif !important;
-  font-size: 11px !important;
+  font-size: 12.5px !important;
+  color: #5a5244 !important;
+  margin: 18px 0 0 0 !important;
   font-weight: 400 !important;
-  color: #7a7060 !important;
-  line-height: 1.3 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-
-#page-wwu .wwu-aud-arrow {
-  margin-left: auto !important;
-  color: #c4b89a !important;
-  transition: all 0.3s ease !important;
-  font-size: 12px !important;
-  opacity: 0.6 !important;
-}
-
-#page-wwu .wwu-aud-item:hover .wwu-aud-arrow {
-  color: #8b5a2b !important;
-  transform: translateX(3px) !important;
-  opacity: 1 !important;
+  letter-spacing: 0.2px !important;
 }
 
 
@@ -2476,20 +2497,32 @@
   #page-wwu .wwu-pod-artwork {
     width: 180px !important;
   }
-  #page-wwu .wwu-collab-sketch {
-    width: 300px !important;
-    opacity: 0.5 !important;
-    right: -50px !important;
-  }
-  #page-wwu .wwu-collab-inner {
+  #page-wwu .wwu-collab-top-row {
     grid-template-columns: 1fr !important;
-    padding-right: 0 !important;
-    gap: 30px !important;
+    gap: 28px !important;
   }
-  #page-wwu .wwu-collab-divider {
+  #page-wwu .wwu-collab-intro {
+    text-align: center !important;
+    align-items: center !important;
+  }
+  #page-wwu .wwu-process-steps {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 18px 12px !important;
+  }
+  #page-wwu .wwu-process-line {
     display: none !important;
   }
-  #page-wwu .wwu-audience-top,
+  #page-wwu .wwu-help-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px 0 !important;
+  }
+  #page-wwu .wwu-help-col:nth-child(3n) {
+    border-right: none !important;
+  }
+  #page-wwu .wwu-help-col:nth-child(-n+3) {
+    border-bottom: 1px solid rgba(184, 134, 11, 0.18) !important;
+    padding-bottom: 14px !important;
+  }
   #page-wwu .wwu-why-inner,
   #page-wwu .wwu-challenge-inner {
     grid-template-columns: 1fr !important;
@@ -2508,9 +2541,6 @@
     border-top: 1px solid rgba(212, 175, 55, 0.25) !important;
     padding-left: 0 !important;
     padding-top: 16px !important;
-  }
-  #page-wwu .wwu-audience-left {
-    padding-right: 0 !important;
   }
   #page-wwu .wwu-begin-grid {
     grid-template-columns: 1fr 1fr !important;
@@ -2569,8 +2599,29 @@
     padding: 4px 8px !important;
     letter-spacing: 1px !important;
   }
-  #page-wwu .wwu-collab-sketch {
-    display: none !important;
+  #page-wwu .wwu-collab-section {
+    padding: 34px 18px 36px !important;
+  }
+  #page-wwu .wwu-process-steps {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 18px 10px !important;
+  }
+  #page-wwu .wwu-help-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px 0 !important;
+  }
+  #page-wwu .wwu-help-col {
+    padding: 6px 10px !important;
+  }
+  #page-wwu .wwu-help-col:nth-child(2n) {
+    border-right: none !important;
+  }
+  #page-wwu .wwu-help-col:nth-child(2n+1) {
+    border-right: 1px solid rgba(184, 134, 11, 0.18) !important;
+  }
+  #page-wwu .wwu-help-col:nth-child(-n+4) {
+    border-bottom: 1px solid rgba(184, 134, 11, 0.18) !important;
+    padding-bottom: 12px !important;
   }
   #page-wwu .wwu-heading-rule .rule-title {
     font-size: 18px !important;
@@ -2579,9 +2630,6 @@
     gap: 12px !important;
   }
   #page-wwu .wwu-begin-grid {
-    grid-template-columns: 1fr !important;
-  }
-  #page-wwu .wwu-aud-grid {
     grid-template-columns: 1fr !important;
   }
   #page-wwu .wwu-why-pillars-grid {
@@ -2613,10 +2661,12 @@
   #page-wwu .wwu-ch-pillars {
     grid-template-columns: 1fr !important;
   }
-  #page-wwu .wwu-collab,
+  #page-wwu .wwu-collab-section,
+  #page-wwu .wwu-ecosystem-section {
+    padding: 34px 18px !important;
+  }
   #page-wwu .wwu-begin,
   #page-wwu .wwu-areas,
-  #page-wwu .wwu-audience,
   #page-wwu .wwu-why,
   #page-wwu .wwu-challenge,
   #page-wwu .wwu-form-sec {
@@ -2748,9 +2798,10 @@
             <line x1="250" y1="250" x2="250" y2="455" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
           </svg>
 
-          <!-- Central Levitating Real Botanical Cacao Pod -->
-          <div class="wwu-cacao-nucleus" onclick="openConsultationModal('R&D & Product Innovation')">
-            <img src="assets/real_cacao_pod.jpg" alt="Natural Ripe Chocolate Cacao Pod" class="wwu-pod-artwork wwu-real-pod" />
+          <!-- Central Levitating 3D WebGL Real Rotating Cacao Pod -->
+          <div class="wwu-cacao-nucleus" id="wwu-cacao-nucleus-3d" onclick="openConsultationModal('R&D & Product Innovation')">
+            <canvas id="cacao-3d-canvas" class="wwu-pod-3d-canvas"></canvas>
+            <img src="assets/real_cacao_pod.jpg" alt="Natural Ripe Chocolate Cacao Pod" class="wwu-pod-artwork wwu-real-pod" id="cacao-fallback-img" style="display:none;" />
           </div>
 
           <!-- 7 Satellite Science Nodes -->
@@ -2824,24 +2875,199 @@
   </section>
 
 
-  <!-- ====== 2. HOW WE COLLABORATE ====== -->
-  <section class="wwu-collab">
-    <!-- Botanical Cacao Sketch Illustration in Corner -->
-   
+  <!-- ====== 2. HOW WE COLLABORATE & WHAT WE HELP WITH ====== -->
+  <section class="wwu-collab-section" id="how-we-collaborate">
+    <div class="wwu-collab-container">
+      
+      <!-- TOP PART: HOW WE COLLABORATE PROCESS JOURNEY -->
+      <div class="wwu-collab-top-row">
+        <!-- Left Side: Title & Statement -->
+        <div class="wwu-collab-intro">
+          <span class="wwu-collab-tag">HOW WE COLLABORATE</span>
+          <h2 class="wwu-collab-heading">A thoughtful journey<br>from question to impact.</h2>
+          <div class="wwu-collab-gold-dash"></div>
+          <p class="wwu-collab-subtext">Every collaboration is unique, but our approach is always rooted in curiosity, rigour and clarity.</p>
+        </div>
 
-    <div class="wwu-collab-inner">
-      <div class="wwu-collab-left">
-        <span class="wwu-tag">HOW WE COLLABORATE</span>
-        <h2>Not a predefined answer.<br><span class="collab-hl">A better question.</span></h2>
+        <!-- Right Side: 6-Step Horizontal Process Flow -->
+        <div class="wwu-process-track-wrap">
+          <div class="wwu-process-line"></div>
+          <div class="wwu-process-steps">
+            
+            <!-- Step 01 -->
+            <div class="wwu-step-node">
+              <span class="wwu-step-num">01</span>
+              <div class="wwu-step-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <h4 class="wwu-step-title">CONNECT</h4>
+              <p class="wwu-step-desc">We understand your challenge, objectives and context.</p>
+            </div>
+
+            <!-- Step 02 -->
+            <div class="wwu-step-node">
+              <span class="wwu-step-num">02</span>
+              <div class="wwu-step-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              </div>
+              <h4 class="wwu-step-title">EXPLORE</h4>
+              <p class="wwu-step-desc">We dive deep into ingredients, data, formulations and constraints.</p>
+            </div>
+
+            <!-- Step 03 -->
+            <div class="wwu-step-node">
+              <span class="wwu-step-num">03</span>
+              <div class="wwu-step-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/>
+                </svg>
+              </div>
+              <h4 class="wwu-step-title">EXPERIMENT</h4>
+              <p class="wwu-step-desc">We test ideas, challenge assumptions and create possibilities.</p>
+            </div>
+
+            <!-- Step 04 -->
+            <div class="wwu-step-node">
+              <span class="wwu-step-num">04</span>
+              <div class="wwu-step-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+                  <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+                  <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+                  <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
+                </svg>
+              </div>
+              <h4 class="wwu-step-title">REFINE</h4>
+              <p class="wwu-step-desc">We analyse results, refine approaches and improve what matters.</p>
+            </div>
+
+            <!-- Step 05 -->
+            <div class="wwu-step-node">
+              <span class="wwu-step-num">05</span>
+              <div class="wwu-step-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                  <path d="m9 14 2 2 4-4"/>
+                </svg>
+              </div>
+              <h4 class="wwu-step-title">APPLY</h4>
+              <p class="wwu-step-desc">We translate learning into practical, scalable solutions.</p>
+            </div>
+
+            <!-- Step 06 -->
+            <div class="wwu-step-node">
+              <span class="wwu-step-num">06</span>
+              <div class="wwu-step-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+              </div>
+              <h4 class="wwu-step-title">EVOLVE</h4>
+              <p class="wwu-step-desc">We continue learning together and create long-term impact.</p>
+            </div>
+
+          </div>
+        </div>
       </div>
 
-      <!-- Center Vertical Divider Line -->
-      <div class="wwu-collab-divider"></div>
-
-      <div class="wwu-collab-right">
-        <p>Every meaningful collaboration begins somewhere different — a formulation that isn't behaving, an ingredient worth investigating, a product waiting to be created, or simply a question worth understanding.</p>
-        <p><strong>RT Chocos</strong> brings together deep chocolate science, experimentation, formulation R&amp;D, and hands-on pilot mastery to explore what comes next.</p>
+      <!-- MIDDLE DIVIDER: WHAT WE HELP WITH -->
+      <div class="wwu-help-divider-wrap">
+        <span class="wwu-help-rule-line"></span>
+        <span class="wwu-help-tag">WHAT WE HELP WITH</span>
+        <span class="wwu-help-rule-line"></span>
       </div>
+
+      <!-- BOTTOM PART: 6 CAPABILITY CARDS WITH SLEEK VERTICAL DIVIDERS -->
+      <div class="wwu-help-grid">
+        
+        <!-- Cap 1: Product Development -->
+        <div class="wwu-help-col">
+          <div class="wwu-help-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4C11 8 7 13.5 7 19c0 5 4 9 9 9s9-4 9-9c0-5.5-4-11-9-15z"/>
+              <path d="M16 4c-2.5 4-4 8.5-4 15 0 4.5 1.5 7.5 4 9"/>
+              <path d="M16 4c2.5 4 4 8.5 4 15 0 4.5-1.5 7.5-4 9"/>
+              <path d="M16 4V2"/>
+            </svg>
+          </div>
+          <h4>PRODUCT DEVELOPMENT</h4>
+          <p>Creating innovative chocolate products that are delightful, differentiated and market-ready.</p>
+        </div>
+
+        <!-- Cap 2: Formulation & Ingredient Innovation -->
+        <div class="wwu-help-col">
+          <div class="wwu-help-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="6" width="10" height="9" rx="1.5"/>
+              <rect x="17" y="6" width="10" height="9" rx="1.5"/>
+              <rect x="5" y="17" width="10" height="9" rx="1.5"/>
+              <rect x="17" y="17" width="10" height="9" rx="1.5"/>
+            </svg>
+          </div>
+          <h4>FORMULATION &amp; INGREDIENT INNOVATION</h4>
+          <p>Better ingredients. Better combinations. Better outcomes.</p>
+        </div>
+
+        <!-- Cap 3: Technology & Process -->
+        <div class="wwu-help-col">
+          <div class="wwu-help-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="16" cy="16" r="4"/>
+              <path d="M16 3v3M16 26v3M3 16h3M26 16h3M6.8 6.8l2.1 2.1M23.1 23.1l2.1 2.1M6.8 25.2l2.1-2.1M23.1 8.9l2.1-2.1"/>
+            </svg>
+          </div>
+          <h4>TECHNOLOGY &amp; PROCESS</h4>
+          <p>Improving processes for consistency, scalability and efficiency.</p>
+        </div>
+
+        <!-- Cap 4: Quality & Troubleshooting -->
+        <div class="wwu-help-col">
+          <div class="wwu-help-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 26V18M13 26V12M20 26V15M27 26V8"/>
+              <path d="M6 15l7-6 7 4 7-8"/>
+              <path d="M23 5h4v4"/>
+            </svg>
+          </div>
+          <h4>QUALITY &amp; TROUBLESHOOTING</h4>
+          <p>Solving challenges at every stage to ensure quality and stability.</p>
+        </div>
+
+        <!-- Cap 5: Research & Experimentation -->
+        <div class="wwu-help-col">
+          <div class="wwu-help-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 4h11l7 7v17H8z"/>
+              <polyline points="19 4 19 11 26 11"/>
+              <line x1="12" y1="16" x2="20" y2="16"/>
+              <line x1="12" y1="20" x2="20" y2="20"/>
+              <line x1="12" y1="24" x2="16" y2="24"/>
+            </svg>
+          </div>
+          <h4>RESEARCH &amp; EXPERIMENTATION</h4>
+          <p>Evidence-led exploration to answer questions that matter.</p>
+        </div>
+
+        <!-- Cap 6: Knowledge & Training -->
+        <div class="wwu-help-col">
+          <div class="wwu-help-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4a9 9 0 0 0-9 9c0 3.2 1.7 6 4.3 7.5V23a2 2 0 0 0 2 2h5.4a2 2 0 0 0 2-2v-2.5C23.3 19 25 16.2 25 13a9 9 0 0 0-9-9z"/>
+              <line x1="13" y1="28" x2="19" y2="28"/>
+            </svg>
+          </div>
+          <h4>KNOWLEDGE &amp; TRAINING</h4>
+          <p>Workshops, training and knowledge sessions for teams who want to grow.</p>
+        </div>
+
+      </div>
+
     </div>
   </section>
 
@@ -3168,177 +3394,107 @@
   </section>
 
 
-  <!-- ====== 5. WHO IS THIS FOR ====== -->
-  <section class="wwu-audience">
-    <div class="wwu-audience-inner">
-      <div class="wwu-audience-top">
-        <div class="wwu-audience-left">
-          <div class="wwu-aud-tag-pill">
-            <span class="pill-dot"></span>
-            <span>WHO IS THIS FOR?</span>
+  <!-- ====== 5. WE COLLABORATE ACROSS THE CHOCOLATE ECOSYSTEM ====== -->
+  <section class="wwu-ecosystem-section" id="who-we-work-with">
+    <!-- Subtle Botanical Sketch Accents on Left & Right -->
+    <img src="assets/cacao_botanical_sketch.jpg" alt="" class="wwu-eco-sketch-left" />
+    <img src="assets/cacao_botanical_sketch.jpg" alt="" class="wwu-eco-sketch-right" />
+
+    <div class="wwu-ecosystem-inner">
+      <h2 class="wwu-ecosystem-heading">WE COLLABORATE ACROSS THE CHOCOLATE ECOSYSTEM</h2>
+
+      <!-- 7-Column Enclosed Box Grid -->
+      <div class="wwu-ecosystem-grid">
+        
+        <!-- 1. Brands & Manufacturers -->
+        <div class="wwu-eco-card" onclick="openConsultationModal('Brands & Manufacturers')">
+          <div class="wwu-eco-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 26V13l6 4V11l7 5V7l8 6v13H5z"/>
+              <path d="M9 26v-4M15 26v-4M21 26v-4"/>
+            </svg>
           </div>
-          <h2>Different disciplines.<br><span class="hl-cream-gold">One shared curiosity.</span></h2>
-          <p class="wwu-audience-lead">
-            Whether you are crafting single-origin micro-batches, scaling industrial confectionery lines, developing novel functional ingredients, or researching cocoa physics — we provide the formulation depth and scientific framework to accelerate your goals.
-          </p>
-          <div class="wwu-audience-badges">
-            <span class="wwu-aud-trait">✦ 11+ Sectors Supported</span>
-            <span class="wwu-aud-trait">✦ Artisan to Industrial Scale</span>
-          </div>
-          <div class="wwu-aud-cta-wrap">
-            <button type="button" onclick="openConsultationModal()" class="wwu-aud-btn">
-              <span>EXPLORE COLLABORATION</span>
-              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </button>
-          </div>
+          <span class="wwu-eco-label">BRANDS &amp;<br>MANUFACTURERS</span>
         </div>
 
-        <div class="wwu-aud-grid">
-          <!-- Item 1 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Chocolate Brands')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Chocolate Brands</span>
-              <span class="wwu-aud-role">Artisan &amp; commercial chocolate makers</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
+        <!-- 2. Ingredient Companies -->
+        <div class="wwu-eco-card" onclick="openConsultationModal('Ingredient Companies')">
+          <div class="wwu-eco-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 26C6 26 8 13 18 7c7-4 8-1 8-1s3 1 0 8c-6 10-20 12-20 12z"/>
+              <path d="M6 26c4-6 10-12 16-15"/>
+            </svg>
           </div>
-
-          <!-- Item 2 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Food Companies')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Food Companies</span>
-              <span class="wwu-aud-role">FMCG &amp; packaged food innovators</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
-
-          <!-- Item 3 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Ingredient Innovators')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Ingredient Innovators</span>
-              <span class="wwu-aud-role">Fats, botanicals &amp; sugar alternatives</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
-
-          <!-- Item 4 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Founders & Startups')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Founders &amp; Startups</span>
-              <span class="wwu-aud-role">Emerging D2C &amp; confectionery ventures</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
-
-          <!-- Item 5 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Chocolatiers')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Chocolatiers</span>
-              <span class="wwu-aud-role">Bean-to-bar masters &amp; pastry chefs</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
-
-          <!-- Item 6 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Manufacturers')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><path d="m2 20 6-6V8l6-6v6l6-6v18H2z"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Manufacturers</span>
-              <span class="wwu-aud-role">Industrial processors &amp; co-packers</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
-
-          <!-- Item 7 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Researchers')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Researchers</span>
-              <span class="wwu-aud-role">Food scientists &amp; confectionery labs</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
-
-          <!-- Item 8 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Restaurants & Hospitality')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Restaurants &amp; Hospitality</span>
-              <span class="wwu-aud-role">Luxury dining &amp; hotel culinary teams</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
-
-          <!-- Item 9 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Educators')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Educators</span>
-              <span class="wwu-aud-role">Culinary academies &amp; technical trainers</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
-
-          <!-- Item 10 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Creators & Media')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><path d="m12 8-9.04 9.06a2.82 2.82 0 1 0 3.98 3.98L16 12"/><circle cx="17" cy="7" r="5"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Creators &amp; Media</span>
-              <span class="wwu-aud-role">Confectionery writers &amp; journalists</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
-
-          <!-- Item 11 -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Industry Professionals')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Industry Professionals</span>
-              <span class="wwu-aud-role">Suppliers, QA specialists &amp; consultants</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
-
-          <!-- Item 12: Custom Collaboration Partner -->
-          <div class="wwu-aud-item" onclick="openConsultationModal('Custom Inquiry')">
-            <div class="wwu-aud-icon-wrap">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-            </div>
-            <div class="wwu-aud-info">
-              <span class="wwu-aud-name">Visionary Creators</span>
-              <span class="wwu-aud-role">Have a novel question? Let's talk</span>
-            </div>
-            <span class="wwu-aud-arrow">→</span>
-          </div>
+          <span class="wwu-eco-label">INGREDIENT<br>COMPANIES</span>
         </div>
+
+        <!-- 3. R&D & Product Developers -->
+        <div class="wwu-eco-card" onclick="openConsultationModal('R&D & Product Developers')">
+          <div class="wwu-eco-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 4v7L5.5 24A2 2 0 0 0 7.2 27h17.6a2 2 0 0 0 1.7-3L20 11V4"/>
+              <line x1="10" y1="4" x2="22" y2="4"/>
+              <path d="M9 20h14"/>
+              <circle cx="16" cy="18" r="1.5"/>
+              <path d="M22 6l3-2M23 10l3 1"/>
+            </svg>
+          </div>
+          <span class="wwu-eco-label">R&amp;D &amp; PRODUCT<br>DEVELOPERS</span>
+        </div>
+
+        <!-- 4. Chocolatiers & Chefs -->
+        <div class="wwu-eco-card" onclick="openConsultationModal('Chocolatiers & Chefs')">
+          <div class="wwu-eco-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 24l7-7"/>
+              <path d="M13 15c-1.5-1.5-1-4.5 1-6.5s5-2.5 6.5-1 1 4.5-1 6.5-5 2.5-6.5 1z"/>
+              <path d="M16 12c-0.8-0.8-0.5-2.5 0.5-3.5s2.7-1.3 3.5-0.5 0.5 2.5-0.5 3.5-2.7 1.3-3.5 0.5z"/>
+              <path d="M6 26l3-3"/>
+            </svg>
+          </div>
+          <span class="wwu-eco-label">CHOCOLATIERS &amp;<br>CHEFS</span>
+        </div>
+
+        <!-- 5. Startups & Founders -->
+        <div class="wwu-eco-card" onclick="openConsultationModal('Startups & Founders')">
+          <div class="wwu-eco-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19.5 5.5C18 7 14 11 12.5 15.5l4 4c4.5-1.5 8.5-5.5 10-7 1.5-1.5 1-4-1-6s-4.5-2.5-6-1z"/>
+              <path d="M12.5 15.5L7 17l4 4-1.5 5.5 5.5-1.5 4 4 1.5-5.5"/>
+              <circle cx="19" cy="13" r="1.5"/>
+            </svg>
+          </div>
+          <span class="wwu-eco-label">STARTUPS &amp;<br>FOUNDERS</span>
+        </div>
+
+        <!-- 6. Researchers & Academia -->
+        <div class="wwu-eco-card" onclick="openConsultationModal('Researchers & Academia')">
+          <div class="wwu-eco-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12l12-6 12 6-12 6-12-6z"/>
+              <path d="M8 14.5v7c0 2 3.5 4.5 8 4.5s8-2.5 8-4.5v-7"/>
+              <path d="M28 12v9"/>
+            </svg>
+          </div>
+          <span class="wwu-eco-label">RESEARCHERS &amp;<br>ACADEMIA</span>
+        </div>
+
+        <!-- 7. Hotels & Horeca -->
+        <div class="wwu-eco-card" onclick="openConsultationModal('Hotels & Horeca')">
+          <div class="wwu-eco-icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 23h22"/>
+              <path d="M7 23c0-6 4-11 9-11s9 5 9 11"/>
+              <circle cx="16" cy="10" r="1.5"/>
+              <line x1="4" y1="26" x2="28" y2="26"/>
+            </svg>
+          </div>
+          <span class="wwu-eco-label">HOTELS &amp;<br>HORECA</span>
+        </div>
+
       </div>
+
+      <p class="wwu-ecosystem-footer-note">If your world touches chocolate, we can create value together.</p>
     </div>
   </section>
 
@@ -3691,6 +3847,181 @@ window.addEventListener('DOMContentLoaded', function() {
   openConsultationModal();
 });
 <?php endif; ?>
+</script>
+
+<!-- ================================================================
+     THREE.JS 3D BOTANICAL CACAO POD (User OBJ Model with Axis Rotation)
+     ================================================================ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+<script>
+(function() {
+  function init3DCacaoPod() {
+    const canvas = document.getElementById('cacao-3d-canvas');
+    const fallbackImg = document.getElementById('cacao-fallback-img');
+    if (!canvas || typeof THREE === 'undefined') {
+      if (fallbackImg) fallbackImg.style.display = 'block';
+      return;
+    }
+
+    try {
+      // 1. Scene & Camera Setup
+      const scene = new THREE.Scene();
+      const width = 280;
+      const height = 440;
+      const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
+      camera.position.set(0, 0, 6.7);
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+      renderer.setSize(width, height, false);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.1;
+
+      // 2. Load the Authentic Botanical Scanned Texture from assets/cocoa-pod/
+      const textureLoader = new THREE.TextureLoader();
+      const podTexture = textureLoader.load('assets/cocoa-pod/textures/cocoa%20pod%2053.18_0.png', function(tex) {
+        if ('colorSpace' in renderer) {
+          tex.colorSpace = THREE.SRGBColorSpace;
+        } else {
+          tex.encoding = THREE.sRGBEncoding;
+        }
+        tex.needsUpdate = true;
+      });
+
+      // Natural Botanical Material (Using Real Scanned 3D UV Texture)
+      const podMaterial = new THREE.MeshStandardMaterial({
+        map: podTexture,
+        roughness: 0.62,
+        metalness: 0.0,
+        side: THREE.DoubleSide
+      });
+
+      // 3. Master Pod Group with Natural Earth-like Axial Tilt
+      const podGroup = new THREE.Group();
+      podGroup.rotation.z = -0.22; // ~12.6 degrees natural axial tilt
+      podGroup.rotation.x = 0.08;
+      scene.add(podGroup);
+
+      let loadedPodMesh = null;
+
+      // 4. Load the user's 3D OBJ model: assets/cocoa-pod/source/cocoa pod 53.18.obj
+      if (typeof THREE.OBJLoader !== 'undefined') {
+        const objLoader = new THREE.OBJLoader();
+        objLoader.load('assets/cocoa-pod/source/cocoa%20pod%2053.18.obj', function(obj) {
+          // Compute bounding box & center
+          const box = new THREE.Box3().setFromObject(obj);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+
+          // Center the geometry around (0, 0, 0)
+          obj.position.set(-center.x, -center.y, -center.z);
+
+          // Normalize scale to fit viewport (~4.4 units high)
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const targetScale = 4.4 / maxDim;
+
+          const modelWrapper = new THREE.Group();
+          modelWrapper.add(obj);
+          modelWrapper.scale.set(targetScale, targetScale, targetScale);
+
+          // Apply authentic scanned texture material to all sub-meshes
+          obj.traverse(function(child) {
+            if (child.isMesh) {
+              child.geometry.computeVertexNormals();
+              child.material = podMaterial;
+            }
+          });
+
+          loadedPodMesh = modelWrapper;
+          podGroup.add(modelWrapper);
+        }, undefined, function(err) {
+          console.error('Error loading OBJ cocoa pod:', err);
+          if (fallbackImg) fallbackImg.style.display = 'block';
+        });
+      }
+
+      // 5. Clean Neutral Studio Lighting (Realistic daylight, no yellow tint)
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
+      scene.add(ambientLight);
+
+      // Clean key light
+      const keyLight = new THREE.DirectionalLight(0xfffaf4, 1.5);
+      keyLight.position.set(3.5, 4.5, 4.5);
+      scene.add(keyLight);
+
+      // Soft neutral rim light
+      const rimLight = new THREE.DirectionalLight(0xe5ded6, 0.75);
+      rimLight.position.set(-4, -1, -3);
+      scene.add(rimLight);
+
+      // Soft neutral fill
+      const fillLight = new THREE.DirectionalLight(0xa89684, 0.45);
+      fillLight.position.set(-2, 2, 3);
+      scene.add(fillLight);
+
+      // 6. Mouse Interactive Parallax Tracking
+      let targetTiltX = 0.08;
+      let targetTiltZ = -0.22;
+
+      const heroSec = document.querySelector('.wwu-hero');
+      if (heroSec) {
+        heroSec.addEventListener('mousemove', function(e) {
+          const rect = heroSec.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          targetTiltZ = -0.22 + x * 0.14;
+          targetTiltX = 0.08 - y * 0.14;
+        });
+        heroSec.addEventListener('mouseleave', function() {
+          targetTiltZ = -0.22;
+          targetTiltX = 0.08;
+        });
+      }
+
+      // 7. Continuous Animation Loop (60 FPS Rotation on Axis + Levitation Float)
+      let clock = new THREE.Clock();
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        const elapsedTime = clock.getElapsedTime();
+
+        // Continuous Earth-like spin on its vertical local Y-axis
+        if (loadedPodMesh) {
+          loadedPodMesh.rotation.y += 0.0075;
+        }
+
+        // Gentle levitation float
+        podGroup.position.y = Math.sin(elapsedTime * 1.6) * 0.08;
+
+        // Smooth mouse tilt parallax interpolation
+        podGroup.rotation.z += (targetTiltZ - podGroup.rotation.z) * 0.05;
+        podGroup.rotation.x += (targetTiltX - podGroup.rotation.x) * 0.05;
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+    } catch (err) {
+      console.error('Three.js Cacao Pod initialization error:', err);
+      if (fallbackImg) fallbackImg.style.display = 'block';
+      if (canvas) canvas.style.display = 'none';
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init3DCacaoPod);
+  } else {
+    init3DCacaoPod();
+  }
+})();
 </script>
 
 <?php

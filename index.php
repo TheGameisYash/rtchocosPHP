@@ -67,6 +67,142 @@
       </div>
     </div>
   </section>
+ 
+  <!-- ====== TRUSTED KNOWLEDGE. PROVEN EXPERIENCE. STRIP ====== -->
+  <section class="home-trust-strip-sec">
+    <div class="home-trust-inner">
+      <div class="home-trust-card">
+        
+        <!-- Top Cacao Pod Emblem Header -->
+        <div class="trust-top-header">
+          <div class="trust-emblem-line">
+            <span class="emblem-rule"></span>
+            <div class="trust-pod-badge">
+              <svg viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C12 2 4 8 4 17c0 8 8 13 8 13s8-5 8-13c0-9-8-15-8-15z" stroke="#b8860b" stroke-width="1.3"/>
+                <path d="M12 2v28" stroke="#b8860b" stroke-width="1.1"/>
+                <path d="M8 8c-2 3-2 8 0 12M16 8c2 3 2 8 0 12" stroke="#b8860b" stroke-width="1.1"/>
+              </svg>
+            </div>
+            <span class="emblem-rule"></span>
+          </div>
+
+          <h2 class="trust-main-heading">TRUSTED KNOWLEDGE. PROVEN EXPERIENCE.</h2>
+
+          <div class="trust-sub-line">
+            <span class="sub-rule"></span>
+            <span class="sub-diamond">◆</span>
+            <span class="sub-rule"></span>
+          </div>
+        </div>
+
+        <!-- 5 Pillars Grid -->
+        <div class="trust-pillars-grid">
+
+          <!-- 1. 13+ YEARS OF EXPERIENCE -->
+          <div class="trust-col">
+            <div class="trust-icon-box">
+              <svg viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Botanical Leaf on top-right -->
+                <path d="M22 14c3-8 10-9 12-7 2 2 1 9-7 12" fill="#245c36" fill-opacity="0.15" stroke="#245c36" stroke-width="1.4" stroke-linecap="round"/>
+                <path d="M24 13c4 2 8 5 10 7" stroke="#245c36" stroke-width="1.2" stroke-linecap="round"/>
+                <!-- Cacao Pod -->
+                <path d="M18 6C18 6 9 12 9 24c0 10 9 16 9 16s9-6 9-16c0-12-9-18-9-18z" stroke="#b8860b" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M18 6v34" stroke="#b8860b" stroke-width="1.2"/>
+                <path d="M13 13c-2.5 4-2.5 10 0 16M23 13c2.5 4 2.5 10 0 16" stroke="#b8860b" stroke-width="1.2"/>
+              </svg>
+            </div>
+            <div class="trust-stat-title stat-big">13+</div>
+            <div class="trust-stat-subtitle">YEARS OF EXPERIENCE</div>
+            <div class="trust-col-sep"></div>
+            <p class="trust-stat-desc">A decade of hands-on chocolate research, learning and innovation.</p>
+          </div>
+
+          <!-- 2. THOUSANDS OF PROFESSIONALS TRAINED -->
+          <div class="trust-col">
+            <div class="trust-icon-box">
+              <svg viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Chef / Professional Head & Coat -->
+                <circle cx="20" cy="11" r="5" fill="#143322" stroke="#143322" stroke-width="1.2"/>
+                <!-- Coat collar & tie -->
+                <path d="M10 38v-9c0-5 4-8 10-8s10 3 10 8v9" stroke="#b8860b" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M14 21l6 9 6-9" stroke="#b8860b" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17 21v17M23 21v17" stroke="#b8860b" stroke-width="1.1" stroke-linecap="round"/>
+                <path d="M20 21v4" stroke="#143322" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="trust-stat-title">THOUSANDS</div>
+            <div class="trust-stat-subtitle">OF PROFESSIONALS TRAINED</div>
+            <p class="trust-stat-desc">Empowering chocolatiers, bakers and food professionals across the country.</p>
+          </div>
+
+          <!-- 3. INDUSTRY COLLABORATIONS -->
+          <div class="trust-col">
+            <div class="trust-icon-box">
+              <svg viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Speech bubble above -->
+                <path d="M21 8h10c1.5 0 2.5 1 2.5 2.5v5c0 1.5-1 2.5-2.5 2.5h-4l-3 3v-3h-3c-1.5 0-2.5-1-2.5-2.5v-5c0-1.5 1-2.5 2.5-2.5z" stroke="#b8860b" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+                <!-- 3 people avatars -->
+                <circle cx="20" cy="23" r="3.2" stroke="#143322" stroke-width="1.4"/>
+                <path d="M14 36c0-3.5 2.5-6 6-6s6 2.5 6 6" stroke="#143322" stroke-width="1.4" stroke-linecap="round"/>
+                <circle cx="11" cy="25" r="2.6" stroke="#143322" stroke-width="1.2"/>
+                <path d="M6 36c0-2.5 2-4.5 5-4.5" stroke="#143322" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="29" cy="25" r="2.6" stroke="#143322" stroke-width="1.2"/>
+                <path d="M34 36c0-2.5-2-4.5-5-4.5" stroke="#143322" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="trust-stat-title">INDUSTRY</div>
+            <div class="trust-stat-subtitle">COLLABORATIONS</div>
+            <p class="trust-stat-desc">Working with brands, startups and industry leaders to create meaningful impact.</p>
+          </div>
+
+          <!-- 4. SCIENCE BACKED CONTENT -->
+          <div class="trust-col">
+            <div class="trust-icon-box">
+              <svg viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Hexagonal Chemical Structure with atom circles -->
+                <path d="M20 10l9 5v10l-9 5-9-5V15z" stroke="#143322" stroke-width="1.5" stroke-linejoin="round"/>
+                <circle cx="20" cy="10" r="2" fill="#b8860b"/>
+                <circle cx="29" cy="15" r="2" fill="#b8860b"/>
+                <circle cx="29" cy="25" r="2" fill="#b8860b"/>
+                <circle cx="20" cy="30" r="2" fill="#b8860b"/>
+                <circle cx="11" cy="25" r="2" fill="#b8860b"/>
+                <circle cx="11" cy="15" r="2" fill="#b8860b"/>
+                <!-- Outer orbital bonds -->
+                <line x1="20" y1="10" x2="20" y2="6" stroke="#b8860b" stroke-width="1.2"/>
+                <circle cx="20" cy="6" r="1.5" fill="#143322"/>
+                <line x1="29" y1="25" x2="33" y2="27" stroke="#b8860b" stroke-width="1.2"/>
+                <circle cx="33" cy="27" r="1.5" fill="#143322"/>
+                <line x1="11" y1="25" x2="7" y2="27" stroke="#b8860b" stroke-width="1.2"/>
+                <circle cx="7" cy="27" r="1.5" fill="#143322"/>
+              </svg>
+            </div>
+            <div class="trust-stat-title">SCIENCE</div>
+            <div class="trust-stat-subtitle">BACKED CONTENT</div>
+            <p class="trust-stat-desc">Every insight is rooted in research, experimentation and real-world application.</p>
+          </div>
+
+          <!-- 5. INDEPENDENT & UNBIASED -->
+          <div class="trust-col">
+            <div class="trust-icon-box">
+              <svg viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Compass / Sealed pod emblem with vertical axis -->
+                <circle cx="20" cy="22" r="13" stroke="#143322" stroke-width="1.5"/>
+                <ellipse cx="20" cy="22" rx="6" ry="11" stroke="#b8860b" stroke-width="1.3"/>
+                <line x1="20" y1="7" x2="20" y2="37" stroke="#143322" stroke-width="1.3"/>
+                <line x1="15" y1="22" x2="25" y2="22" stroke="#b8860b" stroke-width="1.3"/>
+              </svg>
+            </div>
+            <div class="trust-stat-title">INDEPENDENT</div>
+            <div class="trust-stat-subtitle">&amp; UNBIASED</div>
+            <p class="trust-stat-desc">Honest, transparent and objective knowledge you can rely on.</p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
 
   <!-- INTERACTIVE CHOCOLATE TABLE SECTION -->
   <section class="chocolate-table-sec">

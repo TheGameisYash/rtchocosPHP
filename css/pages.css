@@ -1910,6 +1910,215 @@ section:nth-of-type(even) {
 }
 
 /* ==========================================================================
+   HOMEPAGE TRUST & PROVEN EXPERIENCE STRIP (Luxury Ivory Card)
+   ========================================================================== */
+.home-trust-strip-sec {
+  background: #021a0f;
+  padding: 44px 24px;
+  position: relative;
+  z-index: 5;
+}
+
+.home-trust-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.home-trust-card {
+  background: #faf7f2;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 12px;
+  padding: 38px 36px 40px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+/* Top Header with Cacao Pod Emblem & Dividers */
+.trust-top-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.trust-emblem-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.trust-emblem-line .emblem-rule {
+  width: 90px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184, 134, 11, 0.45), transparent);
+}
+
+.trust-pod-badge {
+  width: 20px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trust-pod-badge svg {
+  width: 100%;
+  height: 100%;
+}
+
+.trust-main-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(16px, 1.7vw, 22px);
+  font-weight: 700;
+  letter-spacing: 2.6px;
+  color: #1a1712;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+}
+
+.trust-sub-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.trust-sub-line .sub-rule {
+  width: 70px;
+  height: 1px;
+  background: rgba(184, 134, 11, 0.28);
+}
+
+.trust-sub-line .sub-diamond {
+  font-size: 6px;
+  color: #b8860b;
+  line-height: 1;
+}
+
+/* 5 Pillars Grid */
+.trust-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+}
+
+.trust-col {
+  padding: 8px 18px;
+  border-right: 1px solid rgba(184, 134, 11, 0.22);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.trust-col:last-child {
+  border-right: none;
+}
+
+.trust-col:hover {
+  transform: translateY(-2px);
+}
+
+.trust-icon-box {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.trust-icon-box svg {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.trust-col:hover .trust-icon-box svg {
+  transform: scale(1.08);
+}
+
+.trust-stat-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #1a1712;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.trust-stat-title.stat-big {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #1a1712;
+  margin-bottom: 2px;
+}
+
+.trust-stat-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  color: #1a1712;
+  text-transform: uppercase;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.trust-col-sep {
+  width: 22px;
+  height: 1px;
+  background: rgba(184, 134, 11, 0.4);
+  margin-bottom: 10px;
+}
+
+.trust-stat-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #554d3f;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .trust-pillars-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px 0;
+  }
+  .trust-col:nth-child(3) {
+    border-right: none;
+  }
+  .trust-col:nth-child(-n+3) {
+    border-bottom: 1px solid rgba(184, 134, 11, 0.18);
+    padding-bottom: 20px;
+  }
+}
+
+@media (max-width: 680px) {
+  .home-trust-card {
+    padding: 28px 18px 32px;
+  }
+  .trust-pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .trust-col {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(184, 134, 11, 0.18) !important;
+    padding: 12px 10px 20px !important;
+  }
+  .trust-col:last-child {
+    border-bottom: none !important;
+  }
+}
+
+/* ==========================================================================
    INTERACTIVE CHOCOLATE TABLE SECTION — Professional Redesign
    ========================================================================== */
 .chocolate-table-sec {
