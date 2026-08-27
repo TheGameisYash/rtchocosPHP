@@ -762,16 +762,6 @@ function printChocolabRecipe() {
   printWindow.document.close();
 }
 
-// Newsletter popup after 8 seconds, only if not previously closed
-setTimeout(() => {
-  if (localStorage.getItem('rtchocos-newsletter-closed') !== 'true') {
-    const popup = document.getElementById('newsletter-popup');
-    if (popup) {
-      popup.classList.add('open');
-    }
-  }
-}, 8000);
-
 // === INTERACTIVE ABOUT PAGE HANDLERS ===
 
 function toggleTimelineMilestone(node) {

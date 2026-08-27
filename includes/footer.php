@@ -71,20 +71,6 @@
   </div>
 </footer>
 
-<!-- Newsletter Popup -->
-<div id="newsletter-popup">
-  <div class="popup-inner" onclick="event.stopPropagation()">
-    <button class="popup-close" onclick="closePopup()">×</button>
-    <div class="section-label" style="margin-bottom:8px;">Join Our Community</div>
-    <h3>The Chocolate Letter</h3>
-    <p>Recipes, science, workshop announcements and exclusive offers — delivered to your inbox weekly.</p>
-    <form class="popup-row" id="newsletter-popup-form" novalidate>
-      <input class="popup-input" type="email" placeholder="Your email" required />
-      <button class="btn-primary" type="submit" style="padding:12px 20px;">Subscribe</button>
-    </form>
-    <div id="newsletter-popup-feedback" style="margin-top: 15px; display: none; font-size: 14.5px; font-weight: 400; line-height: 1.5; color: var(--green-900); animation: fadeIn 0.3s ease;"></div>
-  </div>
-</div>
 
 <?php if (get_site_setting('show_theme_tester', '0') === '1'): ?>
 <!-- Theme Switcher Widget -->

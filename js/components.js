@@ -10,13 +10,11 @@ function addToCart() {
 
 // --- WORKSHOP CARD ----------------------------------------------
 function triggerNewsletterAlert() {
-  const popup = document.getElementById('newsletter-popup');
-  if (popup) {
-    popup.classList.add('open');
-    const popupInput = popup.querySelector('.popup-input');
-    if (popupInput) {
-      setTimeout(() => popupInput.focus(), 100);
-    }
+  const footerNewsletter = document.getElementById('newsletter-footer-form') || document.getElementById('newsletter-home-form');
+  if (footerNewsletter) {
+    footerNewsletter.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const input = footerNewsletter.querySelector('input');
+    if (input) setTimeout(() => input.focus(), 500);
   }
 }
 
