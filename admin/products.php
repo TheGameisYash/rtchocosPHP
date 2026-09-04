@@ -410,6 +410,10 @@ render_admin_header("Product Catalog", "products");
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
             Storefront
         </a>
+        <button type="button" class="btn btn-outline btn-sm" onclick="openCategoryManagerModal()" title="Manage chocolate categories">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+            Categories
+        </button>
         <a href="product-editor.php" class="btn btn-primary btn-sm">
             <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
             Add Product
@@ -464,7 +468,7 @@ render_admin_header("Product Catalog", "products");
 </div>
 
 <!-- Interactive Category Pills Bar -->
-<div class="category-pills-bar">
+<div class="category-pills-bar" id="categoryPillsBar">
     <a href="products.php<?php echo $search ? '?search='.urlencode($search) : ''; ?>" class="cat-pill <?php echo empty($category) ? 'active' : ''; ?>">
         <span>All Products</span>
         <span class="cat-pill-count"><?php echo $metrics['total']; ?></span>
@@ -475,6 +479,9 @@ render_admin_header("Product Catalog", "products");
             <span class="cat-pill-count"><?php echo $catCount; ?></span>
         </a>
     <?php endforeach; ?>
+    <button type="button" class="cat-pill" onclick="openCategoryManagerModal()" style="border-style: dashed; cursor: pointer;" title="Manage Categories">
+        <span>⚙️ Manage</span>
+    </button>
 </div>
 
 <!-- Search, Filter & View Controls -->
@@ -1022,7 +1029,235 @@ render_admin_header("Product Catalog", "products");
         document.getElementById('bulkActionType').value = type;
         document.getElementById('bulkForm').submit();
     }
+
+    // ==========================================
+    // Category Manager Modal & AJAX Handler
+    // ==========================================
+    let cachedModalCategories = [];
+
+    function openCategoryManagerModal() {
+        document.getElementById('categoryManagerModal').classList.add('open');
+        loadModalCategories();
+    }
+
+    function closeCategoryManagerModal() {
+        document.getElementById('categoryManagerModal').classList.remove('open');
+    }
+
+    function loadModalCategories() {
+        const list = document.getElementById('modalCategoriesList');
+        list.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-light);">Loading collections...</div>';
+
+        fetch('category-api.php?action=get_all')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    cachedModalCategories = data.categories;
+                    renderModalCategoriesList(cachedModalCategories);
+                } else {
+                    list.innerHTML = '<div style="padding: 20px; text-align: center; color: #d32f2f;">Failed to load categories.</div>';
+                }
+            })
+            .catch(() => {
+                list.innerHTML = '<div style="padding: 20px; text-align: center; color: #d32f2f;">Connection error loading categories.</div>';
+            });
+    }
+
+    function renderModalCategoriesList(cats) {
+        const list = document.getElementById('modalCategoriesList');
+        if (!cats || cats.length === 0) {
+            list.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-light);">No categories found. Add one above!</div>';
+            return;
+        }
+
+        let html = '<div style="display: flex; flex-direction: column; divide-y: 1px solid var(--border-color);">';
+        cats.forEach(c => {
+            html += `
+                <div class="cat-modal-item" data-name="${(c.name || '').toLowerCase()}" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--border-color); background: var(--bg-card);">
+                    <div>
+                        <span style="font-weight: 600; font-size: 13.5px; color: var(--text-main);">${escapeHtml(c.name)}</span>
+                        <span style="font-size: 11px; color: var(--text-light); margin-left: 6px; font-family: monospace;">/${escapeHtml(c.slug)}</span>
+                        <span class="status-badge" style="background: var(--bg-subtle); color: var(--gold-light); font-size: 10.5px; margin-left: 8px; padding: 2px 7px;">${c.product_count} items</span>
+                    </div>
+                    <div style="display: flex; gap: 6px;">
+                        <button type="button" class="btn btn-outline btn-sm" style="padding: 3px 8px; font-size: 11.5px;" onclick="promptRenameCategory(${c.id}, '${escapeHtml(c.name)}')">Rename</button>
+                        <button type="button" class="btn btn-danger btn-sm" style="padding: 3px 8px; font-size: 11.5px;" onclick="promptDeleteCategory(${c.id}, '${escapeHtml(c.name)}', ${c.product_count})">Delete</button>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        list.innerHTML = html;
+    }
+
+    function filterModalCategories(q) {
+        const query = q.trim().toLowerCase();
+        document.querySelectorAll('.cat-modal-item').forEach(item => {
+            const name = item.getAttribute('data-name') || '';
+            item.style.display = (!query || name.includes(query)) ? 'flex' : 'none';
+        });
+    }
+
+    function submitCreateCategory() {
+        const input = document.getElementById('quickCatName');
+        const name = input.value.trim();
+        if (!name) {
+            showToast('Please enter a category name.', 'danger');
+            return;
+        }
+
+        const fd = new FormData();
+        fd.append('csrf_token', csrfToken);
+        fd.append('action', 'create');
+        fd.append('name', name);
+
+        fetch('category-api.php', { method: 'POST', body: fd })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    input.value = '';
+                    loadModalCategories();
+                    refreshPagePills();
+                } else {
+                    showToast(data.message, 'danger');
+                }
+            })
+            .catch(() => showToast('Error creating category.', 'danger'));
+    }
+
+    function promptRenameCategory(id, currentName) {
+        const newName = prompt('Enter new category name for "' + currentName + '":', currentName);
+        if (!newName || newName.trim() === '' || newName.trim() === currentName) return;
+
+        const fd = new FormData();
+        fd.append('csrf_token', csrfToken);
+        fd.append('action', 'rename');
+        fd.append('id', id);
+        fd.append('name', newName.trim());
+
+        fetch('category-api.php', { method: 'POST', body: fd })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    loadModalCategories();
+                    refreshPagePills();
+                } else {
+                    showToast(data.message, 'danger');
+                }
+            })
+            .catch(() => showToast('Error renaming category.', 'danger'));
+    }
+
+    function promptDeleteCategory(id, name, count) {
+        const warning = count > 0 
+            ? `Category "${name}" has ${count} product(s). Deleting will reassign them to "Uncategorized". Proceed?`
+            : `Are you sure you want to delete category "${name}"?`;
+
+        if (!confirm(warning)) return;
+
+        const fd = new FormData();
+        fd.append('csrf_token', csrfToken);
+        fd.append('action', 'delete');
+        fd.append('id', id);
+
+        fetch('category-api.php', { method: 'POST', body: fd })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    loadModalCategories();
+                    refreshPagePills();
+                } else {
+                    showToast(data.message, 'danger');
+                }
+            })
+            .catch(() => showToast('Error deleting category.', 'danger'));
+    }
+
+    function refreshPagePills() {
+        // Refresh categories on page when closed or updated
+        fetch('category-api.php?action=get_all')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const pillsBar = document.getElementById('categoryPillsBar');
+                    if (pillsBar) {
+                        let html = `
+                            <a href="products.php" class="cat-pill active">
+                                <span>All Products</span>
+                                <span class="cat-pill-count">${document.getElementById('selectAllCheckbox') ? '<?php echo $metrics['total']; ?>' : ''}</span>
+                            </a>
+                        `;
+                        data.categories.forEach(c => {
+                            if (c.product_count > 0) {
+                                html += `
+                                    <a href="products.php?category=${encodeURIComponent(c.name)}" class="cat-pill">
+                                        <span>${escapeHtml(c.name)}</span>
+                                        <span class="cat-pill-count">${c.product_count}</span>
+                                    </a>
+                                `;
+                            }
+                        });
+                        html += `
+                            <button type="button" class="cat-pill" onclick="openCategoryManagerModal()" style="border-style: dashed; cursor: pointer;" title="Manage Categories">
+                                <span>⚙️ Manage</span>
+                            </button>
+                        `;
+                        pillsBar.innerHTML = html;
+                    }
+                }
+            });
+    }
+
+    function escapeHtml(str) {
+        return (str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+    }
 </script>
+
+<!-- Category Manager Modal Backdrop -->
+<div class="order-modal-backdrop" id="categoryManagerModal">
+    <div class="order-modal-content" style="max-width: 620px;">
+        <div class="order-modal-header">
+            <div>
+                <h3 style="font-family:'Cormorant Garamond',serif; font-size: 24px; margin: 0;">Manage Product Categories</h3>
+                <div style="font-size: 12px; color: var(--text-light);">Create new collections, rename tags, or remove obsolete categories</div>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="closeCategoryManagerModal()">✕</button>
+        </div>
+
+        <div style="padding: 20px;">
+            <!-- Quick Create Category Input -->
+            <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;">
+                <div style="font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--text-main);">+ Quick Create Category</div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="quickCatName" class="form-control" placeholder="e.g. Artisanal Truffles, Vegan Bars..." style="flex: 1; height: 38px;">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="submitCreateCategory()" style="white-space: nowrap;">
+                        Add Category
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Search Filter for when there are many categories -->
+            <div style="position: relative; margin-bottom: 12px;">
+                <svg style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-light); width: 14px; height: 14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="catModalSearch" placeholder="Search categories..." oninput="filterModalCategories(this.value)" class="form-control" style="padding-left: 32px; height: 36px; font-size: 12.5px;">
+            </div>
+
+            <!-- Categories List Container -->
+            <div style="max-height: 280px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px;" id="modalCategoriesList">
+                <div style="padding: 20px; text-align: center; color: var(--text-light);">Loading categories...</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                <a href="categories.php" class="btn btn-outline btn-sm" style="font-size: 12px;">Open Full Categories Hub ↗</a>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeCategoryManagerModal()">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <?php
 render_admin_footer();

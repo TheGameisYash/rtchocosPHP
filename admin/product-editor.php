@@ -45,10 +45,10 @@ if ($isEdit) {
     }
 }
 
-// Fetch all existing categories for suggestions
+// Fetch all existing categories from product_categories table
 $categories = [];
 try {
-    $categories = $pdo->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != '' ORDER BY category ASC")->fetchAll(PDO::FETCH_COLUMN);
+    $categories = $pdo->query("SELECT name FROM product_categories ORDER BY name ASC")->fetchAll(PDO::FETCH_COLUMN);
 } catch (Exception $e) {}
 
 // Fetch recent media items for media picker modal
@@ -522,7 +522,10 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
 
             <!-- Category Assignment -->
             <div class="form-card" style="margin-bottom: 0;">
-                <div class="editor-title">Product Category</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <div class="editor-title" style="margin-bottom: 0;">Product Category</div>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="openCategoryManagerModal()" style="font-size: 11.5px; padding: 2px 8px;">⚙️ Manage</button>
+                </div>
                 <div style="font-size: 12px; color: var(--text-light); margin-bottom: 8px;">Select a collection or type a custom category</div>
 
                 <?php
@@ -990,6 +993,192 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
         }
     });
 
+    // ==========================================
+    // Category Manager Modal & AJAX Handler
+    // ==========================================
+    let cachedEditorCategories = [];
+
+    function openCategoryManagerModal() {
+        document.getElementById('categoryManagerModal').classList.add('open');
+        loadEditorCategories();
+    }
+
+    function closeCategoryManagerModal() {
+        document.getElementById('categoryManagerModal').classList.remove('open');
+    }
+
+    function loadEditorCategories() {
+        const list = document.getElementById('modalCategoriesList');
+        list.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-light);">Loading collections...</div>';
+
+        fetch('category-api.php?action=get_all')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    cachedEditorCategories = data.categories;
+                    renderEditorModalCategoriesList(cachedEditorCategories);
+                } else {
+                    list.innerHTML = '<div style="padding: 20px; text-align: center; color: #d32f2f;">Failed to load categories.</div>';
+                }
+            })
+            .catch(() => {
+                list.innerHTML = '<div style="padding: 20px; text-align: center; color: #d32f2f;">Connection error loading categories.</div>';
+            });
+    }
+
+    function renderEditorModalCategoriesList(cats) {
+        const list = document.getElementById('modalCategoriesList');
+        if (!cats || cats.length === 0) {
+            list.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-light);">No categories found. Add one above!</div>';
+            return;
+        }
+
+        let html = '<div style="display: flex; flex-direction: column;">';
+        cats.forEach(c => {
+            html += `
+                <div class="cat-modal-item" data-name="${(c.name || '').toLowerCase()}" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--border-color); background: var(--bg-card);">
+                    <div>
+                        <span style="font-weight: 600; font-size: 13.5px; color: var(--text-main);">${escapeHtml(c.name)}</span>
+                        <span style="font-size: 11px; color: var(--text-light); margin-left: 6px; font-family: monospace;">/${escapeHtml(c.slug)}</span>
+                        <span class="status-badge" style="background: var(--bg-subtle); color: var(--gold-light); font-size: 10.5px; margin-left: 8px; padding: 2px 7px;">${c.product_count} items</span>
+                    </div>
+                    <div style="display: flex; gap: 6px;">
+                        <button type="button" class="btn btn-outline btn-sm" style="padding: 3px 8px; font-size: 11.5px;" onclick="promptEditorRenameCategory(${c.id}, '${escapeHtml(c.name)}')">Rename</button>
+                        <button type="button" class="btn btn-danger btn-sm" style="padding: 3px 8px; font-size: 11.5px;" onclick="promptEditorDeleteCategory(${c.id}, '${escapeHtml(c.name)}', ${c.product_count})">Delete</button>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        list.innerHTML = html;
+    }
+
+    function filterEditorModalCategories(q) {
+        const query = q.trim().toLowerCase();
+        document.querySelectorAll('.cat-modal-item').forEach(item => {
+            const name = item.getAttribute('data-name') || '';
+            item.style.display = (!query || name.includes(query)) ? 'flex' : 'none';
+        });
+    }
+
+    function submitEditorCreateCategory() {
+        const input = document.getElementById('quickCatName');
+        const name = input.value.trim();
+        if (!name) {
+            showToast('Please enter a category name.', 'danger');
+            return;
+        }
+
+        const fd = new FormData();
+        fd.append('csrf_token', csrfToken);
+        fd.append('action', 'create');
+        fd.append('name', name);
+
+        fetch('category-api.php', { method: 'POST', body: fd })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    input.value = '';
+                    loadEditorCategories();
+                    syncEditorChips(data.category.name);
+                } else {
+                    showToast(data.message, 'danger');
+                }
+            })
+            .catch(() => showToast('Error creating category.', 'danger'));
+    }
+
+    function promptEditorRenameCategory(id, currentName) {
+        const newName = prompt('Enter new category name for "' + currentName + '":', currentName);
+        if (!newName || newName.trim() === '' || newName.trim() === currentName) return;
+
+        const fd = new FormData();
+        fd.append('csrf_token', csrfToken);
+        fd.append('action', 'rename');
+        fd.append('id', id);
+        fd.append('name', newName.trim());
+
+        fetch('category-api.php', { method: 'POST', body: fd })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    loadEditorCategories();
+                    syncEditorChips(newName.trim());
+                } else {
+                    showToast(data.message, 'danger');
+                }
+            })
+            .catch(() => showToast('Error renaming category.', 'danger'));
+    }
+
+    function promptEditorDeleteCategory(id, name, count) {
+        const warning = count > 0 
+            ? `Category "${name}" has ${count} product(s). Deleting will reassign them to "Uncategorized". Proceed?`
+            : `Are you sure you want to delete category "${name}"?`;
+
+        if (!confirm(warning)) return;
+
+        const fd = new FormData();
+        fd.append('csrf_token', csrfToken);
+        fd.append('action', 'delete');
+        fd.append('id', id);
+
+        fetch('category-api.php', { method: 'POST', body: fd })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    loadEditorCategories();
+                    syncEditorChips();
+                } else {
+                    showToast(data.message, 'danger');
+                }
+            })
+            .catch(() => showToast('Error deleting category.', 'danger'));
+    }
+
+    function syncEditorChips(autoSelectName) {
+        fetch('category-api.php?action=get_all')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const wrap = document.getElementById('categoryChipsWrap');
+                    const datalist = document.getElementById('categoryDatalist');
+                    const currentVal = autoSelectName || document.getElementById('categoryInput').value.trim();
+
+                    if (wrap) {
+                        wrap.innerHTML = '';
+                        data.categories.forEach(c => {
+                            const chip = document.createElement('div');
+                            chip.className = 'category-chip' + (c.name.toLowerCase() === currentVal.toLowerCase() ? ' active' : '');
+                            chip.textContent = c.name;
+                            chip.onclick = function() { selectCategoryChip(c.name, this); };
+                            wrap.appendChild(chip);
+                        });
+                    }
+
+                    if (datalist) {
+                        datalist.innerHTML = '';
+                        data.categories.forEach(c => {
+                            const opt = document.createElement('option');
+                            opt.value = c.name;
+                            datalist.appendChild(opt);
+                        });
+                    }
+
+                    if (autoSelectName) {
+                        document.getElementById('categoryInput').value = autoSelectName;
+                    }
+                }
+            });
+    }
+
+    function escapeHtml(str) {
+        return (str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+    }
+
     // Initial setups on load
     window.addEventListener('DOMContentLoaded', () => {
         calculateDiscount();
@@ -998,6 +1187,49 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
         checkForSavedDraft();
     });
 </script>
+
+<!-- Category Manager Modal Backdrop -->
+<div class="order-modal-backdrop" id="categoryManagerModal">
+    <div class="order-modal-content" style="max-width: 620px;">
+        <div class="order-modal-header">
+            <div>
+                <h3 style="font-family:'Cormorant Garamond',serif; font-size: 24px; margin: 0;">Manage Product Categories</h3>
+                <div style="font-size: 12px; color: var(--text-light);">Create new collections, rename tags, or remove obsolete categories</div>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="closeCategoryManagerModal()">✕</button>
+        </div>
+
+        <div style="padding: 20px;">
+            <!-- Quick Create Category Input -->
+            <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;">
+                <div style="font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--text-main);">+ Quick Create Category</div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="quickCatName" class="form-control" placeholder="e.g. Artisanal Truffles, Vegan Bars..." style="flex: 1; height: 38px;">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="submitEditorCreateCategory()" style="white-space: nowrap;">
+                        Add Category
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Search Filter for when there are many categories -->
+            <div style="position: relative; margin-bottom: 12px;">
+                <svg style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-light); width: 14px; height: 14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="catModalSearch" placeholder="Search categories..." oninput="filterEditorModalCategories(this.value)" class="form-control" style="padding-left: 32px; height: 36px; font-size: 12.5px;">
+            </div>
+
+            <!-- Categories List Container -->
+            <div style="max-height: 280px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px;" id="modalCategoriesList">
+                <div style="padding: 20px; text-align: center; color: var(--text-light);">Loading categories...</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                <a href="categories.php" class="btn btn-outline btn-sm" style="font-size: 12px;">Open Full Categories Hub ↗</a>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeCategoryManagerModal()">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <?php
 render_admin_footer();
