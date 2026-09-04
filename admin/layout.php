@@ -7,13 +7,17 @@ require_once __DIR__ . '/../includes/db.php';
 require_auth();
 
 function render_admin_header($title, $activePage = '') {
-    // Get unread messages count and recent unread list
+    // Get unread messages count, pending orders count, and recent unread list
     $unreadCount = 0;
+    $pendingOrdersCount = 0;
     $recentUnread = [];
     try {
         $pdo = get_db();
         $stmt = $pdo->query("SELECT COUNT(*) FROM contacts WHERE is_read = 0");
         $unreadCount = (int)$stmt->fetchColumn();
+
+        $stmt = $pdo->query("SELECT COUNT(*) FROM orders WHERE order_status = 'pending'");
+        $pendingOrdersCount = (int)$stmt->fetchColumn();
 
         $stmt = $pdo->query("SELECT id, name, subject, created_at FROM contacts WHERE is_read = 0 ORDER BY created_at DESC LIMIT 5");
         $recentUnread = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -29,7 +33,11 @@ function render_admin_header($title, $activePage = '') {
         ['label' => 'Admin', 'url' => 'dashboard.php']
     ];
     if ($activePage && $activePage !== 'dashboard') {
-        $breadcrumbs[] = ['label' => ucfirst($activePage), 'url' => $activePage . '.php'];
+        $pageLabel = ucfirst($activePage);
+        if ($activePage === 'product-editor') {
+            $pageLabel = 'Product Editor';
+        }
+        $breadcrumbs[] = ['label' => $pageLabel, 'url' => $activePage . '.php'];
     }
 ?>
 <!DOCTYPE html>
@@ -74,6 +82,21 @@ function render_admin_header($title, $activePage = '') {
                         <a href="dashboard.php">
                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zm10-3a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"></path></svg>
                             <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo ($activePage === 'products' || $activePage === 'product-editor') ? 'active' : ''; ?>">
+                        <a href="products.php">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                            <span>Products</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo $activePage === 'orders' ? 'active' : ''; ?>">
+                        <a href="orders.php">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                            <span>Orders</span>
+                            <?php if ($pendingOrdersCount > 0): ?>
+                                <span class="status-badge pending" style="margin-left: auto; font-size: 10px; padding: 2px 7px;"><?php echo $pendingOrdersCount; ?></span>
+                            <?php endif; ?>
                         </a>
                     </li>
                     <li class="<?php echo $activePage === 'blogs' ? 'active' : ''; ?>">
@@ -143,7 +166,13 @@ function render_admin_header($title, $activePage = '') {
                     <?php
                     $searchAction = 'blogs.php';
                     $searchPlaceholder = 'Search blog posts...';
-                    if ($activePage === 'contacts') {
+                    if ($activePage === 'products') {
+                        $searchAction = 'products.php';
+                        $searchPlaceholder = 'Search products...';
+                    } elseif ($activePage === 'orders') {
+                        $searchAction = 'orders.php';
+                        $searchPlaceholder = 'Search orders, customers, phone...';
+                    } elseif ($activePage === 'contacts') {
                         $searchAction = 'contacts.php';
                         $searchPlaceholder = 'Search messages...';
                     } elseif ($activePage === 'subscribers') {
