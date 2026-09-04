@@ -271,19 +271,23 @@ switch ($sort) {
         break;
 }
 
-// Fetch Metrics Summary
-$metrics = [
-    'total' => 0,
-    'active' => 0,
-    'low_or_out' => 0,
-    'categories' => 0
-];
-
+// Consolidated Single Aggregate Query for Metrics & Counts (1 Network Call to Hostinger)
 try {
-    $metrics['total'] = (int)$pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
-    $metrics['active'] = (int)$pdo->query("SELECT COUNT(*) FROM products WHERE is_active = 1")->fetchColumn();
-    $metrics['low_or_out'] = (int)$pdo->query("SELECT COUNT(*) FROM products WHERE stock_quantity <= 10")->fetchColumn();
-    $metrics['categories'] = (int)$pdo->query("SELECT COUNT(DISTINCT category) FROM products WHERE category IS NOT NULL AND category != ''")->fetchColumn();
+    $metricsRow = $pdo->query("
+        SELECT 
+            COUNT(*) as total,
+            COUNT(CASE WHEN is_active = 1 THEN 1 END) as active,
+            COUNT(CASE WHEN stock_quantity <= 10 THEN 1 END) as low_or_out,
+            COUNT(DISTINCT category) as categories
+        FROM products
+    ")->fetch(PDO::FETCH_ASSOC);
+
+    $metrics = [
+        'total' => (int)($metricsRow['total'] ?? 0),
+        'active' => (int)($metricsRow['active'] ?? 0),
+        'low_or_out' => (int)($metricsRow['low_or_out'] ?? 0),
+        'categories' => (int)($metricsRow['categories'] ?? 0)
+    ];
 
     // Total filtered results count
     $countSql = "SELECT COUNT(*) FROM products $whereSql";
@@ -298,8 +302,14 @@ try {
     $stmt->execute($params);
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Fetch all distinct categories for filtering
-    $allCategories = $pdo->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != '' ORDER BY category ASC")->fetchAll(PDO::FETCH_COLUMN);
+    // Fetch all distinct categories with counts for the category pills bar
+    $catCountsSql = "SELECT category, COUNT(*) as cat_count FROM products WHERE category IS NOT NULL AND category != '' GROUP BY category ORDER BY category ASC";
+    $catCountRows = $pdo->query($catCountsSql)->fetchAll(PDO::FETCH_ASSOC);
+    $categoryStats = [];
+    foreach ($catCountRows as $cr) {
+        $categoryStats[$cr['category']] = (int)$cr['cat_count'];
+    }
+    $allCategories = array_keys($categoryStats);
 
 } catch (Exception $e) {
     die("Database Error: " . $e->getMessage());
@@ -310,18 +320,20 @@ render_admin_header("Product Catalog", "products");
 ?>
 
 <style>
-    /* Local dropdowns & action buttons */
+    /* Local dropdowns & action buttons - Fixed to open downward */
     .more-actions-dropdown {
         display: none;
         position: absolute;
         right: 0;
-        bottom: calc(100% + 4px);
+        top: calc(100% + 6px) !important;
+        bottom: auto !important;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
-        border-radius: 8px;
+        border-radius: 10px;
         box-shadow: var(--shadow-lg);
-        z-index: 150;
-        min-width: 140px;
+        z-index: 1000;
+        min-width: 155px;
+        overflow: hidden;
     }
     
     .more-actions-dropdown button,
@@ -329,7 +341,7 @@ render_admin_header("Product Catalog", "products");
         display: flex;
         align-items: center;
         width: 100%;
-        padding: 8px 16px;
+        padding: 9px 16px;
         background: none;
         border: none;
         text-align: left;
@@ -388,62 +400,95 @@ render_admin_header("Product Catalog", "products");
     </div>
 </div>
 
-<!-- Header Page Ribbon -->
-<div class="editor-header" style="margin-bottom: 24px;">
+<!-- Primary Action Bar (Clean Single Header) -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
     <div>
-        <h2 style="font-family:'Cormorant Garamond',serif; font-size: 28px; margin: 0 0 6px 0;">Shop Products</h2>
         <p style="color: var(--text-light); margin: 0; font-size: 14px;">Manage chocolates, cacao, gifts, pricing, and live inventory</p>
     </div>
-    <div style="display: flex; gap: 12px; align-items: center;">
+    <div style="display: flex; gap: 10px; align-items: center;">
         <a href="../shop.php" target="_blank" class="btn btn-outline btn-sm" title="View Customer Storefront">
-            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
             Storefront
         </a>
         <a href="product-editor.php" class="btn btn-primary btn-sm">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
-            New Product
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
+            Add Product
         </a>
     </div>
 </div>
 
-<!-- KPI Metrics Ribbon -->
-<div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 24px;">
+<!-- KPI Metrics Ribbon (Proper Vertical Stacking) -->
+<div class="metrics-grid" style="margin-bottom: 24px;">
     <div class="metric-card">
-        <div class="metric-label">Total Products</div>
-        <div class="metric-value"><?php echo number_format($metrics['total']); ?></div>
-        <div class="metric-subtitle">Catalog items</div>
-    </div>
-    <div class="metric-card">
-        <div class="metric-label">Active on Store</div>
-        <div class="metric-value" style="color: #2e7d32;"><?php echo number_format($metrics['active']); ?></div>
-        <div class="metric-subtitle">Visible to shoppers</div>
-    </div>
-    <div class="metric-card">
-        <div class="metric-label">Stock Alerts</div>
-        <div class="metric-value" style="color: <?php echo $metrics['low_or_out'] > 0 ? '#d32f2f' : 'var(--text-main)'; ?>;">
-            <?php echo number_format($metrics['low_or_out']); ?>
+        <div class="metric-info">
+            <div class="metric-title">TOTAL PRODUCTS</div>
+            <div class="metric-value"><?php echo number_format($metrics['total']); ?></div>
+            <div class="metric-subtitle">Catalog items</div>
         </div>
-        <div class="metric-subtitle">Low stock (≤10) or out</div>
+        <div class="metric-icon-box">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+        </div>
     </div>
     <div class="metric-card">
-        <div class="metric-label">Categories</div>
-        <div class="metric-value" style="color: var(--gold-light);"><?php echo number_format($metrics['categories']); ?></div>
-        <div class="metric-subtitle">Active product lines</div>
+        <div class="metric-info">
+            <div class="metric-title">ACTIVE ON STORE</div>
+            <div class="metric-value" style="color: #2e7d32;"><?php echo number_format($metrics['active']); ?></div>
+            <div class="metric-subtitle">Visible to shoppers</div>
+        </div>
+        <div class="metric-icon-box">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-info">
+            <div class="metric-title">STOCK ALERTS</div>
+            <div class="metric-value" style="color: <?php echo $metrics['low_or_out'] > 0 ? '#ef6c00' : 'var(--text-main)'; ?>;">
+                <?php echo number_format($metrics['low_or_out']); ?>
+            </div>
+            <div class="metric-subtitle">Low stock (&le;10) or out</div>
+        </div>
+        <div class="metric-icon-box">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-info">
+            <div class="metric-title">CATEGORIES</div>
+            <div class="metric-value" style="color: var(--gold-light);"><?php echo number_format($metrics['categories']); ?></div>
+            <div class="metric-subtitle">Active product lines</div>
+        </div>
+        <div class="metric-icon-box">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+        </div>
     </div>
 </div>
 
+<!-- Interactive Category Pills Bar -->
+<div class="category-pills-bar">
+    <a href="products.php<?php echo $search ? '?search='.urlencode($search) : ''; ?>" class="cat-pill <?php echo empty($category) ? 'active' : ''; ?>">
+        <span>All Products</span>
+        <span class="cat-pill-count"><?php echo $metrics['total']; ?></span>
+    </a>
+    <?php foreach ($categoryStats as $catName => $catCount): ?>
+        <a href="products.php?category=<?php echo urlencode($catName); ?><?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="cat-pill <?php echo $category === $catName ? 'active' : ''; ?>">
+            <span><?php echo htmlspecialchars($catName); ?></span>
+            <span class="cat-pill-count"><?php echo $catCount; ?></span>
+        </a>
+    <?php endforeach; ?>
+</div>
+
 <!-- Search, Filter & View Controls -->
-<div class="card" style="margin-bottom: 24px; padding: 16px 20px;">
-    <form action="products.php" method="GET" id="filterForm" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
-        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; flex-grow: 1;">
-            <!-- Keyword Search -->
-            <div style="position: relative; min-width: 220px; flex-grow: 1; max-width: 320px;">
-                <svg style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-light); width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" name="search" class="form-control" placeholder="Search by name, SKU, tags..." value="<?php echo htmlspecialchars($search); ?>" style="padding-left: 32px; height: 38px; font-size: 13px;">
+<div class="filter-toolbar">
+    <form action="products.php" method="GET" id="filterForm" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; width: 100%;">
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; flex: 1 1 400px;">
+            <!-- Keyword Search (Full Flexible Width) -->
+            <div class="filter-search-box">
+                <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" name="search" placeholder="Search by product name, SKU, keywords..." value="<?php echo htmlspecialchars($search); ?>">
             </div>
 
-            <!-- Category Filter -->
-            <select name="category" class="form-control" style="width: auto; height: 38px; font-size: 13px;" onchange="document.getElementById('filterForm').submit()">
+            <!-- Category Filter Dropdown -->
+            <select name="category" class="filter-select" onchange="document.getElementById('filterForm').submit()">
                 <option value="">All Categories</option>
                 <?php foreach ($allCategories as $cat): ?>
                     <option value="<?php echo htmlspecialchars($cat); ?>" <?php echo $category === $cat ? 'selected' : ''; ?>>
@@ -453,7 +498,7 @@ render_admin_header("Product Catalog", "products");
             </select>
 
             <!-- Stock Status Filter -->
-            <select name="stock_status" class="form-control" style="width: auto; height: 38px; font-size: 13px;" onchange="document.getElementById('filterForm').submit()">
+            <select name="stock_status" class="filter-select" onchange="document.getElementById('filterForm').submit()">
                 <option value="">All Inventory</option>
                 <option value="in_stock" <?php echo $stockStatus === 'in_stock' ? 'selected' : ''; ?>>In Stock (&gt;10)</option>
                 <option value="low_stock" <?php echo $stockStatus === 'low_stock' ? 'selected' : ''; ?>>Low Stock (1-10)</option>
@@ -461,15 +506,15 @@ render_admin_header("Product Catalog", "products");
             </select>
 
             <!-- Active Status Filter -->
-            <select name="active_status" class="form-control" style="width: auto; height: 38px; font-size: 13px;" onchange="document.getElementById('filterForm').submit()">
+            <select name="active_status" class="filter-select" onchange="document.getElementById('filterForm').submit()">
                 <option value="">All Statuses</option>
-                <option value="active" <?php echo $activeStatus === 'active' ? 'selected' : ''; ?>>Active (Storefront)</option>
-                <option value="inactive" <?php echo $activeStatus === 'inactive' ? 'selected' : ''; ?>>Inactive / Draft</option>
+                <option value="active" <?php echo $activeStatus === 'active' ? 'selected' : ''; ?>>Active (Visible)</option>
+                <option value="inactive" <?php echo $activeStatus === 'inactive' ? 'selected' : ''; ?>>Draft / Hidden</option>
             </select>
 
             <!-- Sort By -->
-            <select name="sort" class="form-control" style="width: auto; height: 38px; font-size: 13px;" onchange="document.getElementById('filterForm').submit()">
-                <option value="newest" <?php echo $sort === 'newest' ? 'selected' : ''; ?>>Newest Added</option>
+            <select name="sort" class="filter-select" onchange="document.getElementById('filterForm').submit()">
+                <option value="newest" <?php echo $sort === 'newest' ? 'selected' : ''; ?>>Newest First</option>
                 <option value="oldest" <?php echo $sort === 'oldest' ? 'selected' : ''; ?>>Oldest First</option>
                 <option value="price_asc" <?php echo $sort === 'price_asc' ? 'selected' : ''; ?>>Price: Low to High</option>
                 <option value="price_desc" <?php echo $sort === 'price_desc' ? 'selected' : ''; ?>>Price: High to Low</option>
@@ -478,23 +523,24 @@ render_admin_header("Product Catalog", "products");
             </select>
 
             <?php if (!empty($search) || !empty($category) || !empty($stockStatus) || !empty($activeStatus)): ?>
-                <a href="products.php" class="btn btn-outline btn-sm" style="height: 38px; padding: 0 12px; display: inline-flex; align-items: center;" title="Reset Filters">
-                    Clear
+                <a href="products.php" class="btn btn-outline btn-sm" style="height: 38px; padding: 0 12px;" title="Reset All Filters">
+                    Reset
                 </a>
             <?php endif; ?>
         </div>
 
         <!-- View Mode Switch -->
-        <div style="display: flex; gap: 4px; background: var(--bg-subtle); padding: 3px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <button type="button" class="btn btn-sm <?php echo $viewMode === 'grid' ? 'btn-primary' : 'btn-outline'; ?>" style="padding: 4px 10px; border: none;" onclick="setViewMode('grid')" title="Grid View">
+        <div style="display: flex; gap: 4px; background: var(--bg-subtle); padding: 3px; border-radius: 8px; border: 1px solid var(--border-color); flex-shrink: 0;">
+            <button type="button" class="btn btn-sm <?php echo $viewMode === 'grid' ? 'btn-primary' : 'btn-outline'; ?>" style="padding: 5px 10px; border: none;" onclick="setViewMode('grid')" title="Grid View">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
             </button>
-            <button type="button" class="btn btn-sm <?php echo $viewMode === 'table' ? 'btn-primary' : 'btn-outline'; ?>" style="padding: 4px 10px; border: none;" onclick="setViewMode('table')" title="Table View">
+            <button type="button" class="btn btn-sm <?php echo $viewMode === 'table' ? 'btn-primary' : 'btn-outline'; ?>" style="padding: 5px 10px; border: none;" onclick="setViewMode('table')" title="Table View">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
         </div>
     </form>
 </div>
+
 
 <!-- Products Content Area -->
 <?php if (empty($products)): ?>

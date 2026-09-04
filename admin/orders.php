@@ -234,7 +234,7 @@ switch ($sort) {
         break;
 }
 
-// KPI Metrics
+// KPI Metrics - Consolidated single query for high remote DB speed
 $kpis = [
     'total_orders' => 0,
     'total_revenue' => 0.00,
@@ -243,10 +243,19 @@ $kpis = [
 ];
 
 try {
-    $kpis['total_orders'] = (int)$pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
-    $kpis['total_revenue'] = (float)$pdo->query("SELECT COALESCE(SUM(total), 0) FROM orders WHERE payment_status = 'paid'")->fetchColumn();
-    $kpis['pending_orders'] = (int)$pdo->query("SELECT COUNT(*) FROM orders WHERE order_status = 'pending'")->fetchColumn();
-    $kpis['delivered_orders'] = (int)$pdo->query("SELECT COUNT(*) FROM orders WHERE order_status = 'delivered'")->fetchColumn();
+    $kpiRow = $pdo->query("SELECT 
+        COUNT(*) as total_orders,
+        COALESCE(SUM(CASE WHEN payment_status = 'paid' THEN total ELSE 0 END), 0) as total_revenue,
+        SUM(CASE WHEN order_status = 'pending' THEN 1 ELSE 0 END) as pending_orders,
+        SUM(CASE WHEN order_status = 'delivered' THEN 1 ELSE 0 END) as delivered_orders
+    FROM orders")->fetch(PDO::FETCH_ASSOC);
+
+    if ($kpiRow) {
+        $kpis['total_orders'] = (int)($kpiRow['total_orders'] ?? 0);
+        $kpis['total_revenue'] = (float)($kpiRow['total_revenue'] ?? 0);
+        $kpis['pending_orders'] = (int)($kpiRow['pending_orders'] ?? 0);
+        $kpis['delivered_orders'] = (int)($kpiRow['delivered_orders'] ?? 0);
+    }
 
     // Total Filtered Count
     $countStmt = $pdo->prepare("SELECT COUNT(*) FROM orders $whereSql");
@@ -299,13 +308,12 @@ render_admin_header("Store Orders", "orders");
     </div>
 </div>
 
-<!-- Header Ribbon -->
-<div class="editor-header" style="margin-bottom: 24px;">
+<!-- Primary Action Bar (Clean Single Header) -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
     <div>
-        <h2 style="font-family:'Cormorant Garamond',serif; font-size: 28px; margin: 0 0 6px 0;">Orders & Fulfillment</h2>
         <p style="color: var(--text-light); margin: 0; font-size: 14px;">Monitor store checkout orders, update delivery milestones, and issue invoices</p>
     </div>
-    <div style="display: flex; gap: 12px; align-items: center;">
+    <div style="display: flex; gap: 10px; align-items: center;">
         <a href="orders.php?action=export_csv&<?php echo http_build_query($_GET); ?>" class="btn btn-outline btn-sm" title="Download CSV Report">
             <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             Export CSV
@@ -313,44 +321,64 @@ render_admin_header("Store Orders", "orders");
     </div>
 </div>
 
-<!-- KPI Cards Ribbon -->
-<div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 24px;">
+<!-- KPI Metrics Ribbon (Proper Vertical Stacking & Modern Icons) -->
+<div class="metrics-grid" style="margin-bottom: 24px;">
     <div class="metric-card">
-        <div class="metric-label">Total Orders</div>
-        <div class="metric-value"><?php echo number_format($kpis['total_orders']); ?></div>
-        <div class="metric-subtitle">All-time customer checkouts</div>
-    </div>
-    <div class="metric-card">
-        <div class="metric-label">Total Revenue</div>
-        <div class="metric-value" style="color: var(--gold-light);">₹<?php echo number_format($kpis['total_revenue'], 2); ?></div>
-        <div class="metric-subtitle">Paid transactions</div>
-    </div>
-    <div class="metric-card">
-        <div class="metric-label">Pending Fulfillment</div>
-        <div class="metric-value" style="color: <?php echo $kpis['pending_orders'] > 0 ? '#ef6c00' : 'var(--text-main)'; ?>;">
-            <?php echo number_format($kpis['pending_orders']); ?>
+        <div class="metric-info">
+            <div class="metric-title">TOTAL ORDERS</div>
+            <div class="metric-value"><?php echo number_format($kpis['total_orders']); ?></div>
+            <div class="metric-subtitle">All-time customer checkouts</div>
         </div>
-        <div class="metric-subtitle">Needs packaging & dispatch</div>
+        <div class="metric-icon-box">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+        </div>
     </div>
     <div class="metric-card">
-        <div class="metric-label">Completed / Delivered</div>
-        <div class="metric-value" style="color: #2e7d32;"><?php echo number_format($kpis['delivered_orders']); ?></div>
-        <div class="metric-subtitle">Successfully received</div>
+        <div class="metric-info">
+            <div class="metric-title">TOTAL REVENUE</div>
+            <div class="metric-value" style="color: var(--gold-light);">₹<?php echo number_format($kpis['total_revenue'], 2); ?></div>
+            <div class="metric-subtitle">Paid transactions</div>
+        </div>
+        <div class="metric-icon-box">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-info">
+            <div class="metric-title">PENDING FULFILLMENT</div>
+            <div class="metric-value" style="color: <?php echo $kpis['pending_orders'] > 0 ? '#ef6c00' : 'var(--text-main)'; ?>;">
+                <?php echo number_format($kpis['pending_orders']); ?>
+            </div>
+            <div class="metric-subtitle">Needs packaging & dispatch</div>
+        </div>
+        <div class="metric-icon-box">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-info">
+            <div class="metric-title">DELIVERED ORDERS</div>
+            <div class="metric-value" style="color: #2e7d32;"><?php echo number_format($kpis['delivered_orders']); ?></div>
+            <div class="metric-subtitle">Successfully received</div>
+        </div>
+        <div class="metric-icon-box">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
     </div>
 </div>
 
-<!-- Search & Filter Controls -->
-<div class="card" style="margin-bottom: 24px; padding: 16px 20px;">
-    <form action="orders.php" method="GET" id="orderFilterForm" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
-        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; flex-grow: 1;">
+<!-- Search, Filter & Controls Toolbar -->
+<div class="filter-toolbar">
+    <form action="orders.php" method="GET" id="orderFilterForm" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; width: 100%;">
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; flex: 1 1 400px;">
             <!-- Keyword Search -->
-            <div style="position: relative; min-width: 240px; flex-grow: 1; max-width: 340px;">
-                <svg style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-light); width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" name="search" class="form-control" placeholder="Search order #, customer, email, city..." value="<?php echo htmlspecialchars($search); ?>" style="padding-left: 32px; height: 38px; font-size: 13px;">
+            <div class="filter-search-box">
+                <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" name="search" placeholder="Search order #, customer, email, city..." value="<?php echo htmlspecialchars($search); ?>">
             </div>
 
             <!-- Order Status Filter -->
-            <select name="order_status" class="form-control" style="width: auto; height: 38px; font-size: 13px;" onchange="document.getElementById('orderFilterForm').submit()">
+            <select name="order_status" class="filter-select" onchange="document.getElementById('orderFilterForm').submit()">
                 <option value="">All Order Statuses</option>
                 <option value="pending" <?php echo $orderStatus === 'pending' ? 'selected' : ''; ?>>Pending (Needs Action)</option>
                 <option value="confirmed" <?php echo $orderStatus === 'confirmed' ? 'selected' : ''; ?>>Confirmed</option>
@@ -360,7 +388,7 @@ render_admin_header("Store Orders", "orders");
             </select>
 
             <!-- Payment Status Filter -->
-            <select name="payment_status" class="form-control" style="width: auto; height: 38px; font-size: 13px;" onchange="document.getElementById('orderFilterForm').submit()">
+            <select name="payment_status" class="filter-select" onchange="document.getElementById('orderFilterForm').submit()">
                 <option value="">All Payment Statuses</option>
                 <option value="paid" <?php echo $paymentStatus === 'paid' ? 'selected' : ''; ?>>Paid</option>
                 <option value="pending" <?php echo $paymentStatus === 'pending' ? 'selected' : ''; ?>>Payment Pending</option>
@@ -369,7 +397,7 @@ render_admin_header("Store Orders", "orders");
             </select>
 
             <!-- Sort By -->
-            <select name="sort" class="form-control" style="width: auto; height: 38px; font-size: 13px;" onchange="document.getElementById('orderFilterForm').submit()">
+            <select name="sort" class="filter-select" onchange="document.getElementById('orderFilterForm').submit()">
                 <option value="newest" <?php echo $sort === 'newest' ? 'selected' : ''; ?>>Date: Newest First</option>
                 <option value="oldest" <?php echo $sort === 'oldest' ? 'selected' : ''; ?>>Date: Oldest First</option>
                 <option value="total_high" <?php echo $sort === 'total_high' ? 'selected' : ''; ?>>Amount: High to Low</option>
@@ -378,7 +406,7 @@ render_admin_header("Store Orders", "orders");
 
             <?php if (!empty($search) || !empty($orderStatus) || !empty($paymentStatus)): ?>
                 <a href="orders.php" class="btn btn-outline btn-sm" style="height: 38px; padding: 0 12px; display: inline-flex; align-items: center;" title="Reset Filters">
-                    Clear
+                    Reset
                 </a>
             <?php endif; ?>
         </div>
@@ -394,12 +422,12 @@ render_admin_header("Store Orders", "orders");
         <a href="orders.php" class="btn btn-outline btn-sm">Reset Filters</a>
     </div>
 <?php else: ?>
-    <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 32px;">
+    <div class="admin-table-card">
         <div class="table-responsive">
-            <table class="data-table">
+            <table class="admin-data-table">
                 <thead>
                     <tr>
-                        <th style="width: 40px; text-align: center;">
+                        <th style="width: 44px; text-align: center;">
                             <input type="checkbox" id="selectAllOrders" onchange="toggleSelectAllOrders()" style="cursor: pointer; accent-color: var(--gold-light);">
                         </th>
                         <th>Order # & Date</th>
@@ -413,27 +441,37 @@ render_admin_header("Store Orders", "orders");
                 </thead>
                 <tbody>
                     <?php foreach ($orders as $o): ?>
+                        <?php
+                            // Generate customer initials
+                            $nameParts = explode(' ', trim($o['customer_name'] ?? 'Guest'));
+                            $initials = strtoupper(substr($nameParts[0], 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : ''));
+                        ?>
                         <tr id="order-row-<?php echo $o['id']; ?>">
                             <td style="text-align: center;">
                                 <input type="checkbox" class="order-select-checkbox" value="<?php echo $o['id']; ?>" onchange="updateBulkOrderBar()" style="cursor: pointer; accent-color: var(--gold-light);">
                             </td>
                             <td>
-                                <a href="javascript:void(0)" onclick="openOrderModal(<?php echo $o['id']; ?>)" style="font-weight: 700; color: var(--text-main); font-size: 13.5px; text-decoration: none;">
+                                <a href="javascript:void(0)" onclick="openOrderModal(<?php echo $o['id']; ?>)" style="font-weight: 700; color: var(--gold-light); font-size: 13.5px; text-decoration: none;">
                                     <?php echo htmlspecialchars($o['order_number']); ?>
                                 </a>
-                                <div style="font-size: 11px; color: var(--text-light); margin-top: 3px;">
+                                <div style="font-size: 11.5px; color: var(--text-light); margin-top: 3px;">
                                     <?php echo date('M d, Y · h:i A', strtotime($o['created_at'])); ?>
                                 </div>
                             </td>
                             <td>
-                                <div style="font-weight: 600; color: var(--text-main); font-size: 13px;">
-                                    <?php echo htmlspecialchars($o['customer_name']); ?>
-                                </div>
-                                <div style="font-size: 11.5px; color: var(--text-light);">
-                                    <?php echo htmlspecialchars($o['customer_email']); ?>
-                                </div>
-                                <div style="font-size: 11px; color: var(--text-light);">
-                                    <?php echo htmlspecialchars($o['city'] . ($o['state'] ? ', ' . $o['state'] : '')); ?>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div class="customer-avatar"><?php echo htmlspecialchars($initials); ?></div>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--text-main); font-size: 13px;">
+                                            <?php echo htmlspecialchars($o['customer_name']); ?>
+                                        </div>
+                                        <div style="font-size: 11.5px; color: var(--text-light);">
+                                            <?php echo htmlspecialchars($o['customer_email']); ?>
+                                        </div>
+                                        <div style="font-size: 11px; color: var(--text-light);">
+                                            <?php echo htmlspecialchars($o['city'] . ($o['state'] ? ', ' . $o['state'] : '')); ?>
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
                             <td>
@@ -442,7 +480,7 @@ render_admin_header("Store Orders", "orders");
                                 </span>
                             </td>
                             <td>
-                                <strong style="font-size: 14px;">₹<?php echo number_format($o['total'], 2); ?></strong>
+                                <strong style="font-size: 14px; font-family: var(--font-sans);">₹<?php echo number_format($o['total'], 2); ?></strong>
                                 <?php if ($o['shipping_cost'] > 0): ?>
                                     <div style="font-size: 10.5px; color: var(--text-light);">incl. ₹<?php echo number_format($o['shipping_cost'], 0); ?> shipping</div>
                                 <?php endif; ?>
@@ -454,7 +492,7 @@ render_admin_header("Store Orders", "orders");
                             </td>
                             <td>
                                 <!-- Quick Status Selector -->
-                                <select class="status-badge <?php echo $o['order_status']; ?>" id="status-select-<?php echo $o['id']; ?>" onchange="quickUpdateOrderStatus(<?php echo $o['id']; ?>, this.value)" style="cursor: pointer; border: none; font-weight: 600; padding: 4px 8px;">
+                                <select class="status-badge <?php echo $o['order_status']; ?>" id="status-select-<?php echo $o['id']; ?>" onchange="quickUpdateOrderStatus(<?php echo $o['id']; ?>, this.value)" style="cursor: pointer; border: 1px solid var(--border-color); font-weight: 600; padding: 4px 10px; border-radius: 20px; outline: none; background: var(--bg-card);">
                                     <option value="pending" <?php echo $o['order_status'] === 'pending' ? 'selected' : ''; ?>>Pending</option>
                                     <option value="confirmed" <?php echo $o['order_status'] === 'confirmed' ? 'selected' : ''; ?>>Confirmed</option>
                                     <option value="shipped" <?php echo $o['order_status'] === 'shipped' ? 'selected' : ''; ?>>Shipped</option>

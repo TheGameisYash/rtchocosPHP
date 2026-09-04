@@ -254,16 +254,30 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
     <input type="hidden" name="image_main_existing" id="imageMainExisting" value="<?php echo htmlspecialchars($product['image_main']); ?>">
     <input type="hidden" name="image_gallery_json" id="imageGalleryJson" value="<?php echo htmlspecialchars(json_encode($galleryImages)); ?>">
 
+    <!-- Draft Recovery Banner -->
+    <div id="draftRecoveryBanner" style="display: none;" class="draft-banner">
+        <div>
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 6px; color: var(--gold);"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span id="draftRecoveryText">Unsaved draft detected.</span>
+        </div>
+        <div class="draft-actions">
+            <button type="button" class="btn btn-sm btn-secondary" onclick="restoreDraft()">Restore Draft</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="discardDraft()">Discard</button>
+        </div>
+    </div>
+
     <!-- Top Bar Action Row -->
-    <div class="editor-header" style="margin-bottom: 24px;">
-        <div style="display: flex; align-items: center; gap: 14px;">
+    <div class="editor-header" style="margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
             <a href="products.php" class="btn btn-outline btn-sm" title="Back to Catalog">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Products
             </a>
             <div>
-                <h2 style="font-family:'Cormorant Garamond',serif; font-size: 26px; margin: 0;"><?php echo $isEdit ? 'Edit Product' : 'Add New Product'; ?></h2>
-                <div style="font-size: 13px; color: var(--text-light);">
+                <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">
+                    <?php echo $isEdit ? 'Editing: ' . htmlspecialchars($product['name']) : 'New Catalog Product'; ?>
+                </div>
+                <div style="font-size: 12px; color: var(--text-light);">
                     <?php echo $isEdit ? 'ID #' . $productId . ' · /shop/' . htmlspecialchars($product['slug']) : 'Create a new handcrafted chocolate offering'; ?>
                 </div>
             </div>
@@ -275,9 +289,10 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
                     Preview in Store
                 </a>
             <?php endif; ?>
-            <button type="submit" class="btn btn-primary" id="saveProductBtn">
+            <button type="submit" class="btn btn-primary" id="saveProductBtn" title="Save Product (Ctrl + S)">
                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
-                <?php echo $isEdit ? 'Update Product' : 'Publish Product'; ?>
+                <span><?php echo $isEdit ? 'Update Product' : 'Publish Product'; ?></span>
+                <span class="kbd-chip" style="margin-left: 4px; font-size: 9.5px; opacity: 0.85;">Ctrl+S</span>
             </button>
         </div>
     </div>
@@ -323,29 +338,37 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
 
             <!-- Media & Images Card -->
             <div class="form-card" style="margin-bottom: 0;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <div class="editor-title" style="margin-bottom: 0;">Product Images</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                        <div class="editor-title" style="margin-bottom: 2px;">Product Photography & Media</div>
+                        <div style="font-size: 12px; color: var(--text-light);">Showcase your chocolates with crisp, high-resolution imagery</div>
+                    </div>
                     <button type="button" class="btn btn-outline btn-sm" onclick="openMediaModal('main')" style="gap: 6px;">
                         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        Choose from Media Library
+                        Media Library
                     </button>
                 </div>
 
-                <!-- Main Featured Image -->
+                <!-- Main Featured Image Dropzone -->
                 <div class="form-group">
-                    <label class="form-label">Primary Product Image</label>
-                    <div class="image-preview-box" id="mainImagePreviewBox" onclick="triggerFileInput('mainImageFileInput')">
+                    <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Primary Cover Photo *</span>
+                        <span style="font-size: 11.5px; color: var(--gold-light); font-weight: 500;">Recommended: 800×800px (1:1 Square)</span>
+                    </label>
+                    <div class="image-dropzone" id="mainImagePreviewBox" onclick="triggerFileInput('mainImageFileInput')">
                         <?php if (!empty($product['image_main'])): ?>
-                            <img src="../<?php echo htmlspecialchars($product['image_main']); ?>" id="mainImageImg" alt="Main Product Preview">
-                            <div style="position: absolute; bottom: 10px; right: 10px; display: flex; gap: 8px;">
-                                <button type="button" class="btn btn-sm btn-outline" style="background: rgba(0,0,0,0.7); color: #fff; border: none;" onclick="event.stopPropagation(); triggerFileInput('mainImageFileInput')">Replace</button>
+                            <img src="../<?php echo htmlspecialchars($product['image_main']); ?>" id="mainImageImg" alt="Main Product Preview" style="max-height: 240px; border-radius: 8px; object-fit: contain; margin: 0 auto; display: block;">
+                            <div style="position: absolute; bottom: 12px; right: 12px; display: flex; gap: 8px;">
+                                <button type="button" class="btn btn-sm btn-outline" style="background: rgba(0,0,0,0.75); color: #fff; border: 1px solid rgba(255,255,255,0.2);" onclick="event.stopPropagation(); triggerFileInput('mainImageFileInput')">Change</button>
                                 <button type="button" class="btn btn-sm btn-danger" style="border: none;" onclick="event.stopPropagation(); removeMainImage()">Remove</button>
                             </div>
                         <?php else: ?>
-                            <div id="mainImagePlaceholder" style="text-align: center; color: var(--text-light);">
-                                <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom: 8px;"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                <div>Click to upload main image or drag & drop</div>
-                                <div style="font-size: 11px; margin-top: 4px; color: var(--text-muted);">PNG, JPG, WEBP up to 5MB</div>
+                            <div id="mainImagePlaceholder" style="text-align: center; padding: 24px 12px;">
+                                <div class="dropzone-icon">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <div style="font-weight: 600; color: var(--text-main); font-size: 14px; margin-bottom: 4px;">Drag & drop main photo here, or click to browse</div>
+                                <div style="font-size: 12px; color: var(--text-light);">JPG, PNG, WEBP · Up to 5MB</div>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -354,11 +377,14 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
 
                 <!-- Additional Gallery Images Strip -->
                 <div class="form-group" style="margin-bottom: 0;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <label class="form-label" style="margin-bottom: 0;">Product Gallery (Additional Angles & Shots)</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                        <div>
+                            <label class="form-label" style="margin-bottom: 0;">Product Gallery (Extra Angles & Packaging)</label>
+                            <div style="font-size: 11.5px; color: var(--text-light);">Show tasting squares, packaging, and texture</div>
+                        </div>
                         <div style="display: flex; gap: 8px;">
-                            <button type="button" class="btn btn-outline btn-sm" onclick="openMediaModal('gallery')" style="padding: 3px 8px; font-size: 11.5px;">+ Pick from Library</button>
-                            <button type="button" class="btn btn-outline btn-sm" onclick="triggerFileInput('galleryFileInput')" style="padding: 3px 8px; font-size: 11.5px;">+ Upload Files</button>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="openMediaModal('gallery')" style="padding: 4px 10px; font-size: 12px;">+ Library</button>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="triggerFileInput('galleryFileInput')" style="padding: 4px 10px; font-size: 12px;">+ Upload Photos</button>
                         </div>
                     </div>
                     <input type="file" name="gallery_files[]" id="galleryFileInput" multiple accept="image/jpeg,image/png,image/webp" style="display: none;" onchange="previewGalleryUploads(this)">
@@ -372,7 +398,7 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
                         <?php endforeach; ?>
                     </div>
                     <div id="galleryEmptyNotice" style="<?php echo empty($galleryImages) ? 'display:block;' : 'display:none;'; ?> font-size: 12px; color: var(--text-light); margin-top: 10px; font-style: italic;">
-                        No gallery images added yet. Click "+ Upload Files" or "+ Pick from Library" to add extra product views.
+                        No extra gallery photos added yet. Click "+ Upload Photos" or "+ Library" to add more views.
                     </div>
                 </div>
             </div>
@@ -497,19 +523,28 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
             <!-- Category Assignment -->
             <div class="form-card" style="margin-bottom: 0;">
                 <div class="editor-title">Product Category</div>
+                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 8px;">Select a collection or type a custom category</div>
+
+                <?php
+                    $curatedPresets = ['Chocolates', 'Bonbons', 'Cacao', 'Kits', 'Gifting', 'Spreads', 'Seasonal'];
+                    $allDisplayCats = array_unique(array_merge($curatedPresets, $categories));
+                    $currentCat = trim($product['category'] ?: 'Chocolates');
+                ?>
+                <div class="category-chips-wrap" id="categoryChipsWrap">
+                    <?php foreach ($allDisplayCats as $catName): ?>
+                        <div class="category-chip <?php echo strcasecmp($currentCat, $catName) === 0 ? 'active' : ''; ?>" onclick="selectCategoryChip('<?php echo htmlspecialchars($catName, ENT_QUOTES); ?>', this)">
+                            <?php echo htmlspecialchars($catName); ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="categoryInput">Category Name</label>
-                    <input type="text" id="categoryInput" name="category" list="categoryDatalist" class="form-control" placeholder="Select or type new..." value="<?php echo htmlspecialchars($product['category']); ?>">
+                    <label class="form-label" for="categoryInput" style="font-size: 12px;">Active Category Name</label>
+                    <input type="text" id="categoryInput" name="category" list="categoryDatalist" class="form-control" placeholder="Select a chip above or type custom category..." value="<?php echo htmlspecialchars($currentCat); ?>" oninput="syncCategoryInput(this.value)">
                     <datalist id="categoryDatalist">
-                        <?php foreach ($categories as $cat): ?>
+                        <?php foreach ($allDisplayCats as $cat): ?>
                             <option value="<?php echo htmlspecialchars($cat); ?>"></option>
                         <?php endforeach; ?>
-                        <option value="Chocolates"></option>
-                        <option value="Cacao & Nibs"></option>
-                        <option value="Bonbons & Truffles"></option>
-                        <option value="Chocolate Kits"></option>
-                        <option value="Gift Hampers"></option>
                     </datalist>
                 </div>
             </div>
@@ -645,6 +680,24 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
         }
     }
 
+    // Category Chips Selection
+    function selectCategoryChip(catName, chipEl) {
+        document.getElementById('categoryInput').value = catName;
+        document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+        if (chipEl) chipEl.classList.add('active');
+    }
+
+    function syncCategoryInput(val) {
+        const clean = val.trim().toLowerCase();
+        document.querySelectorAll('.category-chip').forEach(c => {
+            if (c.textContent.trim().toLowerCase() === clean) {
+                c.classList.add('active');
+            } else {
+                c.classList.remove('active');
+            }
+        });
+    }
+
     // Trigger Hidden File Inputs
     function triggerFileInput(id) {
         document.getElementById(id).click();
@@ -653,32 +706,70 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
     // Preview Main Image Upload
     function previewMainImage(input) {
         if (input.files && input.files[0]) {
+            const file = input.files[0];
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Image file size exceeds 5MB limit. Please choose a smaller image.', 'danger');
+                return;
+            }
             const reader = new FileReader();
             reader.onload = function(e) {
                 const box = document.getElementById('mainImagePreviewBox');
                 box.innerHTML = `
-                    <img src="${e.target.result}" id="mainImageImg" alt="Main Product Preview">
-                    <div style="position: absolute; bottom: 10px; right: 10px; display: flex; gap: 8px;">
-                        <button type="button" class="btn btn-sm btn-outline" style="background: rgba(0,0,0,0.7); color: #fff; border: none;" onclick="event.stopPropagation(); triggerFileInput('mainImageFileInput')">Replace</button>
+                    <img src="${e.target.result}" id="mainImageImg" alt="Main Product Preview" style="max-height: 240px; border-radius: 8px; object-fit: contain; margin: 0 auto; display: block;">
+                    <div style="position: absolute; bottom: 12px; right: 12px; display: flex; gap: 8px;">
+                        <button type="button" class="btn btn-sm btn-outline" style="background: rgba(0,0,0,0.75); color: #fff; border: 1px solid rgba(255,255,255,0.2);" onclick="event.stopPropagation(); triggerFileInput('mainImageFileInput')">Change</button>
                         <button type="button" class="btn btn-sm btn-danger" style="border: none;" onclick="event.stopPropagation(); removeMainImage()">Remove</button>
                     </div>
                 `;
+                showToast('Image selected: ' + file.name, 'info');
             };
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
         }
     }
 
     function removeMainImage() {
-        document.getElementById('mainImageExisting').value = '';
+        document.getElementById('imageMainExisting').value = '';
         document.getElementById('mainImageFileInput').value = '';
         const box = document.getElementById('mainImagePreviewBox');
         box.innerHTML = `
-            <div id="mainImagePlaceholder" style="text-align: center; color: var(--text-light);">
-                <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom: 8px;"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                <div>Click to upload main image or drag & drop</div>
-                <div style="font-size: 11px; margin-top: 4px; color: var(--text-muted);">PNG, JPG, WEBP up to 5MB</div>
+            <div id="mainImagePlaceholder" style="text-align: center; padding: 24px 12px;">
+                <div class="dropzone-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <div style="font-weight: 600; color: var(--text-main); font-size: 14px; margin-bottom: 4px;">Drag & drop main photo here, or click to browse</div>
+                <div style="font-size: 12px; color: var(--text-light);">JPG, PNG, WEBP · Up to 5MB</div>
             </div>
         `;
+    }
+
+    // Drag and Drop Event Listeners for Main Image
+    const mainDropBox = document.getElementById('mainImagePreviewBox');
+    if (mainDropBox) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+            mainDropBox.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                mainDropBox.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            mainDropBox.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                mainDropBox.classList.remove('dragover');
+            }, false);
+        });
+
+        mainDropBox.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt ? dt.files : null;
+            if (files && files.length > 0) {
+                const fileInput = document.getElementById('mainImageFileInput');
+                fileInput.files = files;
+                previewMainImage(fileInput);
+            }
+        });
     }
 
     // Gallery Management
@@ -709,10 +800,28 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
         renderGallery();
     }
 
+    // Instant Preview for Queued Gallery Uploads
     function previewGalleryUploads(input) {
-        if (input.files) {
-            const count = input.files.length;
-            showToast(count + ' gallery photo(s) queued for upload upon saving.', 'info');
+        if (input.files && input.files.length > 0) {
+            const container = document.getElementById('galleryContainer');
+            const notice = document.getElementById('galleryEmptyNotice');
+            notice.style.display = 'none';
+
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.style.position = 'relative';
+                    item.innerHTML = `
+                        <span class="gallery-queued-badge">QUEUED</span>
+                        <img src="${e.target.result}" alt="New Upload Preview">
+                    `;
+                    container.appendChild(item);
+                };
+                reader.readAsDataURL(file);
+            });
+            showToast(input.files.length + ' gallery photo(s) selected and ready to upload on save.', 'success');
         }
     }
 
@@ -731,9 +840,9 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
             document.getElementById('imageMainExisting').value = path;
             const box = document.getElementById('mainImagePreviewBox');
             box.innerHTML = `
-                <img src="../${path}" id="mainImageImg" alt="Main Product Preview">
-                <div style="position: absolute; bottom: 10px; right: 10px; display: flex; gap: 8px;">
-                    <button type="button" class="btn btn-sm btn-outline" style="background: rgba(0,0,0,0.7); color: #fff; border: none;" onclick="event.stopPropagation(); triggerFileInput('mainImageFileInput')">Replace</button>
+                <img src="../${path}" id="mainImageImg" alt="Main Product Preview" style="max-height: 240px; border-radius: 8px; object-fit: contain; margin: 0 auto; display: block;">
+                <div style="position: absolute; bottom: 12px; right: 12px; display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-sm btn-outline" style="background: rgba(0,0,0,0.75); color: #fff; border: 1px solid rgba(255,255,255,0.2);" onclick="event.stopPropagation(); triggerFileInput('mainImageFileInput')">Change</button>
                     <button type="button" class="btn btn-sm btn-danger" style="border: none;" onclick="event.stopPropagation(); removeMainImage()">Remove</button>
                 </div>
             `;
@@ -750,11 +859,143 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
         closeMediaModal();
     }
 
+    // ==========================================
+    // AUTOMATION: LocalStorage Draft Protection & Dirty Guard
+    // ==========================================
+    const draftKey = 'rt_draft_product_<?php echo $productId ? $productId : "new"; ?>';
+    let isDirty = false;
+    let isSubmitting = false;
+
+    function getFormDataObj() {
+        return {
+            name: document.getElementById('productName')?.value || '',
+            slug: document.getElementById('productSlug')?.value || '',
+            category: document.getElementById('productCategory')?.value || '',
+            price: document.getElementById('regularPrice')?.value || '',
+            sale_price: document.getElementById('salePrice')?.value || '',
+            stock_quantity: document.getElementById('stockQuantity')?.value || '',
+            short_description: document.getElementById('shortDescription')?.value || '',
+            long_description: document.getElementById('longDescription')?.value || '',
+            meta_title: document.getElementById('metaTitle')?.value || '',
+            meta_description: document.getElementById('metaDescription')?.value || '',
+            meta_keywords: document.getElementById('metaKeywords')?.value || ''
+        };
+    }
+
+    function saveDraftToStorage() {
+        if (!isDirty || isSubmitting) return;
+        const data = getFormDataObj();
+        if (!data.name && !data.price && !data.long_description) return;
+
+        localStorage.setItem(draftKey, JSON.stringify({
+            timestamp: Date.now(),
+            data: data
+        }));
+    }
+
+    function checkForSavedDraft() {
+        const raw = localStorage.getItem(draftKey);
+        if (!raw) return;
+
+        try {
+            const parsed = JSON.parse(raw);
+            const draft = parsed.data;
+            const current = getFormDataObj();
+
+            // Check if draft has differing content
+            const isDifferent = (draft.name && draft.name !== current.name) ||
+                                (draft.price && draft.price !== current.price) ||
+                                (draft.long_description && draft.long_description !== current.long_description);
+
+            if (isDifferent) {
+                const draftDate = new Date(parsed.timestamp);
+                const timeStr = draftDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + draftDate.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                
+                const banner = document.getElementById('draftRecoveryBanner');
+                const text = document.getElementById('draftRecoveryText');
+                if (banner && text) {
+                    text.innerHTML = `Found an auto-saved draft from <strong>${timeStr}</strong> with unsubmitted changes.`;
+                    banner.style.display = 'flex';
+                }
+            }
+        } catch (e) {}
+    }
+
+    window.restoreDraft = function() {
+        const raw = localStorage.getItem(draftKey);
+        if (!raw) return;
+
+        try {
+            const { data } = JSON.parse(raw);
+            if (data.name) document.getElementById('productName').value = data.name;
+            if (data.slug) document.getElementById('productSlug').value = data.slug;
+            if (data.category) document.getElementById('productCategory').value = data.category;
+            if (data.price) document.getElementById('regularPrice').value = data.price;
+            if (data.sale_price) document.getElementById('salePrice').value = data.sale_price;
+            if (data.stock_quantity) document.getElementById('stockQuantity').value = data.stock_quantity;
+            if (data.short_description) document.getElementById('shortDescription').value = data.short_description;
+            if (data.long_description) document.getElementById('longDescription').value = data.long_description;
+            if (data.meta_title) document.getElementById('metaTitle').value = data.meta_title;
+            if (data.meta_description) document.getElementById('metaDescription').value = data.meta_description;
+            if (data.meta_keywords) document.getElementById('metaKeywords').value = data.meta_keywords;
+
+            calculateDiscount();
+            checkStockAlert(document.getElementById('stockQuantity').value);
+            updateGoogleSnippet();
+
+            document.getElementById('draftRecoveryBanner').style.display = 'none';
+            showToast('Draft edits restored successfully.', 'success');
+        } catch (e) {
+            showToast('Unable to restore draft.', 'danger');
+        }
+    };
+
+    window.discardDraft = function() {
+        localStorage.removeItem(draftKey);
+        document.getElementById('draftRecoveryBanner').style.display = 'none';
+        showToast('Auto-saved draft discarded.', 'info');
+    };
+
+    // Mark dirty on any input change
+    const formEl = document.getElementById('productForm');
+    if (formEl) {
+        formEl.addEventListener('input', () => { isDirty = true; });
+        formEl.addEventListener('change', () => { isDirty = true; });
+        formEl.addEventListener('submit', () => {
+            isSubmitting = true;
+            localStorage.removeItem(draftKey);
+        });
+    }
+
+    // Auto-save every 15 seconds
+    setInterval(saveDraftToStorage, 15000);
+
+    // Warn before unload if unsaved changes exist
+    window.addEventListener('beforeunload', function(e) {
+        if (isDirty && !isSubmitting) {
+            e.preventDefault();
+            e.returnValue = 'You have unsaved changes in this product. Are you sure you want to leave?';
+        }
+    });
+
+    // Keyboard shortcut Ctrl + S / Cmd + S to submit form directly
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+            e.preventDefault();
+            const btn = document.getElementById('saveProductBtn');
+            if (btn && formEl) {
+                showToast('Saving product...', 'info');
+                formEl.requestSubmit();
+            }
+        }
+    });
+
     // Initial setups on load
     window.addEventListener('DOMContentLoaded', () => {
         calculateDiscount();
         checkStockAlert(document.getElementById('stockQuantity').value);
         updateGoogleSnippet();
+        checkForSavedDraft();
     });
 </script>
 
