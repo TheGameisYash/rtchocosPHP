@@ -146,28 +146,53 @@
         </p>
         <?php endif; ?>
 
-        <!-- Add to Cart -->
+        <!-- Mode-Aware Order / Add to Cart Actions -->
         <?php 
           $prodStoreMode = get_site_setting('store_mode', 'retail');
           $prodBulkPhone = get_site_setting('bulk_enquiry_phone', '+919140238741');
           $prodBulkMOQ = get_site_setting('bulk_min_order_qty', '50 Units');
+          $numericMOQ = (int)filter_var($prodBulkMOQ, FILTER_SANITIZE_NUMBER_INT) ?: 50;
+          $defaultQty = ($prodStoreMode === 'bulk') ? $numericMOQ : 1;
         ?>
+
+        <?php if ($prodStoreMode === 'bulk'): ?>
+        <div style="background: rgba(229,179,88,0.1); border: 1px solid rgba(229,179,88,0.35); border-radius: 8px; padding: 14px 18px; margin-bottom: 20px;">
+          <div style="font-weight: 700; color: #8C6D23; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span>📦 B2B Wholesale &amp; Corporate Gifting</span>
+            <span style="font-size: 11px; background: #E5B358; color: #07150E; padding: 2px 8px; border-radius: 12px; font-weight: 800;">MOQ: <?php echo htmlspecialchars($prodBulkMOQ); ?></span>
+          </div>
+          <p style="font-size: 13px; color: var(--brown-light); margin: 0; line-height: 1.5;">
+            Custom branding, festive gift packaging, and tiered volume pricing available. Minimum order quantity: <strong><?php echo htmlspecialchars($prodBulkMOQ); ?></strong>.
+          </p>
+        </div>
+        <?php endif; ?>
+
         <?php if ($product['stock_quantity'] != 0): ?>
         <div style="display:flex; gap:12px; align-items:center; margin-bottom:18px; flex-wrap:wrap;">
           <div style="display:flex; align-items:center; gap:0; border:1px solid rgba(59,42,34,0.15); border-radius:8px; overflow:hidden;">
             <button onclick="updateQty(-1)" style="width:38px; height:38px; border:none; background:var(--cream); cursor:pointer; font-size:18px; color:var(--brown);">−</button>
-            <input id="qty-input" type="number" value="1" min="1" max="<?php echo $product['stock_quantity'] > 0 ? $product['stock_quantity'] : 99; ?>" style="width:48px; height:38px; border:none; text-align:center; font-family:'Jost',sans-serif; font-size:15px; color:var(--brown); outline:none;">
+            <input id="qty-input" type="number" value="<?php echo $defaultQty; ?>" min="<?php echo ($prodStoreMode === 'bulk') ? $numericMOQ : 1; ?>" max="<?php echo $product['stock_quantity'] > 0 ? $product['stock_quantity'] : 9999; ?>" style="width:56px; height:38px; border:none; text-align:center; font-family:'Jost',sans-serif; font-size:15px; color:var(--brown); outline:none;">
             <button onclick="updateQty(1)" style="width:38px; height:38px; border:none; background:var(--cream); cursor:pointer; font-size:18px; color:var(--brown);">+</button>
           </div>
-          <button class="btn-primary" onclick="addToCart(<?php echo $product['id']; ?>)" style="padding:10px 28px;">
-            Add to Cart
-          </button>
-          <a href="<?php echo $pathPrefix; ?>cart.php" class="btn-outline" style="text-decoration:none; padding:10px 20px;">View Cart</a>
 
-          <?php if ($prodStoreMode !== 'retail'): ?>
-          <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $prodBulkPhone); ?>?text=Hello%20RT%20Chocos!%20I%20have%20a%20bulk%2Fcorporate%20order%20enquiry%20for%20<?php echo urlencode($product['name']); ?>%20(MOQ%20<?php echo urlencode($prodBulkMOQ); ?>)." target="_blank" class="btn-outline" style="text-decoration:none; padding:10px 18px; border-color:var(--gold-light); color:var(--text-main); font-weight:600;">
-            📦 Bulk Inquiry (MOQ: <?php echo htmlspecialchars($prodBulkMOQ); ?>)
-          </a>
+          <?php if ($prodStoreMode === 'bulk'): ?>
+            <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $prodBulkPhone); ?>?text=Hello%20RT%20Chocos!%20I%20have%20a%20bulk%20enquiry%20for%20<?php echo urlencode($product['name']); ?>%20(Requested%20Qty:%20<?php echo $defaultQty; ?>%20Units)." target="_blank" class="btn-primary" style="text-decoration:none; padding:11px 22px; display:inline-flex; align-items:center; gap:6px; background:#25D366; border-color:#25D366; color:#FFFFFF; font-weight:700;">
+              💬 Instant WhatsApp Quote &rarr;
+            </a>
+            <button class="btn-outline" onclick="addToCart(<?php echo $product['id']; ?>)" style="padding:11px 20px;">
+              Add Wholesale Qty to Cart
+            </button>
+            <a href="<?php echo $pathPrefix; ?>shop.php#bulk-enquiry" class="btn-outline" style="text-decoration:none; padding:11px 18px;">
+              Request Custom RFP Form &rarr;
+            </a>
+          <?php else: ?>
+            <button class="btn-primary" onclick="addToCart(<?php echo $product['id']; ?>)" style="padding:10px 28px;">
+              Add to Cart
+            </button>
+            <a href="<?php echo $pathPrefix; ?>cart.php" class="btn-outline" style="text-decoration:none; padding:10px 20px;">View Cart</a>
+            <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $prodBulkPhone); ?>?text=Hello%20RT%20Chocos!%20I%20have%20a%20bulk%20enquiry%20for%20<?php echo urlencode($product['name']); ?>%20(MOQ%20<?php echo urlencode($prodBulkMOQ); ?>)." target="_blank" class="btn-outline" style="text-decoration:none; padding:10px 18px; border-color:var(--gold-light); color:var(--text-main); font-weight:600;">
+              📦 Bulk Inquiry (MOQ: <?php echo htmlspecialchars($prodBulkMOQ); ?>)
+            </a>
           <?php endif; ?>
         </div>
 

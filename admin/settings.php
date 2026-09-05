@@ -20,6 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!isset($settings['show_theme_tester'])) {
                     $settings['show_theme_tester'] = '0';
                 }
+                if (!isset($settings['show_announcement_banner'])) {
+                    $settings['show_announcement_banner'] = '0';
+                }
                 
                 $pdo->beginTransaction();
                 $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
@@ -214,11 +217,93 @@ render_admin_header("Site Settings", "settings");
                 </div>
             </div>
 
-            <div class="form-group" style="margin-bottom: 28px;">
-                <label class="static-label" for="store_announcement_text">Storefront Announcement Banner Message</label>
-                <input type="text" id="store_announcement_text" name="settings[store_announcement_text]" value="<?php echo htmlspecialchars($settings['store_announcement_text'] ?? '🍫 Artisanal Chocolates & Spreads — Free Chilled Pan-India Delivery on Orders Above ₹999!'); ?>" placeholder="Enter announcement text...">
-                <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Displays in the announcement ticker bar across the top of the storefront.</span>
+            <!-- Storefront Announcement Banner Card -->
+            <div style="background: var(--bg-app); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                    <div>
+                        <h4 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 0 0 4px 0;">Storefront Announcement Banner</h4>
+                        <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">Configure the top ticker banner across the public website. You can customize the message, change the action link &amp; destination URL ("where to visit"), or remove it entirely.</p>
+                    </div>
+                    <?php $bannerEnabled = ($settings['show_announcement_banner'] ?? '1') !== '0'; ?>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label for="show_announcement_banner" style="font-size: 13px; font-weight: 600; color: var(--text-main);">Banner Status:</label>
+                        <select id="show_announcement_banner" name="settings[show_announcement_banner]" style="padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-weight: 600; cursor: pointer;" onchange="updateBannerPreview()">
+                            <option value="1" <?php echo $bannerEnabled ? 'selected' : ''; ?>>🟢 Enabled (Visible)</option>
+                            <option value="0" <?php echo !$bannerEnabled ? 'selected' : ''; ?>>🔴 Disabled (Hidden / Removed)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="static-label" for="store_announcement_text">Banner Announcement Message</label>
+                    <input type="text" id="store_announcement_text" name="settings[store_announcement_text]" value="<?php echo htmlspecialchars($settings['store_announcement_text'] ?? ''); ?>" placeholder="e.g. 🍫 Artisanal Chocolates & Spreads — Free Chilled Pan-India Delivery on Orders Above ₹999!" oninput="updateBannerPreview()">
+                    <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Leave blank while enabled to use the automatic default message based on your active Store Mode (Retail vs. Bulk).</span>
+                </div>
+
+                <div class="form-row" style="margin-bottom: 14px;">
+                    <div class="form-col form-group">
+                        <label class="static-label" for="store_announcement_link_text">Action Button / Link Label</label>
+                        <input type="text" id="store_announcement_link_text" name="settings[store_announcement_link_text]" value="<?php echo htmlspecialchars($settings['store_announcement_link_text'] ?? ''); ?>" placeholder="e.g. Bulk Inquiry → or Shop Now →" oninput="updateBannerPreview()">
+                        <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Text for the clickable link in the banner. Leave empty if you want message only without a button.</span>
+                    </div>
+                    <div class="form-col form-group">
+                        <label class="static-label" for="store_announcement_link_url">Action Destination URL ("Where to Visit")</label>
+                        <input type="text" id="store_announcement_link_url" name="settings[store_announcement_link_url]" value="<?php echo htmlspecialchars($settings['store_announcement_link_url'] ?? ''); ?>" placeholder="e.g. /shop.php, #bulk-enquiry, /contact.php, or https://wa.me/919140238741" oninput="updateBannerPreview()">
+                        <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Where visitors are redirected. Tip: Use <code>#bulk-enquiry</code> to instantly pop up the requirement form on the shop page!</span>
+                    </div>
+                </div>
+
+                <!-- Real-time Live Preview -->
+                <div style="margin-top: 14px; padding: 12px 16px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px dashed var(--border-color);">
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px;">Live Storefront Preview:</div>
+                    <div id="bannerPreviewBox" style="background: linear-gradient(90deg, #07150E, #11281A, #07150E); color: #E5B358; font-size: 11.5px; font-weight: 600; text-align: center; padding: 8px 16px; letter-spacing: 0.4px; border-radius: 6px; border: 1px solid rgba(229,179,88,0.25); display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                        <span id="previewText"></span>
+                        <a id="previewLink" href="#" style="color: #FFFFFF; text-decoration: underline; font-size: 11px; margin-left: 6px; font-weight: 700;"></a>
+                    </div>
+                    <div id="bannerDisabledNotice" style="display: none; color: #e74c3c; font-size: 12px; font-weight: 600; text-align: center; padding: 6px 0;">
+                        ⛔ Announcement banner is currently DISABLED and will not appear on the storefront.
+                    </div>
+                </div>
             </div>
+
+            <script>
+            function updateBannerPreview() {
+                const status = document.getElementById('show_announcement_banner').value;
+                const textInput = document.getElementById('store_announcement_text').value.trim();
+                const linkTextInput = document.getElementById('store_announcement_link_text').value.trim();
+                const previewBox = document.getElementById('bannerPreviewBox');
+                const disabledNotice = document.getElementById('bannerDisabledNotice');
+                const previewText = document.getElementById('previewText');
+                const previewLink = document.getElementById('previewLink');
+
+                if (status === '0') {
+                    previewBox.style.display = 'none';
+                    disabledNotice.style.display = 'block';
+                } else {
+                    previewBox.style.display = 'flex';
+                    disabledNotice.style.display = 'none';
+                    
+                    const storeMode = document.querySelector('input[name="settings[store_mode]"]:checked')?.value || 'retail';
+                    const defaultMsg = storeMode === 'bulk' 
+                        ? '📦 B2B Bulk Supplies, Private Labeling & Corporate Gifting Solutions | Pan-India Delivery'
+                        : '🍫 Handcrafted Artisanal Chocolates & Spreads — Free Pan-India Delivery on Orders Above ₹' + (document.getElementById('retail_free_shipping_min')?.value || '999') + '!';
+                    
+                    previewText.textContent = textInput ? textInput : defaultMsg;
+
+                    const defaultLinkText = storeMode === 'bulk' ? 'Bulk Inquiry →' : 'Shop Now →';
+                    if (linkTextInput) {
+                        previewLink.textContent = linkTextInput;
+                        previewLink.style.display = 'inline';
+                    } else if (textInput === '') {
+                        previewLink.textContent = defaultLinkText;
+                        previewLink.style.display = 'inline';
+                    } else {
+                        previewLink.style.display = 'none';
+                    }
+                }
+            }
+            document.addEventListener('DOMContentLoaded', updateBannerPreview);
+            </script>
 
             <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Theme & Appearance Settings</div>
             

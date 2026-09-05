@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL & ~E_DEPRECATED);
+ob_start();
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Cache-Control: post-check=0, pre-check=0', false);
@@ -105,13 +107,16 @@ $fileExisted = file_exists($csvFile);
 $file = fopen($csvFile, 'a');
 if ($file) {
     if (!$fileExisted) {
-        fputcsv($file, ['Date Received', 'Name', 'Email Address', 'Phone Number', 'Subject', 'Message Details']);
+        fputcsv($file, ['Date Received', 'Name', 'Email Address', 'Phone Number', 'Subject', 'Message Details'], ',', '"', "\\");
     }
-    fputcsv($file, [date('Y-m-d H:i:s'), $name, $email, $phone, $subject, $message]);
+    fputcsv($file, [date('Y-m-d H:i:s'), $name, $email, $phone, $subject, $message], ',', '"', "\\");
     fclose($file);
 }
 
 // Always return success — message is stored
+if (ob_get_length()) {
+    ob_clean();
+}
 echo json_encode([
     "status"  => "success",
     "message" => "Your message has been sent successfully. We'll be in touch soon!"

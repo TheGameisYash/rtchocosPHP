@@ -415,17 +415,21 @@
           </a>
           <p class="lux-prod-desc"><?php echo htmlspecialchars($prod['short_description']); ?></p>
           
-          <!-- Price Display -->
-          <div class="lux-prod-price-row">
+          <!-- Mode-Aware Price / Wholesale Display -->
+          <div class="lux-prod-price-row mode-section-retail <?php echo ($storeMode === 'bulk') ? 'mode-hidden' : ''; ?>">
             <span class="lux-prod-price">₹<?php echo number_format($prodPrice, 0); ?></span>
             <?php if ($hasSale): ?>
               <span class="lux-prod-orig-price">₹<?php echo number_format($origPrice, 0); ?></span>
               <span class="lux-prod-discount"><?php echo round((1 - $prod['sale_price'] / $origPrice) * 100); ?>% OFF</span>
             <?php endif; ?>
           </div>
+          <div class="lux-prod-price-row mode-section-bulk <?php echo ($storeMode === 'retail') ? 'mode-hidden' : ''; ?>" style="font-size: 13px; font-weight: 700; color: var(--lux-gold-400); display: flex; align-items: center; justify-content: space-between;">
+            <span>Wholesale Supply</span>
+            <span style="font-size: 11.5px; font-weight: 500; color: var(--lux-text-muted);">From ₹<?php echo number_format($prodPrice, 0); ?>/unit</span>
+          </div>
 
-          <!-- Actions: Add to Cart + Details Link -->
-          <div class="lux-card-actions">
+          <!-- Actions Retail: Add to Cart + Details Link -->
+          <div class="lux-card-actions mode-section-retail <?php echo ($storeMode === 'bulk') ? 'mode-hidden' : ''; ?>">
             <button type="button" class="lux-btn-add-cart" onclick="quickAddToCart(<?php echo (int)($prod['id'] ?? 0); ?>, '<?php echo addslashes($prod['name']); ?>', this, event)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -434,6 +438,25 @@
               </svg>
               <span>Add to Cart</span>
             </button>
+            <a href="shop/<?php echo htmlspecialchars($prod['slug']); ?>" class="lux-view-details-link">
+              Details &rarr;
+            </a>
+          </div>
+
+          <!-- Actions Bulk: Enquire Bulk + WhatsApp Quote + Details Link -->
+          <div class="lux-card-actions mode-section-bulk <?php echo ($storeMode === 'retail') ? 'mode-hidden' : ''; ?>">
+            <button type="button" class="lux-btn-bulk-enquiry" onclick="openEnquiryModal('<?php echo addslashes($prod['name']); ?>', '<?php echo addslashes($prod['category_key'] ?? ''); ?>')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+              <span>Enquire Bulk</span>
+            </button>
+            <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $bulkPhone); ?>?text=Hello%20RT%20Chocos!%20I%20have%20a%20bulk%2Fcorporate%20order%20enquiry%20for%20<?php echo urlencode($prod['name']); ?>%20(MOQ%20<?php echo urlencode($bulkMOQ); ?>)." target="_blank" class="lux-btn-bulk-wa" title="Instant WhatsApp Quote">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+              </svg>
+            </a>
             <a href="shop/<?php echo htmlspecialchars($prod['slug']); ?>" class="lux-view-details-link">
               Details &rarr;
             </a>
@@ -911,13 +934,21 @@
         </div>
         <div class="modal-form-full">
           <label style="font-size:12px; font-weight:600; color:var(--lux-gold-300); display:block; margin-bottom:6px;">Requirement Details (Quantity, customization, timeline) *</label>
-          <textarea name="message" class="modal-input" placeholder="Describe your required quantities, packaging preferences, custom branding, or preferred delivery dates..." required></textarea>
+          <textarea name="message" id="modalMessageField" class="modal-input" placeholder="Describe your required quantities, packaging preferences, custom branding, or preferred delivery dates..." required></textarea>
         </div>
       </div>
 
-      <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
-        <button type="button" class="btn-outline-lux" onclick="closeEnquiryModal()" style="font-size:11.5px; padding:10px 18px;">Cancel</button>
-        <button type="submit" class="btn-gold-lux" id="modalSubmitBtn" style="font-size:11.5px; padding:10px 22px;">Submit Enquiry &rarr;</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:20px; flex-wrap:wrap;">
+        <a id="modalWhatsAppBtn" href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $bulkPhone); ?>?text=Hi%20RT%20Chocos,%20I%20have%20a%20bulk%20enquiry." target="_blank" class="btn-outline-lux" style="display:inline-flex; align-items:center; gap:6px; color:#25D366; border-color:rgba(37,211,102,0.5); text-decoration:none; font-size:11.5px; padding:10px 16px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+          </svg>
+          <span>Chat on WhatsApp &rarr;</span>
+        </a>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn-outline-lux" onclick="closeEnquiryModal()" style="font-size:11.5px; padding:10px 18px;">Cancel</button>
+          <button type="submit" class="btn-gold-lux" id="modalSubmitBtn" style="font-size:11.5px; padding:10px 22px;">Submit Enquiry &rarr;</button>
+        </div>
       </div>
       <div id="modalStatusMsg" style="margin-top:14px; font-size:13px; text-align:center; display:none;"></div>
     </form>
@@ -1010,11 +1041,36 @@
   });
 
   // Modal Controls
-  function openEnquiryModal(contextTitle) {
+  function openEnquiryModal(contextTitle, categoryKey) {
     const modal = document.getElementById('enquiryModalBackdrop');
+    if (!modal) return;
+    
     if (contextTitle) {
-      document.getElementById('modalSubject').value = 'Shop Enquiry: ' + contextTitle;
+      document.getElementById('modalSubject').value = 'Bulk Enquiry: ' + contextTitle;
+      const msgField = document.getElementById('modalMessageField');
+      if (msgField) {
+        msgField.value = 'Hello, I would like to enquire about a bulk / corporate order for ' + contextTitle + '. Please provide tiered volume pricing, customization options, and delivery timelines.';
+      }
+      const waBtn = document.getElementById('modalWhatsAppBtn');
+      if (waBtn) {
+        const phone = '<?php echo preg_replace('/[^0-9]/', '', $bulkPhone); ?>';
+        waBtn.href = 'https://wa.me/' + phone + '?text=' + encodeURIComponent('Hi RT Chocos! I would like to inquire about bulk ordering for ' + contextTitle + '.');
+      }
     }
+    
+    if (categoryKey) {
+      const select = document.getElementById('modalProductSelect');
+      if (select) {
+        for (let i = 0; i < select.options.length; i++) {
+          if (select.options[i].value.toLowerCase().includes(categoryKey.toLowerCase()) || 
+              categoryKey.toLowerCase().includes(select.options[i].value.toLowerCase())) {
+            select.selectedIndex = i;
+            break;
+          }
+        }
+      }
+    }
+    
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -1024,9 +1080,16 @@
       return;
     }
     const modal = document.getElementById('enquiryModalBackdrop');
-    modal.classList.remove('open');
+    if (modal) modal.classList.remove('open');
     document.body.style.overflow = '';
   }
+
+  // Auto-open modal if URL has #bulk-enquiry or #enquiry
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.hash === '#bulk-enquiry' || window.location.hash === '#enquiry') {
+      setTimeout(() => openEnquiryModal('Announcement Banner Link'), 350);
+    }
+  });
 
   // Form Submission
   async function submitShopEnquiry(event) {
@@ -1050,7 +1113,8 @@
     };
 
     try {
-      const resp = await fetch('send_contact.php', {
+      const targetUrl = (typeof pathPrefix !== 'undefined' && pathPrefix ? pathPrefix : '/') + 'send_contact.php';
+      const resp = await fetch(targetUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -1058,7 +1122,7 @@
       const res = await resp.json();
       if (res.status === 'success') {
         statusMsg.style.color = '#74E291';
-        statusMsg.innerText = 'Thank you! Your requirement has been submitted. We will contact you shortly.';
+        statusMsg.innerText = '✓ Thank you! Your bulk requirement has been submitted. Our team will contact you shortly.';
         statusMsg.style.display = 'block';
         form.reset();
         setTimeout(() => {
@@ -1068,11 +1132,16 @@
           submitBtn.innerText = 'Submit Enquiry \u2192';
         }, 2500);
       } else {
-        throw new Error(res.message || 'Submission failed');
+        statusMsg.style.color = '#ff6b6b';
+        statusMsg.innerText = res.message || 'Submission error. Please check your inputs.';
+        statusMsg.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit Enquiry \u2192';
       }
     } catch (err) {
-      statusMsg.style.color = '#FF8080';
-      statusMsg.innerText = err.message || 'Could not send enquiry. Please try WhatsApp or email us directly.';
+      console.error('Enquiry error:', err);
+      statusMsg.style.color = '#ff6b6b';
+      statusMsg.innerText = 'Notice: We received your click. If submission took long, please message us on WhatsApp directly.';
       statusMsg.style.display = 'block';
       submitBtn.disabled = false;
       submitBtn.innerText = 'Submit Enquiry \u2192';

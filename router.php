@@ -64,8 +64,8 @@ if (preg_match('#^/(?:shop|blog)/((?:style\.css|script\.js|favicon\.[a-z]+|(?:cs
     }
 }
 
-// Route API requests from subpaths like /shop/api_cart.php or /blog/api_blogs.php
-if (preg_match('#^/(?:shop|blog)/(api_[a-zA-Z0-9_\-]+\.php)$#', $uri, $m)) {
+// Route API & contact requests from subpaths like /shop/api_cart.php, /shop/send_contact.php
+if (preg_match('#^/(?:shop|blog)/((?:api_[a-zA-Z0-9_\-]+|send_contact)\.php)$#', $uri, $m)) {
     $apiFile = __DIR__ . '/' . $m[1];
     if (file_exists($apiFile)) {
         include $apiFile;

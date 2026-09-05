@@ -307,23 +307,43 @@ if (!empty($pageSchema)) {
 ?>
 <header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
   <?php
+    $showBanner = get_site_setting('show_announcement_banner', '1');
     $headerStoreMode = get_site_setting('store_mode', 'retail');
     $announcementText = get_site_setting('store_announcement_text', '');
-    if (empty($announcementText)) {
+    $announcementLinkText = get_site_setting('store_announcement_link_text', null);
+    $announcementLinkUrl = get_site_setting('store_announcement_link_url', '');
+
+    // Fallback message if banner is enabled and text is empty
+    if ($showBanner !== '0' && empty($announcementText)) {
       if ($headerStoreMode === 'bulk') {
         $announcementText = '📦 B2B Bulk Supplies, Private Labeling & Corporate Gifting Solutions | Pan-India Delivery';
       } else {
-        $announcementText = '🍫 Handcrafted Artisanal Chocolates & Spreads — Free Pan-India Delivery on Orders Above ₹999!';
+        $freeShipMin = get_site_setting('retail_free_shipping_min', '999');
+        $announcementText = '🍫 Handcrafted Artisanal Chocolates & Spreads — Free Pan-India Delivery on Orders Above ₹' . htmlspecialchars($freeShipMin) . '!';
       }
     }
+
+    // Determine link text: if explicitly set in settings, respect it (even if empty to hide link). If null/never set, use default.
+    if ($announcementLinkText === null) {
+      $announcementLinkText = ($headerStoreMode === 'bulk') ? 'Bulk Inquiry →' : 'Shop Now →';
+    }
+
+    // Determine link URL destination
+    if (empty($announcementLinkUrl)) {
+      $announcementLinkUrl = ($headerStoreMode === 'bulk') ? ($pathPrefix . 'shop.php#bulk-enquiry') : ($pathPrefix . 'shop.php');
+    }
   ?>
-  <?php if (!empty($announcementText)): ?>
-  <div class="site-announcement-strip" style="background: linear-gradient(90deg, #07150E, #11281A, #07150E); color: #E5B358; font-size: 11.5px; font-weight: 600; text-align: center; padding: 6px 16px; letter-spacing: 0.4px; border-bottom: 1px solid rgba(229,179,88,0.2); display: flex; align-items: center; justify-content: center; gap: 8px;">
+  <?php if ($showBanner !== '0' && !empty($announcementText)): ?>
+  <div class="site-announcement-strip" style="background: linear-gradient(90deg, #07150E, #11281A, #07150E); color: #E5B358; font-size: 11.5px; font-weight: 600; text-align: center; padding: 6px 16px; letter-spacing: 0.4px; border-bottom: 1px solid rgba(229,179,88,0.2); display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
     <span><?php echo htmlspecialchars($announcementText); ?></span>
-    <?php if ($headerStoreMode === 'bulk'): ?>
-      <a href="<?php echo $pathPrefix; ?>shop.php" style="color: #FFFFFF; text-decoration: underline; font-size: 11px; margin-left: 6px;">Bulk Inquiry &rarr;</a>
-    <?php else: ?>
-      <a href="<?php echo $pathPrefix; ?>shop.php" style="color: #FFFFFF; text-decoration: underline; font-size: 11px; margin-left: 6px;">Shop Now &rarr;</a>
+    <?php if (!empty($announcementLinkText)): ?>
+      <?php 
+        $isModalTrigger = (strpos($announcementLinkUrl, '#bulk-enquiry') !== false || strpos($announcementLinkUrl, '#enquiryModal') !== false);
+        $onclickAction = $isModalTrigger ? 'onclick="if(typeof openEnquiryModal===\'function\'){event.preventDefault();openEnquiryModal(\'Announcement Banner\');}"' : '';
+      ?>
+      <a href="<?php echo htmlspecialchars($announcementLinkUrl); ?>" <?php echo $onclickAction; ?> style="color: #FFFFFF; text-decoration: underline; font-size: 11px; margin-left: 6px; font-weight: 700; transition: opacity 0.2s ease;">
+        <?php echo htmlspecialchars($announcementLinkText); ?>
+      </a>
     <?php endif; ?>
   </div>
   <?php endif; ?>

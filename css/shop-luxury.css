@@ -604,9 +604,49 @@
   white-space: nowrap;
 }
 
-.lux-view-details-link:hover {
-  color: var(--lux-gold-500);
-  transform: translateX(2px);
+.lux-btn-bulk-enquiry {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: var(--lux-gold-500);
+  color: var(--lux-forest-900);
+  border: 1px solid var(--lux-gold-500);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(229, 179, 88, 0.2);
+  white-space: nowrap;
+}
+
+.lux-btn-bulk-enquiry:hover {
+  background: var(--lux-gold-400);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(229, 179, 88, 0.35);
+}
+
+.lux-btn-bulk-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #25D366;
+  color: #FFFFFF;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.lux-btn-bulk-wa:hover {
+  background: #20BA5A;
+  transform: translateY(-1px);
+  color: #FFFFFF;
 }
 
 @keyframes spin {
