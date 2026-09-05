@@ -146,6 +146,80 @@ render_admin_header("Site Settings", "settings");
                 </div>
             </div>
 
+            <div class="editor-title" style="margin-top: 32px; font-size: 18px; display: flex; align-items: center; justify-content: space-between;">
+                <span>Store Business Focus &amp; Order Strategy</span>
+                <span style="font-size: 12px; font-weight: 500; color: var(--gold-light); background: rgba(229,179,88,0.12); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(229,179,88,0.25);">
+                    Core E-Commerce Strategy
+                </span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: -6px; margin-bottom: 16px;">
+                Switch the public website's primary focus between direct consumer retail sales (B2C) and corporate bulk wholesale/private labeling (B2B).
+            </p>
+
+            <?php 
+                $storeMode = $settings['store_mode'] ?? 'retail'; 
+            ?>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                <!-- 1. Retail Mode Card -->
+                <label style="position: relative; display: flex; flex-direction: column; padding: 18px; border-radius: 12px; border: 2px solid <?php echo $storeMode === 'retail' ? 'var(--gold-light)' : 'var(--border-color)'; ?>; background: <?php echo $storeMode === 'retail' ? 'rgba(229,179,88,0.06)' : 'var(--bg-app)'; ?>; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 26px;">🛒</span>
+                        <input type="radio" name="settings[store_mode]" value="retail" <?php echo $storeMode === 'retail' ? 'checked' : ''; ?> style="accent-color: var(--gold-light); width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Retail Mode (B2C)</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #74E291; margin-bottom: 8px;">CONSUMER SHOPPING</div>
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
+                        Focuses the store on consumer purchases. Promotes fresh jar spreads, chocolate bars, prices, Add to Cart, Buy Now checkout, and chilled pan-India delivery.
+                    </p>
+                </label>
+
+                <!-- 2. Bulk / B2B Mode Card -->
+                <label style="position: relative; display: flex; flex-direction: column; padding: 18px; border-radius: 12px; border: 2px solid <?php echo $storeMode === 'bulk' ? 'var(--gold-light)' : 'var(--border-color)'; ?>; background: <?php echo $storeMode === 'bulk' ? 'rgba(229,179,88,0.06)' : 'var(--bg-app)'; ?>; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 26px;">📦</span>
+                        <input type="radio" name="settings[store_mode]" value="bulk" <?php echo $storeMode === 'bulk' ? 'checked' : ''; ?> style="accent-color: var(--gold-light); width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Bulk &amp; B2B Mode</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #70B4FF; margin-bottom: 8px;">WHOLESALE &amp; GIFTING</div>
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
+                        Focuses the store on B2B clients, corporate gifting, custom jar branding, private label chocolate manufacturing, MOQs, and quotation enquiry forms.
+                    </p>
+                </label>
+
+                <!-- 3. Hybrid Mode Card -->
+                <label style="position: relative; display: flex; flex-direction: column; padding: 18px; border-radius: 12px; border: 2px solid <?php echo $storeMode === 'hybrid' ? 'var(--gold-light)' : 'var(--border-color)'; ?>; background: <?php echo $storeMode === 'hybrid' ? 'rgba(229,179,88,0.06)' : 'var(--bg-app)'; ?>; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 26px;">🔄</span>
+                        <input type="radio" name="settings[store_mode]" value="hybrid" <?php echo $storeMode === 'hybrid' ? 'checked' : ''; ?> style="accent-color: var(--gold-light); width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Hybrid Mode (Dual)</div>
+                    <div style="font-size: 11px; font-weight: 600; color: var(--gold-light); margin-bottom: 8px;">RETAIL + BULK TOGGLE</div>
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
+                        Public storefront offers both! Displays an interactive switcher pill allowing visitors to toggle between consumer shopping and corporate bulk gifting on the fly.
+                    </p>
+                </label>
+            </div>
+
+            <!-- Additional Store Mode Tuning Parameters -->
+            <div class="form-row" style="margin-bottom: 24px;">
+                <div class="form-col form-group">
+                    <label class="static-label" for="retail_free_shipping_min">Retail Free Shipping Minimum (₹)</label>
+                    <input type="number" id="retail_free_shipping_min" name="settings[retail_free_shipping_min]" value="<?php echo htmlspecialchars($settings['retail_free_shipping_min'] ?? '999'); ?>" placeholder="999">
+                    <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Orders above this value receive free pan-India shipping banner.</span>
+                </div>
+                <div class="form-col form-group">
+                    <label class="static-label" for="bulk_min_order_qty">Bulk Default MOQ Display</label>
+                    <input type="text" id="bulk_min_order_qty" name="settings[bulk_min_order_qty]" value="<?php echo htmlspecialchars($settings['bulk_min_order_qty'] ?? '50 Units'); ?>" placeholder="50 Units">
+                    <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Minimum order quantity displayed when in Bulk or Corporate mode.</span>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 28px;">
+                <label class="static-label" for="store_announcement_text">Storefront Announcement Banner Message</label>
+                <input type="text" id="store_announcement_text" name="settings[store_announcement_text]" value="<?php echo htmlspecialchars($settings['store_announcement_text'] ?? '🍫 Artisanal Chocolates & Spreads — Free Chilled Pan-India Delivery on Orders Above ₹999!'); ?>" placeholder="Enter announcement text...">
+                <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Displays in the announcement ticker bar across the top of the storefront.</span>
+            </div>
+
             <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Theme & Appearance Settings</div>
             
             <div class="form-group" style="background: var(--bg-app); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; margin-bottom: 16px;">

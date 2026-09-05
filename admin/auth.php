@@ -21,7 +21,7 @@ if (basename($_SERVER['PHP_SELF']) == 'auth.php') {
 // Check if user is logged in
 function require_login() {
     if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-        header('Location: login.php');
+        header('Location: /admin/login.php');
         exit;
     }
 }

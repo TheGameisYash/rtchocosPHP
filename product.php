@@ -147,8 +147,13 @@
         <?php endif; ?>
 
         <!-- Add to Cart -->
+        <?php 
+          $prodStoreMode = get_site_setting('store_mode', 'retail');
+          $prodBulkPhone = get_site_setting('bulk_enquiry_phone', '+919140238741');
+          $prodBulkMOQ = get_site_setting('bulk_min_order_qty', '50 Units');
+        ?>
         <?php if ($product['stock_quantity'] != 0): ?>
-        <div style="display:flex; gap:12px; align-items:center; margin-bottom:24px; flex-wrap:wrap;">
+        <div style="display:flex; gap:12px; align-items:center; margin-bottom:18px; flex-wrap:wrap;">
           <div style="display:flex; align-items:center; gap:0; border:1px solid rgba(59,42,34,0.15); border-radius:8px; overflow:hidden;">
             <button onclick="updateQty(-1)" style="width:38px; height:38px; border:none; background:var(--cream); cursor:pointer; font-size:18px; color:var(--brown);">−</button>
             <input id="qty-input" type="number" value="1" min="1" max="<?php echo $product['stock_quantity'] > 0 ? $product['stock_quantity'] : 99; ?>" style="width:48px; height:38px; border:none; text-align:center; font-family:'Jost',sans-serif; font-size:15px; color:var(--brown); outline:none;">
@@ -158,6 +163,19 @@
             Add to Cart
           </button>
           <a href="<?php echo $pathPrefix; ?>cart.php" class="btn-outline" style="text-decoration:none; padding:10px 20px;">View Cart</a>
+
+          <?php if ($prodStoreMode !== 'retail'): ?>
+          <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $prodBulkPhone); ?>?text=Hello%20RT%20Chocos!%20I%20have%20a%20bulk%2Fcorporate%20order%20enquiry%20for%20<?php echo urlencode($product['name']); ?>%20(MOQ%20<?php echo urlencode($prodBulkMOQ); ?>)." target="_blank" class="btn-outline" style="text-decoration:none; padding:10px 18px; border-color:var(--gold-light); color:var(--text-main); font-weight:600;">
+            📦 Bulk Inquiry (MOQ: <?php echo htmlspecialchars($prodBulkMOQ); ?>)
+          </a>
+          <?php endif; ?>
+        </div>
+
+        <!-- Value Guarantee Strip -->
+        <div style="display:flex; flex-wrap:wrap; gap:16px; margin: 0 0 20px; font-size:12px; color:var(--brown-light); font-weight:500;">
+          <span>❄️ Chilled Insulated Packaging</span>
+          <span>🌿 100% Pure Cocoa Butter</span>
+          <span>🚀 Express Pan-India Dispatch</span>
         </div>
         <div id="cart-feedback" style="display:none; font-size:13px; color:#27ae60; font-weight:500; margin-bottom:16px;"></div>
         <?php else: ?>
@@ -245,8 +263,16 @@ function updateQty(delta) {
 }
 
 function addToCart(productId) {
-  var qty = parseInt(document.getElementById('qty-input').value) || 1;
-  fetch('<?php echo $pathPrefix; ?>api_cart.php', {
+  var qtyInput = document.getElementById('qty-input');
+  var qty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
+  var btn = event ? (event.currentTarget || event.target) : null;
+  var originalText = btn ? btn.innerHTML : '';
+  if (btn && btn.tagName === 'BUTTON') {
+    btn.disabled = true;
+    btn.innerHTML = '<span>Adding...</span>';
+  }
+
+  fetch('/api_cart.php', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({action: 'add', product_id: productId, quantity: qty})
@@ -255,8 +281,14 @@ function addToCart(productId) {
   .then(function(data) {
     var fb = document.getElementById('cart-feedback');
     if (data.success) {
-      fb.style.color = '#27ae60';
-      fb.textContent = '✓ ' + (data.message || 'Added to cart');
+      if (fb) {
+        fb.style.color = '#27ae60';
+        fb.innerHTML = '✓ ' + (data.message || 'Added to cart') + ' &nbsp; <a href="/cart.php" style="color:var(--brown);font-weight:700;text-decoration:underline;">View Cart &rarr;</a>';
+        fb.style.display = 'block';
+      }
+      if (btn && btn.tagName === 'BUTTON') {
+        btn.innerHTML = '<span>✓ Added!</span>';
+      }
       var badge = document.getElementById('header-cart-count');
       if (badge && typeof data.cart_count !== 'undefined') {
         badge.textContent = data.cart_count;
@@ -264,19 +296,52 @@ function addToCart(productId) {
         badge.style.transform = 'scale(1.35)';
         setTimeout(function() { badge.style.transform = ''; }, 300);
       }
+      showProductToast(<?php echo json_encode($product['name']); ?>, data.cart_count);
+      setTimeout(function() {
+        if (btn && btn.tagName === 'BUTTON') {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }
+      }, 2200);
     } else {
-      fb.style.color = '#c0392b';
-      fb.textContent = '✗ ' + (data.error || 'Could not add to cart');
+      if (fb) {
+        fb.style.color = '#c0392b';
+        fb.textContent = '✗ ' + (data.error || 'Could not add to cart');
+        fb.style.display = 'block';
+      }
+      if (btn && btn.tagName === 'BUTTON') {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
     }
-    fb.style.display = 'block';
-    setTimeout(function() { fb.style.display = 'none'; }, 3000);
   })
   .catch(function() {
     var fb = document.getElementById('cart-feedback');
-    fb.style.color = '#c0392b';
-    fb.textContent = 'Network error. Please try again.';
-    fb.style.display = 'block';
+    if (fb) {
+      fb.style.color = '#c0392b';
+      fb.textContent = 'Network error. Please try again.';
+      fb.style.display = 'block';
+    }
+    if (btn && btn.tagName === 'BUTTON') {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
   });
+}
+
+function showProductToast(productName, count) {
+  var existing = document.getElementById('prodCartToast');
+  if (existing) existing.remove();
+  var toast = document.createElement('div');
+  toast.id = 'prodCartToast';
+  toast.style.cssText = 'position:fixed;bottom:28px;right:28px;background:#0C1E14;color:#FFFFFF;border:1px solid rgba(232,184,92,0.35);border-radius:12px;padding:14px 18px;box-shadow:0 16px 40px rgba(0,0,0,0.35);display:flex;align-items:center;gap:14px;z-index:99999;font-family:sans-serif;animation:fadeIn 0.3s ease;';
+  toast.innerHTML = '<div style="width:32px;height:32px;border-radius:50%;background:rgba(116,226,145,0.15);display:flex;align-items:center;justify-content:center;color:#74E291;font-weight:bold;">✓</div>' +
+    '<div style="min-width:130px;"><div style="font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#E8B85C;">Added to Cart</div><div style="font-size:13px;font-weight:600;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (productName || '') + '</div></div>' +
+    '<div style="display:flex;gap:8px;"><a href="/cart.php" style="background:transparent;color:#E8EDE9;border:1px solid rgba(232,184,92,0.35);padding:6px 11px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;">View Cart (' + count + ')</a>' +
+    '<a href="/checkout.php" style="background:linear-gradient(135deg,#E8B85C 0%,#D19E3E 100%);color:#0B1C12;padding:6px 12px;border-radius:4px;font-size:11px;font-weight:700;text-decoration:none;">Checkout &rarr;</a></div>' +
+    '<button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#8C9990;font-size:18px;cursor:pointer;padding:2px 4px;margin-left:2px;">&times;</button>';
+  document.body.appendChild(toast);
+  setTimeout(function() { if (toast && toast.parentElement) toast.remove(); }, 5000);
 }
 </script>
 

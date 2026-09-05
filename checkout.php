@@ -144,21 +144,21 @@
       <p style="color:var(--brown-light); font-size:15px; margin-bottom:8px;">Your order <strong><?php echo htmlspecialchars($orderNumber); ?></strong> has been placed successfully.</p>
       <p style="color:var(--brown-light); font-size:14px; margin-bottom:24px;">A confirmation email will be sent to your registered email address.</p>
       <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-        <a href="shop.php" class="btn-primary" style="text-decoration:none; padding:12px 28px;">Continue Shopping</a>
-        <a href="index.php" class="btn-outline" style="text-decoration:none; padding:12px 28px;">Go Home</a>
+        <a href="/shop.php" class="btn-primary" style="text-decoration:none; padding:12px 28px;">Continue Shopping</a>
+        <a href="/" class="btn-outline" style="text-decoration:none; padding:12px 28px;">Go Home</a>
       </div>
     </div>
 
     <?php elseif (empty($_SESSION['cart'])): ?>
     <div style="text-align:center; padding:60px 20px;">
       <p style="font-family:'Cormorant Garamond',serif; font-size:24px; color:var(--brown); margin-bottom:16px;">Your cart is empty</p>
-      <a href="shop.php" class="btn-primary" style="text-decoration:none; padding:14px 32px;">Browse Shop</a>
+      <a href="/shop.php" class="btn-primary" style="text-decoration:none; padding:14px 32px;">Browse Shop</a>
     </div>
 
     <?php else: ?>
     <!-- Checkout Form -->
     <div class="contact-grid" style="max-width:1000px; margin:0 auto;">
-      <form class="contact-form" method="POST" action="checkout.php" novalidate>
+      <form class="contact-form" method="POST" action="/checkout.php" novalidate>
         <h3>Shipping Details</h3>
         <?php if ($error): ?>
         <div class="form-feedback" style="display:block; background:#fde8e8; color:#c0392b; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:14px;">
@@ -199,7 +199,7 @@
             <span>Total</span><span>₹<?php echo number_format($total, 0); ?></span>
           </div>
         </div>
-        <a href="cart.php" style="display:block; text-align:center; margin-top:16px; font-size:13px; color:var(--brown-light);">← Edit Cart</a>
+        <a href="/cart.php" style="display:block; text-align:center; margin-top:16px; font-size:13px; color:var(--brown-light);">← Edit Cart</a>
       </div>
     </div>
     <?php endif; ?>

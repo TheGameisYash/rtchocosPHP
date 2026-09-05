@@ -207,6 +207,47 @@ function render_admin_header($title, $activePage = '') {
                         <span>Store Live</span>
                     </a>
 
+                    <!-- Store Business Focus Mode Switcher Pill & Dropdown -->
+                    <?php
+                    $activeStoreMode = get_site_setting('store_mode', 'retail');
+                    $modeIcons = ['retail' => '🛒', 'bulk' => '📦', 'hybrid' => '🔄'];
+                    $modeLabels = ['retail' => 'Retail Mode', 'bulk' => 'Bulk & B2B', 'hybrid' => 'Hybrid Mode'];
+                    ?>
+                    <div class="store-mode-switcher-wrap" style="position: relative; margin-left: 6px;">
+                        <button type="button" class="btn btn-outline btn-sm" id="storeModeToggleBtn" style="padding: 5px 12px; font-size: 12px; gap: 6px; font-weight: 600; border-radius: 20px; background: rgba(229,179,88,0.1); border-color: rgba(229,179,88,0.35); color: var(--text-main); display: flex; align-items: center; cursor: pointer;" title="Current Website Focus. Click to switch between Retail and Bulk">
+                            <span id="storeModeIcon"><?php echo $modeIcons[$activeStoreMode] ?? '🛒'; ?></span>
+                            <span id="storeModeText"><?php echo $modeLabels[$activeStoreMode] ?? 'Retail Mode'; ?></span>
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <div id="storeModeDropdown" style="display: none; position: absolute; left: 0; top: 120%; width: 230px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow-md); z-index: 1050; padding: 6px; overflow: hidden;">
+                            <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; padding: 6px 8px; letter-spacing: 0.5px;">Switch Website Focus</div>
+                            <button type="button" onclick="switchStoreModeFast('retail')" style="width: 100%; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: var(--text-main); font-size: 12px; text-align: left; font-weight: <?php echo $activeStoreMode === 'retail' ? '700' : '500'; ?>;">
+                                <span style="font-size: 16px;">🛒</span>
+                                <div>
+                                    <div>Retail Mode (B2C)</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">Consumer shopping &amp; cart</div>
+                                </div>
+                                <?php if ($activeStoreMode === 'retail'): ?><span style="margin-left: auto; color: #74E291; font-weight: 700;">✓</span><?php endif; ?>
+                            </button>
+                            <button type="button" onclick="switchStoreModeFast('bulk')" style="width: 100%; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: var(--text-main); font-size: 12px; text-align: left; font-weight: <?php echo $activeStoreMode === 'bulk' ? '700' : '500'; ?>;">
+                                <span style="font-size: 16px;">📦</span>
+                                <div>
+                                    <div>Bulk &amp; B2B Mode</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">Wholesale &amp; corporate gifting</div>
+                                </div>
+                                <?php if ($activeStoreMode === 'bulk'): ?><span style="margin-left: auto; color: #74E291; font-weight: 700;">✓</span><?php endif; ?>
+                            </button>
+                            <button type="button" onclick="switchStoreModeFast('hybrid')" style="width: 100%; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: var(--text-main); font-size: 12px; text-align: left; font-weight: <?php echo $activeStoreMode === 'hybrid' ? '700' : '500'; ?>;">
+                                <span style="font-size: 16px;">🔄</span>
+                                <div>
+                                    <div>Hybrid Mode (Dual)</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">Retail + Bulk customer toggle</div>
+                                </div>
+                                <?php if ($activeStoreMode === 'hybrid'): ?><span style="margin-left: auto; color: var(--gold-light); font-weight: 700;">✓</span><?php endif; ?>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Command Palette Trigger Search Box -->
                     <div class="topbar-search-wrapper">
                         <div class="topbar-search-trigger" id="cmdPaletteTrigger" title="Quick Search & Actions (Ctrl + K)">
@@ -438,6 +479,37 @@ function render_admin_footer() {
                     quickActionDropdown.style.display = 'none';
                 });
             }
+
+            // 2.5 Store Business Focus Switcher Dropdown & AJAX Trigger
+            const storeModeBtn = document.getElementById('storeModeToggleBtn');
+            const storeModeDropdown = document.getElementById('storeModeDropdown');
+            if (storeModeBtn && storeModeDropdown) {
+                storeModeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    storeModeDropdown.style.display = storeModeDropdown.style.display === 'block' ? 'none' : 'block';
+                });
+                document.addEventListener('click', function() {
+                    storeModeDropdown.style.display = 'none';
+                });
+            }
+
+            window.switchStoreModeFast = function(mode) {
+                fetch('api_switch_mode.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ mode: mode })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message, 'success');
+                        setTimeout(() => window.location.reload(), 600);
+                    } else {
+                        showToast(data.message || 'Failed to switch mode', 'danger');
+                    }
+                })
+                .catch(() => showToast('Network error while switching store mode', 'danger'));
+            };
 
             // 3. Notification Dropdown Toggle
             const notifBell = document.getElementById('notifBell');

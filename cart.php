@@ -62,15 +62,17 @@
       <?php foreach ($cartItems as $item): ?>
       <div id="cart-item-<?php echo $item['id']; ?>" style="display:flex; gap:20px; padding:20px; margin-bottom:12px; background:var(--cream); border-radius:16px; box-shadow:0 2px 8px rgba(59,42,34,0.06); align-items:center; flex-wrap:wrap;">
         <!-- Image -->
-        <?php if ($item['image_main']): ?>
-        <a href="shop/<?php echo htmlspecialchars($item['slug']); ?>">
-          <img src="<?php echo htmlspecialchars($item['image_main']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" loading="lazy" style="width:80px; height:80px; object-fit:cover; border-radius:12px;">
+        <?php if ($item['image_main']): 
+          $cartImgSrc = (strpos($item['image_main'], 'http') === 0 || strpos($item['image_main'], '/') === 0) ? $item['image_main'] : '/' . ltrim($item['image_main'], '/');
+        ?>
+        <a href="/shop/<?php echo htmlspecialchars($item['slug']); ?>">
+          <img src="<?php echo htmlspecialchars($cartImgSrc); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" loading="lazy" style="width:80px; height:80px; object-fit:cover; border-radius:12px;">
         </a>
         <?php endif; ?>
         
         <!-- Details -->
         <div style="flex:1; min-width:160px;">
-          <a href="shop/<?php echo htmlspecialchars($item['slug']); ?>" style="text-decoration:none;">
+          <a href="/shop/<?php echo htmlspecialchars($item['slug']); ?>" style="text-decoration:none;">
             <h4 style="font-family:'Jost',sans-serif; font-size:15px; font-weight:600; color:var(--brown); margin:0 0 4px;"><?php echo htmlspecialchars($item['name']); ?></h4>
           </a>
           <p style="font-size:13px; color:var(--brown-light); margin:0;">₹<?php echo number_format($item['unit_price'], 0); ?> each</p>
@@ -111,8 +113,8 @@
           <span id="cart-total">₹<?php echo number_format($total, 0); ?></span>
         </div>
         <div style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;">
-          <a href="checkout.php" class="btn-primary" style="text-decoration:none; flex:1; text-align:center; padding:14px;">Proceed to Checkout</a>
-          <a href="shop.php" class="btn-outline" style="text-decoration:none; padding:14px 24px;">Continue Shopping</a>
+          <a href="/checkout.php" class="btn-primary" style="text-decoration:none; flex:1; text-align:center; padding:14px;">Proceed to Checkout</a>
+          <a href="/shop.php" class="btn-outline" style="text-decoration:none; padding:14px 24px;">Continue Shopping</a>
         </div>
       </div>
     </div>
@@ -121,7 +123,7 @@
     <div style="text-align:center; padding:60px 20px;">
       <p style="font-family:'Cormorant Garamond',serif; font-size:24px; color:var(--brown); margin-bottom:16px;">Your cart is empty</p>
       <p style="color:var(--brown-light); margin-bottom:24px;">Discover our artisan chocolate collection and add something delightful.</p>
-      <a href="shop.php" class="btn-primary" style="text-decoration:none; padding:14px 32px;">Browse Shop</a>
+      <a href="/shop.php" class="btn-primary" style="text-decoration:none; padding:14px 32px;">Browse Shop</a>
     </div>
     <?php endif; ?>
 
@@ -135,7 +137,7 @@ function updateCartQty(productId, delta) {
   var newQty = parseInt(qtyEl.textContent) + delta;
   if (newQty < 1) { removeFromCart(productId); return; }
   
-  fetch('api_cart.php', {
+  fetch('/api_cart.php', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({action: 'update', product_id: productId, quantity: newQty})
@@ -145,7 +147,7 @@ function updateCartQty(productId, delta) {
 }
 
 function removeFromCart(productId) {
-  fetch('api_cart.php', {
+  fetch('/api_cart.php', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({action: 'remove', product_id: productId})

@@ -1,10 +1,13 @@
 // --- HELPERS ----------------------------------------------------
 function getCorrectedPath(path) {
-  if (!path || path.startsWith('http') || path.startsWith('data:')) {
+  if (!path || path.startsWith('http') || path.startsWith('data:') || path.startsWith('/')) {
     return path;
   }
-  const isBlogSubfolder = window.location.pathname.includes('/blog/');
-  return isBlogSubfolder ? '../' + path : path;
+  if (typeof pathPrefix !== 'undefined' && pathPrefix) {
+    return pathPrefix + path;
+  }
+  const isSubfolder = window.location.pathname.includes('/blog/') || window.location.pathname.includes('/shop/');
+  return isSubfolder ? '../' + path : path;
 }
 
 // --- RESILIENT API FETCH WRAPPER ---

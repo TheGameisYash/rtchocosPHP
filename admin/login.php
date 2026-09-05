@@ -6,7 +6,7 @@ require_once __DIR__ . '/../includes/db.php';
 
 // Redirect if already logged in
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    header('Location: dashboard.php');
+    header('Location: /admin/dashboard.php');
     exit;
 }
 
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         setcookie('admin_remember', $admin['username'], time() + (86400 * 7), '/');
                     }
                     
-                    header('Location: dashboard.php');
+                    header('Location: /admin/dashboard.php');
                     exit;
                 } else {
                     record_failed_login();
@@ -105,7 +105,7 @@ $savedUsername = $_COOKIE['admin_remember'] ?? '';
             </div>
         <?php endif; ?>
 
-        <form action="login.php" method="POST" id="loginForm">
+        <form action="/admin/login.php" method="POST" id="loginForm">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
             
             <div class="form-group">

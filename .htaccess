@@ -52,6 +52,10 @@ Options +FollowSymLinks -Indexes
     # Sitemap rule
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
+    # Handle /admin without trailing slash and /login shortcuts
+    RewriteRule ^admin$ /admin/ [R=301,L]
+    RewriteRule ^login(\.php)?$ /admin/login.php [R=301,L]
+
     # Handle /blog and /blog/ requests
     RewriteRule ^blog/?$ blog.php [L]
 

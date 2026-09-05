@@ -1,4 +1,13 @@
 <?php
+  // Fallback router delegation for servers running without router.php
+  $reqPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '/';
+  if ($reqPath !== '/' && $reqPath !== '/index.php' && file_exists(__DIR__ . '/router.php')) {
+      $handled = include __DIR__ . '/router.php';
+      if ($handled === true) {
+          exit;
+      }
+  }
+
   $pageTitle = "Chocolate Blog India & Chocolate Academy | RT Chocos Bean-to-Bar Learning";
   $pageDescription = "RT Chocos is the premier chocolate blog in India and professional bean-to-bar chocolate academy. Discover Indian bean-to-bar chocolate making, tempering science, workshops, and courses by expert Aarti Saluja Sahni.";
   $pageKeywords = "chocolate blog india, chocolate academy india, indian bean to bar chocolate, bean to bar chocolate, chocolate course india, chocolate workshops india, learn chocolate making india, cocoa science blog india, craft chocolate india, chocolate education india, chocolate blogging india, tempering chocolate course, chocolate consultant Mumbai, RT Chocos";

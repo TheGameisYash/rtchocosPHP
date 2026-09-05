@@ -1,4 +1,9 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$cartCount = (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) ? array_sum($_SESSION['cart']) : 0;
+
 require_once __DIR__ . '/db.php';
 // Canonicals always point to the public HTTPS URL, never to a preview host or query string.
 $siteUrl = "https://www.rtchocos.com";
@@ -301,6 +306,27 @@ if (!empty($pageSchema)) {
   }
 ?>
 <header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
+  <?php
+    $headerStoreMode = get_site_setting('store_mode', 'retail');
+    $announcementText = get_site_setting('store_announcement_text', '');
+    if (empty($announcementText)) {
+      if ($headerStoreMode === 'bulk') {
+        $announcementText = '📦 B2B Bulk Supplies, Private Labeling & Corporate Gifting Solutions | Pan-India Delivery';
+      } else {
+        $announcementText = '🍫 Handcrafted Artisanal Chocolates & Spreads — Free Pan-India Delivery on Orders Above ₹999!';
+      }
+    }
+  ?>
+  <?php if (!empty($announcementText)): ?>
+  <div class="site-announcement-strip" style="background: linear-gradient(90deg, #07150E, #11281A, #07150E); color: #E5B358; font-size: 11.5px; font-weight: 600; text-align: center; padding: 6px 16px; letter-spacing: 0.4px; border-bottom: 1px solid rgba(229,179,88,0.2); display: flex; align-items: center; justify-content: center; gap: 8px;">
+    <span><?php echo htmlspecialchars($announcementText); ?></span>
+    <?php if ($headerStoreMode === 'bulk'): ?>
+      <a href="<?php echo $pathPrefix; ?>shop.php" style="color: #FFFFFF; text-decoration: underline; font-size: 11px; margin-left: 6px;">Bulk Inquiry &rarr;</a>
+    <?php else: ?>
+      <a href="<?php echo $pathPrefix; ?>shop.php" style="color: #FFFFFF; text-decoration: underline; font-size: 11px; margin-left: 6px;">Shop Now &rarr;</a>
+    <?php endif; ?>
+  </div>
+  <?php endif; ?>
   <div class="header-inner">
     <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" title="RT CHOCOS — Artisanal Cacao Academy & Journal">
       <svg class="logo-svg-emblem" width="26" height="34" viewBox="0 0 40 50" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -4,6 +4,18 @@
 
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
+// Enforce trailing slash on /admin directory for correct relative path resolution
+if ($uri === '/admin') {
+    header('Location: /admin/');
+    return true;
+}
+
+// Route direct /login and /login.php navigation to admin login
+if ($uri === '/login' || $uri === '/login.php') {
+    header('Location: /admin/login.php');
+    return true;
+}
+
 // If it's a real file or directory (except physical /blog folder root request), serve it directly
 if ($uri !== '/' && $uri !== '/blog' && $uri !== '/blog/' && file_exists(__DIR__ . $uri)) {
     return false;
@@ -15,9 +27,65 @@ if ($uri === '/blog' || $uri === '/blog/') {
     return true;
 }
 
+// Route physical /shop folder request or clean /shop to shop.php
+if ($uri === '/shop' || $uri === '/shop/') {
+    include __DIR__ . '/shop.php';
+    return true;
+}
+
 // Match the production sitemap rewrite during local verification.
 if ($uri === '/sitemap.xml') {
     include __DIR__ . '/sitemap.php';
+    return true;
+}
+
+// Serve static files requested from subpaths like /shop/style.css, /blog/style.css, /shop/assets/..., /blog/js/...
+if (preg_match('#^/(?:shop|blog)/((?:style\.css|script\.js|favicon\.[a-z]+|(?:css|js|assets|data)/.+))$#', $uri, $m)) {
+    $realStaticPath = __DIR__ . '/' . $m[1];
+    if (file_exists($realStaticPath)) {
+        $mimeTypes = [
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'svg' => 'image/svg+xml',
+            'webp' => 'image/webp',
+            'woff2' => 'font/woff2',
+            'woff' => 'font/woff',
+            'ico' => 'image/x-icon'
+        ];
+        $ext = strtolower(pathinfo($realStaticPath, PATHINFO_EXTENSION));
+        if (isset($mimeTypes[$ext])) {
+            header('Content-Type: ' . $mimeTypes[$ext]);
+        }
+        readfile($realStaticPath);
+        return true;
+    }
+}
+
+// Route API requests from subpaths like /shop/api_cart.php or /blog/api_blogs.php
+if (preg_match('#^/(?:shop|blog)/(api_[a-zA-Z0-9_\-]+\.php)$#', $uri, $m)) {
+    $apiFile = __DIR__ . '/' . $m[1];
+    if (file_exists($apiFile)) {
+        include $apiFile;
+        return true;
+    }
+}
+
+// Route clean /cart and /checkout URLs
+if ($uri === '/cart' || $uri === '/cart/') {
+    include __DIR__ . '/cart.php';
+    return true;
+}
+
+if ($uri === '/checkout' || $uri === '/checkout/') {
+    include __DIR__ . '/checkout.php';
+    return true;
+}
+
+if (preg_match('#^/(?:shop|blog)/(cart|checkout)\.php$#', $uri, $m)) {
+    include __DIR__ . '/' . $m[1] . '.php';
     return true;
 }
 
@@ -31,34 +99,10 @@ if ($uri !== '/' && preg_match('#^/([^/]+)$#', $uri, $m)) {
 }
 
 // Route clean blog URLs: /blog/{slug} → set slug and include article logic
-if (preg_match('#^/blog/([^/]+)$#', $uri, $m)) {
+if (preg_match('#^/blog/([^/]+)/?$#', $uri, $m)) {
     $articleKey = $m[1];
     include __DIR__ . '/blog-article.php';
     return true;
-}
-
-// Serve static files requested from subpaths like /shop/css/... or /blog/js/...
-if (preg_match('#^/(?:shop|blog)/(css|js|assets|data)/(.+)$#', $uri, $m)) {
-    $realStaticPath = __DIR__ . '/' . $m[1] . '/' . $m[2];
-    if (file_exists($realStaticPath)) {
-        $mimeTypes = [
-            'css' => 'text/css',
-            'js' => 'application/javascript',
-            'png' => 'image/png',
-            'jpg' => 'image/jpeg',
-            'jpeg' => 'image/jpeg',
-            'svg' => 'image/svg+xml',
-            'webp' => 'image/webp',
-            'woff2' => 'font/woff2',
-            'woff' => 'font/woff'
-        ];
-        $ext = strtolower(pathinfo($realStaticPath, PATHINFO_EXTENSION));
-        if (isset($mimeTypes[$ext])) {
-            header('Content-Type: ' . $mimeTypes[$ext]);
-        }
-        readfile($realStaticPath);
-        return true;
-    }
 }
 
 // Route clean shop product URLs: /shop/{slug}
