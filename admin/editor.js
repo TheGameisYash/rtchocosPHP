@@ -82,6 +82,16 @@
     document.addEventListener('copy', handleEditorCopy);
     document.addEventListener('cut', handleEditorCut);
 
+    // Setup standardize content button
+    const stdBtn = document.getElementById('standardizeContentBtn');
+    if (stdBtn) {
+        stdBtn.addEventListener('click', function() {
+            if (typeof window.standardizeArticleContent === 'function') {
+                window.standardizeArticleContent();
+            }
+        });
+    }
+
     // Close slash menu and clear block selection on outside click
     document.addEventListener('click', (e) => {
         if (state.slashMenuOpen && !e.target.closest('.slash-command-menu')) {
@@ -204,9 +214,14 @@
                     });
                 }
             }
+            // Standalone bold heading (e.g. **Heading Title**)
+            const standaloneBoldMatch = trimmed.match(/^(?:\*\*|<strong>|<b>)([\s\S]+?)(?:\*\*|<\/strong>|<\/b>)$/);
+            if (standaloneBoldMatch && standaloneBoldMatch[1].length > 3 && standaloneBoldMatch[1].length <= 120 && !standaloneBoldMatch[1].endsWith('.')) {
+                blocks.push({ type: 'heading-2', content: mdInlineToHtml(standaloneBoldMatch[1].trim()) });
+            }
             // Regular Paragraph (contiguous lines)
             else {
-                let pText = trimmed;
+                let pLines = [trimmed];
                 while (i + 1 < lines.length && lines[i + 1].trim() !== '' && 
                        !lines[i + 1].trim().startsWith('##') && 
                        !lines[i + 1].trim().startsWith('- ') && 
@@ -218,9 +233,15 @@
                        !lines[i + 1].trim().startsWith('![') &&
                        !lines[i + 1].trim().startsWith('{{youtube:') &&
                        lines[i + 1].trim() !== '---') {
+                    // Check if next line is a standalone bold header
+                    const nextTrim = lines[i + 1].trim();
+                    if (/^(?:\*\*|<strong>|<b>)([\s\S]+?)(?:\*\*|<\/strong>|<\/b>)$/.test(nextTrim) && nextTrim.length <= 120 && !nextTrim.endsWith('.')) {
+                        break;
+                    }
                     i++;
-                    pText += '\n' + lines[i].trim();
+                    pLines.push(lines[i].trim());
                 }
+                const pText = pLines.join(' ');
                 blocks.push({ type: 'paragraph', content: mdInlineToHtml(pText) });
             }
         }
@@ -377,6 +398,19 @@
         const div = document.createElement('div');
         div.innerHTML = html;
         
+        // Strip Word/Google Docs cruft (e.g. font-size, font-family, mso styles)
+        div.querySelectorAll('span, font').forEach(el => {
+            if (el.style) {
+                el.style.fontSize = '';
+                el.style.fontFamily = '';
+                el.style.lineHeight = '';
+            }
+            const st = el.getAttribute('style');
+            if (!st || st.trim() === '') {
+                el.outerHTML = el.innerHTML;
+            }
+        });
+        
         // Convert strong tags to **
         const strongs = div.querySelectorAll('strong, b');
         strongs.forEach(s => { s.outerHTML = `**${s.innerHTML}**`; });
@@ -393,10 +427,6 @@
         const brs = div.querySelectorAll('br');
         brs.forEach(b => { b.outerHTML = '\n'; });
         
-        // Preserve inline formatting that has no markdown equivalent:
-        // <font>, <span style>, <u>, <s>, <sup>, <sub> are kept as-is
-        // Return innerHTML so HTML tags are preserved in the markdown output
-        // Strip any remaining block-level tags but keep inline ones
         let result = div.innerHTML;
         
         // Remove any block-level wrappers that might have crept in
@@ -885,11 +915,20 @@
             
             if (hasStructure && lines.length > 1) {
                 pastedBlocks = markdownToBlocks(plainText);
-            } else if (lines.length > 1) {
-                const nonEmpty = lines.filter(l => l.trim() !== '');
-                pastedBlocks = nonEmpty.map(l => ({ type: 'paragraph', content: l }));
             } else {
-                pastedBlocks = [{ type: 'paragraph', content: plainText }];
+                // Split by double newlines into logical paragraphs
+                const rawParagraphs = plainText.split(/\r?\n\s*\r?\n/);
+                pastedBlocks = rawParagraphs.map(p => {
+                    const cleanText = p.replace(/\r/g, '').replace(/(?<!\s\s)\n/g, ' ').trim();
+                    if (!cleanText) return null;
+                    
+                    // Standalone bold check
+                    const boldHeadingMatch = cleanText.match(/^(?:\*\*|<strong>|<b>)([\s\S]+?)(?:\*\*|<\/strong>|<\/b>)$/);
+                    if (boldHeadingMatch && boldHeadingMatch[1].length <= 120 && !boldHeadingMatch[1].endsWith('.')) {
+                        return { type: 'heading-2', content: boldHeadingMatch[1].trim() };
+                    }
+                    return { type: 'paragraph', content: cleanText };
+                }).filter(Boolean);
             }
         }
         
@@ -914,6 +953,19 @@
                         tempDiv.innerHTML = formatted;
                         linkifyDOM(tempDiv);
                         b.content = tempDiv.innerHTML;
+                        
+                        // 3. Promote standalone bold paragraph to Heading 2
+                        if (b.type === 'paragraph') {
+                            const trimmedContent = b.content.trim();
+                            const boldMatch = trimmedContent.match(/^(?:<strong>|<b>|\*\*)([\s\S]+?)(?:<\/strong>|<\/b>|\*\*)$/i);
+                            if (boldMatch) {
+                                const headingText = boldMatch[1].replace(/<[^>]+>/g, '').trim();
+                                if (headingText.length > 3 && headingText.length <= 120 && !headingText.endsWith('.') && !headingText.includes('\n')) {
+                                    b.type = 'heading-2';
+                                    b.content = headingText;
+                                }
+                            }
+                        }
                     }
                 }
             });
@@ -1193,6 +1245,17 @@
                     }
                 }
                 
+                // Detect standalone bold line as heading
+                if (type === 'paragraph') {
+                    const textOnly = (node.textContent || '').trim();
+                    const isHeadingClass = node.className && /heading|title|subtitle/i.test(node.className);
+                    const isBoldContent = /^(?:<(?:strong|b)>|\*\*).*?(?:<\/(?:strong|b)>|\*\*)$/i.test(content);
+                    const isShortTitle = textOnly.length > 3 && textOnly.length <= 120 && !textOnly.endsWith('.') && !textOnly.includes('\n');
+                    if ((isHeadingClass || isBoldContent) && isShortTitle) {
+                        type = 'heading-2';
+                    }
+                }
+                
                 const newBlock = { type: type, content: content };
                 if (indexAttr !== null) newBlock.index = indexAttr;
                 if (alignAttr !== null) newBlock.align = alignAttr;
@@ -1261,7 +1324,8 @@
                     if (tag === 'a' && (name === 'href' || name === 'target')) return;
                     if (tag === 'font' && (name === 'color' || name === 'size')) return;
                     if (name === 'style') {
-                        // Filter styled values to only preserve color, background-color, font-size, text-align
+                        // Filter styled values to only preserve color, background-color, text-align
+                        // Note: font-size and font-family are stripped so pasted text conforms to site typography
                         const styleVal = attr.value;
                         const cleanStyles = [];
                         const styles = styleVal.split(';');
@@ -1270,7 +1334,7 @@
                             if (parts.length === 2) {
                                 const prop = parts[0].trim().toLowerCase();
                                 const val = parts[1].trim();
-                                if (['color', 'background-color', 'font-size', 'text-align'].includes(prop)) {
+                                if (['color', 'background-color', 'text-align'].includes(prop)) {
                                     cleanStyles.push(`${prop}: ${val}`);
                                 }
                             }
@@ -2538,4 +2602,57 @@
         }
     }
 
+    // ═══════════════════════════════════════════════════════
+    // STANDARDIZE / AUTO-CLEAN ARTICLE CONTENT
+    // ═══════════════════════════════════════════════════════
+    window.standardizeArticleContent = function() {
+        saveUndoState();
+        let convertedHeadings = 0;
+        let cleanedSpans = 0;
+        
+        state.blocks.forEach((block) => {
+            if (block.type === 'paragraph') {
+                const raw = (block.content || '').trim();
+                // Check if bold pseudo-heading
+                const boldMatch = raw.match(/^(?:<strong>|<b>|\*\*)([\s\S]+?)(?:<\/strong>|<\/b>|\*\*)$/i);
+                if (boldMatch) {
+                    const titleText = boldMatch[1].replace(/<[^>]+>/g, '').trim();
+                    if (titleText.length > 3 && titleText.length <= 120 && !titleText.endsWith('.')) {
+                        block.type = 'heading-2';
+                        block.content = titleText;
+                        convertedHeadings++;
+                        return;
+                    }
+                }
+                
+                // Strip font-size/font-family from inner HTML
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = block.content;
+                tempDiv.querySelectorAll('span, font').forEach(el => {
+                    if (el.style) {
+                        el.style.fontSize = '';
+                        el.style.fontFamily = '';
+                        el.style.lineHeight = '';
+                    }
+                    const st = el.getAttribute('style');
+                    if (!st || st.trim() === '') {
+                        el.outerHTML = el.innerHTML;
+                        cleanedSpans++;
+                    }
+                });
+                block.content = tempDiv.innerHTML;
+            }
+        });
+        
+        recalcListIndices(state.blocks);
+        renderBlocks();
+        updateHiddenInput();
+        updateStats();
+        
+        if (typeof showToast === 'function') {
+            showToast(`Content Standardized! Formatted ${convertedHeadings} headings and cleaned typography.`, 'success');
+        }
+    };
+
 })();
+

@@ -361,6 +361,10 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
             <input type="checkbox" id="autoFormatPasteToggle" checked style="width:14px; height:14px; accent-color:var(--green-900); margin:0;">
             <span>Auto-Format Paste</span>
         </label>
+        <button type="button" class="btn btn-outline" id="standardizeContentBtn" title="Clean Word/Docs tags, convert bold section titles to H2 headings, and normalize paragraph formatting">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            Clean & Standardize
+        </button>
         <button type="button" class="btn btn-outline" onclick="triggerUndo()" title="Undo (Ctrl+Z)">Undo</button>
         <button type="button" class="btn btn-outline" onclick="triggerRedo()" title="Redo (Ctrl+Y)">Redo</button>
         <button type="button" class="btn btn-outline" onclick="openFullPreview()">
@@ -759,11 +763,29 @@ function escapeHtml(text) {
 
 function parseInline(text) {
     if (!text) return '';
-    // Bold: **text**
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    // Italic: *text* or _text_
-    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    text = text.replace(/_(.*?)_/g, '<em>$1</em>');
+    
+    // Strip dangerous tags
+    text = text.replace(/<script\b[^>]*>.*?<\/script>/gi, '');
+    text = text.replace(/<iframe\b[^>]*>.*?<\/iframe>/gi, '');
+    
+    // Clean up junk styles from pasted Word/Google Docs content
+    text = text.replace(/<span\b([^>]*)>/gi, function(match, attrs) {
+        let cleanAttrs = attrs
+            .replace(/font-size\s*:\s*[^;"]+;?/gi, '')
+            .replace(/font-family\s*:\s*[^;"]+;?/gi, '')
+            .replace(/line-height\s*:\s*[^;"]+;?/gi, '')
+            .replace(/mso-[^;"]+;?/gi, '')
+            .replace(/style\s*=\s*["']\s*["']/gi, '')
+            .trim();
+        return cleanAttrs ? `<span ${cleanAttrs}>` : '<span>';
+    });
+    text = text.replace(/<span>([\s\S]*?)<\/span>/gi, '$1');
+    
+    // Bold: **text** (multiline /s support)
+    text = text.replace(/\*\*(.+?)\*\*/gs, '<strong>$1</strong>');
+    // Italic: *text* or _text_ (prevent matching ** as empty italic)
+    text = text.replace(/(?<!\*)\*([^\*\s][^\*]*?[^\*\s]|[^\*\s])\*(?!\*)/gs, '<em>$1</em>');
+    text = text.replace(/(?<=\s|^)_([^_\s][^_]*?[^_\s]|[^_\s])_(?=\s|$|[.,;:!?])/gs, '<em>$1</em>');
     // Inline code: `code`
     text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
     // Inline images with optional position matching: ![alt](url){position}
@@ -783,8 +805,7 @@ function parseMarkdown(markdown) {
     // Global replacements: YouTube embeds {{youtube:VIDEO_ID}}
     markdown = markdown.replace(/\{\{youtube:([a-zA-Z0-9_\-]+)\}\}/g, '<div class="blog-yt-embed"><iframe src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>');
     
-    // PRE-PROCESS: Group consecutive list items separated by \n into \n-joined blocks
-    // while keeping \n\n as block separator for non-list content
+    // PRE-PROCESS: Intelligently group lines into blocks
     const lines = markdown.split('\n');
     const mergedBlocks = [];
     let currentBlock = '';
@@ -808,8 +829,9 @@ function parseMarkdown(markdown) {
             continue;
         }
         
-        if (line.trim() === '') {
-            // Empty line = block separator
+        const trimmed = line.trim();
+        
+        if (trimmed === '') {
             if (currentBlock.trim()) {
                 mergedBlocks.push(currentBlock);
             }
@@ -817,22 +839,48 @@ function parseMarkdown(markdown) {
             continue;
         }
         
-        // Check if current line is a list item
-        const isBullet = /^[\-\*]\s+/.test(line.trim());
-        const isOrdered = /^\d+\.\s+/.test(line.trim());
-        const isListItem = isBullet || isOrdered;
+        // Line type checkers
+        const isHeading = /^#{1,6}\s+/.test(trimmed);
+        const isDivider = /^(?:---|\*\*\*|___)$/.test(trimmed);
+        const isBullet = /^[\-\*](\s|$)/.test(trimmed);
+        const isOrdered = /^\d+\.(\s|$)/.test(trimmed);
+        const isQuote = trimmed.startsWith('>');
+        const isTable = trimmed.startsWith('|');
+        const isImg = /^!\[(.*?)\]\((.*?)\)/.test(trimmed);
+        const isYt = /^(?:\{\{youtube:|\[youtube\]\()/.test(trimmed);
+        const isBlockHtml = /^<(div|table|thead|tbody|tr|th|td|pre|blockquote|hr|iframe|figure|section|article|p|h[1-6]|ul|ol|li)\b/i.test(trimmed);
         
-        // Check what the current block contains
-        const currentBlockTrimmed = currentBlock.trim();
-        const currentIsBullet = /^[\-\*]\s+/.test(currentBlockTrimmed);
-        const currentIsOrdered = /^\d+\.\s+/.test(currentBlockTrimmed);
+        const isSpecial = isHeading || isDivider || isBullet || isOrdered || isQuote || isTable || isImg || isYt || isBlockHtml;
         
-        if (isListItem && currentBlock.trim() && 
-            ((isBullet && currentIsBullet) || (isOrdered && currentIsOrdered))) {
-            // Same list type — merge with single newline
+        if (currentBlock === '') {
+            currentBlock = line;
+            continue;
+        }
+        
+        const currentTrimmed = currentBlock.trim();
+        const curIsBullet = /^[\-\*](\s|$)/.test(currentTrimmed);
+        const curIsOrdered = /^\d+\.(\s|$)/.test(currentTrimmed);
+        const curIsQuote = currentTrimmed.startsWith('>');
+        const curIsTable = currentTrimmed.startsWith('|');
+        const curIsSpecial = /^#{1,6}\s+/.test(currentTrimmed) || 
+                            /^(?:---|\*\*\*|___)$/.test(currentTrimmed) || 
+                            curIsBullet || curIsOrdered || curIsQuote || curIsTable ||
+                            /^!\[(.*?)\]\((.*?)\)/.test(currentTrimmed) ||
+                            /^(?:\{\{youtube:|\[youtube\]\()/.test(currentTrimmed) ||
+                            /^<(div|table|thead|tbody|tr|th|td|pre|blockquote|hr|iframe|figure|section|article|p|h[1-6]|ul|ol|li)\b/i.test(currentTrimmed);
+
+        if (isBullet && curIsBullet) {
+            currentBlock += '\n' + line;
+        } else if (isOrdered && curIsOrdered) {
+            currentBlock += '\n' + line;
+        } else if (isQuote && curIsQuote) {
+            currentBlock += '\n' + line;
+        } else if (isTable && curIsTable) {
+            currentBlock += '\n' + line;
+        } else if (!isSpecial && !curIsSpecial) {
+            // Both are regular text lines within the same paragraph — merge!
             currentBlock += '\n' + line;
         } else {
-            // Different type — start new block
             if (currentBlock.trim()) {
                 mergedBlocks.push(currentBlock);
             }
@@ -911,7 +959,7 @@ function parseMarkdown(markdown) {
             return;
         }
         // Divider
-        if (block === '---') {
+        if (block === '---' || block === '***' || block === '___') {
             html += `<hr class="block-divider">\n`;
             return;
         }
@@ -929,11 +977,6 @@ function parseMarkdown(markdown) {
             } else {
                 html += `<blockquote><p>${parseInline(content)}</p></blockquote>\n`;
             }
-            return;
-        }
-        // HTML blocks (like div, img, hr, iframe, table, ol, ul, li, blockquote, p, h1-h6)
-        if (block.trim().startsWith('<')) {
-            html += block + '\n';
             return;
         }
         // Bullet list items (multiple lines grouped)
@@ -986,9 +1029,28 @@ function parseMarkdown(markdown) {
             }
             return;
         }
+        // HTML blocks
+        if (/^<(div|table|thead|tbody|tr|th|td|pre|blockquote|hr|iframe|figure|section|article|p|h[1-6]|ul|ol|li)\b/i.test(block)) {
+            html += block + '\n';
+            return;
+        }
+        
+        // Standalone bold heading detection
+        const cleanBlock = block.trim();
+        const boldHeadingMatch = cleanBlock.match(/^(?:\*\*|<strong>|<b>)([\s\S]+?)(?:\*\*|<\/strong>|<\/b>)$/);
+        if (boldHeadingMatch) {
+            const inner = boldHeadingMatch[1].trim();
+            if (inner.length <= 120 && !/\.\s+[A-Z]/.test(inner) && !inner.endsWith('.')) {
+                html += `<h2>${parseInline(inner)}</h2>\n`;
+                return;
+            }
+        }
 
         // Paragraph
-        html += `<p>${parseInline(block)}</p>\n`;
+        let pContent = parseInline(block);
+        pContent = pContent.replace(/(?<!\s\s)\n(?!\n)/g, ' ');
+        pContent = pContent.replace(/\s\s\n/g, '<br>');
+        html += `<p>${pContent}</p>\n`;
     });
     return html;
 }

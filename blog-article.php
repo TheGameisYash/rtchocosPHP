@@ -93,14 +93,30 @@ $breadcrumbs = [
 $pageKeywords = htmlspecialchars($post['title']) . ", " . htmlspecialchars($post['category']) . ", Indian chocolate blog, India first chocolate blog, craft chocolate India, cocoa science, bean to bar chocolate India, chocolate academy India, chocolate education, RT Chocos, Aarti Saluja Sahni";
 
 // Custom markdown parsing function
+if (!function_exists('clean_span_styles')) {
+function clean_span_styles($text) {
+    $text = preg_replace_callback('/<span\b([^>]*)>/i', function($m) {
+        $attrs = preg_replace('/font-size\s*:\s*[^;"]+;?/i', '', $m[1]);
+        $attrs = preg_replace('/font-family\s*:\s*[^;"]+;?/i', '', $attrs);
+        $attrs = preg_replace('/line-height\s*:\s*[^;"]+;?/i', '', $attrs);
+        $attrs = preg_replace('/mso-[^;"]+;?/i', '', $attrs);
+        $attrs = preg_replace('/style\s*=\s*["\']\s*["\']/i', '', $attrs);
+        $attrs = trim($attrs);
+        return !empty($attrs) ? "<span {$attrs}>" : "<span>";
+    }, $text);
+    return preg_replace('/<span>([\s\S]*?)<\/span>/i', '$1', $text);
+}
+}
+
 if (!function_exists('parse_markdown')) {
 function parse_markdown($markdown) {
-    global $pathPrefix;
+    global $pathPrefix, $headings_list;
+    if (!isset($headings_list)) {
+        $headings_list = [];
+    }
     $markdown = str_replace(array("\r\n", "\r"), "\n", $markdown);
     
     // PRE-PROCESS: Intelligently group lines into blocks
-    // Consecutive list items (separated by single \n) are merged into one block
-    // Double \n still separates different block types
     $lines = explode("\n", $markdown);
     $mergedBlocks = array();
     $currentBlock = '';
@@ -125,7 +141,6 @@ function parse_markdown($markdown) {
         $trimmed = trim($line);
         
         if ($trimmed === '') {
-            // Empty line = block separator
             if (trim($currentBlock) !== '') {
                 $mergedBlocks[] = $currentBlock;
             }
@@ -133,26 +148,49 @@ function parse_markdown($markdown) {
             continue;
         }
         
-        // Check if current line is a list item
+        // Line type checkers
+        $isHeading = preg_match('/^#{1,6}\s+/', $trimmed);
+        $isDivider = preg_match('/^(?:---|\*\*\*|___)$/', $trimmed);
         $isBullet = preg_match('/^[\*\-](\s|$)/', $trimmed);
         $isOrdered = preg_match('/^\d+\.(\s|$)/', $trimmed);
-        $isListItem = $isBullet || $isOrdered;
+        $isQuote = strpos($trimmed, '>') === 0;
+        $isTable = strpos($trimmed, '|') === 0;
+        $isImg = preg_match('/^!\[(.*?)\]\((.*?)\)/', $trimmed);
+        $isYt = preg_match('/^(?:\{\{youtube:|\[youtube\]\()/', $trimmed);
+        $isBlockHtml = preg_match('/^<(div|table|thead|tbody|tr|th|td|pre|blockquote|hr|iframe|figure|section|article|p|h[1-6]|ul|ol|li)\b/i', $trimmed);
         
-        // Check what the current block contains
-        $currentBlockTrimmed = trim($currentBlock);
-        $currentIsBullet = preg_match('/^[\*\-](\s|$)/', $currentBlockTrimmed);
-        $currentIsOrdered = preg_match('/^\d+\.(\s|$)/', $currentBlockTrimmed);
+        $isSpecial = $isHeading || $isDivider || $isBullet || $isOrdered || $isQuote || $isTable || $isImg || $isYt || $isBlockHtml;
         
-        if ($isListItem && $currentBlockTrimmed !== '' && 
-            (($isBullet && $currentIsBullet) || ($isOrdered && $currentIsOrdered))) {
-            // Same list type — merge with single newline
+        if ($currentBlock === '') {
+            $currentBlock = $line;
+            continue;
+        }
+        
+        $currentTrimmed = trim($currentBlock);
+        $curIsBullet = preg_match('/^[\*\-](\s|$)/', $currentTrimmed);
+        $curIsOrdered = preg_match('/^\d+\.(\s|$)/', $currentTrimmed);
+        $curIsQuote = strpos($currentTrimmed, '>') === 0;
+        $curIsTable = strpos($currentTrimmed, '|') === 0;
+        $curIsSpecial = preg_match('/^#{1,6}\s+/', $currentTrimmed) || 
+                        preg_match('/^(?:---|\*\*\*|___)$/', $currentTrimmed) || 
+                        $curIsBullet || $curIsOrdered || $curIsQuote || $curIsTable ||
+                        preg_match('/^!\[(.*?)\]\((.*?)\)/', $currentTrimmed) ||
+                        preg_match('/^(?:\{\{youtube:|\[youtube\]\()/', $currentTrimmed) ||
+                        preg_match('/^<(div|table|thead|tbody|tr|th|td|pre|blockquote|hr|iframe|figure|section|article|p|h[1-6]|ul|ol|li)\b/i', $currentTrimmed);
+
+        if ($isBullet && $curIsBullet) {
             $currentBlock .= "\n" . $line;
-        } else if ($trimmed !== '' && strpos($trimmed, '|') === 0 && 
-                   $currentBlockTrimmed !== '' && strpos($currentBlockTrimmed, '|') === 0) {
-            // Table rows — merge with single newline
+        } else if ($isOrdered && $curIsOrdered) {
+            $currentBlock .= "\n" . $line;
+        } else if ($isQuote && $curIsQuote) {
+            $currentBlock .= "\n" . $line;
+        } else if ($isTable && $curIsTable) {
+            $currentBlock .= "\n" . $line;
+        } else if (!$isSpecial && !$curIsSpecial) {
+            // Both are regular text lines within the same paragraph — merge!
             $currentBlock .= "\n" . $line;
         } else {
-            // Different type — start new block
+            // Boundary between different block types
             if (trim($currentBlock) !== '') {
                 $mergedBlocks[] = $currentBlock;
             }
@@ -170,7 +208,7 @@ function parse_markdown($markdown) {
         if (empty($block)) continue;
         
         // Divider
-        if ($block === '---') {
+        if ($block === '---' || $block === '***' || $block === '___') {
             $html .= "<hr class=\"block-divider\">\n";
             continue;
         }
@@ -261,6 +299,7 @@ function parse_markdown($markdown) {
             $level = strlen($matches[1]);
             $content = parse_inline($matches[2]);
             $cleanText = strip_tags($content);
+            $cleanText = html_entity_decode($cleanText, ENT_QUOTES, 'UTF-8');
             $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $cleanText), '-'));
             
             if ($level === 2 || $level === 3) {
@@ -277,12 +316,19 @@ function parse_markdown($markdown) {
             continue;
         }
         
-        // Blockquotes
-        if (strpos($block, '> ') === 0) {
+        // Blockquotes & Callouts
+        if (strpos($block, '>') === 0) {
             $quoteLines = explode("\n", $block);
             $quoteContent = '';
             foreach ($quoteLines as $line) {
-                $quoteContent .= substr($line, 2) . "\n";
+                $lineTrimmed = trim($line);
+                if (strpos($lineTrimmed, '> ') === 0) {
+                    $quoteContent .= substr($lineTrimmed, 2) . "\n";
+                } else if ($lineTrimmed === '>') {
+                    $quoteContent .= "\n";
+                } else {
+                    $quoteContent .= $lineTrimmed . "\n";
+                }
             }
             
             $content = trim($quoteContent);
@@ -295,7 +341,7 @@ function parse_markdown($markdown) {
             continue;
         }
         
-        // Bullet Lists (now properly grouped by preprocessor)
+        // Bullet Lists
         if (preg_match('/^[\*\-](\s|$)/m', $block)) {
             $listLines = explode("\n", $block);
             $listHtml = "<ul>\n";
@@ -310,7 +356,7 @@ function parse_markdown($markdown) {
             continue;
         }
 
-        // Ordered Lists (now properly grouped by preprocessor)
+        // Ordered Lists
         if (preg_match('/^\d+\.(\s|$)/m', $block)) {
             $listLines = explode("\n", $block);
             $listHtml = "<ol>\n";
@@ -325,37 +371,59 @@ function parse_markdown($markdown) {
             continue;
         }
         
-        // HTML blocks (like div, img, hr, iframe, table, ol, ul, li, blockquote)
-        if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|tr|td|th|iframe|ol|ul|li|blockquote)/i', $block)) {
+        // HTML blocks
+        if (preg_match('/^<(div|table|thead|tbody|tr|th|td|pre|blockquote|hr|iframe|figure|section|article|p|h[1-6]|ul|ol|li)\b/i', $block)) {
             $html .= $block . "\n";
             continue;
         }
         
+        // Standalone bold line check acting as section heading
+        $cleanBlock = trim($block);
+        if (preg_match('/^(?:\*\*|<strong>|<b>)([\s\S]+?)(?:\*\*|<\/strong>|<\/b>)$/u', $cleanBlock, $bMatches)) {
+            $inner = trim($bMatches[1]);
+            if (mb_strlen($inner) <= 120 && !preg_match('/\.\s+[A-Z]/', $inner) && substr($inner, -1) !== '.') {
+                $content = parse_inline($inner);
+                $cleanText = strip_tags($content);
+                $cleanText = html_entity_decode($cleanText, ENT_QUOTES, 'UTF-8');
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $cleanText), '-'));
+                
+                global $headings_list;
+                $headings_list[] = [
+                    'level' => 2,
+                    'text' => $cleanText,
+                    'slug' => $slug
+                ];
+                $html .= "<h2 id=\"{$slug}\">{$content}</h2>\n";
+                continue;
+            }
+        }
+        
         // Default to paragraph
         $content = parse_inline($block);
-        $html .= "<p>{$content}</p>\n";    } // end foreach
+        $content = preg_replace('/(?<!\s\s)\n(?!\n)/', ' ', $content);
+        $content = preg_replace('/\s\s\n/', '<br>', $content);
+        $html .= "<p>{$content}</p>\n";
+    }
     
     return $html;
 }
-} // end function_exists check
+}
 
 if (!function_exists('parse_inline')) {
 function parse_inline($text) {
     global $pathPrefix;
     
-    // Strip dangerous tags but keep safe formatting tags from the editor
-    // The editor may produce: <font color="...">, <span style="...">, <u>, <s>, <sup>, <sub>, <mark>
     $text = preg_replace('/<script\b[^>]*>.*?<\/script>/si', '', $text);
     $text = preg_replace('/<iframe\b[^>]*>.*?<\/iframe>/si', '', $text);
     
-    // Bold: **text**
-    $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
-    // Italic: *text* or _text_
-    $text = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $text);
-    $text = preg_replace('/_(.*?)_/', '<em>$1</em>', $text);
-    // Inline code: `code`
+    if (function_exists('clean_span_styles')) {
+        $text = clean_span_styles($text);
+    }
+    
+    $text = preg_replace('/\*\*(.+?)\*\*/s', '<strong>$1</strong>', $text);
+    $text = preg_replace('/(?<!\*)\*([^\*\s][^\*]*?[^\*\s]|[^\*\s])\*(?!\*)/s', '<em>$1</em>', $text);
+    $text = preg_replace('/(?<=\s|^)_([^_\s][^_]*?[^_\s]|[^_\s])_(?=\s|$|[.,;:!?])/s', '<em>$1</em>', $text);
     $text = preg_replace('/`([^`]+)`/', '<code>$1</code>', $text);
-    // Inline images with optional position matching: ![alt](url){position}
     $text = preg_replace_callback('/!\[(.*?)\]\((.*?)\)(?:\{(left|right|center|end)\})?/', function($matches) use ($pathPrefix) {
         $caption = $matches[1];
         $url = $matches[2];
@@ -365,11 +433,10 @@ function parse_inline($text) {
             : $pathPrefix . $url;
         return "<span class=\"blog-img-container blog-img-{$pos}\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars($caption) . "\" class=\"blog-img-{$pos}\" loading=\"lazy\" decoding=\"async\"></span>";
     }, $text);
-    // Links: [text](href)
     $text = preg_replace('/\[(.*?)\]\((.*?)\)/', '<a href="$2">$1</a>', $text);
     return $text;
 }
-} // end function_exists check
+}
 
 // Load markdown content from file if not loaded from DB
 if (!$isFromDb) {
