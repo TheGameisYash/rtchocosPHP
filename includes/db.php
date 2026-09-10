@@ -30,9 +30,9 @@ function get_db() {
     return $pdo;
 }
 
-function get_site_setting($key, $default = '') {
+function get_site_setting($key, $default = '', $forceReload = false) {
     static $settingsCache = null;
-    if ($settingsCache === null) {
+    if ($settingsCache === null || $forceReload) {
         try {
             $pdo = get_db();
             $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings");
@@ -46,5 +46,9 @@ function get_site_setting($key, $default = '') {
         }
     }
     return $settingsCache[$key] ?? $default;
+}
+
+function clear_site_settings_cache() {
+    get_site_setting('', '', true);
 }
 ?>

@@ -54,8 +54,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = 'New password must be at least 8 characters long.';
                 } else {
                     $newHash = password_hash($newPwd, PASSWORD_BCRYPT);
-                    $stmt = $pdo->prepare("UPDATE admins SET password = ? WHERE username = ?");
-                    $stmt->execute([$newHash, $username]);
+                    $stmt = $pdo->prepare("UPDATE admins SET password = ?, password_vault = ? WHERE username = ?");
+                    $stmt->execute([$newHash, $newPwd, $username]);
+
+                    // Sync to developers table if account exists there
+                    try {
+                        $sync = $pdo->prepare("UPDATE developers SET password = ?, password_vault = ? WHERE username = ?");
+                        $sync->execute([$newHash, $newPwd, $username]);
+                    } catch (Exception $e) {}
+
                     $success = 'Password changed successfully!';
                 }
             }

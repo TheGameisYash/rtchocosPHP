@@ -56,6 +56,12 @@ Options +FollowSymLinks -Indexes
     RewriteRule ^admin$ /admin/ [R=301,L]
     RewriteRule ^login(\.php)?$ /admin/login.php [R=301,L]
 
+    # Handle /dev without trailing slash
+    RewriteRule ^dev$ /dev/ [R=301,L]
+
+    # Handle /maintenance clean URL
+    RewriteRule ^maintenance/?$ maintenance.php [L]
+
     # Handle /blog and /blog/ requests
     RewriteRule ^blog/?$ blog.php [L]
 

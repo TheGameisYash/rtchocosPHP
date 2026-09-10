@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/db.php';
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
 
-$baseUrl = "https://www.rtchocos.com/";
+$baseUrl = rtrim(get_site_setting('site_url', 'https://www.rtchocos.com'), '/') . '/';
 
 // Static pages
 $today = date('Y-m-d');

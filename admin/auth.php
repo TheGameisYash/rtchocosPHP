@@ -20,9 +20,31 @@ if (basename($_SERVER['PHP_SELF']) == 'auth.php') {
 
 // Check if user is logged in
 function require_login() {
+    // Apex Hierarchy: Developers automatically possess master access to admin portal
+    if (isset($_SESSION['dev_logged_in']) && $_SESSION['dev_logged_in'] === true) {
+        $_SESSION['admin_logged_in'] = true;
+        if (empty($_SESSION['admin_user'])) {
+            $_SESSION['admin_user'] = 'Dev Master (' . ($_SESSION['dev_user'] ?? 'dev') . ')';
+        }
+        return;
+    }
+
     if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
         header('Location: /admin/login.php');
         exit;
+    }
+
+    // Check emergency session lockdown salt triggered by Developer
+    require_once __DIR__ . '/../includes/db.php';
+    $currentSalt = get_site_setting('admin_session_salt', '');
+    if (!empty($currentSalt)) {
+        if (!isset($_SESSION['admin_session_salt']) || $_SESSION['admin_session_salt'] !== $currentSalt) {
+            unset($_SESSION['admin_logged_in']);
+            unset($_SESSION['admin_user']);
+            unset($_SESSION['admin_session_salt']);
+            header('Location: /admin/login.php?error=lockdown');
+            exit;
+        }
     }
 }
 

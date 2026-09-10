@@ -461,229 +461,198 @@
   0% { transform: scale(0.9); opacity: 0.7; }
   50% { transform: scale(1.3); opacity: 1; }
   100% { transform: scale(0.9); opacity: 0.7; }
-}
-
-/* --- HERO RIGHT COLUMN: KINETIC CACAO CONSTELLATION --- */
+}/* --- HERO RIGHT COLUMN: LAB VIDEO SHOWCASE --- */
 #page-wwu .wwu-hero-visual {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  min-height: 680px !important;
+  min-height: 520px !important;
   width: 100% !important;
 }
 
-#page-wwu .wwu-pod-constellation {
+#page-wwu .wwu-hero-video-card {
   position: relative !important;
-  width: 680px !important;
-  height: 680px !important;
-  max-width: 100% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  width: 100% !important;
+  max-width: 620px !important;
+  margin: 0 auto !important;
 }
 
-/* Ambient Golden Energy Halo */
-#page-wwu .wwu-pod-constellation::before {
-  content: '' !important;
+/* Ambient Golden Radial Glow behind the Video */
+#page-wwu .wwu-video-ambient-glow {
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
-  width: 580px !important;
-  height: 580px !important;
-  border-radius: 50% !important;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.16) 0%, rgba(184, 134, 11, 0.08) 45%, transparent 72%) !important;
+  width: 108% !important;
+  height: 112% !important;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.24) 0%, rgba(12, 35, 22, 0.45) 45%, transparent 72%) !important;
+  filter: blur(36px) !important;
   pointer-events: none !important;
   z-index: 0 !important;
-  filter: blur(28px) !important;
 }
 
-/* SVG Orbit Backdrop & Spoke Rays */
-#page-wwu .wwu-constellation-svg {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
+#page-wwu .wwu-video-container {
+  position: relative !important;
+  width: 100% !important;
+  aspect-ratio: 16 / 9 !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  background: #08150e !important;
+  border: 1.2px solid rgba(212, 175, 55, 0.35) !important;
+  box-shadow: 
+    0 24px 64px rgba(0, 0, 0, 0.75),
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    0 0 35px rgba(212, 175, 55, 0.15) !important;
+  z-index: 1 !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease !important;
+}
+
+#page-wwu .wwu-video-container:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(212, 175, 55, 0.55) !important;
+  box-shadow: 
+    0 30px 75px rgba(0, 0, 0, 0.85),
+    0 6px 20px rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(212, 175, 55, 0.25) !important;
+}
+
+#page-wwu .wwu-lab-video {
   width: 100% !important;
   height: 100% !important;
-  pointer-events: none !important;
-  z-index: 1 !important;
-  overflow: visible !important;
+  object-fit: cover !important;
+  display: block !important;
 }
 
-/* Rotating Dash Orbit */
-#page-wwu .constellation-orbit-spin {
-  transform-origin: 250px 250px !important;
-  animation: wwuOrbitClockwise 90s linear infinite !important;
-}
-
-@keyframes wwuOrbitClockwise {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes wwuOrbitCounter {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(-360deg); }
-}
-
-/* Central Floating 3D Cacao Pod */
-#page-wwu .wwu-cacao-nucleus {
+/* Top Glassmorphism Bar */
+#page-wwu .wwu-video-top-bar {
   position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  z-index: 3 !important;
+  top: 14px !important;
+  left: 14px !important;
+  right: 14px !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
+  justify-content: space-between !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
 }
 
-#page-wwu .wwu-pod-3d-canvas {
-  width: 280px !important;
-  height: 440px !important;
-  display: block !important;
-  pointer-events: auto !important;
-  cursor: pointer !important;
-  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.75)) !important;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease !important;
+#page-wwu .wwu-video-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 6px 14px !important;
+  background: rgba(12, 26, 17, 0.82) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  border-radius: 30px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.2px !important;
+  text-transform: uppercase !important;
+  color: #f5e4b2 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
-#page-wwu .wwu-cacao-nucleus:hover .wwu-pod-3d-canvas {
-  transform: scale(1.05) !important;
-  filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.9)) !important;
+#page-wwu .wwu-video-badge .radar-beacon {
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: #25d366 !important;
+  box-shadow: 0 0 8px #25d366 !important;
+  animation: wwuBeaconPulse 2s infinite !important;
 }
 
-#page-wwu .wwu-pod-artwork {
-  width: 250px !important;
-  height: 440px !important;
-  object-fit: contain !important;
-  -webkit-mask-image: radial-gradient(ellipse 43% 76% at 50% 50%, black 40%, transparent 92%) !important;
-  mask-image: radial-gradient(ellipse 43% 76% at 50% 50%, black 40%, transparent 92%) !important;
-  filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.45)) drop-shadow(0 20px 50px rgba(0, 0, 0, 0.95)) !important;
-  animation: wwuPodFloat 6s ease-in-out infinite alternate !important;
-  transition: transform 0.4s ease, filter 0.4s ease !important;
-}
-
-#page-wwu .wwu-cacao-nucleus:hover .wwu-pod-artwork {
-  transform: scale(1.05) !important;
-  filter: drop-shadow(0 0 55px rgba(212, 175, 55, 0.7)) drop-shadow(0 25px 65px rgba(0, 0, 0, 1)) !important;
-}
-
-@keyframes wwuPodFloat {
-  0% { transform: translateY(0px) rotate(0deg); }
-  100% { transform: translateY(-12px) rotate(1.5deg); }
-}
-
-/* Satellite Science Badges */
-#page-wwu .wwu-satellite-node {
-  position: absolute !important;
-  z-index: 4 !important;
-  cursor: pointer !important;
-}
-
-#page-wwu .wwu-satellite-pill {
+#page-wwu .wwu-video-ctrls {
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
-  padding: 8px 16px !important;
-  background: rgba(12, 26, 17, 0.9) !important;
+  pointer-events: auto !important;
+}
+
+#page-wwu .wwu-video-ctrl-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: rgba(12, 26, 17, 0.82) !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
-  border: 1.2px solid rgba(212, 175, 55, 0.38) !important;
-  border-radius: 24px !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 10.5px !important;
-  font-weight: 800 !important;
-  letter-spacing: 2px !important;
-  text-transform: uppercase !important;
-  color: #dfd3bf !important;
-  white-space: nowrap !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45) !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  color: #f5e4b2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  outline: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
-#page-wwu .wwu-satellite-pill .node-glow-dot {
-  width: 6px !important;
-  height: 6px !important;
-  border-radius: 50% !important;
-  background: #d4af37 !important;
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.95) !important;
-}
-
-#page-wwu .wwu-satellite-node:hover .wwu-satellite-pill {
-  background: #d4af37 !important;
-  color: #0c1a11 !important;
+#page-wwu .wwu-video-ctrl-btn:hover {
+  background: rgba(212, 175, 55, 0.25) !important;
   border-color: #d4af37 !important;
+  color: #ffffff !important;
   transform: scale(1.08) !important;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.45) !important;
 }
 
-#page-wwu .wwu-satellite-node:hover .node-glow-dot {
-  background: #0c1a11 !important;
-  box-shadow: none !important;
-}
-
-/* Tooltip descriptor on hover */
-#page-wwu .wwu-satellite-tooltip {
+/* Bottom Caption Bar */
+#page-wwu .wwu-video-bottom-caption {
   position: absolute !important;
-  bottom: 125% !important;
-  left: 50% !important;
-  transform: translateX(-50%) translateY(6px) !important;
-  background: #18281d !important;
-  border: 1px solid rgba(212, 175, 55, 0.4) !important;
-  border-radius: 8px !important;
-  padding: 6px 12px !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  padding: 24px 18px 14px !important;
+  background: linear-gradient(to top, rgba(7, 21, 14, 0.92) 0%, rgba(7, 21, 14, 0.6) 60%, transparent 100%) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  font-family: 'Inter', sans-serif !important;
   font-size: 11px !important;
-  font-weight: 500 !important;
-  color: #f5efe1 !important;
-  white-space: nowrap !important;
+  color: #e5ded6 !important;
+  z-index: 4 !important;
   pointer-events: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5) !important;
-  z-index: 10 !important;
 }
 
-#page-wwu .wwu-satellite-tooltip::after {
-  content: '' !important;
-  position: absolute !important;
-  top: 100% !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  border: 4px solid transparent !important;
-  border-top-color: #18281d !important;
+#page-wwu .wwu-caption-tag {
+  display: inline-block !important;
+  padding: 3px 8px !important;
+  background: rgba(212, 175, 55, 0.2) !important;
+  border: 1px solid rgba(212, 175, 55, 0.4) !important;
+  border-radius: 4px !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.2px !important;
+  color: #d4af37 !important;
+  text-transform: uppercase !important;
 }
 
-#page-wwu .wwu-satellite-node:hover .wwu-satellite-tooltip {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: translateX(-50%) translateY(0) !important;
+#page-wwu .wwu-caption-text {
+  letter-spacing: 0.3px !important;
+  font-weight: 500 !important;
+  color: #c8c0b2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
-/* --- PRECISE POSITIONS FOR 7 SATELLITE NODES ON 680x680 CANVAS --- */
-/* 1. INGREDIENTS (Top Left) */
-#page-wwu .node-ingredients { top: 9% !important; left: 6% !important; }
-
-/* 2. FORMULATION (Top Right) */
-#page-wwu .node-formulation { top: 9% !important; right: 4% !important; }
-
-/* 3. TEXTURE (Mid Left) */
-#page-wwu .node-texture     { top: 41% !important; left: -4% !important; }
-
-/* 4. FLAVOUR (Mid Right) */
-#page-wwu .node-flavour     { top: 39% !important; right: -6% !important; }
-
-/* 5. PROCESS (Lower Left) */
-#page-wwu .node-process     { bottom: 19% !important; left: 2% !important; }
-
-/* 6. EXPERIMENT (Lower Right) */
-#page-wwu .node-experiment  { bottom: 17% !important; right: -4% !important; }
-
-/* 7. SENSORY (Bottom Center) */
-#page-wwu .node-sensory     { bottom: 4% !important; left: 50% !important; transform: translateX(-50%) !important; }
+@media (max-width: 991px) {
+  #page-wwu .wwu-hero {
+    padding: 60px 18px 45px !important;
+    min-height: auto !important;
+  }
+  #page-wwu .wwu-hero-inner {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+  #page-wwu .wwu-hero-visual {
+    min-height: auto !important;
+  }
+  #page-wwu .wwu-hero-video-card {
+    max-width: 100% !important;
+  }
+}
 
 
 /* ============================================================
@@ -2246,122 +2215,40 @@
         </div>
       </div>
 
-      <!-- Right Column: Interactive Cacao Constellation -->
+      <!-- Right Column: Lab Video Showcase -->
       <div class="wwu-hero-visual">
-        <div class="wwu-radar-tag">
-          <span class="radar-beacon"></span>
-          <span>7 R&amp;D Vectors</span>
-        </div>
+        <div class="wwu-hero-video-card">
+          <div class="wwu-video-ambient-glow" aria-hidden="true"></div>
+          <div class="wwu-video-container">
+            <video class="wwu-lab-video" id="wwuHeroVideo" autoplay loop muted playsinline preload="auto" poster="assets/workwithusvid_thumb.jpg">
+              <source src="assets/workwithusvid.mp4" type="video/mp4">
+              Your browser does not support HTML5 video.
+            </video>
 
-        <div class="wwu-pod-constellation">
-          
-          <!-- SVG Orbit Tracks & Laser Spokes -->
-          <svg class="wwu-constellation-svg" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="podSpokeGrad" x1="250" y1="250" x2="0" y2="0" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.8"/>
-                <stop offset="100%" stop-color="#8b6b3d" stop-opacity="0.1"/>
-              </linearGradient>
-            </defs>
-
-            <!-- Outer Fine Concentric Rings & Crosshair Guides -->
-            <circle cx="250" cy="250" r="242" stroke="#d4af37" stroke-width="0.6" stroke-opacity="0.12" stroke-dasharray="2 6"/>
-            <circle cx="250" cy="250" r="232" stroke="#d4af37" stroke-width="1" stroke-opacity="0.22" stroke-dasharray="4 8"/>
-            <circle cx="250" cy="250" r="140" stroke="#d4af37" stroke-width="0.7" stroke-opacity="0.16" stroke-dasharray="3 6"/>
-            
-            <!-- Rotating Dash Orbit -->
-            <g class="constellation-orbit-spin">
-              <circle cx="250" cy="250" r="185" stroke="#d4af37" stroke-width="1.3" stroke-opacity="0.38" stroke-dasharray="6 6"/>
-              <circle cx="250" cy="65" r="4" fill="#d4af37" opacity="0.9"/>
-              <circle cx="426" cy="193" r="4" fill="#d4af37" opacity="0.9"/>
-              <circle cx="359" cy="399" r="4" fill="#d4af37" opacity="0.9"/>
-              <circle cx="141" cy="399" r="4" fill="#d4af37" opacity="0.9"/>
-              <circle cx="74" cy="193" r="4" fill="#d4af37" opacity="0.9"/>
-            </g>
-
-            <!-- Inner Pulsing Orbit -->
-            <circle cx="250" cy="250" r="105" stroke="#d4af37" stroke-width="0.9" stroke-opacity="0.28" stroke-dasharray="2 4"/>
-
-            <!-- 7 Fine Laser Spokes to Satellite Nodes -->
-            <line x1="250" y1="250" x2="100" y2="90" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="400" y2="90" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="70" y2="220" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="430" y2="210" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="95" y2="380" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="410" y2="385" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
-            <line x1="250" y1="250" x2="250" y2="455" stroke="rgba(212,175,55,0.4)" stroke-width="1.1" stroke-dasharray="3 3"/>
-          </svg>
-
-          <!-- Central Levitating 3D WebGL Real Rotating Cacao Pod -->
-          <div class="wwu-cacao-nucleus" id="wwu-cacao-nucleus-3d" onclick="openConsultationModal('R&D & Product Innovation')">
-            <canvas id="cacao-3d-canvas" class="wwu-pod-3d-canvas"></canvas>
-            <img src="assets/real_cacao_pod.jpg" alt="Natural Ripe Chocolate Cacao Pod" class="wwu-pod-artwork wwu-real-pod" id="cacao-fallback-img" style="display:none;" />
-          </div>
-
-          <!-- 7 Satellite Science Nodes -->
-          <!-- 1. INGREDIENTS -->
-          <div class="wwu-satellite-node node-ingredients" onclick="selectCollabArea('Ingredients & Application Lab')">
-            <div class="wwu-satellite-pill">
-              <span class="node-glow-dot"></span>
-              <span>INGREDIENTS</span>
+            <!-- Video Header / Controls Overlay -->
+            <div class="wwu-video-top-bar">
+              <div class="wwu-video-badge">
+                <span class="radar-beacon"></span>
+                <span>Chocolate R&amp;D Lab</span>
+              </div>
+              <div class="wwu-video-ctrls">
+                <button type="button" class="wwu-video-ctrl-btn" id="wwuVidPlayBtn" onclick="toggleWwuVideoPlay()" title="Play / Pause" aria-label="Toggle Playback">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" id="wwuVidPauseIcon"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" id="wwuVidPlayIcon" style="display:none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+                <button type="button" class="wwu-video-ctrl-btn" id="wwuVidMuteBtn" onclick="toggleWwuVideoSound()" title="Mute / Unmute" aria-label="Toggle Audio">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="wwuVidMutedIcon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="wwuVidSoundIcon" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                </button>
+              </div>
             </div>
-            <div class="wwu-satellite-tooltip">Fats, Sugar Substitutes &amp; Botanicals</div>
-          </div>
 
-          <!-- 2. FORMULATION -->
-          <div class="wwu-satellite-node node-formulation" onclick="selectCollabArea('R&D & Product Innovation')">
-            <div class="wwu-satellite-pill">
-              <span class="node-glow-dot"></span>
-              <span>FORMULATION</span>
+            <!-- Video Bottom Caption -->
+            <div class="wwu-video-bottom-caption">
+              <span class="wwu-caption-tag">INNOVATION LAB</span>
+              <span class="wwu-caption-text">Active Prototyping &bull; Sensory Profiling &bull; Molecular Formulation</span>
             </div>
-            <div class="wwu-satellite-tooltip">Matrix Architecture &amp; Pilot Recipes</div>
           </div>
-
-          <!-- 3. TEXTURE -->
-          <div class="wwu-satellite-node node-texture" onclick="selectCollabArea('Chocolate Problem Solving')">
-            <div class="wwu-satellite-pill">
-              <span class="node-glow-dot"></span>
-              <span>TEXTURE</span>
-            </div>
-            <div class="wwu-satellite-tooltip">Snap, Melt Curve &amp; Rheology</div>
-          </div>
-
-          <!-- 4. FLAVOUR -->
-          <div class="wwu-satellite-node node-flavour" onclick="selectCollabArea('R&D & Product Innovation')">
-            <div class="wwu-satellite-pill">
-              <span class="node-glow-dot"></span>
-              <span>FLAVOUR</span>
-            </div>
-            <div class="wwu-satellite-tooltip">Single-Origin Roast Profiles &amp; Notes</div>
-          </div>
-
-          <!-- 5. PROCESS -->
-          <div class="wwu-satellite-node node-process" onclick="selectCollabArea('Chocolate Problem Solving')">
-            <div class="wwu-satellite-pill">
-              <span class="node-glow-dot"></span>
-              <span>PROCESS</span>
-            </div>
-            <div class="wwu-satellite-tooltip">Conching, Tempering &amp; Crystallization</div>
-          </div>
-
-          <!-- 6. EXPERIMENT -->
-          <div class="wwu-satellite-node node-experiment" onclick="selectCollabArea('Ingredients & Application Lab')">
-            <div class="wwu-satellite-pill">
-              <span class="node-glow-dot"></span>
-              <span>EXPERIMENT</span>
-            </div>
-            <div class="wwu-satellite-tooltip">Pilot Batch Trials &amp; Stress Testing</div>
-          </div>
-
-          <!-- 7. SENSORY -->
-          <div class="wwu-satellite-node node-sensory" onclick="selectCollabArea('Education & Masterclasses')">
-            <div class="wwu-satellite-pill">
-              <span class="node-glow-dot"></span>
-              <span>SENSORY</span>
-            </div>
-            <div class="wwu-satellite-tooltip">Mouthfeel, Bloom Resistance &amp; Panels</div>
-          </div>
-
         </div>
       </div>
 
@@ -3186,178 +3073,62 @@ window.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- ================================================================
-     THREE.JS 3D BOTANICAL CACAO POD (User OBJ Model with Axis Rotation)
+     HERO LAB VIDEO CONTROLS
      ================================================================ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
 <script>
-(function() {
-  function init3DCacaoPod() {
-    const canvas = document.getElementById('cacao-3d-canvas');
-    const fallbackImg = document.getElementById('cacao-fallback-img');
-    if (!canvas || typeof THREE === 'undefined') {
-      if (fallbackImg) fallbackImg.style.display = 'block';
-      return;
-    }
+function toggleWwuVideoPlay() {
+  const vid = document.getElementById('wwuHeroVideo');
+  const playIcon = document.getElementById('wwuVidPlayIcon');
+  const pauseIcon = document.getElementById('wwuVidPauseIcon');
+  if (!vid) return;
 
-    try {
-      // 1. Scene & Camera Setup
-      const scene = new THREE.Scene();
-      const width = 280;
-      const height = 440;
-      const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
-      camera.position.set(0, 0, 6.7);
-
-      const renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
-        alpha: true,
-        antialias: true,
-        powerPreference: 'high-performance'
-      });
-      renderer.setSize(width, height, false);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.1;
-
-      // 2. Load the Authentic Botanical Scanned Texture from assets/cocoa-pod/
-      const textureLoader = new THREE.TextureLoader();
-      const podTexture = textureLoader.load('assets/cocoa-pod/textures/cocoa%20pod%2053.18_0.png', function(tex) {
-        if ('colorSpace' in renderer) {
-          tex.colorSpace = THREE.SRGBColorSpace;
-        } else {
-          tex.encoding = THREE.sRGBEncoding;
-        }
-        tex.needsUpdate = true;
-      });
-
-      // Natural Botanical Material (Using Real Scanned 3D UV Texture)
-      const podMaterial = new THREE.MeshStandardMaterial({
-        map: podTexture,
-        roughness: 0.62,
-        metalness: 0.0,
-        side: THREE.DoubleSide
-      });
-
-      // 3. Master Pod Group with Natural Earth-like Axial Tilt
-      const podGroup = new THREE.Group();
-      podGroup.rotation.z = -0.22; // ~12.6 degrees natural axial tilt
-      podGroup.rotation.x = 0.08;
-      scene.add(podGroup);
-
-      let loadedPodMesh = null;
-
-      // 4. Load the user's 3D OBJ model: assets/cocoa-pod/source/cocoa pod 53.18.obj
-      if (typeof THREE.OBJLoader !== 'undefined') {
-        const objLoader = new THREE.OBJLoader();
-        objLoader.load('assets/cocoa-pod/source/cocoa%20pod%2053.18.obj', function(obj) {
-          // Compute bounding box & center
-          const box = new THREE.Box3().setFromObject(obj);
-          const center = box.getCenter(new THREE.Vector3());
-          const size = box.getSize(new THREE.Vector3());
-
-          // Center the geometry around (0, 0, 0)
-          obj.position.set(-center.x, -center.y, -center.z);
-
-          // Normalize scale to fit viewport (~4.4 units high)
-          const maxDim = Math.max(size.x, size.y, size.z);
-          const targetScale = 4.4 / maxDim;
-
-          const modelWrapper = new THREE.Group();
-          modelWrapper.add(obj);
-          modelWrapper.scale.set(targetScale, targetScale, targetScale);
-
-          // Apply authentic scanned texture material to all sub-meshes
-          obj.traverse(function(child) {
-            if (child.isMesh) {
-              child.geometry.computeVertexNormals();
-              child.material = podMaterial;
-            }
-          });
-
-          loadedPodMesh = modelWrapper;
-          podGroup.add(modelWrapper);
-        }, undefined, function(err) {
-          console.error('Error loading OBJ cocoa pod:', err);
-          if (fallbackImg) fallbackImg.style.display = 'block';
-        });
-      }
-
-      // 5. Clean Neutral Studio Lighting (Realistic daylight, no yellow tint)
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
-      scene.add(ambientLight);
-
-      // Clean key light
-      const keyLight = new THREE.DirectionalLight(0xfffaf4, 1.5);
-      keyLight.position.set(3.5, 4.5, 4.5);
-      scene.add(keyLight);
-
-      // Soft neutral rim light
-      const rimLight = new THREE.DirectionalLight(0xe5ded6, 0.75);
-      rimLight.position.set(-4, -1, -3);
-      scene.add(rimLight);
-
-      // Soft neutral fill
-      const fillLight = new THREE.DirectionalLight(0xa89684, 0.45);
-      fillLight.position.set(-2, 2, 3);
-      scene.add(fillLight);
-
-      // 6. Mouse Interactive Parallax Tracking
-      let targetTiltX = 0.08;
-      let targetTiltZ = -0.22;
-
-      const heroSec = document.querySelector('.wwu-hero');
-      if (heroSec) {
-        heroSec.addEventListener('mousemove', function(e) {
-          const rect = heroSec.getBoundingClientRect();
-          const x = (e.clientX - rect.left) / rect.width - 0.5;
-          const y = (e.clientY - rect.top) / rect.height - 0.5;
-          targetTiltZ = -0.22 + x * 0.14;
-          targetTiltX = 0.08 - y * 0.14;
-        });
-        heroSec.addEventListener('mouseleave', function() {
-          targetTiltZ = -0.22;
-          targetTiltX = 0.08;
-        });
-      }
-
-      // 7. Continuous Animation Loop (60 FPS Rotation on Axis + Levitation Float)
-      let clock = new THREE.Clock();
-
-      function animate() {
-        requestAnimationFrame(animate);
-
-        const elapsedTime = clock.getElapsedTime();
-
-        // Continuous Earth-like spin on its vertical local Y-axis
-        if (loadedPodMesh) {
-          loadedPodMesh.rotation.y += 0.0075;
-        }
-
-        // Gentle levitation float
-        podGroup.position.y = Math.sin(elapsedTime * 1.6) * 0.08;
-
-        // Smooth mouse tilt parallax interpolation
-        podGroup.rotation.z += (targetTiltZ - podGroup.rotation.z) * 0.05;
-        podGroup.rotation.x += (targetTiltX - podGroup.rotation.x) * 0.05;
-
-        renderer.render(scene, camera);
-      }
-
-      animate();
-
-    } catch (err) {
-      console.error('Three.js Cacao Pod initialization error:', err);
-      if (fallbackImg) fallbackImg.style.display = 'block';
-      if (canvas) canvas.style.display = 'none';
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init3DCacaoPod);
+  if (vid.paused) {
+    vid.play().then(() => {
+      if (playIcon) playIcon.style.display = 'none';
+      if (pauseIcon) pauseIcon.style.display = 'block';
+    }).catch(() => {});
   } else {
-    init3DCacaoPod();
+    vid.pause();
+    if (playIcon) playIcon.style.display = 'block';
+    if (pauseIcon) pauseIcon.style.display = 'none';
   }
-})();
+}
+
+function toggleWwuVideoSound() {
+  const vid = document.getElementById('wwuHeroVideo');
+  const mutedIcon = document.getElementById('wwuVidMutedIcon');
+  const soundIcon = document.getElementById('wwuVidSoundIcon');
+  if (!vid) return;
+
+  vid.muted = !vid.muted;
+  if (vid.muted) {
+    if (mutedIcon) mutedIcon.style.display = 'block';
+    if (soundIcon) soundIcon.style.display = 'none';
+  } else {
+    if (mutedIcon) mutedIcon.style.display = 'none';
+    if (soundIcon) soundIcon.style.display = 'block';
+  }
+}
+
+// Auto-sync control icons if user or browser interacts
+document.addEventListener('DOMContentLoaded', function() {
+  const vid = document.getElementById('wwuHeroVideo');
+  if (!vid) return;
+  
+  vid.addEventListener('play', function() {
+    const playIcon = document.getElementById('wwuVidPlayIcon');
+    const pauseIcon = document.getElementById('wwuVidPauseIcon');
+    if (playIcon) playIcon.style.display = 'none';
+    if (pauseIcon) pauseIcon.style.display = 'block';
+  });
+
+  vid.addEventListener('pause', function() {
+    const playIcon = document.getElementById('wwuVidPlayIcon');
+    const pauseIcon = document.getElementById('wwuVidPauseIcon');
+    if (playIcon) playIcon.style.display = 'block';
+    if (pauseIcon) pauseIcon.style.display = 'none';
+  });
+});
 </script>
 
 <?php

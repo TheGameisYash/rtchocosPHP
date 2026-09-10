@@ -2,11 +2,13 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/maintenance_check.php';
+
 $cartCount = (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) ? array_sum($_SESSION['cart']) : 0;
 
-require_once __DIR__ . '/db.php';
-// Canonicals always point to the public HTTPS URL, never to a preview host or query string.
-$siteUrl = "https://www.rtchocos.com";
+// Canonicals always point to the public HTTPS URL, dynamically resolved from site_settings
+$siteUrl = rtrim(get_site_setting('site_url', 'https://www.rtchocos.com'), '/');
 if (empty($canonicalUrl)) {
     $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
     $requestPath = $requestPath === '/index.php' ? '/' : $requestPath;
@@ -282,8 +284,30 @@ if (!empty($pageSchema)) {
 <script type="application/ld+json">
 <?php echo json_encode(["@context" => "https://schema.org", "@graph" => $graph], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT); ?>
 </script>
+<?php
+// Developer Custom Head Scripts & CSS Injection
+$customCss = get_site_setting('custom_css', '');
+if (!empty(trim($customCss))) {
+    echo "\n<!-- Developer Custom CSS -->\n<style>\n" . $customCss . "\n</style>\n";
+}
+$customHeadScripts = get_site_setting('custom_head_scripts', '');
+if (!empty(trim($customHeadScripts))) {
+    echo "\n<!-- Developer Custom Head Scripts -->\n" . $customHeadScripts . "\n";
+}
+?>
 </head>
 <body<?php echo !empty($bodyClass) ? ' class="' . $bodyClass . '"' : ''; ?>>
+
+<?php if (get_site_setting('maintenance_mode', '0') === '1'): ?>
+  <div style="background: linear-gradient(90deg, #dc2626, #b91c1c); color: #fff; text-align: center; padding: 10px 16px; font-size: 13px; font-weight: 600; position: sticky; top: 0; z-index: 999999; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <span>⚠️ <strong>MAINTENANCE MODE ACTIVE:</strong> Public visitors are currently seeing the 503 screen. You are viewing via authorized bypass.</span>
+    <?php if (!empty($_SESSION['dev_logged_in'])): ?>
+      <a href="/dev/maintenance.php" style="background: #fff; color: #991b1b; padding: 3px 10px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 700;">Dev Controls &rarr;</a>
+    <?php elseif (!empty($_SESSION['admin_logged_in'])): ?>
+      <a href="/admin/dashboard.php" style="background: #fff; color: #991b1b; padding: 3px 10px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 700;">Admin CMS &rarr;</a>
+    <?php endif; ?>
+  </div>
+<?php endif; ?>
 
 <!-- --- HEADER --- -->
 <?php

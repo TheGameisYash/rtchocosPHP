@@ -11,6 +11,9 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
 }
 
 $error = '';
+if (isset($_GET['error']) && $_GET['error'] === 'lockdown') {
+    $error = 'Emergency Security Notice: All administrator sessions were terminated by Developer Master Control.';
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = $_POST['csrf_token'] ?? '';
@@ -33,19 +36,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $admin = $stmt->fetch();
 
                 if ($admin && password_verify($password, $admin['password'])) {
-                    // Success!
-                    reset_failed_logins();
-                    session_regenerate_id(true);
-                    $_SESSION['admin_logged_in'] = true;
-                    $_SESSION['admin_user'] = $admin['username'];
-                    
-                    // Handle remember me cookie if checked (1 week duration)
-                    if (isset($_POST['remember_me'])) {
-                        setcookie('admin_remember', $admin['username'], time() + (86400 * 7), '/');
+                    if (isset($admin['is_active']) && (int)$admin['is_active'] === 0) {
+                        $error = 'Access Revoked: This administrator account has been suspended by Developer Master Control.';
+                    } else {
+                        // Success!
+                        reset_failed_logins();
+                        session_regenerate_id(true);
+                        $_SESSION['admin_logged_in'] = true;
+                        $_SESSION['admin_user'] = $admin['username'];
+                        $_SESSION['admin_session_salt'] = get_site_setting('admin_session_salt', '');
+                        
+                        // Handle remember me cookie if checked (1 week duration)
+                        if (isset($_POST['remember_me'])) {
+                            setcookie('admin_remember', $admin['username'], time() + (86400 * 7), '/');
+                        }
+                        
+                        header('Location: /admin/dashboard.php');
+                        exit;
                     }
-                    
-                    header('Location: /admin/dashboard.php');
-                    exit;
                 } else {
                     record_failed_login();
                     $error = 'Invalid username or password.';

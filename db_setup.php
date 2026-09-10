@@ -18,6 +18,8 @@ try {
         id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(50) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
+        is_active TINYINT(1) NOT NULL DEFAULT 1,
+        last_login TIMESTAMP NULL DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     echo "OK<br>";
@@ -28,11 +30,37 @@ try {
     if ($stmt->fetchColumn() == 0) {
         echo "Creating default admin account... ";
         $hash = password_hash('Admin@rtchocos1', PASSWORD_BCRYPT);
-        $stmt = $pdo->prepare("INSERT INTO admins (username, password) VALUES ('admin', ?)");
+        $stmt = $pdo->prepare("INSERT INTO admins (username, password, is_active) VALUES ('admin', ?, 1)");
         $stmt->execute([$hash]);
         echo "OK (Username: admin, Password: Admin@rtchocos1)<br>";
     } else {
         echo "Default admin account already exists.<br>";
+    }
+
+    // 1b. Create developers table (Master Control)
+    echo "Creating 'developers' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS developers (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        email VARCHAR(150) NULL,
+        role VARCHAR(50) NOT NULL DEFAULT 'super_dev',
+        is_active TINYINT(1) NOT NULL DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_login TIMESTAMP NULL DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Insert default developer if not exists
+    $devCheck = $pdo->query("SELECT COUNT(*) FROM developers");
+    if ($devCheck->fetchColumn() == 0) {
+        echo "Creating default developer account... ";
+        $devUser = 'dev';
+        $devPass = 'Dev@rtchocosMaster1';
+        $devHash = password_hash($devPass, PASSWORD_BCRYPT);
+        $stmt = $pdo->prepare("INSERT INTO developers (username, password, email, role, is_active) VALUES (?, ?, 'dev@rtchocos.com', 'super_dev', 1)");
+        $stmt->execute([$devUser, $devHash]);
+        echo "OK (Username: {$devUser}, Password: {$devPass})<br>";
     }
 
     // 2. Create blogs table (correct column names matching admin panel)
@@ -200,7 +228,19 @@ try {
         'social_youtube' => 'https://youtube.com/rtchocos',
         'social_linkedin' => 'https://linkedin.com/company/rtchocos',
         'newsletter_text' => 'Subscribe to our newsletter for exclusive recipes, scientific cocoa insights, and new product releases.',
-        'show_theme_tester' => '0'
+        'show_theme_tester' => '0',
+        'site_url' => 'https://www.rtchocos.com',
+        'beta_url' => 'https://www.rtchocos.com/beta',
+        'maintenance_mode' => '0',
+        'maintenance_title' => "We're Perfecting Something Delicious",
+        'maintenance_subtitle' => 'Our chocolate laboratory is currently undergoing planned improvements.',
+        'maintenance_message' => "We are fine-tuning our handcrafted batches and platform to bring you an even more delightful bean-to-bar experience. We will be back online shortly!",
+        'maintenance_eta' => '',
+        'maintenance_media_type' => 'both',
+        'maintenance_image' => 'assets/ph.png',
+        'maintenance_video' => 'https://www.youtube.com/watch?v=kY3Pvdq0YpY',
+        'maintenance_bypass_key' => 'rtdev2026',
+        'maintenance_notify_enabled' => '1'
     ];
 
     foreach ($defaultSettings as $key => $value) {

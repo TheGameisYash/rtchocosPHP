@@ -10,10 +10,31 @@ if ($uri === '/admin') {
     return true;
 }
 
+// Enforce trailing slash on /dev directory for correct relative path resolution
+if ($uri === '/dev') {
+    header('Location: /dev/');
+    return true;
+}
+
 // Route direct /login and /login.php navigation to admin login
 if ($uri === '/login' || $uri === '/login.php') {
     header('Location: /admin/login.php');
     return true;
+}
+
+// Route clean /maintenance URL
+if ($uri === '/maintenance' || $uri === '/maintenance/') {
+    include __DIR__ . '/maintenance.php';
+    return true;
+}
+
+// Route clean URLs inside /dev (e.g. /dev/admins -> /dev/admins.php)
+if (preg_match('#^/dev/([^/]+)/?$#', $uri, $m)) {
+    $devFile = __DIR__ . '/dev/' . $m[1] . '.php';
+    if (file_exists($devFile)) {
+        include $devFile;
+        return true;
+    }
 }
 
 // If it's a real file or directory (except physical /blog folder root request), serve it directly
