@@ -117,7 +117,7 @@
   align-items: center !important;
 }
 
-/* Background video filling the entire hero */
+/* Background video filling the entire hero - opacity removed (100% solid) */
 #page-wwu .wwu-hero-bg-video {
   position: absolute !important;
   top: 0 !important;
@@ -128,37 +128,17 @@
   object-position: 70% center !important;
   z-index: 1 !important;
   pointer-events: none !important;
-  opacity: 0.72 !important;
+  opacity: 1 !important;
 }
 
-/* Luxury atmospheric gradient vignette */
+/* Gradient overlay completely removed */
 #page-wwu .wwu-hero-video-overlay {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: 
-    linear-gradient(to right, rgba(6, 17, 10, 0.96) 0%, rgba(6, 17, 10, 0.9) 38%, rgba(6, 17, 10, 0.5) 70%, rgba(6, 17, 10, 0.25) 100%),
-    linear-gradient(to bottom, rgba(6, 17, 10, 0.8) 0%, transparent 20%, transparent 75%, #0c1a11 100%) !important;
-  pointer-events: none !important;
-  z-index: 2 !important;
+  display: none !important;
 }
 
-/* Atmospheric golden dust & grid background */
+/* Atmospheric dust background removed */
 #page-wwu .wwu-hero::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background-image: 
-    radial-gradient(circle 2px at 20% 30%, rgba(212, 175, 55, 0.4) 0%, transparent 100%),
-    radial-gradient(circle 2px at 75% 25%, rgba(212, 175, 55, 0.45) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 40% 70%, rgba(212, 175, 55, 0.25) 0%, transparent 100%) !important;
-  pointer-events: none !important;
-  z-index: 2 !important;
+  display: none !important;
 }
 
 /* Background animated celestial coordinate lines */
@@ -229,16 +209,15 @@
   line-height: 1.05 !important;
   margin-bottom: 14px !important;
   letter-spacing: -1.5px !important;
-  color: #fbf8f0 !important;
+  color: #ffffff !important;
   font-weight: 700 !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65) !important;
 }
 
 #page-wwu .wwu-hero h1 .hl-hero-gold {
-  color: #d4af37 !important;
-  background: linear-gradient(135deg, #d4af37 0%, #f5e4b2 50%, #b8860b 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+  color: #e5b358 !important;
   display: inline-block !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65) !important;
 }
 
 /* Sub-headline Paragraph */
@@ -246,10 +225,11 @@
   font-family: 'Inter', sans-serif !important;
   font-size: 14.5px !important;
   line-height: 1.6 !important;
-  color: #b8af9c !important;
+  color: #f5efe1 !important;
   max-width: 580px !important;
   margin-bottom: 22px !important;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9) !important;
 }
 
 /* 2x2 Grid of Interactive Question Cards */
@@ -391,8 +371,10 @@
   align-items: center !important;
   gap: 10px !important;
   padding: 12px 24px !important;
-  background: rgba(255, 255, 255, 0.04) !important;
-  border: 1.5px solid rgba(212, 175, 55, 0.4) !important;
+  background: rgba(7, 22, 14, 0.75) !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.5) !important;
   color: #f5efe1 !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 12px !important;

@@ -114,20 +114,22 @@
 
 /* === 1. HERO SECTION (Seamless Blended Product Presentation) === */
 .shop-hero-lux {
-  background-color: #07150E;
+  background-color: #EBD6C3;
   background-image: 
     linear-gradient(to right, 
-      #07150E 0%, 
-      #07150E 35%, 
-      rgba(7, 21, 14, 0.92) 44%, 
-      rgba(7, 21, 14, 0.35) 52%, 
-      rgba(7, 21, 14, 0) 62%
+      rgba(239, 218, 195, 0.96) 0%, 
+      rgba(239, 218, 195, 0.90) 34%, 
+      rgba(239, 218, 195, 0.55) 48%, 
+      rgba(239, 218, 195, 0.15) 58%, 
+      rgba(239, 218, 195, 0) 68%
     ),
-    url('../assets/products/shop_hero_blended_bg.jpg?v=4');
+    url('../assets/products/shop_hero_luxury.jpg?v=20');
   background-position: right center;
   background-repeat: no-repeat;
   background-size: cover;
-  color: var(--lux-text-light);
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+  color: var(--lux-text-dark);
   padding: 85px 24px 95px;
   position: relative;
   overflow: hidden;
@@ -152,14 +154,21 @@
   max-width: 620px;
 }
 
-.shop-hero-spacer {
+.shop-hero-showcase-wrap {
   min-height: 440px;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shop-hero-mobile-photo {
+  display: none;
 }
 
 .shop-hero-tag {
   display: inline-block;
-  color: var(--lux-gold-400);
+  color: #94631D;
   font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 3px;
@@ -170,9 +179,9 @@
 .shop-hero-title {
   font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(34px, 4.2vw, 54px);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.15;
-  color: #FFFFFF;
+  color: #0B1C12;
   margin-bottom: 20px;
   letter-spacing: -0.5px;
 }
@@ -180,7 +189,7 @@
 .shop-hero-desc {
   font-size: 15.5px;
   line-height: 1.68;
-  color: var(--lux-text-subtle);
+  color: #2D3E33;
   max-width: 580px;
   margin-bottom: 34px;
 }
@@ -192,7 +201,7 @@
   gap: 16px;
   margin-bottom: 38px;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(229, 179, 88, 0.15);
+  border-bottom: 1px solid rgba(148, 99, 29, 0.22);
 }
 
 .hero-badge-item {
@@ -207,20 +216,20 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  color: var(--lux-gold-400);
+  color: #94631D;
 }
 
 .hero-badge-icon svg {
   width: 30px;
   height: 30px;
-  stroke: var(--lux-gold-400);
+  stroke: #94631D;
 }
 
 .hero-badge-label {
   font-size: 12.5px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.35;
-  color: #E8EDE9;
+  color: #0B1C12;
 }
 
 /* Hero Action Buttons */
@@ -235,8 +244,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #E8B85C 0%, #D19E3E 100%);
-  color: #0B1C12;
+  background: linear-gradient(135deg, #0B1C12 0%, #163622 100%);
+  color: #F4D38E;
   font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 1.2px;
@@ -244,25 +253,25 @@
   padding: 13px 26px;
   border-radius: 4px;
   text-decoration: none;
-  border: none;
+  border: 1px solid rgba(244, 211, 142, 0.35);
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(232, 184, 92, 0.28);
+  box-shadow: 0 6px 20px rgba(11, 28, 18, 0.25);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-gold-lux:hover {
-  background: linear-gradient(135deg, #F0C36E 0%, #DFAD4C 100%);
+  background: linear-gradient(135deg, #163622 0%, #204C30 100%);
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(232, 184, 92, 0.4);
-  color: #06130B;
+  box-shadow: 0 10px 26px rgba(11, 28, 18, 0.35);
+  color: #FFFFFF;
 }
 
 .btn-outline-lux {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: transparent;
-  color: #FAF6EF;
+  background: rgba(255, 255, 255, 0.5);
+  color: #0B1C12;
   font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 1.2px;
@@ -270,15 +279,16 @@
   padding: 12px 24px;
   border-radius: 4px;
   text-decoration: none;
-  border: 1px solid rgba(229, 179, 88, 0.45);
+  border: 1.5px solid #0B1C12;
   cursor: pointer;
+  backdrop-filter: blur(4px);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-outline-lux:hover {
-  background: rgba(229, 179, 88, 0.12);
-  border-color: var(--lux-gold-400);
-  color: var(--lux-gold-300);
+  background: #0B1C12;
+  border-color: #0B1C12;
+  color: #FAF6EF;
   transform: translateY(-2px);
 }
 
@@ -1292,6 +1302,30 @@ textarea.modal-input {
 }
 
 @media (max-width: 992px) {
+  .shop-hero-lux {
+    background-color: #EBD6C3;
+    background-image: linear-gradient(180deg, #F5EAE0 0%, #EBD8C6 100%);
+    padding: 50px 20px 60px;
+    min-height: auto;
+  }
+  .shop-hero-showcase-wrap {
+    display: flex;
+    justify-content: center;
+    min-height: auto;
+    width: 100%;
+    margin: 10px auto 0;
+    pointer-events: auto;
+  }
+  .shop-hero-mobile-photo {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 14px 38px rgba(11, 28, 18, 0.12), 0 2px 8px rgba(148, 99, 29, 0.1);
+    border: 1px solid rgba(148, 99, 29, 0.2);
+    image-rendering: high-quality;
+  }
   .shop-hero-container {
     grid-template-columns: 1fr;
     gap: 40px;

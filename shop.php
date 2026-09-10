@@ -342,8 +342,10 @@
         </div>
       </div>
 
-      <!-- Right Visual Spacer (Products are seamlessly blended in hero background) -->
-      <div class="shop-hero-spacer" aria-hidden="true"></div>
+      <!-- Right Visual Showcase (Desktop shows background seamlessly; Mobile shows crisp image card) -->
+      <div class="shop-hero-showcase-wrap">
+        <img src="assets/products/shop_hero_luxury.jpg?v=20" alt="RT Chocos Luxury Gift Box & Artisanal Treats" class="shop-hero-mobile-photo" loading="eager" width="1024" height="576">
+      </div>
 
     </div>
   </section>
