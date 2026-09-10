@@ -109,15 +109,40 @@
    ============================================================ */
 #page-wwu .wwu-hero {
   position: relative !important;
-  padding: 100px 48px 75px !important;
-  background: 
-    radial-gradient(circle 650px at 70% 50%, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.05) 50%, transparent 80%),
-    radial-gradient(circle 500px at 20% 30%, rgba(26, 54, 34, 0.6) 0%, transparent 70%),
-    linear-gradient(180deg, #06110a 0%, #0a1b11 50%, #07130b 100%) !important;
+  padding: 110px 48px 80px !important;
+  background: #06110a !important;
   overflow: hidden !important;
   min-height: calc(100vh - 75px) !important;
   display: flex !important;
   align-items: center !important;
+}
+
+/* Background video filling the entire hero */
+#page-wwu .wwu-hero-bg-video {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: 70% center !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  opacity: 0.72 !important;
+}
+
+/* Luxury atmospheric gradient vignette */
+#page-wwu .wwu-hero-video-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: 
+    linear-gradient(to right, rgba(6, 17, 10, 0.96) 0%, rgba(6, 17, 10, 0.9) 38%, rgba(6, 17, 10, 0.5) 70%, rgba(6, 17, 10, 0.25) 100%),
+    linear-gradient(to bottom, rgba(6, 17, 10, 0.8) 0%, transparent 20%, transparent 75%, #0c1a11 100%) !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
 }
 
 /* Atmospheric golden dust & grid background */
@@ -129,13 +154,11 @@
   right: 0 !important;
   bottom: 0 !important;
   background-image: 
-    radial-gradient(circle 2px at 20% 30%, rgba(212, 175, 55, 0.45) 0%, transparent 100%),
-    radial-gradient(circle 2.5px at 75% 25%, rgba(212, 175, 55, 0.55) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 40% 70%, rgba(212, 175, 55, 0.35) 0%, transparent 100%),
-    radial-gradient(circle 2px at 85% 65%, rgba(212, 175, 55, 0.45) 0%, transparent 100%),
-    radial-gradient(circle 2px at 15% 80%, rgba(212, 175, 55, 0.35) 0%, transparent 100%) !important;
+    radial-gradient(circle 2px at 20% 30%, rgba(212, 175, 55, 0.4) 0%, transparent 100%),
+    radial-gradient(circle 2px at 75% 25%, rgba(212, 175, 55, 0.45) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 40% 70%, rgba(212, 175, 55, 0.25) 0%, transparent 100%) !important;
   pointer-events: none !important;
-  z-index: 1 !important;
+  z-index: 2 !important;
 }
 
 /* Background animated celestial coordinate lines */
@@ -145,10 +168,10 @@
   right: 0 !important;
   width: 70% !important;
   height: 100% !important;
-  opacity: 0.22 !important;
+  opacity: 0.15 !important;
   pointer-events: none !important;
   overflow: hidden !important;
-  z-index: 1 !important;
+  z-index: 2 !important;
 }
 #page-wwu .wwu-hero-bg-lines svg {
   width: 100% !important;
@@ -158,12 +181,11 @@
 #page-wwu .wwu-hero-inner {
   max-width: 1420px !important;
   margin: 0 auto !important;
-  display: grid !important;
-  grid-template-columns: 1.08fr 1fr !important;
-  gap: 40px !important;
-  align-items: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
   position: relative !important;
-  z-index: 2 !important;
+  z-index: 3 !important;
   width: 100% !important;
 }
 
@@ -171,6 +193,8 @@
 #page-wwu .wwu-hero-text {
   display: flex !important;
   flex-direction: column !important;
+  max-width: 700px !important;
+  width: 100% !important;
 }
 
 #page-wwu .wwu-hero-tag-pill {
@@ -241,13 +265,14 @@
   display: flex !important;
   flex-direction: column !important;
   gap: 5px !important;
-  padding: 13px 15px !important;
-  background: rgba(255, 255, 255, 0.035) !important;
-  border: 1px solid rgba(212, 175, 55, 0.16) !important;
+  padding: 14px 16px !important;
+  background: rgba(7, 22, 14, 0.65) !important;
+  border: 1px solid rgba(212, 175, 55, 0.22) !important;
   border-radius: 12px !important;
   cursor: pointer !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
   position: relative !important;
   overflow: hidden !important;
@@ -461,99 +486,34 @@
   0% { transform: scale(0.9); opacity: 0.7; }
   50% { transform: scale(1.3); opacity: 1; }
   100% { transform: scale(0.9); opacity: 0.7; }
-}/* --- HERO RIGHT COLUMN: LAB VIDEO SHOWCASE --- */
-#page-wwu .wwu-hero-visual {
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-height: 520px !important;
-  width: 100% !important;
-}
-
-#page-wwu .wwu-hero-video-card {
-  position: relative !important;
-  width: 100% !important;
-  max-width: 620px !important;
-  margin: 0 auto !important;
-}
-
-/* Ambient Golden Radial Glow behind the Video */
-#page-wwu .wwu-video-ambient-glow {
+}/* --- FLOATING LAB VIDEO BADGE & CONTROLS --- */
+#page-wwu .wwu-hero-video-bar {
   position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  width: 108% !important;
-  height: 112% !important;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.24) 0%, rgba(12, 35, 22, 0.45) 45%, transparent 72%) !important;
-  filter: blur(36px) !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-}
-
-#page-wwu .wwu-video-container {
-  position: relative !important;
-  width: 100% !important;
-  aspect-ratio: 16 / 9 !important;
-  border-radius: 20px !important;
-  overflow: hidden !important;
-  background: #08150e !important;
-  border: 1.2px solid rgba(212, 175, 55, 0.35) !important;
-  box-shadow: 
-    0 24px 64px rgba(0, 0, 0, 0.75),
-    0 4px 16px rgba(0, 0, 0, 0.4),
-    0 0 35px rgba(212, 175, 55, 0.15) !important;
-  z-index: 1 !important;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease !important;
-}
-
-#page-wwu .wwu-video-container:hover {
-  transform: translateY(-3px) !important;
-  border-color: rgba(212, 175, 55, 0.55) !important;
-  box-shadow: 
-    0 30px 75px rgba(0, 0, 0, 0.85),
-    0 6px 20px rgba(0, 0, 0, 0.5),
-    0 0 50px rgba(212, 175, 55, 0.25) !important;
-}
-
-#page-wwu .wwu-lab-video {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  display: block !important;
-}
-
-/* Top Glassmorphism Bar */
-#page-wwu .wwu-video-top-bar {
-  position: absolute !important;
-  top: 14px !important;
-  left: 14px !important;
-  right: 14px !important;
-  display: flex !important;
+  bottom: 28px !important;
+  right: 48px !important;
+  display: inline-flex !important;
   align-items: center !important;
-  justify-content: space-between !important;
-  z-index: 5 !important;
-  pointer-events: none !important;
+  gap: 10px !important;
+  z-index: 4 !important;
 }
 
 #page-wwu .wwu-video-badge {
   display: inline-flex !important;
   align-items: center !important;
   gap: 7px !important;
-  padding: 6px 14px !important;
-  background: rgba(12, 26, 17, 0.82) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  padding: 7px 15px !important;
+  background: rgba(12, 26, 17, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
   border-radius: 30px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 10px !important;
+  font-size: 10.5px !important;
   font-weight: 700 !important;
   letter-spacing: 1.2px !important;
   text-transform: uppercase !important;
   color: #f5e4b2 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
 }
 
 #page-wwu .wwu-video-badge .radar-beacon {
@@ -576,10 +536,10 @@
   width: 32px !important;
   height: 32px !important;
   border-radius: 50% !important;
-  background: rgba(12, 26, 17, 0.82) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  background: rgba(12, 26, 17, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
   color: #f5e4b2 !important;
   display: flex !important;
   align-items: center !important;
@@ -587,7 +547,7 @@
   cursor: pointer !important;
   transition: all 0.25s ease !important;
   outline: none !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
 }
 
 #page-wwu .wwu-video-ctrl-btn:hover {
@@ -597,60 +557,22 @@
   transform: scale(1.08) !important;
 }
 
-/* Bottom Caption Bar */
-#page-wwu .wwu-video-bottom-caption {
-  position: absolute !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  padding: 24px 18px 14px !important;
-  background: linear-gradient(to top, rgba(7, 21, 14, 0.92) 0%, rgba(7, 21, 14, 0.6) 60%, transparent 100%) !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 11px !important;
-  color: #e5ded6 !important;
-  z-index: 4 !important;
-  pointer-events: none !important;
-}
-
-#page-wwu .wwu-caption-tag {
-  display: inline-block !important;
-  padding: 3px 8px !important;
-  background: rgba(212, 175, 55, 0.2) !important;
-  border: 1px solid rgba(212, 175, 55, 0.4) !important;
-  border-radius: 4px !important;
-  font-size: 9px !important;
-  font-weight: 800 !important;
-  letter-spacing: 1.2px !important;
-  color: #d4af37 !important;
-  text-transform: uppercase !important;
-}
-
-#page-wwu .wwu-caption-text {
-  letter-spacing: 0.3px !important;
-  font-weight: 500 !important;
-  color: #c8c0b2 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-
 @media (max-width: 991px) {
   #page-wwu .wwu-hero {
-    padding: 60px 18px 45px !important;
+    padding: 85px 24px 50px !important;
     min-height: auto !important;
   }
-  #page-wwu .wwu-hero-inner {
-    grid-template-columns: 1fr !important;
-    gap: 28px !important;
+  #page-wwu .wwu-hero-video-overlay {
+    background: 
+      linear-gradient(to bottom, rgba(6, 17, 10, 0.94) 0%, rgba(6, 17, 10, 0.85) 60%, rgba(6, 17, 10, 0.96) 100%) !important;
   }
-  #page-wwu .wwu-hero-visual {
-    min-height: auto !important;
-  }
-  #page-wwu .wwu-hero-video-card {
+  #page-wwu .wwu-hero-text {
     max-width: 100% !important;
+  }
+  #page-wwu .wwu-hero-video-bar {
+    position: static !important;
+    margin-top: 24px !important;
+    align-self: flex-start !important;
   }
 }
 
@@ -1989,16 +1911,7 @@
   #page-wwu .wwu-hero-spec-strip {
     justify-content: center !important;
   }
-  #page-wwu .wwu-hero-visual {
-    min-height: 480px !important;
-  }
-  #page-wwu .wwu-pod-constellation {
-    width: 460px !important;
-    height: 460px !important;
-  }
-  #page-wwu .wwu-pod-artwork {
-    width: 180px !important;
-  }
+
   #page-wwu .wwu-collab-top-row {
     grid-template-columns: 1fr !important;
     gap: 28px !important;
@@ -2145,6 +2058,15 @@
 
   <!-- ====== 1. HERO ====== -->
   <section class="wwu-hero">
+    <!-- Full-bleed background video -->
+    <video class="wwu-hero-bg-video" id="wwuHeroVideo" autoplay loop muted playsinline preload="auto" poster="assets/workwithusvid_thumb.jpg">
+      <source src="assets/workwithusvid.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+
+    <!-- Luxury Dark Gradient Vignette for perfect text contrast -->
+    <div class="wwu-hero-video-overlay" aria-hidden="true"></div>
+
     <!-- Decorative celestial coordinate web lines -->
     <div class="wwu-hero-bg-lines">
       <svg viewBox="0 0 700 700" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2163,7 +2085,7 @@
 
     <div class="wwu-hero-inner">
 
-      <!-- Left Column: Editorial & Conversion -->
+      <!-- Editorial & Conversion Content -->
       <div class="wwu-hero-text">
         <div class="wwu-hero-tag-pill">
           <span class="pill-dot"></span>
@@ -2171,8 +2093,6 @@
         </div>
 
         <h1>Bring us<br><span class="hl-hero-gold">the question.</span></h1>
-
-        
 
         <!-- 2x2 Interactive Question Pillars Grid -->
         <div class="wwu-hero-pillars-grid">
@@ -2210,48 +2130,27 @@
               <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
             </a>
           </div>
-
-          
         </div>
       </div>
 
-      <!-- Right Column: Lab Video Showcase -->
-      <div class="wwu-hero-visual">
-        <div class="wwu-hero-video-card">
-          <div class="wwu-video-ambient-glow" aria-hidden="true"></div>
-          <div class="wwu-video-container">
-            <video class="wwu-lab-video" id="wwuHeroVideo" autoplay loop muted playsinline preload="auto" poster="assets/workwithusvid_thumb.jpg">
-              <source src="assets/workwithusvid.mp4" type="video/mp4">
-              Your browser does not support HTML5 video.
-            </video>
+    </div>
 
-            <!-- Video Header / Controls Overlay -->
-            <div class="wwu-video-top-bar">
-              <div class="wwu-video-badge">
-                <span class="radar-beacon"></span>
-                <span>Chocolate R&amp;D Lab</span>
-              </div>
-              <div class="wwu-video-ctrls">
-                <button type="button" class="wwu-video-ctrl-btn" id="wwuVidPlayBtn" onclick="toggleWwuVideoPlay()" title="Play / Pause" aria-label="Toggle Playback">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" id="wwuVidPauseIcon"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" id="wwuVidPlayIcon" style="display:none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                </button>
-                <button type="button" class="wwu-video-ctrl-btn" id="wwuVidMuteBtn" onclick="toggleWwuVideoSound()" title="Mute / Unmute" aria-label="Toggle Audio">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="wwuVidMutedIcon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="wwuVidSoundIcon" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Video Bottom Caption -->
-            <div class="wwu-video-bottom-caption">
-              <span class="wwu-caption-tag">INNOVATION LAB</span>
-              <span class="wwu-caption-text">Active Prototyping &bull; Sensory Profiling &bull; Molecular Formulation</span>
-            </div>
-          </div>
-        </div>
+    <!-- Floating Video Controls in Bottom Right of Hero -->
+    <div class="wwu-hero-video-bar">
+      <div class="wwu-video-badge">
+        <span class="radar-beacon"></span>
+        <span>Chocolate R&amp;D Lab</span>
       </div>
-
+      <div class="wwu-video-ctrls">
+        <button type="button" class="wwu-video-ctrl-btn" id="wwuVidPlayBtn" onclick="toggleWwuVideoPlay()" title="Play / Pause" aria-label="Toggle Playback">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" id="wwuVidPauseIcon"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" id="wwuVidPlayIcon" style="display:none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        </button>
+        <button type="button" class="wwu-video-ctrl-btn" id="wwuVidMuteBtn" onclick="toggleWwuVideoSound()" title="Mute / Unmute" aria-label="Toggle Audio">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="wwuVidMutedIcon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="wwuVidSoundIcon" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </button>
+      </div>
     </div>
   </section>
 
