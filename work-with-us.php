@@ -65,13 +65,14 @@
 }
 
 #page-wwu {
-  background-color: #0c1a11 !important;
-  color: #e8dcc8 !important;
+  background-color: var(--bg-primary, #F7F2E8) !important;
+  color: var(--text-primary, #1F2E25) !important;
   font-family: 'Inter', sans-serif !important;
   overflow-x: hidden !important;
+  transition: background-color 0.3s ease, color 0.3s ease !important;
 }
 
-/* Force all text elements to inherit page colors, not theme variables */
+/* Force all text elements to inherit theme variables */
 #page-wwu h1,
 #page-wwu h2,
 #page-wwu h3,
@@ -79,8 +80,9 @@
 #page-wwu h5 {
   font-family: 'Playfair Display', Georgia, serif !important;
   font-weight: 700 !important;
-  color: #ffffff !important;
+  color: var(--text-heading, #112217) !important;
   letter-spacing: -0.01em !important;
+  transition: color 0.3s ease !important;
 }
 #page-wwu p,
 #page-wwu span,
@@ -100,24 +102,24 @@
   font-weight: 700 !important;
   letter-spacing: 3px !important;
   text-transform: uppercase !important;
-  color: #d4af37 !important;
+  color: var(--accent, #b8860b) !important;
   display: block !important;
 }
 
 /* ============================================================
-   SECTION 1: HERO (Ultra-Luxury Chocolate R&D Constellation)
+   SECTION 1: HERO (Light Luxury Chocolate R&D Constellation)
    ============================================================ */
 #page-wwu .wwu-hero {
   position: relative !important;
-  padding: 110px 48px 80px !important;
-  background: #06110a !important;
+  padding: 85px 48px 55px !important;
+  background: var(--bg-primary, #F7F2E8) !important;
   overflow: hidden !important;
   min-height: calc(100vh - 75px) !important;
   display: flex !important;
   align-items: center !important;
 }
 
-/* Background video filling the entire hero - opacity removed (100% solid) */
+/* Background video filling the entire hero */
 #page-wwu .wwu-hero-bg-video {
   position: absolute !important;
   top: 0 !important;
@@ -131,9 +133,21 @@
   opacity: 1 !important;
 }
 
-/* Gradient overlay completely removed */
+/* Subtle light-tone left soft wash for perfect text readability on video */
 #page-wwu .wwu-hero-video-overlay {
-  display: none !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  background: radial-gradient(circle at 18% 45%, rgba(247, 242, 232, 0.45) 0%, rgba(247, 242, 232, 0.12) 50%, transparent 80%) !important;
+}
+
+html.theme-midnight-gold #page-wwu .wwu-hero-video-overlay {
+  background: radial-gradient(circle at 18% 45%, rgba(14, 12, 10, 0.65) 0%, rgba(14, 12, 10, 0.2) 50%, transparent 80%) !important;
 }
 
 /* Atmospheric dust background removed */
@@ -148,7 +162,7 @@
   right: 0 !important;
   width: 70% !important;
   height: 100% !important;
-  opacity: 0.15 !important;
+  opacity: 0.18 !important;
   pointer-events: none !important;
   overflow: hidden !important;
   z-index: 2 !important;
@@ -173,65 +187,75 @@
 #page-wwu .wwu-hero-text {
   display: flex !important;
   flex-direction: column !important;
-  max-width: 700px !important;
+  max-width: 660px !important;
   width: 100% !important;
 }
 
+/* Tag Pill */
 #page-wwu .wwu-hero-tag-pill {
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
   align-self: flex-start !important;
-  padding: 7px 18px !important;
-  background: rgba(10, 18, 13, 0.88) !important;
+  padding: 5px 16px !important;
+  background: var(--bg-glass, rgba(250, 246, 239, 0.90)) !important;
   backdrop-filter: blur(14px) !important;
   -webkit-backdrop-filter: blur(14px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.5) !important;
+  border: 1px solid var(--border-accent, rgba(184, 134, 11, 0.35)) !important;
   border-radius: 30px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   font-weight: 800 !important;
-  letter-spacing: 2.2px !important;
+  letter-spacing: 2px !important;
   text-transform: uppercase !important;
-  color: #f5c75e !important;
-  margin-bottom: 18px !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  color: var(--text-heading, #2e2118) !important;
+  margin-bottom: 12px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
 }
 
 #page-wwu .wwu-hero-tag-pill .pill-dot {
   width: 7px !important;
   height: 7px !important;
   border-radius: 50% !important;
-  background: #f5c75e !important;
-  box-shadow: 0 0 10px #f5c75e !important;
+  background: var(--accent, #b8860b) !important;
+  box-shadow: 0 0 8px var(--accent, rgba(184, 134, 11, 0.6)) !important;
 }
 
+/* Main Heading */
 #page-wwu .wwu-hero h1 {
-  font-size: clamp(42px, 4.8vw, 70px) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: clamp(42px, 4.8vw, 68px) !important;
   line-height: 1.04 !important;
-  margin-bottom: 20px !important;
-  letter-spacing: -1.5px !important;
-  color: #ffffff !important;
+  margin-bottom: 12px !important;
+  letter-spacing: -1.2px !important;
+  color: var(--text-heading, #112217) !important;
   font-weight: 700 !important;
-  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.95), 0 6px 28px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 1) !important;
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(255, 255, 255, 1) !important;
+}
+
+html.theme-midnight-gold #page-wwu .wwu-hero h1 {
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.95) !important;
 }
 
 #page-wwu .wwu-hero h1 .hl-hero-gold {
-  color: #f5c75e !important;
+  color: var(--accent, #b8860b) !important;
   display: inline-block !important;
-  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.95), 0 6px 28px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 1) !important;
 }
 
 /* Sub-headline Paragraph */
 #page-wwu .wwu-hero-sublead {
   font-family: 'Inter', sans-serif !important;
   font-size: 14.5px !important;
-  line-height: 1.6 !important;
-  color: #f5efe1 !important;
+  line-height: 1.55 !important;
+  color: var(--text-secondary, #34463B) !important;
   max-width: 580px !important;
-  margin-bottom: 22px !important;
+  margin-bottom: 18px !important;
   font-weight: 500 !important;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9) !important;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.9) !important;
+}
+
+html.theme-midnight-gold #page-wwu .wwu-hero-sublead {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
 }
 
 /* 2x2 Grid of Interactive Question Cards */
@@ -239,82 +263,130 @@
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   gap: 14px !important;
-  margin-bottom: 26px !important;
-  max-width: 640px !important;
+  margin-bottom: 24px !important;
+  max-width: 650px !important;
 }
 
+/* Horizontal Card Structure */
 #page-wwu .hero-pillar-card {
   display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-  padding: 16px 18px !important;
-  background: rgba(10, 18, 13, 0.88) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  border-radius: 12px !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 15px 18px !important;
+  background: var(--bg-glass, rgba(250, 246, 239, 0.94)) !important;
+  border: 1px solid var(--border-subtle, rgba(35, 84, 54, 0.14)) !important;
+  border-radius: 14px !important;
   cursor: pointer !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07), 0 2px 6px rgba(0, 0, 0, 0.03) !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
   position: relative !important;
   overflow: hidden !important;
 }
 
-#page-wwu .hero-pillar-card::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 3.5px !important;
-  height: 100% !important;
-  background: #d4af37 !important;
-  opacity: 0.85 !important;
-  transition: all 0.3s ease !important;
-}
-
 #page-wwu .hero-pillar-card:hover {
-  background: rgba(15, 26, 19, 0.95) !important;
-  border-color: rgba(212, 175, 55, 0.65) !important;
+  background: var(--bg-card, #ffffff) !important;
+  border-color: var(--accent, #b8860b) !important;
   transform: translateY(-3px) !important;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6), 0 0 16px rgba(212, 175, 55, 0.2) !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12), 0 0 16px var(--accent-glow, rgba(184, 134, 11, 0.15)) !important;
 }
 
-#page-wwu .hero-pillar-card:hover::before {
-  opacity: 1 !important;
-  width: 5px !important;
-  background: #f5c75e !important;
+/* Icon Badges */
+#page-wwu .hero-card-icon-badge {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14) !important;
+  transition: transform 0.3s ease !important;
+}
+
+#page-wwu .hero-pillar-card:hover .hero-card-icon-badge {
+  transform: scale(1.08) !important;
+}
+
+#page-wwu .hero-card-icon-badge svg {
+  width: 22px !important;
+  height: 22px !important;
+}
+
+/* Badge distinct luxury colors matching the user's reference mockup */
+#page-wwu .hero-card-icon-badge.badge-cacao {
+  background: #2B1A15 !important;
+  color: #FAF6EF !important;
+}
+#page-wwu .hero-card-icon-badge.badge-ingredients {
+  background: #7E3525 !important;
+  color: #FAF6EF !important;
+}
+#page-wwu .hero-card-icon-badge.badge-stability {
+  background: #1E3A29 !important;
+  color: #FAF6EF !important;
+}
+#page-wwu .hero-card-icon-badge.badge-innovation {
+  background: #B08027 !important;
+  color: #FAF6EF !important;
+}
+
+/* Card Content Side */
+#page-wwu .hero-card-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+#page-wwu .hero-card-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
 }
 
 #page-wwu .card-icon-tag {
   font-family: 'Inter', sans-serif !important;
   font-size: 9.5px !important;
   font-weight: 800 !important;
-  letter-spacing: 1.8px !important;
-  color: #f0c55d !important;
+  letter-spacing: 1.6px !important;
+  color: var(--accent, #8b6b23) !important;
   text-transform: uppercase !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 5px !important;
+}
+
+#page-wwu .card-arrow {
+  font-size: 14px !important;
+  color: var(--text-muted, #736453) !important;
+  transition: transform 0.3s ease, color 0.3s ease !important;
+}
+
+#page-wwu .hero-pillar-card:hover .card-arrow {
+  transform: translateX(4px) !important;
+  color: var(--accent, #b8860b) !important;
 }
 
 #page-wwu .hero-pillar-card strong {
   font-family: 'Playfair Display', Georgia, serif !important;
-  font-size: 15.5px !important;
+  font-size: 15px !important;
   font-weight: 700 !important;
-  color: #ffffff !important;
+  color: var(--text-heading, #112217) !important;
   line-height: 1.25 !important;
   transition: color 0.3s ease !important;
 }
 
 #page-wwu .hero-pillar-card:hover strong {
-  color: #f5c75e !important;
+  color: var(--accent, #b8860b) !important;
 }
 
 #page-wwu .hero-pillar-card p {
   font-family: 'Inter', sans-serif !important;
-  font-size: 12px !important;
-  color: #e2dad0 !important;
-  line-height: 1.45 !important;
+  font-size: 11.5px !important;
+  color: var(--text-secondary, #4a3e33) !important;
+  line-height: 1.4 !important;
   margin: 0 !important;
   font-weight: 400 !important;
 }
@@ -323,7 +395,7 @@
 #page-wwu .wwu-hero-actions-wrap {
   display: flex !important;
   flex-direction: column !important;
-  gap: 14px !important;
+  gap: 16px !important;
 }
 
 #page-wwu .wwu-hero-actions {
@@ -338,28 +410,35 @@
   align-items: center !important;
   gap: 10px !important;
   padding: 13px 28px !important;
-  background: #d4af37 !important;
-  color: #08140c !important;
+  background: var(--accent, #dfb043) !important;
+  color: #ffffff !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 12px !important;
   font-weight: 800 !important;
   letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
   border-radius: 8px !important;
-  border: 1px solid #e5c365 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
   cursor: pointer !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Specific button text color for gold/amber themes */
+html.theme-cream-forest #page-wwu .wwu-hero-btn-gold,
+html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
+  background: #dfb043 !important;
+  color: #1a1510 !important;
 }
 
 #page-wwu .wwu-hero-btn-gold:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 16px rgba(212, 175, 55, 0.3) !important;
-  background: #e2bf4b !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18) !important;
+  filter: brightness(1.06) !important;
 }
 
 #page-wwu .wwu-hero-btn-gold svg {
-  stroke: #08140c !important;
+  stroke: currentColor !important;
   stroke-width: 2.5 !important;
   width: 13px !important;
   height: 13px !important;
@@ -375,12 +454,12 @@
   align-items: center !important;
   gap: 10px !important;
   padding: 12px 24px !important;
-  background: rgba(10, 18, 13, 0.88) !important;
+  background: var(--bg-glass, rgba(250, 246, 239, 0.92)) !important;
   backdrop-filter: blur(14px) !important;
   -webkit-backdrop-filter: blur(14px) !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
-  border: 1.5px solid rgba(212, 175, 55, 0.55) !important;
-  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+  border: 1.5px solid var(--border-accent, rgba(184, 134, 11, 0.35)) !important;
+  color: var(--text-heading, #112217) !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 12px !important;
   font-weight: 700 !important;
@@ -392,15 +471,15 @@
 }
 
 #page-wwu .wwu-hero-btn-outline:hover {
-  background: rgba(212, 175, 55, 0.18) !important;
-  border-color: #f5c75e !important;
-  color: #ffffff !important;
+  background: var(--bg-card, #ffffff) !important;
+  border-color: var(--accent, #b8860b) !important;
+  color: var(--accent, #b8860b) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 14px rgba(212, 175, 55, 0.25) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12) !important;
 }
 
 #page-wwu .wwu-hero-btn-outline svg {
-  stroke: #d4af37 !important;
+  stroke: currentColor !important;
   stroke-width: 2.2 !important;
   width: 13px !important;
   height: 13px !important;
@@ -411,31 +490,87 @@
   transform: translateY(3px) !important;
 }
 
-#page-wwu .wwu-hero-spec-strip {
+/* Trust Spec Strip */
+#page-wwu .wwu-hero-trust-strip {
   display: flex !important;
   flex-wrap: wrap !important;
   align-items: center !important;
-  gap: 9px !important;
+  gap: 12px !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 11px !important;
-  color: #8c826e !important;
-  letter-spacing: 0.5px !important;
+  font-weight: 700 !important;
+  color: var(--text-muted, #736453) !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  margin-top: 4px !important;
 }
 
-#page-wwu .wwu-hero-spec-strip .spec-item {
-  display: inline-flex !important;
+#page-wwu .wwu-hero-trust-strip .strip-sep {
+  color: var(--accent, #b8860b) !important;
+  opacity: 0.6 !important;
+  font-size: 12px !important;
+}
+
+/* Video Annotations / Pins */
+#page-wwu .wwu-hero-annotations {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 55% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 3 !important;
+}
+
+#page-wwu .wwu-annot-pin {
+  position: absolute !important;
+  display: flex !important;
   align-items: center !important;
-  gap: 5px !important;
+  gap: 8px !important;
+  color: #f7f2e8 !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85) !important;
 }
 
-#page-wwu .wwu-hero-spec-strip .spec-dot {
-  color: #d4af37 !important;
-  font-size: 9px !important;
+#page-wwu .wwu-annot-pin .annot-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: #d4af37 !important;
+  box-shadow: 0 0 10px #d4af37 !important;
 }
 
-#page-wwu .wwu-hero-spec-strip .spec-sep {
-  opacity: 0.35 !important;
+#page-wwu .wwu-annot-pin .annot-line {
   color: #d4af37 !important;
+  opacity: 0.8 !important;
+}
+
+#page-wwu .wwu-annot-pin .annot-label {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 9.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  line-height: 1.3 !important;
+  color: #fff8eb !important;
+}
+
+#page-wwu .wwu-annot-pin.pin-dna {
+  top: 36% !important;
+  left: 30% !important;
+}
+#page-wwu .wwu-annot-pin.pin-pod {
+  top: 52% !important;
+  left: 20% !important;
+}
+#page-wwu .wwu-annot-pin.pin-flask {
+  top: 56% !important;
+  right: 18% !important;
+}
+
+@media (max-width: 1200px) {
+  #page-wwu .wwu-hero-annotations {
+    display: none !important;
+  }
 }
 
 /* Radar Badge on Visual */
@@ -447,16 +582,16 @@
   align-items: center !important;
   gap: 7px !important;
   padding: 5px 12px !important;
-  background: rgba(12, 26, 17, 0.75) !important;
+  background: var(--bg-glass, rgba(250, 246, 239, 0.90)) !important;
   backdrop-filter: blur(8px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  border: 1px solid var(--border-subtle, rgba(212, 175, 55, 0.25)) !important;
   border-radius: 20px !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 9px !important;
   font-weight: 700 !important;
   letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
-  color: #d4af37 !important;
+  color: var(--accent, #b8860b) !important;
   z-index: 5 !important;
   pointer-events: none !important;
 }
@@ -474,7 +609,9 @@
   0% { transform: scale(0.9); opacity: 0.7; }
   50% { transform: scale(1.3); opacity: 1; }
   100% { transform: scale(0.9); opacity: 0.7; }
-}/* --- FLOATING LAB VIDEO BADGE & CONTROLS --- */
+}
+
+/* --- FLOATING LAB VIDEO BADGE & CONTROLS --- */
 #page-wwu .wwu-hero-video-bar {
   position: absolute !important;
   bottom: 28px !important;
@@ -490,18 +627,18 @@
   align-items: center !important;
   gap: 7px !important;
   padding: 7px 16px !important;
-  background: rgba(10, 18, 13, 0.88) !important;
+  background: var(--bg-glass, rgba(250, 246, 239, 0.92)) !important;
   backdrop-filter: blur(14px) !important;
   -webkit-backdrop-filter: blur(14px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.45) !important;
+  border: 1px solid var(--border-subtle, rgba(35, 84, 54, 0.18)) !important;
   border-radius: 30px !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 10.5px !important;
   font-weight: 700 !important;
   letter-spacing: 1.2px !important;
   text-transform: uppercase !important;
-  color: #f5e4b2 !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  color: var(--text-heading, #112217) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
 }
 
 #page-wwu .wwu-video-badge .radar-beacon {
@@ -524,24 +661,24 @@
   width: 34px !important;
   height: 34px !important;
   border-radius: 50% !important;
-  background: rgba(10, 18, 13, 0.88) !important;
+  background: var(--bg-glass, rgba(250, 246, 239, 0.92)) !important;
   backdrop-filter: blur(14px) !important;
   -webkit-backdrop-filter: blur(14px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.45) !important;
-  color: #f5e4b2 !important;
+  border: 1px solid var(--border-subtle, rgba(35, 84, 54, 0.18)) !important;
+  color: var(--text-heading, #112217) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
   transition: all 0.25s ease !important;
   outline: none !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
 }
 
 #page-wwu .wwu-video-ctrl-btn:hover {
-  background: rgba(212, 175, 55, 0.22) !important;
-  border-color: #f5c75e !important;
-  color: #ffffff !important;
+  background: var(--bg-card, #ffffff) !important;
+  border-color: var(--accent, #b8860b) !important;
+  color: var(--accent, #b8860b) !important;
   transform: scale(1.08) !important;
 }
 
@@ -569,10 +706,11 @@
 #page-wwu .wwu-collab-section {
   position: relative !important;
   padding: 38px 40px 42px !important;
-  background: #faf6ef !important;
-  border-top: 1px solid rgba(212, 175, 55, 0.22) !important;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.16) !important;
+  background: var(--bg-surface, #faf6ef) !important;
+  border-top: 1px solid var(--border-subtle, rgba(212, 175, 55, 0.22)) !important;
+  border-bottom: 1px solid var(--border-subtle, rgba(212, 175, 55, 0.16)) !important;
   overflow: hidden !important;
+  transition: background 0.3s ease !important;
 }
 
 #page-wwu .wwu-collab-container {
@@ -595,7 +733,7 @@
 }
 
 #page-wwu .wwu-collab-tag {
-  color: #8b6b23 !important;
+  color: var(--accent, #8b6b23) !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 10px !important;
   font-weight: 800 !important;
@@ -608,7 +746,7 @@
   font-family: 'Playfair Display', serif !important;
   font-size: clamp(23px, 2.3vw, 29px) !important;
   line-height: 1.18 !important;
-  color: #1a1711 !important;
+  color: var(--text-heading, #1a1711) !important;
   margin: 0 0 10px 0 !important;
   font-weight: 700 !important;
 }
@@ -616,7 +754,7 @@
 #page-wwu .wwu-collab-gold-dash {
   width: 32px !important;
   height: 2px !important;
-  background: #c59b27 !important;
+  background: var(--accent, #c59b27) !important;
   margin-bottom: 12px !important;
 }
 
@@ -624,7 +762,7 @@
   font-family: 'Inter', sans-serif !important;
   font-size: 12.5px !important;
   line-height: 1.55 !important;
-  color: #4a453b !important;
+  color: var(--text-secondary, #4a453b) !important;
   margin: 0 !important;
   font-weight: 400 !important;
 }
@@ -2080,27 +2218,88 @@
 
         <h1>Bring us<br><span class="hl-hero-gold">the question.</span></h1>
 
+        <p class="wwu-hero-sublead">From formulation challenges to new product concepts, we turn ambitious chocolate ideas into commercially viable products.</p>
+
         <!-- 2x2 Interactive Question Pillars Grid -->
         <div class="wwu-hero-pillars-grid">
+          <!-- Card 1: PRODUCT ARCHITECTURE -->
           <div class="hero-pillar-card" onclick="selectCollabArea('R&D & Product Innovation')">
-            <span class="card-icon-tag">✦ ARCHITECTURE</span>
-            <strong>A product to rethink.</strong>
-            <p>Formulation, sensory profiling &amp; market repositioning.</p>
+            <div class="hero-card-icon-badge badge-cacao">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C7.5 5 4.5 9 4.5 14c0 4.5 3 7.5 7.5 8 4.5-.5 7.5-3.5 7.5-8 0-5-3-9-7.5-12z"/>
+                <path d="M12 2v20"/>
+                <path d="M8.5 6.5C7 9.5 7 14 8.5 17.5"/>
+                <path d="M15.5 6.5C17 9.5 17 14 15.5 17.5"/>
+              </svg>
+            </div>
+            <div class="hero-card-body">
+              <div class="hero-card-header">
+                <span class="card-icon-tag">PRODUCT ARCHITECTURE</span>
+                <span class="card-arrow">&rarr;</span>
+              </div>
+              <strong>A product to rethink.</strong>
+              <p>Formulation, sensory profiling &amp; market repositioning.</p>
+            </div>
           </div>
+
+          <!-- Card 2: INGREDIENTS -->
           <div class="hero-pillar-card" onclick="selectCollabArea('Ingredients & Application Lab')">
-            <span class="card-icon-tag">✦ INGREDIENTS</span>
-            <strong>An ingredient to explore.</strong>
-            <p>Novel fats, clean-label sweeteners &amp; botanicals.</p>
+            <div class="hero-card-icon-badge badge-ingredients">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/>
+                <line x1="8.5" y1="2" x2="15.5" y2="2"/>
+                <line x1="7" y1="15" x2="17" y2="15" stroke-dasharray="2 2"/>
+              </svg>
+            </div>
+            <div class="hero-card-body">
+              <div class="hero-card-header">
+                <span class="card-icon-tag">INGREDIENTS</span>
+                <span class="card-arrow">&rarr;</span>
+              </div>
+              <strong>An ingredient to explore.</strong>
+              <p>Novel fats, clean-label sweeteners &amp; botanicals.</p>
+            </div>
           </div>
+
+          <!-- Card 3: STABILITY -->
           <div class="hero-pillar-card" onclick="selectCollabArea('Chocolate Problem Solving')">
-            <span class="card-icon-tag">✦ STABILITY</span>
-            <strong>A problem to solve.</strong>
-            <p>Fat bloom, viscosity drift &amp; shelf-life stabilization.</p>
+            <div class="hero-card-icon-badge badge-stability">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2.5l8 4.6v9.2l-8 4.6-8-4.6V7.1z"/>
+                <path d="M12 2.5v18.4"/>
+                <path d="M12 11.7l8-4.6"/>
+                <path d="M12 11.7l-8-4.6"/>
+                <circle cx="12" cy="11.7" r="1.5" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="hero-card-body">
+              <div class="hero-card-header">
+                <span class="card-icon-tag">STABILITY</span>
+                <span class="card-arrow">&rarr;</span>
+              </div>
+              <strong>A problem to solve.</strong>
+              <p>Fat bloom, viscosity drift &amp; shelf-life stabilization.</p>
+            </div>
           </div>
+
+          <!-- Card 4: INNOVATION -->
           <div class="hero-pillar-card" onclick="selectCollabArea('R&D & Product Innovation')">
-            <span class="card-icon-tag">✦ INNOVATION</span>
-            <strong>An idea not tried yet.</strong>
-            <p>Translating blue-sky concepts into pilot lab prototypes.</p>
+            <div class="hero-card-icon-badge badge-innovation">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18h6"/>
+                <path d="M10 22h4"/>
+                <path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.2 4.7 3 6l1 3h6l1-3c1.8-1.3 3-3.5 3-6a7 7 0 0 0-7-7z"/>
+                <path d="M12 6v3"/>
+              </svg>
+            </div>
+            <div class="hero-card-body">
+              <div class="hero-card-header">
+                <span class="card-icon-tag">INNOVATION</span>
+                <span class="card-arrow">&rarr;</span>
+              </div>
+              <strong>An idea not tried yet.</strong>
+              <p>Translating blue-sky concepts into pilot lab prototypes.</p>
+            </div>
           </div>
         </div>
 
@@ -2112,13 +2311,49 @@
               <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
             <a href="#collaboration-areas" class="wwu-hero-btn-outline">
-              <span>EXPLORE 5 AREAS</span>
+              <span>EXPLORE WHAT WE SOLVE</span>
               <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
             </a>
+          </div>
+          <div class="wwu-hero-trust-strip">
+            <span>IDEAS</span>
+            <span class="strip-sep">&bull;</span>
+            <span>INGREDIENTS</span>
+            <span class="strip-sep">&bull;</span>
+            <span>SCIENCE</span>
+            <span class="strip-sep">&bull;</span>
+            <span>REAL-WORLD SOLUTIONS</span>
           </div>
         </div>
       </div>
 
+    </div>
+
+    <!-- Editorial Scientific Video Annotations -->
+    <div class="wwu-hero-annotations" aria-hidden="true">
+      <div class="wwu-annot-pin pin-dna">
+        <span class="annot-dot"></span>
+        <svg class="annot-line" width="60" height="40" viewBox="0 0 60 40">
+          <polyline points="0,35 25,10 60,10" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        <span class="annot-label">INGREDIENTS<br>MATTER</span>
+      </div>
+
+      <div class="wwu-annot-pin pin-pod">
+        <span class="annot-dot"></span>
+        <svg class="annot-line" width="50" height="30" viewBox="0 0 50 30">
+          <polyline points="50,25 20,5 0,5" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        <span class="annot-label">BETTER<br>CHOCOLATE<br>POSSIBILITIES</span>
+      </div>
+
+      <div class="wwu-annot-pin pin-flask">
+        <span class="annot-dot"></span>
+        <svg class="annot-line" width="50" height="30" viewBox="0 0 50 30">
+          <polyline points="0,25 20,5 50,5" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        <span class="annot-label">SCIENCE<br>CREATES<br>FLAVOR</span>
+      </div>
     </div>
 
     <!-- Floating Video Controls in Bottom Right of Hero -->
