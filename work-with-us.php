@@ -182,42 +182,44 @@
   align-items: center !important;
   gap: 8px !important;
   align-self: flex-start !important;
-  padding: 6px 15px !important;
-  background: rgba(212, 175, 55, 0.1) !important;
-  border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  padding: 7px 18px !important;
+  background: rgba(10, 18, 13, 0.88) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(212, 175, 55, 0.5) !important;
   border-radius: 30px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 10.5px !important;
+  font-size: 11px !important;
   font-weight: 800 !important;
-  letter-spacing: 2px !important;
+  letter-spacing: 2.2px !important;
   text-transform: uppercase !important;
-  color: #d4af37 !important;
+  color: #f5c75e !important;
   margin-bottom: 18px !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
 }
 
 #page-wwu .wwu-hero-tag-pill .pill-dot {
-  width: 6px !important;
-  height: 6px !important;
+  width: 7px !important;
+  height: 7px !important;
   border-radius: 50% !important;
-  background: #d4af37 !important;
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.9) !important;
+  background: #f5c75e !important;
+  box-shadow: 0 0 10px #f5c75e !important;
 }
 
 #page-wwu .wwu-hero h1 {
-  font-size: clamp(40px, 4.6vw, 68px) !important;
-  line-height: 1.05 !important;
-  margin-bottom: 14px !important;
+  font-size: clamp(42px, 4.8vw, 70px) !important;
+  line-height: 1.04 !important;
+  margin-bottom: 20px !important;
   letter-spacing: -1.5px !important;
   color: #ffffff !important;
   font-weight: 700 !important;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65) !important;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.95), 0 6px 28px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 1) !important;
 }
 
 #page-wwu .wwu-hero h1 .hl-hero-gold {
-  color: #e5b358 !important;
+  color: #f5c75e !important;
   display: inline-block !important;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65) !important;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.95), 0 6px 28px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 1) !important;
 }
 
 /* Sub-headline Paragraph */
@@ -236,23 +238,23 @@
 #page-wwu .wwu-hero-pillars-grid {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 12px !important;
-  margin-bottom: 24px !important;
-  max-width: 620px !important;
+  gap: 14px !important;
+  margin-bottom: 26px !important;
+  max-width: 640px !important;
 }
 
 #page-wwu .hero-pillar-card {
   display: flex !important;
   flex-direction: column !important;
-  gap: 5px !important;
-  padding: 14px 16px !important;
-  background: rgba(7, 22, 14, 0.65) !important;
-  border: 1px solid rgba(212, 175, 55, 0.22) !important;
+  gap: 6px !important;
+  padding: 16px 18px !important;
+  background: rgba(10, 18, 13, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 12px !important;
   cursor: pointer !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3) !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
   position: relative !important;
   overflow: hidden !important;
@@ -263,56 +265,58 @@
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
-  width: 3px !important;
+  width: 3.5px !important;
   height: 100% !important;
   background: #d4af37 !important;
-  opacity: 0.35 !important;
+  opacity: 0.85 !important;
   transition: all 0.3s ease !important;
 }
 
 #page-wwu .hero-pillar-card:hover {
-  background: rgba(212, 175, 55, 0.09) !important;
-  border-color: rgba(212, 175, 55, 0.45) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35), 0 0 14px rgba(212, 175, 55, 0.12) !important;
+  background: rgba(15, 26, 19, 0.95) !important;
+  border-color: rgba(212, 175, 55, 0.65) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6), 0 0 16px rgba(212, 175, 55, 0.2) !important;
 }
 
 #page-wwu .hero-pillar-card:hover::before {
   opacity: 1 !important;
-  width: 4px !important;
+  width: 5px !important;
+  background: #f5c75e !important;
 }
 
 #page-wwu .card-icon-tag {
   font-family: 'Inter', sans-serif !important;
-  font-size: 9px !important;
+  font-size: 9.5px !important;
   font-weight: 800 !important;
-  letter-spacing: 1.5px !important;
-  color: #d4af37 !important;
+  letter-spacing: 1.8px !important;
+  color: #f0c55d !important;
   text-transform: uppercase !important;
   display: flex !important;
   align-items: center !important;
-  gap: 4px !important;
+  gap: 5px !important;
 }
 
 #page-wwu .hero-pillar-card strong {
-  font-family: 'Playfair Display', serif !important;
-  font-size: 14.5px !important;
-  font-weight: 600 !important;
-  color: #fcf8f0 !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 15.5px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
   line-height: 1.25 !important;
   transition: color 0.3s ease !important;
 }
 
 #page-wwu .hero-pillar-card:hover strong {
-  color: #d4af37 !important;
+  color: #f5c75e !important;
 }
 
 #page-wwu .hero-pillar-card p {
   font-family: 'Inter', sans-serif !important;
-  font-size: 11px !important;
-  color: #9f9683 !important;
-  line-height: 1.35 !important;
+  font-size: 12px !important;
+  color: #e2dad0 !important;
+  line-height: 1.45 !important;
   margin: 0 !important;
+  font-weight: 400 !important;
 }
 
 /* Actions Wrap & Trust Spec Strip */
@@ -334,28 +338,28 @@
   align-items: center !important;
   gap: 10px !important;
   padding: 13px 28px !important;
-  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%) !important;
-  color: #0c1a11 !important;
+  background: #d4af37 !important;
+  color: #08140c !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 12px !important;
   font-weight: 800 !important;
   letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
   border-radius: 8px !important;
-  border: none !important;
+  border: 1px solid #e5c365 !important;
   cursor: pointer !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.28) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) !important;
 }
 
 #page-wwu .wwu-hero-btn-gold:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 10px 28px rgba(212, 175, 55, 0.45) !important;
-  background: linear-gradient(135deg, #e5c158 0%, #c99718 100%) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 16px rgba(212, 175, 55, 0.3) !important;
+  background: #e2bf4b !important;
 }
 
 #page-wwu .wwu-hero-btn-gold svg {
-  stroke: #0c1a11 !important;
+  stroke: #08140c !important;
   stroke-width: 2.5 !important;
   width: 13px !important;
   height: 13px !important;
@@ -371,11 +375,12 @@
   align-items: center !important;
   gap: 10px !important;
   padding: 12px 24px !important;
-  background: rgba(7, 22, 14, 0.75) !important;
-  backdrop-filter: blur(8px) !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
-  border: 1.5px solid rgba(212, 175, 55, 0.5) !important;
-  color: #f5efe1 !important;
+  background: rgba(10, 18, 13, 0.88) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.55) !important;
+  color: #ffffff !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 12px !important;
   font-weight: 700 !important;
@@ -387,10 +392,11 @@
 }
 
 #page-wwu .wwu-hero-btn-outline:hover {
-  background: rgba(212, 175, 55, 0.12) !important;
-  border-color: #d4af37 !important;
+  background: rgba(212, 175, 55, 0.18) !important;
+  border-color: #f5c75e !important;
   color: #ffffff !important;
   transform: translateY(-2px) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 14px rgba(212, 175, 55, 0.25) !important;
 }
 
 #page-wwu .wwu-hero-btn-outline svg {
@@ -483,11 +489,11 @@
   display: inline-flex !important;
   align-items: center !important;
   gap: 7px !important;
-  padding: 7px 15px !important;
-  background: rgba(12, 26, 17, 0.85) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  padding: 7px 16px !important;
+  background: rgba(10, 18, 13, 0.88) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(212, 175, 55, 0.45) !important;
   border-radius: 30px !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 10.5px !important;
@@ -495,7 +501,7 @@
   letter-spacing: 1.2px !important;
   text-transform: uppercase !important;
   color: #f5e4b2 !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
 }
 
 #page-wwu .wwu-video-badge .radar-beacon {
@@ -515,13 +521,13 @@
 }
 
 #page-wwu .wwu-video-ctrl-btn {
-  width: 32px !important;
-  height: 32px !important;
+  width: 34px !important;
+  height: 34px !important;
   border-radius: 50% !important;
-  background: rgba(12, 26, 17, 0.85) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  background: rgba(10, 18, 13, 0.88) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(212, 175, 55, 0.45) !important;
   color: #f5e4b2 !important;
   display: flex !important;
   align-items: center !important;
@@ -529,12 +535,12 @@
   cursor: pointer !important;
   transition: all 0.25s ease !important;
   outline: none !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
 }
 
 #page-wwu .wwu-video-ctrl-btn:hover {
-  background: rgba(212, 175, 55, 0.25) !important;
-  border-color: #d4af37 !important;
+  background: rgba(212, 175, 55, 0.22) !important;
+  border-color: #f5c75e !important;
   color: #ffffff !important;
   transform: scale(1.08) !important;
 }
@@ -543,10 +549,8 @@
   #page-wwu .wwu-hero {
     padding: 85px 24px 50px !important;
     min-height: auto !important;
-  }
-  #page-wwu .wwu-hero-video-overlay {
-    background: 
-      linear-gradient(to bottom, rgba(6, 17, 10, 0.94) 0%, rgba(6, 17, 10, 0.85) 60%, rgba(6, 17, 10, 0.96) 100%) !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
   }
   #page-wwu .wwu-hero-text {
     max-width: 100% !important;
