@@ -156,31 +156,62 @@
     </div>
 
     <?php else: ?>
-    <!-- Checkout Form -->
-    <div class="contact-grid" style="max-width:1000px; margin:0 auto;">
+<style>
+  .checkout-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    align-items: start;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .checkout-order-summary {
+    background: var(--cream);
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(59,42,34,0.08);
+  }
+  .checkout-layout .form-input {
+    font-size: 16px !important; /* Prevents auto-zoom on iOS */
+    min-height: 46px;
+  }
+  @media (max-width: 850px) {
+    .checkout-layout {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    .checkout-order-summary {
+      order: -1;
+      padding: 18px 16px;
+    }
+  }
+</style>
+
+    <div class="checkout-layout">
+      <!-- Checkout Form -->
       <form class="contact-form" method="POST" action="/checkout.php" novalidate>
-        <h3>Shipping Details</h3>
+        <h3 style="font-family:'Playfair Display',serif; font-size:22px; color:var(--brown); margin-bottom:16px;">Shipping Details</h3>
         <?php if ($error): ?>
         <div class="form-feedback" style="display:block; background:#fde8e8; color:#c0392b; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:14px;">
           <?php echo htmlspecialchars($error); ?>
         </div>
         <?php endif; ?>
         <div class="form-fields-wrapper">
-          <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" name="name" type="text" required value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>" placeholder="Your full name"></div>
-          <div class="form-group"><label class="form-label">Email *</label><input class="form-input" name="email" type="email" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" placeholder="your@email.com"></div>
-          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone" type="tel" value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>" placeholder="+91 XXXXXXXXXX"></div>
-          <div class="form-group"><label class="form-label">Shipping Address *</label><textarea class="form-input form-textarea" name="address" rows="3" required placeholder="House/Flat No., Street, Landmark"><?php echo htmlspecialchars($_POST['address'] ?? ''); ?></textarea></div>
-          <div class="form-group"><label class="form-label">City *</label><input class="form-input" name="city" type="text" required value="<?php echo htmlspecialchars($_POST['city'] ?? ''); ?>" placeholder="Mumbai"></div>
-          <div class="form-group"><label class="form-label">State *</label><input class="form-input" name="state" type="text" required value="<?php echo htmlspecialchars($_POST['state'] ?? ''); ?>" placeholder="Maharashtra"></div>
-          <div class="form-group"><label class="form-label">Pincode *</label><input class="form-input" name="pincode" type="text" required value="<?php echo htmlspecialchars($_POST['pincode'] ?? ''); ?>" placeholder="400001" maxlength="6"></div>
-          <button class="btn-primary" type="submit" style="width:100%; justify-content:center; padding:14px;">Place Order — ₹<?php echo number_format($total, 0); ?></button>
+          <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" name="name" type="text" required value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>" placeholder="Your full name" autocomplete="name"></div>
+          <div class="form-group"><label class="form-label">Email *</label><input class="form-input" name="email" type="email" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" placeholder="your@email.com" autocomplete="email"></div>
+          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone" type="tel" inputmode="tel" value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>" placeholder="+91 XXXXXXXXXX" autocomplete="tel"></div>
+          <div class="form-group"><label class="form-label">Shipping Address *</label><textarea class="form-input form-textarea" name="address" rows="3" required placeholder="House/Flat No., Street, Landmark" autocomplete="street-address"><?php echo htmlspecialchars($_POST['address'] ?? ''); ?></textarea></div>
+          <div class="form-group"><label class="form-label">City *</label><input class="form-input" name="city" type="text" required value="<?php echo htmlspecialchars($_POST['city'] ?? ''); ?>" placeholder="Mumbai" autocomplete="address-level2"></div>
+          <div class="form-group"><label class="form-label">State *</label><input class="form-input" name="state" type="text" required value="<?php echo htmlspecialchars($_POST['state'] ?? ''); ?>" placeholder="Maharashtra" autocomplete="address-level1"></div>
+          <div class="form-group"><label class="form-label">Pincode *</label><input class="form-input" name="pincode" type="text" inputmode="numeric" required value="<?php echo htmlspecialchars($_POST['pincode'] ?? ''); ?>" placeholder="400001" maxlength="6" autocomplete="postal-code"></div>
+          <button class="btn-primary" type="submit" style="width:100%; justify-content:center; padding:15px; font-size:14px; font-weight:700;">Place Order — ₹<?php echo number_format($total, 0); ?></button>
         </div>
       </form>
 
       <!-- Order Summary -->
-      <div>
+      <div class="checkout-order-summary">
         <div class="section-label" style="margin-bottom:8px;">Order Summary</div>
-        <h2 style="font-size:24px; margin-bottom:12px;">Your Items</h2>
+        <h2 style="font-size:22px; margin-bottom:12px; font-family:'Playfair Display',serif; color:var(--brown);">Your Items</h2>
         <div class="divider" style="margin-bottom:20px;"></div>
         <?php foreach ($cartItems as $item): ?>
         <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px; color:var(--brown);">
@@ -199,7 +230,7 @@
             <span>Total</span><span>₹<?php echo number_format($total, 0); ?></span>
           </div>
         </div>
-        <a href="/cart.php" style="display:block; text-align:center; margin-top:16px; font-size:13px; color:var(--brown-light);">← Edit Cart</a>
+        <a href="/cart.php" style="display:block; text-align:center; margin-top:16px; font-size:13px; color:var(--brown-light); text-decoration:none;">← Edit Cart</a>
       </div>
     </div>
     <?php endif; ?>

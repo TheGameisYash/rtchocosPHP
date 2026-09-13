@@ -7,6 +7,13 @@ $pdo = get_db();
 // Set default timezone for relative calculations
 date_default_timezone_set('Asia/Kolkata');
 
+require_once dirname(__DIR__) . '/includes/ingredient_spotlight.php';
+try {
+    $currentSpotlight = get_current_ingredient_spotlight(false);
+} catch (Exception $e) {
+    $currentSpotlight = get_curated_spotlight_fallback();
+}
+
 // Fetch core metrics
 try {
     // 1. E-Commerce Metrics
@@ -167,32 +174,32 @@ render_admin_header("Store Dashboard", "dashboard");
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <!-- Welcome Hero Banner -->
-<div class="form-card" style="background: linear-gradient(135deg, var(--green-900) 0%, var(--green-800) 100%); color: var(--white); border: none; padding: 26px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-bottom: 28px; box-shadow: var(--shadow-md); border-radius: 14px;">
-    <div style="flex: 1; min-width: 260px;">
-        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-            <span class="store-status-pill" style="background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); color: #81c784;">
-                <span class="pulse-dot" style="background: #81c784;"></span>
+<div class="dashboard-hero-banner">
+    <div style="flex: 1; min-width: 260px; z-index: 1;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+            <span class="store-status-pill" style="background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.3); color: #10B981;">
+                <span class="pulse-dot" style="background: #10B981;"></span>
                 <span>System Operational</span>
             </span>
-            <span style="font-size: 12px; color: rgba(246, 242, 234, 0.6);"><?php echo date('l, F j, Y'); ?></span>
+            <span style="font-size: 12px; color: var(--text-muted);"><?php echo date('l, F j, Y'); ?></span>
         </div>
-        <h3 style="font-family: var(--font-heading); font-size: 28px; font-weight: 700; color: var(--gold); margin-bottom: 6px;">
+        <h2 style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--gold); margin-bottom: 8px; letter-spacing: 0.5px;">
             <?php echo $greeting; ?>, <?php echo htmlspecialchars($adminUser); ?>!
-        </h3>
-        <p style="font-size: 13.5px; color: rgba(246, 242, 234, 0.85); line-height: 1.5; max-width: 600px;">
-            You have <strong style="color: var(--gold-light);"><?php echo $pendingOrders; ?> pending order<?php echo $pendingOrders !== 1 ? 's' : ''; ?></strong> requiring packaging & dispatch, and <strong><?php echo $unreadMessages; ?></strong> unread customer inquiry. Press <kbd class="kbd-chip" style="background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.25); color: #fff;">Ctrl + K</kbd> to search or trigger any action.
+        </h2>
+        <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; max-width: 620px;">
+            You have <strong style="color: var(--gold-light); font-weight: 700;"><?php echo $pendingOrders; ?> pending order<?php echo $pendingOrders !== 1 ? 's' : ''; ?></strong> requiring packaging & dispatch, and <strong style="color: var(--text-main);"><?php echo $unreadMessages; ?></strong> unread customer inquiry. Press <kbd class="kbd-chip">Ctrl + K</kbd> to search or trigger quick actions.
         </p>
     </div>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <a href="product-editor.php" class="btn btn-secondary">
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; z-index: 1;">
+        <a href="product-editor.php" class="btn btn-primary">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
             Add Product
         </a>
-        <a href="orders.php" class="btn btn-outline" style="border-color: rgba(246, 242, 234, 0.4); color: var(--white);">
+        <a href="orders.php" class="btn btn-outline">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
             Orders (<?php echo $pendingOrders; ?>)
         </a>
-        <a href="blog-editor.php" class="btn btn-outline" style="border-color: rgba(246, 242, 234, 0.3); color: var(--white);">
+        <a href="blog-editor.php" class="btn btn-outline">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
             Write Blog
         </a>
@@ -388,6 +395,50 @@ render_admin_header("Store Dashboard", "dashboard");
     <!-- RIGHT: Diagnostics & Activity Timeline -->
     <div style="display: flex; flex-direction: column; gap: 24px;">
         
+        <!-- AI Ingredient Spotlight Card -->
+        <div class="form-card" id="spotlightAdminCard" style="margin-bottom: 0; background: var(--bg-card); border: 1px solid var(--border-color); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -30px; right: -30px; width: 110px; height: 110px; background: radial-gradient(circle, rgba(199, 166, 106, 0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
+            
+            <div class="editor-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 8px; background: rgba(199, 166, 106, 0.15); color: var(--gold); font-size: 14px;">✨</span>
+                    <span>AI Ingredient Spotlight</span>
+                </div>
+                <span style="font-size: 10.5px; padding: 3px 8px; border-radius: 12px; background: rgba(46, 125, 50, 0.12); color: #2e7d32; font-weight: 600; display: inline-flex; align-items: center; gap: 5px;">
+                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #2e7d32;"></span> OpenRouter AI
+                </span>
+            </div>
+
+            <p style="font-size: 12px; color: var(--text-light); margin: 0 0 14px 0; line-height: 1.45;">
+                Featured live on the home &amp; explore hero section. Rotates dynamically every 6 hours via OpenRouter AI.
+            </p>
+
+            <div id="spotlightContentBox" style="background: var(--bg-app); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px; margin-bottom: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                    <span id="spotlightTag" style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gold);"><?= htmlspecialchars($currentSpotlight['tag'] ?? '🌱 INGREDIENT SPOTLIGHT') ?></span>
+                    <span id="spotlightOrigin" style="font-size: 11px; color: var(--text-light);"><?= htmlspecialchars($currentSpotlight['origin_region'] ?? 'Artisan Single Origin') ?></span>
+                </div>
+                <h4 id="spotlightName" style="font-family: 'Playfair Display', serif; font-size: 16px; margin: 0 0 6px 0; color: var(--text-main); font-weight: 600;"><?= htmlspecialchars($currentSpotlight['ingredient_name'] ?? 'Cocoa Butter') ?></h4>
+                <p id="spotlightDesc" style="font-size: 12px; color: var(--text-light); margin: 0 0 10px 0; line-height: 1.45;"><?= htmlspecialchars($currentSpotlight['short_desc'] ?? '') ?></p>
+                
+                <div id="spotlightChips" style="display: flex; flex-wrap: wrap; gap: 5px;">
+                    <?php foreach ($currentSpotlight['flavor_notes_list'] ?? [] as $chip): ?>
+                        <span style="font-size: 10.5px; padding: 2px 7px; border-radius: 5px; background: rgba(199, 166, 106, 0.12); color: var(--gold); font-weight: 500;"><?= htmlspecialchars($chip) ?></span>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div style="font-size: 11.5px; color: var(--text-light);">
+                    Rotates: <strong style="color: var(--text-main);" id="spotlightTimer">Every 6 Hours</strong>
+                </div>
+                <button type="button" id="btnRefreshSpotlight" class="btn btn-outline btn-sm" onclick="triggerSpotlightRegeneration()" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+                    <svg id="refreshIcon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <span>⚡ Regenerate via AI</span>
+                </button>
+            </div>
+        </div>
+
         <!-- System Health & Diagnostics Card -->
         <div class="form-card" style="margin-bottom: 0;">
             <div class="editor-title" style="display: flex; justify-content: space-between; align-items: center;">
@@ -500,13 +551,13 @@ render_admin_header("Store Dashboard", "dashboard");
         function getChartColors() {
             const dark = isDarkTheme();
             return {
-                text: dark ? '#A8968C' : '#5C4033',
-                grid: dark ? 'rgba(199, 166, 106, 0.08)' : 'rgba(59, 42, 34, 0.06)',
-                gold: '#C7A66A',
-                goldLight: '#D4BA8A',
-                green: '#2E7D32',
-                greenLight: '#81c784',
-                bgCard: dark ? '#1A1411' : '#FEFDFB'
+                text: dark ? '#D1C2B4' : '#5A473C',
+                grid: dark ? 'rgba(212, 175, 55, 0.08)' : 'rgba(29, 21, 16, 0.06)',
+                gold: '#D4AF37',
+                goldLight: '#E8D293',
+                green: '#10B981',
+                greenLight: '#34D399',
+                bgCard: dark ? '#140F0C' : '#FFFFFF'
             };
         }
 
@@ -639,11 +690,12 @@ render_admin_header("Store Dashboard", "dashboard");
                 if (donutChart) donutChart.destroy();
 
                 const donutPalette = [
-                    '#C7A66A', // Gold
-                    '#2E7D32', // Green
-                    '#8E7A70', // Warm taupe
-                    '#5C4033', // Deep chocolate
-                    '#D4BA8A'  // Light gold
+                    '#D4AF37', // Champagne Gold
+                    '#E8D293', // Light Gold
+                    '#A87948', // Warm Caramel
+                    '#5C4033', // Deep Truffle
+                    '#10B981', // Pistachio Mint
+                    '#F59E0B'  // Honey Amber
                 ];
 
                 donutChart = new Chart(ctxDonut, {
@@ -700,7 +752,63 @@ render_admin_header("Store Dashboard", "dashboard");
             setTimeout(initCharts, 50);
         });
     });
+
+    function triggerSpotlightRegeneration() {
+        const btn = document.getElementById('btnRefreshSpotlight');
+        const icon = document.getElementById('refreshIcon');
+        if (!btn) return;
+
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        if (icon) {
+            icon.style.transition = 'transform 0.5s';
+            icon.style.animation = 'spinSpotlight 1s linear infinite';
+        }
+
+        fetch('../api_generate_spotlight.php?action=regenerate', { credentials: 'same-origin' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.spotlight) {
+                    const s = data.spotlight;
+                    if (document.getElementById('spotlightTag')) document.getElementById('spotlightTag').textContent = s.tag || '🌱 INGREDIENT SPOTLIGHT';
+                    if (document.getElementById('spotlightName')) document.getElementById('spotlightName').textContent = s.ingredient_name;
+                    if (document.getElementById('spotlightDesc')) document.getElementById('spotlightDesc').textContent = s.short_desc;
+                    if (document.getElementById('spotlightOrigin')) document.getElementById('spotlightOrigin').textContent = s.origin_region || '';
+                    
+                    const chipsEl = document.getElementById('spotlightChips');
+                    if (chipsEl && s.flavor_notes_list) {
+                        chipsEl.innerHTML = s.flavor_notes_list.map(c => `<span style="font-size: 10.5px; padding: 2px 7px; border-radius: 5px; background: rgba(199, 166, 106, 0.12); color: var(--gold); font-weight: 500;">${c}</span>`).join('');
+                    }
+
+                    // Temporary visual feedback
+                    btn.classList.remove('btn-outline');
+                    btn.classList.add('btn-primary');
+                    btn.innerHTML = '<span>✓ AI Refreshed!</span>';
+                    setTimeout(() => {
+                        btn.classList.remove('btn-primary');
+                        btn.classList.add('btn-outline');
+                        btn.innerHTML = `<svg id="refreshIcon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> <span>⚡ Regenerate via AI</span>`;
+                    }, 2500);
+                } else {
+                    alert(data.message || 'Could not regenerate spotlight.');
+                }
+            })
+            .catch(err => {
+                console.error('Spotlight generation error:', err);
+                alert('Connection to AI service failed. Please check your OpenRouter API key.');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                if (icon) icon.style.animation = 'none';
+            });
+    }
 </script>
+<style>
+@keyframes spinSpotlight {
+    100% { transform: rotate(360deg); }
+}
+</style>
 
 <?php
 render_admin_footer();

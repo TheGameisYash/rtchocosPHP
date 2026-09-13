@@ -690,6 +690,7 @@ if (!empty(trim($customHeadScripts))) {
       </a>
     </div>
   </nav>
+  <div id="mobile-menu-backdrop" class="mobile-menu-backdrop" onclick="toggleMobileMenu(true)"></div>
 </header>
 
 <?php require_once __DIR__ . '/components/ai_drawer.php'; ?>

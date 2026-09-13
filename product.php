@@ -90,9 +90,65 @@
       <span style="color:var(--brown);"><?php echo htmlspecialchars($product['name']); ?></span>
     </div>
 
-    <div class="contact-grid">
+<style>
+  .product-layout-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .product-gallery-sticky {
+    position: sticky;
+    top: 90px;
+  }
+  .product-action-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .product-thumb-strip {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    flex-wrap: wrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+  @media (max-width: 900px) {
+    .product-layout-grid {
+      grid-template-columns: 1fr !important;
+      gap: 32px !important;
+    }
+    .product-gallery-sticky {
+      position: static !important;
+    }
+    .product-action-row {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 10px !important;
+    }
+    .product-action-row .btn-primary,
+    .product-action-row .btn-outline {
+      width: 100% !important;
+      justify-content: center !important;
+      text-align: center !important;
+      padding: 13px 20px !important;
+    }
+    .product-qty-stepper {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+    .product-thumb-strip {
+      flex-wrap: nowrap !important;
+    }
+  }
+</style>
+
+    <div class="product-layout-grid">
       <!-- Image Gallery Column -->
-      <div>
+      <div class="product-gallery-sticky">
         <?php if (!empty($allImages)): 
           $mainImgSrc = $allImages[0];
           if ($mainImgSrc && strpos($mainImgSrc, 'http') !== 0 && strpos($mainImgSrc, '/') !== 0 && strpos($mainImgSrc, '../') !== 0) {
@@ -103,7 +159,7 @@
           <img id="main-img" src="<?php echo htmlspecialchars($mainImgSrc); ?>" alt="<?php echo htmlspecialchars($product['name']); ?> — bean-to-bar chocolate, RT Chocos India" style="width:100%; height:auto; display:block; object-fit:cover;" loading="lazy">
         </div>
         <?php if (count($allImages) > 1): ?>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <div class="product-thumb-strip">
           <?php foreach ($allImages as $idx => $img): 
             $thumbSrc = $img;
             if ($thumbSrc && strpos($thumbSrc, 'http') !== 0 && strpos($thumbSrc, '/') !== 0 && strpos($thumbSrc, '../') !== 0) {
@@ -114,7 +170,7 @@
                alt="<?php echo htmlspecialchars($product['name']); ?> view <?php echo $idx + 1; ?>" 
                loading="lazy"
                onclick="document.getElementById('main-img').src=this.src"
-               style="width:72px; height:72px; object-fit:cover; border-radius:10px; cursor:pointer; border:2px solid <?php echo $idx === 0 ? 'var(--brown)' : 'transparent'; ?>; opacity:<?php echo $idx === 0 ? '1' : '0.7'; ?>; transition:all 0.2s ease;"
+               style="width:72px; height:72px; object-fit:cover; border-radius:10px; cursor:pointer; border:2px solid <?php echo $idx === 0 ? 'var(--brown)' : 'transparent'; ?>; opacity:<?php echo $idx === 0 ? '1' : '0.7'; ?>; transition:all 0.2s ease; flex-shrink:0;"
                onmouseover="this.style.opacity='1'; this.style.borderColor='var(--brown)'"
                onmouseout="this.style.opacity='<?php echo $idx === 0 ? '1' : '0.7'; ?>'; this.style.borderColor='<?php echo $idx === 0 ? 'var(--brown)' : 'transparent'; ?>'">
           <?php endforeach; ?>
@@ -126,7 +182,7 @@
       <!-- Product Details Column -->
       <div>
         <div class="section-label" style="margin-bottom:8px;"><?php echo htmlspecialchars($product['category']); ?></div>
-        <h1 style="font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:700; color:var(--brown); margin-bottom:12px; line-height:1.2;">
+        <h1 style="font-family:'Cormorant Garamond',serif; font-size:clamp(26px, 4vw, 36px); font-weight:700; color:var(--brown); margin-bottom:12px; line-height:1.2;">
           <?php echo htmlspecialchars($product['name']); ?>
         </h1>
         
@@ -168,8 +224,8 @@
         <?php endif; ?>
 
         <?php if ($product['stock_quantity'] != 0): ?>
-        <div style="display:flex; gap:12px; align-items:center; margin-bottom:18px; flex-wrap:wrap;">
-          <div style="display:flex; align-items:center; gap:0; border:1px solid rgba(59,42,34,0.15); border-radius:8px; overflow:hidden;">
+        <div class="product-action-row">
+          <div class="product-qty-stepper" style="display:flex; align-items:center; gap:0; border:1px solid rgba(59,42,34,0.15); border-radius:8px; overflow:hidden;">
             <button onclick="updateQty(-1)" style="width:38px; height:38px; border:none; background:var(--cream); cursor:pointer; font-size:18px; color:var(--brown);">−</button>
             <input id="qty-input" type="number" value="<?php echo $defaultQty; ?>" min="<?php echo ($prodStoreMode === 'bulk') ? $numericMOQ : 1; ?>" max="<?php echo $product['stock_quantity'] > 0 ? $product['stock_quantity'] : 9999; ?>" style="width:56px; height:38px; border:none; text-align:center; font-family:'Jost',sans-serif; font-size:15px; color:var(--brown); outline:none;">
             <button onclick="updateQty(1)" style="width:38px; height:38px; border:none; background:var(--cream); cursor:pointer; font-size:18px; color:var(--brown);">+</button>

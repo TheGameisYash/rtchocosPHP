@@ -133,21 +133,13 @@
   opacity: 1 !important;
 }
 
-/* Subtle light-tone left soft wash for perfect text readability on video */
+/* Gradient and mask overlay removed for clear, vibrant video playback */
 #page-wwu .wwu-hero-video-overlay {
-  display: block !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 2 !important;
-  pointer-events: none !important;
-  background: radial-gradient(circle at 18% 45%, rgba(247, 242, 232, 0.45) 0%, rgba(247, 242, 232, 0.12) 50%, transparent 80%) !important;
+  display: none !important;
 }
 
 html.theme-midnight-gold #page-wwu .wwu-hero-video-overlay {
-  background: radial-gradient(circle at 18% 45%, rgba(14, 12, 10, 0.65) 0%, rgba(14, 12, 10, 0.2) 50%, transparent 80%) !important;
+  display: none !important;
 }
 
 /* Atmospheric dust background removed */
@@ -2070,6 +2062,12 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
     grid-template-columns: 1fr !important;
     gap: 50px !important;
   }
+  #page-wwu .wwu-ecosystem-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  #page-wwu .wwu-eco-card {
+    border-bottom: 1px solid rgba(184, 134, 11, 0.28) !important;
+  }
 }
 
 @media (max-width: 880px) {
@@ -2166,6 +2164,20 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
   #page-wwu .wwu-collab-section,
   #page-wwu .wwu-ecosystem-section {
     padding: 34px 18px !important;
+  }
+  #page-wwu .wwu-ecosystem-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  #page-wwu .wwu-eco-card:nth-child(2n) {
+    border-right: none !important;
+  }
+  #page-wwu .wwu-heading-rule .rule-title {
+    white-space: normal !important;
+    text-align: center !important;
+    font-size: 17px !important;
+  }
+  #page-wwu .wwu-heading-rule .rule-line {
+    display: none !important;
   }
   #page-wwu .wwu-begin,
   #page-wwu .wwu-areas,

@@ -1359,11 +1359,28 @@
 @media (max-width: 768px) {
   .theme-tester {
     left: 12px;
-    bottom: 12px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 998;
   }
   .theme-tester-trigger {
-    padding: 8px 12px;
-    font-size: 12px;
+    padding: 8px !important;
+    border-radius: 50% !important;
+    width: 38px !important;
+    height: 38px !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+    opacity: 0.75;
+  }
+  .theme-tester-trigger:hover,
+  .theme-tester-trigger:active {
+    opacity: 1;
+  }
+  .theme-tester-trigger span {
+    display: none !important;
+  }
+  .theme-tester-trigger svg {
+    width: 18px !important;
+    height: 18px !important;
   }
   .theme-tester-menu {
     position: fixed;
@@ -1374,7 +1391,8 @@
     border-radius: 16px 16px 0 0;
     border: none;
     border-top: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.25);
+    z-index: 999999;
     animation: themeSlideUpMobile 0.25s ease-out;
   }
 }

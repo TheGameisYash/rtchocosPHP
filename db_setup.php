@@ -319,6 +319,76 @@ try {
         echo "OK<br>";
     }
 
+    // 13. Create ai_ingredient_spotlights table for dynamic landing page spotlight
+    echo "Creating 'ai_ingredient_spotlights' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS ai_ingredient_spotlights (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        ingredient_name VARCHAR(150) NOT NULL,
+        tag VARCHAR(100) NOT NULL DEFAULT '🌱 INGREDIENT SPOTLIGHT',
+        short_desc VARCHAR(255) NOT NULL,
+        detailed_notes TEXT NULL,
+        flavor_notes VARCHAR(150) NULL,
+        origin_region VARCHAR(100) NULL,
+        modal_key VARCHAR(50) NOT NULL DEFAULT 'bean-to-bar',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Seed default spotlight if table is empty
+    $stmt = $pdo->query("SELECT COUNT(*) FROM ai_ingredient_spotlights");
+    if ($stmt->fetchColumn() == 0) {
+        echo "Seeding default ingredient spotlights... ";
+        $spotlightDefaults = [
+            [
+                'ingredient_name' => 'Single-Origin Cocoa Butter',
+                'tag' => '🌱 INGREDIENT SPOTLIGHT',
+                'short_desc' => 'The golden fat that gives artisan chocolate its velvet melt and glossy snap.',
+                'detailed_notes' => 'Pure unrefined cold-pressed cocoa butter crystallized specifically into Beta-V polymorphs for superior thermodynamic stability and aroma release.',
+                'flavor_notes' => 'Velvety, subtle white floral, warm cacao',
+                'origin_region' => 'Idukki Valley, Kerala',
+                'modal_key' => 'bean-to-bar'
+            ],
+            [
+                'ingredient_name' => 'Roasted Idukki Cacao Nibs',
+                'tag' => '🍫 CACAO SPOTLIGHT',
+                'short_desc' => 'Crunchy, unadulterated cacao bean centers brimming with antioxidants and deep fruity acidity.',
+                'detailed_notes' => 'Slow-roasted at 115°C to preserve naturally occurring polyphenols and fruity tannins before stone-grinding into liquid silk.',
+                'flavor_notes' => 'Citrus zest, dried cranberries, dark roast nut',
+                'origin_region' => 'Malabar Coast Foothills, Kerala',
+                'modal_key' => 'bean-to-bar'
+            ],
+            [
+                'ingredient_name' => 'Bourbon Vanilla Bean Pods',
+                'tag' => '✨ ARTISAN SPOTLIGHT',
+                'short_desc' => 'Sun-cured heirloom pods that soften dark chocolate bitterness with buttery aromatic warmth.',
+                'detailed_notes' => 'Hand-split and scraped into stone melangers during conching so whole vanillin crystals bond seamlessly with cacao butter fat globules.',
+                'flavor_notes' => 'Sweet cream, woody caramel, amber floral',
+                'origin_region' => 'Western Ghats Agroforests',
+                'modal_key' => 'chocolate-lab'
+            ]
+        ];
+        $insSpotlight = $pdo->prepare("INSERT INTO ai_ingredient_spotlights (ingredient_name, tag, short_desc, detailed_notes, flavor_notes, origin_region, modal_key) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        foreach ($spotlightDefaults as $sp) {
+            $insSpotlight->execute([$sp['ingredient_name'], $sp['tag'], $sp['short_desc'], $sp['detailed_notes'], $sp['flavor_notes'], $sp['origin_region'], $sp['modal_key']]);
+        }
+        echo "OK<br>";
+    }
+
+    // 14. Ensure order_items allows NULL product_id with ON DELETE SET NULL
+    echo "Checking order_items foreign key constraints... ";
+    try {
+        $pdo->exec("ALTER TABLE `order_items` MODIFY `product_id` INT(11) NULL;");
+        // Ensure constraint allows product deletion while preserving order history
+        $fkExists = $pdo->query("SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_NAME = 'order_items_ibfk_2' AND DELETE_RULE = 'SET NULL'")->fetch();
+        if (!$fkExists) {
+            try { $pdo->exec("ALTER TABLE `order_items` DROP FOREIGN KEY `order_items_ibfk_2`;"); } catch (Exception $e) {}
+            $pdo->exec("ALTER TABLE `order_items` ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL;");
+        }
+        echo "OK<br>";
+    } catch (Exception $e) {
+        echo "Skipped (" . htmlspecialchars($e->getMessage()) . ")<br>";
+    }
+
     echo "<h3>Setup Completed Successfully!</h3>";
     echo "<p style='color:red;'><b>IMPORTANT: Delete db_setup.php before deploying to production!</b></p>";
 

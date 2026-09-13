@@ -47,6 +47,89 @@
   $total = $subtotal + $shipping;
 ?>
 
+<style>
+  .cart-item-card {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    margin-bottom: 14px;
+    background: var(--cream);
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(59,42,34,0.06);
+    align-items: center;
+    position: relative;
+    border: 1px solid rgba(59,42,34,0.06);
+  }
+  .cart-item-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+  .cart-item-details {
+    flex: 1;
+    min-width: 150px;
+  }
+  .cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .cart-item-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--brown-light);
+    padding: 6px;
+    transition: color 0.2s;
+  }
+  .cart-item-remove:hover {
+    color: #c0392b;
+  }
+
+  @media (max-width: 640px) {
+    .cart-item-card {
+      padding: 16px 14px;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .cart-item-img {
+      width: 68px;
+      height: 68px;
+    }
+    .cart-item-details {
+      flex: 1;
+      padding-right: 28px;
+    }
+    .cart-item-remove {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+    }
+    .cart-item-actions {
+      width: 100%;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid rgba(59,42,34,0.08);
+      gap: 12px;
+    }
+    .cart-summary-box {
+      padding: 18px 16px !important;
+    }
+    .cart-summary-btns {
+      flex-direction: column !important;
+    }
+    .cart-summary-btns a {
+      width: 100% !important;
+      text-align: center !important;
+      justify-content: center !important;
+    }
+  }
+</style>
+
 <main>
 <div id="page-cart" class="page active" style="padding-top:100px;">
   <div class="section">
@@ -60,43 +143,44 @@
     <div style="max-width:900px; margin:0 auto;">
       <!-- Cart Items -->
       <?php foreach ($cartItems as $item): ?>
-      <div id="cart-item-<?php echo $item['id']; ?>" style="display:flex; gap:20px; padding:20px; margin-bottom:12px; background:var(--cream); border-radius:16px; box-shadow:0 2px 8px rgba(59,42,34,0.06); align-items:center; flex-wrap:wrap;">
+      <div id="cart-item-<?php echo $item['id']; ?>" class="cart-item-card">
         <!-- Image -->
         <?php if ($item['image_main']): 
           $cartImgSrc = (strpos($item['image_main'], 'http') === 0 || strpos($item['image_main'], '/') === 0) ? $item['image_main'] : '/' . ltrim($item['image_main'], '/');
         ?>
         <a href="/shop/<?php echo htmlspecialchars($item['slug']); ?>">
-          <img src="<?php echo htmlspecialchars($cartImgSrc); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" loading="lazy" style="width:80px; height:80px; object-fit:cover; border-radius:12px;">
+          <img src="<?php echo htmlspecialchars($cartImgSrc); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" loading="lazy" class="cart-item-img">
         </a>
         <?php endif; ?>
         
         <!-- Details -->
-        <div style="flex:1; min-width:160px;">
+        <div class="cart-item-details">
           <a href="/shop/<?php echo htmlspecialchars($item['slug']); ?>" style="text-decoration:none;">
             <h4 style="font-family:'Jost',sans-serif; font-size:15px; font-weight:600; color:var(--brown); margin:0 0 4px;"><?php echo htmlspecialchars($item['name']); ?></h4>
           </a>
           <p style="font-size:13px; color:var(--brown-light); margin:0;">₹<?php echo number_format($item['unit_price'], 0); ?> each</p>
         </div>
 
-        <!-- Quantity -->
-        <div style="display:flex; align-items:center; gap:0; border:1px solid rgba(59,42,34,0.15); border-radius:8px; overflow:hidden;">
-          <button onclick="updateCartQty(<?php echo $item['id']; ?>, -1)" style="width:32px; height:32px; border:none; background:white; cursor:pointer; font-size:16px; color:var(--brown);">−</button>
-          <span id="qty-<?php echo $item['id']; ?>" style="width:36px; text-align:center; font-family:'Jost',sans-serif; font-size:14px; color:var(--brown);"><?php echo $item['quantity']; ?></span>
-          <button onclick="updateCartQty(<?php echo $item['id']; ?>, 1)" style="width:32px; height:32px; border:none; background:white; cursor:pointer; font-size:16px; color:var(--brown);">+</button>
-        </div>
+        <!-- Quantity & Line Total & Actions -->
+        <div class="cart-item-actions">
+          <div style="display:flex; align-items:center; gap:0; border:1px solid rgba(59,42,34,0.15); border-radius:8px; overflow:hidden;">
+            <button onclick="updateCartQty(<?php echo $item['id']; ?>, -1)" style="width:32px; height:32px; border:none; background:white; cursor:pointer; font-size:16px; color:var(--brown);">−</button>
+            <span id="qty-<?php echo $item['id']; ?>" style="width:36px; text-align:center; font-family:'Jost',sans-serif; font-size:14px; color:var(--brown);"><?php echo $item['quantity']; ?></span>
+            <button onclick="updateCartQty(<?php echo $item['id']; ?>, 1)" style="width:32px; height:32px; border:none; background:white; cursor:pointer; font-size:16px; color:var(--brown);">+</button>
+          </div>
 
-        <!-- Line Total -->
-        <div style="min-width:80px; text-align:right;">
-          <span id="total-<?php echo $item['id']; ?>" style="font-family:'Jost',sans-serif; font-weight:700; font-size:16px; color:var(--brown);">₹<?php echo number_format($item['line_total'], 0); ?></span>
-        </div>
+          <div style="min-width:80px; text-align:right;">
+            <span id="total-<?php echo $item['id']; ?>" style="font-family:'Jost',sans-serif; font-weight:700; font-size:16px; color:var(--brown);">₹<?php echo number_format($item['line_total'], 0); ?></span>
+          </div>
 
-        <!-- Remove -->
-        <button onclick="removeFromCart(<?php echo $item['id']; ?>)" style="background:none; border:none; cursor:pointer; font-size:18px; color:var(--brown-light); padding:4px;" title="Remove">✕</button>
+          <!-- Remove -->
+          <button onclick="removeFromCart(<?php echo $item['id']; ?>)" class="cart-item-remove" title="Remove">✕</button>
+        </div>
       </div>
       <?php endforeach; ?>
 
       <!-- Summary -->
-      <div style="background:white; border-radius:16px; padding:24px; margin-top:24px; box-shadow:0 4px 16px rgba(59,42,34,0.08);">
+      <div class="cart-summary-box" style="background:white; border-radius:16px; padding:24px; margin-top:24px; box-shadow:0 4px 16px rgba(59,42,34,0.08);">
         <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-family:'Jost',sans-serif; font-size:15px; color:var(--brown-light);">
           <span>Subtotal</span>
           <span id="cart-subtotal">₹<?php echo number_format($subtotal, 0); ?></span>
@@ -112,7 +196,7 @@
           <span>Total</span>
           <span id="cart-total">₹<?php echo number_format($total, 0); ?></span>
         </div>
-        <div style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;">
+        <div class="cart-summary-btns" style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;">
           <a href="/checkout.php" class="btn-primary" style="text-decoration:none; flex:1; text-align:center; padding:14px;">Proceed to Checkout</a>
           <a href="/shop.php" class="btn-outline" style="text-decoration:none; padding:14px 24px;">Continue Shopping</a>
         </div>

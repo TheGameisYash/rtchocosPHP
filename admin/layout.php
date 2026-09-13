@@ -227,7 +227,7 @@ function render_admin_header($title, $activePage = '') {
                                     <div>Retail Mode (B2C)</div>
                                     <div style="font-size: 10px; color: var(--text-muted);">Consumer shopping &amp; cart</div>
                                 </div>
-                                <?php if ($activeStoreMode === 'retail'): ?><span style="margin-left: auto; color: #74E291; font-weight: 700;">✓</span><?php endif; ?>
+                                <?php if ($activeStoreMode === 'retail'): ?><span style="margin-left: auto; color: #10B981; font-weight: 700;">✓</span><?php endif; ?>
                             </button>
                             <button type="button" onclick="switchStoreModeFast('bulk')" style="width: 100%; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: var(--text-main); font-size: 12px; text-align: left; font-weight: <?php echo $activeStoreMode === 'bulk' ? '700' : '500'; ?>;">
                                 <span style="font-size: 16px;">📦</span>
@@ -235,7 +235,7 @@ function render_admin_header($title, $activePage = '') {
                                     <div>Bulk &amp; B2B Mode</div>
                                     <div style="font-size: 10px; color: var(--text-muted);">Wholesale &amp; corporate gifting</div>
                                 </div>
-                                <?php if ($activeStoreMode === 'bulk'): ?><span style="margin-left: auto; color: #74E291; font-weight: 700;">✓</span><?php endif; ?>
+                                <?php if ($activeStoreMode === 'bulk'): ?><span style="margin-left: auto; color: #10B981; font-weight: 700;">✓</span><?php endif; ?>
                             </button>
                             <button type="button" onclick="switchStoreModeFast('hybrid')" style="width: 100%; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: var(--text-main); font-size: 12px; text-align: left; font-weight: <?php echo $activeStoreMode === 'hybrid' ? '700' : '500'; ?>;">
                                 <span style="font-size: 16px;">🔄</span>

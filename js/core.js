@@ -441,9 +441,32 @@ function openSearch() {
   }
 }
 
-function toggleMobileMenu() {
-  document.getElementById('mobile-menu').classList.toggle('open');
+function toggleMobileMenu(forceClose = false) {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger');
+  const backdrop = document.getElementById('mobile-menu-backdrop');
+  if (!menu) return;
+
+  const isOpen = forceClose ? false : !menu.classList.contains('open');
+  if (isOpen) {
+    menu.classList.add('open');
+    if (btn) btn.classList.add('active');
+    if (backdrop) backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  } else {
+    menu.classList.remove('open');
+    if (btn) btn.classList.remove('active');
+    if (backdrop) backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  }
 }
+
+// Close mobile menu on Escape key press
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    toggleMobileMenu(true);
+  }
+});
 
 // --- SCROLL HEADER ----------------------------------------------
 window.addEventListener('scroll', () => {

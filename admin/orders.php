@@ -661,7 +661,7 @@ render_admin_header("Store Orders", "orders");
                         <img src="${thumb}" alt="${item.product_name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px;" onerror="this.onerror=null;this.src='../assets/premium_chocolate.png';">
                         <div>
                             <div style="font-weight: 600; color: var(--text-main); font-size: 13px;">${item.product_name}</div>
-                            <div style="font-size: 11px; color: var(--text-light);">Product ID: #${item.product_id}</div>
+                            <div style="font-size: 11px; color: var(--text-light);">${item.product_id ? 'Product ID: #' + item.product_id : '<span style="font-style: italic;">(Product Archived / Deleted)</span>'}</div>
                         </div>
                     </td>
                     <td style="padding: 10px; text-align: center;">${item.quantity}</td>

@@ -143,17 +143,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $prod = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     if ($prod) {
-                        // Clean up main image if stored in assets/products/
-                        if (!empty($prod['image_main']) && strpos($prod['image_main'], 'assets/products/') === 0) {
-                            $filePath = __DIR__ . '/../' . $prod['image_main'];
-                            if (file_exists($filePath)) {
-                                unlink($filePath);
-                            }
-                        }
-
-                        // Delete record
+                        // Delete record first
                         $delStmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
                         $delStmt->execute([$productId]);
+
+                        // Clean up main image only if no other product shares it
+                        if (!empty($prod['image_main']) && strpos($prod['image_main'], 'assets/products/') === 0) {
+                            $checkImg = $pdo->prepare("SELECT COUNT(*) FROM products WHERE image_main = ?");
+                            $checkImg->execute([$prod['image_main']]);
+                            if ((int)$checkImg->fetchColumn() === 0) {
+                                $filePath = __DIR__ . '/../' . $prod['image_main'];
+                                if (file_exists($filePath)) {
+                                    @unlink($filePath);
+                                }
+                            }
+                        }
 
                         if ($isAjax) {
                             header('Content-Type: application/json');
@@ -190,12 +194,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         } catch (Exception $e) {
+            $userMsg = $e->getMessage();
+            if (strpos($userMsg, 'Integrity constraint violation') !== false || strpos($userMsg, '1451') !== false) {
+                $userMsg = 'This product cannot be deleted because it is referenced in past customer orders. Please deactivate it instead to hide it from the storefront while keeping order history intact.';
+            } else {
+                $userMsg = 'Operation failed: ' . $userMsg;
+            }
+
             if ($isAjax) {
                 header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+                echo json_encode(['success' => false, 'message' => $userMsg]);
                 exit;
             }
-            $error = 'Operation failed: ' . $e->getMessage();
+            $error = $userMsg;
         }
     }
 }
@@ -296,8 +307,8 @@ try {
     $totalFiltered = (int)$countStmt->fetchColumn();
     $totalPages = max(1, ceil($totalFiltered / $limit));
 
-    // Fetch Products
-    $sql = "SELECT * FROM products $whereSql ORDER BY $orderClause LIMIT $limit OFFSET $offset";
+    // Fetch Products with count of associated orders
+    $sql = "SELECT p.*, (SELECT COUNT(*) FROM order_items oi WHERE oi.product_id = p.id) AS order_count FROM products p $whereSql ORDER BY $orderClause LIMIT $limit OFFSET $offset";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -657,7 +668,7 @@ render_admin_header("Product Catalog", "products");
                                         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                                         Duplicate
                                     </button>
-                                    <button type="button" class="delete-btn" onclick="confirmDelete(<?php echo $p['id']; ?>, <?php echo htmlspecialchars(json_encode($p['name'])); ?>)">
+                                    <button type="button" class="delete-btn" onclick="confirmDelete(<?php echo $p['id']; ?>, <?php echo htmlspecialchars(json_encode($p['name'])); ?>, <?php echo (int)($p['order_count'] ?? 0); ?>, <?php echo (int)$p['is_active']; ?>)">
                                         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                         Delete
                                     </button>
@@ -759,7 +770,7 @@ render_admin_header("Product Catalog", "products");
                                     <button type="button" class="btn btn-outline btn-sm" style="padding: 4px 8px;" onclick="duplicateProduct(<?php echo $p['id']; ?>)" title="Duplicate">
                                         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                                     </button>
-                                    <button type="button" class="btn btn-danger btn-sm" style="padding: 4px 8px;" onclick="confirmDelete(<?php echo $p['id']; ?>, <?php echo htmlspecialchars(json_encode($p['name'])); ?>)" title="Delete">
+                                    <button type="button" class="btn btn-danger btn-sm" style="padding: 4px 8px;" onclick="confirmDelete(<?php echo $p['id']; ?>, <?php echo htmlspecialchars(json_encode($p['name'])); ?>, <?php echo (int)($p['order_count'] ?? 0); ?>, <?php echo (int)$p['is_active']; ?>)" title="Delete">
                                         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                     </button>
                                 </div>
@@ -798,23 +809,37 @@ render_admin_header("Product Catalog", "products");
 
 <!-- Delete Confirmation Modal -->
 <div class="order-modal-backdrop" id="deleteModal">
-    <div class="order-modal-content" style="max-width: 440px;">
+    <div class="order-modal-content" style="max-width: 480px;">
         <div class="order-modal-header">
-            <h3 style="font-family:'Cormorant Garamond',serif; font-size: 20px; margin: 0; color: #d32f2f;">Confirm Delete</h3>
+            <h3 style="font-family:'Cormorant Garamond',serif; font-size: 20px; margin: 0; color: #d32f2f;" id="deleteModalTitle">Confirm Delete</h3>
             <button type="button" class="btn btn-outline btn-sm" onclick="closeDeleteModal()" style="padding: 4px 8px;">✕</button>
         </div>
         <div class="order-modal-body">
             <p style="margin-bottom: 8px;">Are you sure you want to permanently delete the following product?</p>
             <div id="deleteProductName" style="font-weight: 600; margin-bottom: 14px; padding: 10px; background: var(--bg-subtle); border-radius: 8px; color: var(--text-main);"></div>
-            <p style="font-size: 12px; color: #d32f2f; margin: 0;">⚠️ This action cannot be undone. Its inventory records and image will be removed.</p>
+            
+            <!-- Order history warning if product has orders -->
+            <div id="deleteOrderWarning" style="display: none; background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.35); border-radius: 8px; padding: 12px; margin-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #d97706; margin-bottom: 6px;">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>Linked to <span id="deleteOrderCountText">0</span> Customer Order(s)</span>
+                </div>
+                <p style="font-size: 13px; color: var(--text-main); margin: 0; line-height: 1.5;">
+                    This product has recorded sales in customer orders. Deleting it will remove the catalog item (order receipts will preserve the item name and price).
+                    <br><strong style="color: #d97706;">Recommended:</strong> Deactivate it instead to hide it from the storefront while keeping full catalog records.
+                </p>
+            </div>
+
+            <p style="font-size: 12px; color: #d32f2f; margin: 0;" id="deletePermanentNote">⚠️ This action cannot be undone. Its inventory records and image will be removed.</p>
         </div>
-        <div class="order-modal-footer">
-            <form action="products.php" method="POST" id="deleteForm" style="display: flex; gap: 10px;">
+        <div class="order-modal-footer" style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+            <button type="button" class="btn btn-outline btn-sm" onclick="closeDeleteModal()">Cancel</button>
+            <button type="button" class="btn btn-warning btn-sm" id="btnDeactivateInstead" style="display: none;" onclick="deactivateFromModal()">Deactivate Instead</button>
+            <form action="products.php" method="POST" id="deleteForm" style="display: inline-flex; margin: 0;">
                 <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                 <input type="hidden" name="action" value="delete_product">
                 <input type="hidden" name="product_id" id="deleteProductId" value="">
-                <button type="button" class="btn btn-outline btn-sm" onclick="closeDeleteModal()">Cancel</button>
-                <button type="submit" class="btn btn-danger btn-sm">Yes, Delete Product</button>
+                <button type="submit" class="btn btn-danger btn-sm" id="btnConfirmDelete">Yes, Delete Product</button>
             </form>
         </div>
     </div>
@@ -969,10 +994,41 @@ render_admin_header("Product Catalog", "products");
     }
 
     // Delete Modal Handling
-    function confirmDelete(id, name) {
+    let deleteTargetIsActive = 0;
+    function confirmDelete(id, name, orderCount = 0, isActive = 1) {
         document.getElementById('deleteProductId').value = id;
         document.getElementById('deleteProductName').textContent = name;
+        deleteTargetIsActive = isActive;
+
+        const warningBox = document.getElementById('deleteOrderWarning');
+        const countSpan = document.getElementById('deleteOrderCountText');
+        const deactivateBtn = document.getElementById('btnDeactivateInstead');
+        const confirmBtn = document.getElementById('btnConfirmDelete');
+
+        if (orderCount > 0) {
+            countSpan.textContent = orderCount;
+            warningBox.style.display = 'block';
+            if (isActive) {
+                deactivateBtn.style.display = 'inline-flex';
+                confirmBtn.textContent = 'Permanently Delete Anyway';
+            } else {
+                deactivateBtn.style.display = 'none';
+                confirmBtn.textContent = 'Yes, Delete Product';
+            }
+        } else {
+            warningBox.style.display = 'none';
+            deactivateBtn.style.display = 'none';
+            confirmBtn.textContent = 'Yes, Delete Product';
+        }
+
         document.getElementById('deleteModal').classList.add('open');
+    }
+
+    function deactivateFromModal() {
+        const id = document.getElementById('deleteProductId').value;
+        if (!id) return;
+        closeDeleteModal();
+        toggleActive(id);
     }
 
     function closeDeleteModal() {

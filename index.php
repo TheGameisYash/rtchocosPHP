@@ -33,6 +33,14 @@
       ];
   }
 
+  // Load dynamic AI ingredient spotlight (refreshed every 6 hours via OpenRouter AI)
+  require_once $pathPrefix . 'includes/ingredient_spotlight.php';
+  try {
+      $activeSpotlight = get_current_ingredient_spotlight();
+  } catch (Exception $e) {
+      $activeSpotlight = get_curated_spotlight_fallback();
+  }
+
   include $pathPrefix . 'includes/header.php';
 ?>
 
@@ -62,13 +70,21 @@
         </div>
 
         <!-- Ingredient Spotlight Feature Card integrated into left hero column -->
-        <div class="hero-ingredient-spotlight-card fade-up-d3" onclick="openTableModal('bean-to-bar')">
+        <div class="hero-ingredient-spotlight-card fade-up-d3" onclick="openTableModal('ingredient-spotlight')" title="Click to view full scientific profile">
           <div class="spotlight-header-row">
-            <span class="spotlight-tag">🌱 INGREDIENT SPOTLIGHT</span>
+            <span class="spotlight-tag"><?= htmlspecialchars($activeSpotlight['tag'] ?? '🌱 INGREDIENT SPOTLIGHT') ?></span>
+            <span class="spotlight-ai-badge" title="AI Rotates Every 6 Hours via OpenRouter"><span class="spotlight-pulse"></span> AI 6h</span>
           </div>
-          <h3 class="spotlight-title">Cocoa Butter</h3>
-          <p class="spotlight-desc">The golden fat that gives chocolate its smoothness and soul.</p>
-          <a href="javascript:void(0)" class="spotlight-link" onclick="openTableModal('bean-to-bar'); event.stopPropagation();">
+          <h3 class="spotlight-title"><?= htmlspecialchars($activeSpotlight['ingredient_name'] ?? 'Cocoa Butter') ?></h3>
+          <p class="spotlight-desc"><?= htmlspecialchars($activeSpotlight['short_desc'] ?? 'The golden fat that gives chocolate its smoothness and soul.') ?></p>
+          <?php if (!empty($activeSpotlight['flavor_notes_list']) && is_array($activeSpotlight['flavor_notes_list'])): ?>
+            <div class="spotlight-notes-row" style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px;">
+              <?php foreach (array_slice($activeSpotlight['flavor_notes_list'], 0, 3) as $note): ?>
+                <span class="spotlight-note-chip"><?= htmlspecialchars($note) ?></span>
+              <?php endforeach; ?>
+            </div>
+          <?php endif; ?>
+          <a href="javascript:void(0)" class="spotlight-link" onclick="openTableModal('ingredient-spotlight'); event.stopPropagation();">
             <span>Explore Ingredient</span>
             <span class="link-arrow">→</span>
           </a>
@@ -315,6 +331,20 @@
 
   <script>
     const TABLE_MODAL_DATA = {
+      'ingredient-spotlight': {
+        badge: <?= json_encode($activeSpotlight['tag'] ?? '🌱 INGREDIENT SPOTLIGHT') ?>,
+        title: <?= json_encode($activeSpotlight['ingredient_name'] ?? 'Cocoa Butter') ?>,
+        desc: <?= json_encode($activeSpotlight['short_desc'] ?? 'The golden fat that gives chocolate its smoothness and soul.') ?>,
+        highlights: <?= json_encode(!empty($activeSpotlight['modal_highlights']) ? $activeSpotlight['modal_highlights'] : [
+          'Estate Terroir: ' . ($activeSpotlight['origin_region'] ?? 'Artisan Single Origin'),
+          'Sensory Profile: ' . implode(', ', $activeSpotlight['flavor_notes_list'] ?? ['Rich', 'Aromatic']),
+          'Refreshed automatically every 6 hours by OpenRouter AI'
+        ]) ?>,
+        btn1Text: 'Explore Chocopedia →',
+        btn1Href: 'chocopedia.php',
+        btn2Text: 'Ask CocoaGenius AI',
+        btn2Href: 'javascript:toggleAiDrawer()'
+      },
       'bean-to-bar': {
         badge: '🌿 CRAFT PROCESS',
         title: 'Bean to Bar Cacao Craft',

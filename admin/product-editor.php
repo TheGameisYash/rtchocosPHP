@@ -239,8 +239,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $galleryImages = json_decode($product['image_gallery'] ?: '[]', true) ?: [];
 $csrfToken = generate_csrf();
-render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name']) : "Create New Product", "products");
+$productNameSafe = htmlspecialchars($product['name'] ?? '');
+render_admin_header($isEdit ? "Edit: " . ($productNameSafe ?: 'Product') : "Create Product", "products");
 ?>
+
+<style>
+    /* Scoped Product Editor Layout Cleanups */
+    .page-header .page-title-row {
+        display: none !important;
+    }
+    .page-header {
+        margin-bottom: 16px !important;
+    }
+</style>
 
 <?php if (!empty($error)): ?>
     <script>window.addEventListener('DOMContentLoaded', () => showToast(<?php echo json_encode($error); ?>, 'danger'));</script>
@@ -251,14 +262,14 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
 
 <form action="product-editor.php<?php echo $isEdit ? '?id=' . $productId : ''; ?>" method="POST" enctype="multipart/form-data" id="productForm">
     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-    <input type="hidden" name="image_main_existing" id="imageMainExisting" value="<?php echo htmlspecialchars($product['image_main']); ?>">
+    <input type="hidden" name="image_main_existing" id="imageMainExisting" value="<?php echo htmlspecialchars($product['image_main'] ?? ''); ?>">
     <input type="hidden" name="image_gallery_json" id="imageGalleryJson" value="<?php echo htmlspecialchars(json_encode($galleryImages)); ?>">
 
     <!-- Draft Recovery Banner -->
     <div id="draftRecoveryBanner" style="display: none;" class="draft-banner">
-        <div>
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 6px; color: var(--gold);"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span id="draftRecoveryText">Unsaved draft detected.</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color: var(--gold); flex-shrink: 0;"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span id="draftRecoveryText" style="font-size: 13px; font-weight: 500; color: var(--text-main);">Unsaved draft detected from previous session.</span>
         </div>
         <div class="draft-actions">
             <button type="button" class="btn btn-sm btn-secondary" onclick="restoreDraft()">Restore Draft</button>
@@ -266,73 +277,82 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
         </div>
     </div>
 
-    <!-- Top Bar Action Row -->
-    <div class="editor-header" style="margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <a href="products.php" class="btn btn-outline btn-sm" title="Back to Catalog">
+    <!-- Bespoke Editor Top Header Bar -->
+    <div class="editor-header-bar">
+        <div class="editor-header-left">
+            <a href="products.php" class="btn btn-outline btn-sm" title="Back to Products (Shift+P)">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Products
+                <span>Products Catalog</span>
             </a>
-            <div>
-                <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">
-                    <?php echo $isEdit ? 'Editing: ' . htmlspecialchars($product['name']) : 'New Catalog Product'; ?>
-                </div>
-                <div style="font-size: 12px; color: var(--text-light);">
-                    <?php echo $isEdit ? 'ID #' . $productId . ' · /shop/' . htmlspecialchars($product['slug']) : 'Create a new handcrafted chocolate offering'; ?>
-                </div>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <h1 style="font-family: var(--font-heading); font-size: 22px; font-weight: 600; margin: 0; color: var(--text-main); letter-spacing: 0.3px;">
+                    <?php echo $isEdit ? htmlspecialchars($product['name'] ?? 'Untitled Product') : 'New Handcrafted Offering'; ?>
+                </h1>
+                <?php if ($isEdit): ?>
+                    <span class="editor-product-badge">
+                        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                        ID #<?php echo $productId; ?>
+                    </span>
+                    <span class="status-badge <?php echo !empty($product['is_active']) ? 'active' : 'draft'; ?>" style="font-size: 11px; padding: 3px 9px;">
+                        <?php echo !empty($product['is_active']) ? '● Live on Store' : '○ Inactive / Draft'; ?>
+                    </span>
+                <?php else: ?>
+                    <span class="status-badge draft" style="font-size: 11px; padding: 3px 9px;">New Draft</span>
+                <?php endif; ?>
             </div>
         </div>
         <div style="display: flex; gap: 10px; align-items: center;">
-            <?php if ($isEdit): ?>
+            <?php if ($isEdit && !empty($product['slug'])): ?>
                 <a href="../shop/<?php echo urlencode($product['slug']); ?>" target="_blank" class="btn btn-outline btn-sm" title="View on Live Store">
                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    Preview in Store
+                    <span>View in Store</span>
                 </a>
             <?php endif; ?>
             <button type="submit" class="btn btn-primary" id="saveProductBtn" title="Save Product (Ctrl + S)">
                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
                 <span><?php echo $isEdit ? 'Update Product' : 'Publish Product'; ?></span>
-                <span class="kbd-chip" style="margin-left: 4px; font-size: 9.5px; opacity: 0.85;">Ctrl+S</span>
+                <span class="kbd-chip" style="margin-left: 6px; font-size: 9.5px; opacity: 0.9; background: rgba(0,0,0,0.25); color: #FFF;">Ctrl+S</span>
             </button>
         </div>
     </div>
 
     <!-- Main Two-Column Layout -->
-    <div class="editor-layout" style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start;">
+    <div class="editor-layout">
         
         <!-- LEFT COLUMN: Primary Details & Media -->
         <div style="display: flex; flex-direction: column; gap: 24px;">
             
             <!-- Basic Information Card -->
             <div class="form-card" style="margin-bottom: 0;">
-                <div class="editor-title">Basic Information</div>
+                <div class="editor-title">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    <span>Basic Information</span>
+                </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="productName">Product Name *</label>
-                    <input type="text" id="productName" name="name" class="form-control" placeholder="e.g. Signature Single-Origin 72% Dark Chocolate Bar" value="<?php echo htmlspecialchars($product['name']); ?>" required autofocus>
+                    <label class="form-label" for="productName">Product Name <span class="req">*</span></label>
+                    <input type="text" id="productName" name="name" class="form-control" placeholder="e.g. Signature Single-Origin 72% Dark Chocolate Bar" value="<?php echo htmlspecialchars($product['name'] ?? ''); ?>" required>
                 </div>
 
                 <div class="form-group">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <label class="form-label" for="productSlug" style="margin-bottom:0;">URL Slug *</label>
-                        <button type="button" class="btn-text" id="toggleSlugLock" style="font-size: 11.5px; color: var(--gold-light); cursor: pointer; background: none; border: none;">Auto-Generated</button>
+                        <label class="form-label" for="productSlug" style="margin-bottom:0;">URL Slug <span class="req">*</span></label>
+                        <button type="button" class="btn-text" id="toggleSlugLock" style="font-size: 11.5px; color: var(--gold); cursor: pointer; background: none; border: none; font-weight: 600;">Auto-Generated</button>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <span style="font-size: 13px; color: var(--text-light); background: var(--bg-subtle); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); white-space: nowrap;">
-                            /shop/
-                        </span>
-                        <input type="text" id="productSlug" name="slug" class="form-control" placeholder="signature-dark-chocolate-72" value="<?php echo htmlspecialchars($product['slug']); ?>" required>
+                    <div class="slug-input-group">
+                        <span class="slug-prefix">/shop/</span>
+                        <input type="text" id="productSlug" name="slug" class="form-control" placeholder="signature-dark-chocolate-72" value="<?php echo htmlspecialchars($product['slug'] ?? ''); ?>" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="shortDescription">Short Description (Excerpt)</label>
-                    <textarea id="shortDescription" name="short_description" class="form-control" rows="2" placeholder="Brief 1-2 sentence overview shown in store catalog and product listing cards..."><?php echo htmlspecialchars($product['short_description']); ?></textarea>
+                    <textarea id="shortDescription" name="short_description" class="form-control" rows="2" placeholder="Brief 1-2 sentence overview shown in store catalog and product listing cards..."><?php echo htmlspecialchars($product['short_description'] ?? ''); ?></textarea>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label" for="longDescription">Detailed Product Description</label>
-                    <textarea id="longDescription" name="long_description" class="form-control" rows="8" placeholder="Full product details, tasting notes (e.g. red fruit, roasted cacao), ingredients, allergens, origin story, and pairing suggestions..."><?php echo htmlspecialchars($product['long_description']); ?></textarea>
+                    <textarea id="longDescription" name="long_description" class="form-control" rows="8" placeholder="Full product details, tasting notes (e.g. red fruit, roasted cacao), ingredients, allergens, origin story, and pairing suggestions..."><?php echo htmlspecialchars($product['long_description'] ?? ''); ?></textarea>
                 </div>
             </div>
 
@@ -340,8 +360,11 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
             <div class="form-card" style="margin-bottom: 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
                     <div>
-                        <div class="editor-title" style="margin-bottom: 2px;">Product Photography & Media</div>
-                        <div style="font-size: 12px; color: var(--text-light);">Showcase your chocolates with crisp, high-resolution imagery</div>
+                        <div class="editor-title" style="margin-bottom: 2px; border-bottom: none; padding-bottom: 0;">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span>Product Photography & Media</span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-light); margin-left: 28px;">Showcase your artisan chocolates with crisp, high-resolution imagery</div>
                     </div>
                     <button type="button" class="btn btn-outline btn-sm" onclick="openMediaModal('main')" style="gap: 6px;">
                         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -352,8 +375,8 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
                 <!-- Main Featured Image Dropzone -->
                 <div class="form-group">
                     <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>Primary Cover Photo *</span>
-                        <span style="font-size: 11.5px; color: var(--gold-light); font-weight: 500;">Recommended: 800×800px (1:1 Square)</span>
+                        <span>Primary Cover Photo <span class="req">*</span></span>
+                        <span style="font-size: 11.5px; color: var(--gold); font-weight: 500;">Recommended: 800×800px (1:1 Square)</span>
                     </label>
                     <div class="image-dropzone" id="mainImagePreviewBox" onclick="triggerFileInput('mainImageFileInput')">
                         <?php if (!empty($product['image_main'])): ?>
@@ -405,42 +428,49 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
 
             <!-- SEO & Metadata Card with Live Google Snippet -->
             <div class="form-card" style="margin-bottom: 0;">
-                <div class="editor-title">Search Engine Optimization (SEO)</div>
+                <div class="editor-title">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <span>Search Engine Optimization (SEO)</span>
+                </div>
 
                 <div class="form-group">
                     <div style="display: flex; justify-content: space-between;">
                         <label class="form-label" for="metaTitle">SEO Meta Title</label>
-                        <span id="titleCounter" style="font-size: 11px; color: var(--text-light);">0 / 60</span>
+                        <span id="titleCounter" class="char-counter">0 / 60</span>
                     </div>
-                    <input type="text" id="metaTitle" name="meta_title" class="form-control" placeholder="Signature 72% Dark Chocolate Bar | RT Chocos India" value="<?php echo htmlspecialchars($product['meta_title']); ?>">
+                    <input type="text" id="metaTitle" name="meta_title" class="form-control" placeholder="Signature 72% Dark Chocolate Bar | RT Chocos India" value="<?php echo htmlspecialchars($product['meta_title'] ?? ''); ?>">
                 </div>
 
                 <div class="form-group">
                     <div style="display: flex; justify-content: space-between;">
                         <label class="form-label" for="metaDesc">SEO Meta Description</label>
-                        <span id="descCounter" style="font-size: 11px; color: var(--text-light);">0 / 160</span>
+                        <span id="descCounter" class="char-counter">0 / 160</span>
                     </div>
-                    <textarea id="metaDesc" name="meta_description" class="form-control" rows="2" placeholder="Experience authentic bean-to-bar 72% dark chocolate crafted in India with single-origin Idukki cacao..."><?php echo htmlspecialchars($product['meta_description']); ?></textarea>
+                    <textarea id="metaDesc" name="meta_description" class="form-control" rows="2" placeholder="Experience authentic bean-to-bar 72% dark chocolate crafted in India with single-origin Idukki cacao..."><?php echo htmlspecialchars($product['meta_description'] ?? ''); ?></textarea>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="metaKeywords">SEO Keywords (Comma Separated)</label>
-                    <input type="text" id="metaKeywords" name="meta_keywords" class="form-control" placeholder="bean to bar chocolate, dark chocolate India, single origin cacao, artisan chocolate" value="<?php echo htmlspecialchars($product['meta_keywords']); ?>">
+                    <input type="text" id="metaKeywords" name="meta_keywords" class="form-control" placeholder="bean to bar chocolate, dark chocolate India, single origin cacao, artisan chocolate" value="<?php echo htmlspecialchars($product['meta_keywords'] ?? ''); ?>">
                 </div>
 
                 <!-- Live Google Search Result Mockup -->
                 <div style="margin-top: 16px;">
                     <label class="form-label" style="font-size: 12px; color: var(--text-light);">Live Google Search Preview</label>
-                    <div class="google-preview-card">
-                        <div class="google-preview-url">
-                            <span style="font-weight: bold;">rtchocos.com</span>
-                            <span>› shop › <span id="googlePreviewSlug"><?php echo htmlspecialchars($product['slug'] ?: 'product-slug'); ?></span></span>
+                    <div class="google-preview-box">
+                        <div class="google-preview-url-line">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span style="font-weight: 600;">rtchocos.com</span>
+                            <span style="opacity: 0.5;">›</span>
+                            <span>shop</span>
+                            <span style="opacity: 0.5;">›</span>
+                            <span id="googlePreviewSlug" style="font-weight: 600;"><?php echo htmlspecialchars(($product['slug'] ?? '') ?: 'product-slug'); ?></span>
                         </div>
-                        <div class="google-preview-title" id="googlePreviewTitle">
-                            <?php echo htmlspecialchars($product['meta_title'] ?: ($product['name'] ?: 'Product Title') . ' — RT Chocos'); ?>
+                        <div class="google-preview-title-line" id="googlePreviewTitle">
+                            <?php echo htmlspecialchars(($product['meta_title'] ?? '') ?: (($product['name'] ?? '') ?: 'Product Title') . ' — RT Chocos'); ?>
                         </div>
-                        <div class="google-preview-snippet" id="googlePreviewSnippet">
-                            <?php echo htmlspecialchars($product['meta_description'] ?: ($product['short_description'] ?: 'Discover handcrafted artisan chocolate confections made with premium Indian cacao beans.')); ?>
+                        <div class="google-preview-snippet-line" id="googlePreviewSnippet">
+                            <?php echo htmlspecialchars(($product['meta_description'] ?? '') ?: (($product['short_description'] ?? '') ?: 'Discover handcrafted artisan chocolate confections made with premium Indian cacao beans.')); ?>
                         </div>
                     </div>
                 </div>
@@ -449,27 +479,30 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
         </div>
 
         <!-- RIGHT SIDEBAR: Pricing, Inventory & Status -->
-        <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="editor-sidebar-sticky">
             
             <!-- Publish & Visibility Card -->
             <div class="form-card" style="margin-bottom: 0;">
-                <div class="editor-title">Visibility & Storefront</div>
+                <div class="editor-title">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    <span>Visibility & Storefront</span>
+                </div>
 
                 <div class="form-group">
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 12px;">
-                        <input type="checkbox" name="is_active" id="isActiveInput" value="1" <?php echo $product['is_active'] ? 'checked' : ''; ?> style="width: 18px; height: 18px; accent-color: var(--gold-light);">
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-bottom: 12px; padding: 6px 0;">
+                        <input type="checkbox" name="is_active" id="isActiveInput" value="1" <?php echo !empty($product['is_active']) ? 'checked' : ''; ?> style="width: 18px; height: 18px; accent-color: var(--gold);">
                         <div>
-                            <div style="font-weight: 600; font-size: 14px; color: var(--text-main);">Active on Store</div>
+                            <div style="font-weight: 600; font-size: 13.5px; color: var(--text-main);">Active on Store</div>
                             <div style="font-size: 11.5px; color: var(--text-light);">Visible in catalog & available for purchase</div>
                         </div>
                     </label>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                        <input type="checkbox" name="is_featured" id="isFeaturedInput" value="1" <?php echo $product['is_featured'] ? 'checked' : ''; ?> style="width: 18px; height: 18px; accent-color: var(--gold-light);">
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 6px 0;">
+                        <input type="checkbox" name="is_featured" id="isFeaturedInput" value="1" <?php echo !empty($product['is_featured']) ? 'checked' : ''; ?> style="width: 18px; height: 18px; accent-color: var(--gold);">
                         <div>
-                            <div style="font-weight: 600; font-size: 14px; color: var(--text-main);">Featured Product</div>
+                            <div style="font-weight: 600; font-size: 13.5px; color: var(--text-main);">Featured Product</div>
                             <div style="font-size: 11.5px; color: var(--text-light);">Pinned to top of shop & highlights</div>
                         </div>
                     </label>
@@ -477,44 +510,50 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
 
                 <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; height: 42px;">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
-                    <?php echo $isEdit ? 'Save Changes' : 'Publish to Shop'; ?>
+                    <span><?php echo $isEdit ? 'Save Changes' : 'Publish to Shop'; ?></span>
                 </button>
             </div>
 
             <!-- Pricing & Discounts Card -->
             <div class="form-card" style="margin-bottom: 0;">
-                <div class="editor-title">Pricing & Discounts</div>
+                <div class="editor-title">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Pricing & Discounts</span>
+                </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="regularPrice">Regular Price (₹) *</label>
-                    <input type="number" step="0.01" min="0" id="regularPrice" name="price" class="form-control" placeholder="350.00" value="<?php echo htmlspecialchars($product['price']); ?>" required oninput="calculateDiscount()">
+                    <label class="form-label" for="regularPrice">Regular Price (₹) <span class="req">*</span></label>
+                    <input type="number" step="0.01" min="0" id="regularPrice" name="price" class="form-control" placeholder="350.00" value="<?php echo htmlspecialchars($product['price'] ?? ''); ?>" required oninput="calculateDiscount()">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="salePrice">Sale / Promotional Price (₹)</label>
-                    <input type="number" step="0.01" min="0" id="salePrice" name="sale_price" class="form-control" placeholder="299.00" value="<?php echo htmlspecialchars($product['sale_price']); ?>" oninput="calculateDiscount()">
+                    <input type="number" step="0.01" min="0" id="salePrice" name="sale_price" class="form-control" placeholder="299.00" value="<?php echo htmlspecialchars($product['sale_price'] ?? ''); ?>" oninput="calculateDiscount()">
                     <div style="font-size: 11px; color: var(--text-light); margin-top: 4px;">Leave blank if not on special promotion.</div>
                 </div>
 
                 <!-- Dynamic Discount Badge Card -->
-                <div id="discountPreviewBox" style="display: none; background: var(--bg-subtle); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div id="discountPreviewBox" style="display: none;" class="discount-calc-card">
+                    <div>
                         <span style="font-size: 12px; color: var(--text-light);">Shopper Discount:</span>
-                        <span class="discount-badge" id="discountPercentText" style="font-size: 13px;">0% OFF</span>
+                        <div style="font-size: 12px; font-weight: 600; color: var(--text-main); margin-top: 2px;" id="discountSavingsText">
+                            Customer saves ₹0.00
+                        </div>
                     </div>
-                    <div style="font-size: 12px; color: var(--text-main); margin-top: 4px;" id="discountSavingsText">
-                        Customer saves ₹0.00
-                    </div>
+                    <span class="discount-calc-badge" id="discountPercentText">0% OFF</span>
                 </div>
             </div>
 
             <!-- Inventory & Stock Management -->
             <div class="form-card" style="margin-bottom: 0;">
-                <div class="editor-title">Inventory & Stock</div>
+                <div class="editor-title">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    <span>Inventory & Stock</span>
+                </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="stockQuantity">Stock Quantity (Units Available) *</label>
-                    <input type="number" min="0" id="stockQuantity" name="stock_quantity" class="form-control" value="<?php echo htmlspecialchars($product['stock_quantity']); ?>" required oninput="checkStockAlert(this.value)">
+                    <label class="form-label" for="stockQuantity">Stock Quantity (Units Available) <span class="req">*</span></label>
+                    <input type="number" min="0" id="stockQuantity" name="stock_quantity" class="form-control" value="<?php echo htmlspecialchars((string)($product['stock_quantity'] ?? 0)); ?>" required oninput="checkStockAlert(this.value)">
                     
                     <div id="stockAlertNotice" style="margin-top: 8px; font-size: 12px;"></div>
                 </div>
@@ -523,15 +562,18 @@ render_admin_header($isEdit ? "Edit Product: " . htmlspecialchars($product['name
             <!-- Category Assignment -->
             <div class="form-card" style="margin-bottom: 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                    <div class="editor-title" style="margin-bottom: 0;">Product Category</div>
+                    <div class="editor-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                        <span>Product Category</span>
+                    </div>
                     <button type="button" class="btn btn-outline btn-sm" onclick="openCategoryManagerModal()" style="font-size: 11.5px; padding: 2px 8px;">⚙️ Manage</button>
                 </div>
-                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 8px;">Select a collection or type a custom category</div>
+                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 12px; margin-left: 28px;">Select a collection or type a custom category</div>
 
                 <?php
                     $curatedPresets = ['Chocolates', 'Bonbons', 'Cacao', 'Kits', 'Gifting', 'Spreads', 'Seasonal'];
                     $allDisplayCats = array_unique(array_merge($curatedPresets, $categories));
-                    $currentCat = trim($product['category'] ?: 'Chocolates');
+                    $currentCat = trim($product['category'] ?? 'Chocolates');
                 ?>
                 <div class="category-chips-wrap" id="categoryChipsWrap">
                     <?php foreach ($allDisplayCats as $catName): ?>
