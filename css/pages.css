@@ -239,52 +239,408 @@
   display: none;
 }
 
-.blog-page-hero-image {
-  width: min(1520px, 100%);
-  height: 480px;
+/* ==========================================================================
+   INTERACTIVE CACAO JOURNAL WHEEL HERO (Perfect Compass Alignment & Rotation)
+   ========================================================================== */
+.blog-wheel-hero-container {
+  width: min(1440px, 100%);
   margin: 0 auto;
-  border-radius: 16px;
-  overflow: hidden;
+  background: #FAF3E8;
+  border-radius: 24px;
+  border: 1px solid rgba(201, 150, 55, 0.28);
+  box-shadow: 0 16px 44px rgba(24, 14, 6, 0.08), 0 2px 10px rgba(201, 150, 55, 0.05);
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  align-items: center;
   position: relative;
+  overflow: hidden;
+  padding: 30px 42px;
+}
+
+/* Left Brand Column (Clean, luxury typography matching video poster) */
+.blog-wheel-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 2;
+  text-align: left;
+}
+
+.wheel-hero-eyebrow {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 3.5px;
+  color: #2C1608;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.wheel-hero-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(44px, 4.6vw, 68px);
+  font-weight: 800;
+  line-height: 0.94;
+  color: #2C1608;
+  letter-spacing: -0.5px;
+  margin: 0 0 18px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.wheel-hero-title span {
+  display: block;
+}
+
+.wheel-hero-divider {
+  width: 48px;
+  height: 1.5px;
+  background: #C99637;
+  margin-bottom: 20px;
+}
+
+.wheel-hero-desc {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(14px, 1.2vw, 16.5px);
+  line-height: 1.62;
+  color: #523D2D;
+  margin: 0 0 26px 0;
+  max-width: 350px;
+  font-weight: 400;
+}
+
+.wheel-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.btn-cacao-explore-blog {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1.5px solid #2C1608;
+  background: transparent;
+  color: #2C1608;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 13px 28px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-cacao-explore-blog:hover {
+  background: #2C1608;
+  color: #FAF3E8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(44, 22, 8, 0.22);
+}
+
+/* Subtle Active Lens Indicator (Sleek, integrated, unobtrusive) */
+.wheel-active-indicator-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(201, 150, 55, 0.12);
+  border: 1px solid rgba(201, 150, 55, 0.3);
+  border-radius: 20px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  color: #523D2D;
+  transition: all 0.25s ease;
+}
+
+.indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #C99637;
+  display: inline-block;
+  box-shadow: 0 0 8px rgba(201, 150, 55, 0.6);
+}
+
+.indicator-label {
+  font-weight: 500;
+  color: #7A5F4B;
+}
+
+.indicator-topic {
+  font-weight: 700;
+  color: #2C1608;
+}
+
+.indicator-reset-btn {
+  background: none;
+  border: none;
+  color: #C99637;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0 2px;
+  margin-left: 4px;
+}
+
+/* Right Interactive Stage */
+.cacao-wheel-stage {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cacao-wheel-stage:active {
+  cursor: grabbing;
+}
+
+.cacao-wheel-svg {
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* Continuously Rotating Slices */
+.wheel-rotator-slices {
+  transform-origin: 400px 330px;
+  will-change: transform;
+}
+
+.wheel-rotator-slices.smooth-transition {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Wheel Sector Styling */
+.wheel-sector-group {
+  cursor: pointer;
+  transition: filter 0.25s ease;
+}
+
+.wheel-sector-stroke {
+  fill: transparent;
+  stroke: rgba(201, 150, 55, 0.35);
+  stroke-width: 1.5;
+  transition: all 0.25s ease;
+  pointer-events: auto;
+}
+
+.wheel-sector-group:hover .wheel-sector-stroke,
+.wheel-sector-group.active .wheel-sector-stroke {
+  stroke: #D4AF37;
+  stroke-width: 3.5;
+  filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.8));
+}
+
+.wheel-sector-img {
+  transition: transform 0.35s ease;
+}
+
+.wheel-sector-group:hover .wheel-sector-img,
+.wheel-sector-group.active .wheel-sector-img {
+  transform: scale(1.04);
+  transform-origin: 400px 330px;
+}
+
+.wheel-divider-line {
+  stroke: #D4AF37;
+  stroke-width: 3px;
+  pointer-events: none;
+  opacity: 0.92;
+}
+
+.wheel-outer-rim {
+  fill: none;
+  stroke: #C99637;
+  stroke-width: 3.5;
+  filter: drop-shadow(0 6px 16px rgba(24, 14, 6, 0.12));
+}
+
+.wheel-outer-rim-inner {
+  fill: none;
+  stroke: #E6CA65;
+  stroke-width: 1.2;
+  opacity: 0.8;
+}
+
+.wheel-inner-rim {
+  fill: none;
+  stroke: #C99637;
+  stroke-width: 3;
+  opacity: 0.95;
+}
+
+.wheel-orbit-ring-dashed {
+  fill: none;
+  stroke: #C99637;
+  stroke-width: 1;
+  stroke-dasharray: 4, 6;
+  opacity: 0.45;
+}
+
+/* Center Hub — Pure Molten Chocolate Bowl (NO PLAY BUTTON) */
+.wheel-center-hub {
+  pointer-events: none;
+  user-select: none;
+}
+
+.wheel-center-img {
+  border-radius: 50%;
+}
+
+.wheel-center-ring-gold {
+  fill: none;
+  stroke: #D4AF37;
+  stroke-width: 4px;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.4));
+}
+
+.wheel-center-ring-inner {
+  fill: none;
+  stroke: #F3DC8A;
+  stroke-width: 1.5px;
+  opacity: 0.8;
+}
+
+/* Pointer Lines & Compass Labels (Fixed in perfect 8-axis alignment) */
+.wheel-label-item {
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.wheel-ptr-line {
+  stroke: #94631D;
+  stroke-width: 1.3;
+  opacity: 0.72;
+  transition: all 0.25s ease;
+}
+
+.wheel-ptr-node {
+  fill: #94631D;
+  transition: all 0.25s ease;
+}
+
+.wheel-lbl-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  fill: #2C1608;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+}
+
+.wheel-lbl-sub {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  fill: #6E5646;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.25s ease;
+}
+
+.wheel-label-item:hover .wheel-lbl-title,
+.wheel-label-item.active .wheel-lbl-title {
+  fill: #B87E1C;
+  font-weight: 800;
+}
+
+.wheel-label-item:hover .wheel-lbl-sub,
+.wheel-label-item.active .wheel-lbl-sub {
+  fill: #1A0D04;
+  font-weight: 600;
+}
+
+.wheel-label-item:hover .wheel-ptr-line,
+.wheel-label-item.active .wheel-ptr-line {
+  stroke: #B87E1C;
+  stroke-width: 2.2;
+  opacity: 1;
+}
+
+.wheel-label-item:hover .wheel-ptr-node,
+.wheel-label-item.active .wheel-ptr-node {
+  fill: #B87E1C;
+  r: 5.5;
+}
+
+/* Quick Topic Switcher Bar for Mobile */
+.wheel-mobile-topics-bar {
+  display: none;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px 0 6px;
+  scrollbar-width: none;
+  width: 100%;
+}
+
+.wheel-mobile-topics-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.wheel-topic-chip {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(201, 150, 55, 0.35);
+  background: #FFFFFF;
+  color: #2C1608;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wheel-topic-chip.active {
+  background: #2C1608;
+  color: #FAF3E8;
+  border-color: #C99637;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1080px) {
+  .blog-wheel-hero-container {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 28px 24px;
+  }
+  .blog-wheel-left {
+    text-align: center;
+    align-items: center;
+    padding: 0;
+  }
+  .wheel-hero-desc {
+    max-width: 540px;
+  }
 }
 
 @media (max-width: 768px) {
-  .page-hero.blog-page-hero {
-    padding: 16px 14px 0 !important;
+  .blog-wheel-hero-container {
+    padding: 20px 14px;
+    border-radius: 18px;
   }
-  .blog-page-hero-image {
-    height: auto !important;
-    aspect-ratio: 16 / 9 !important;
-    border-radius: 12px !important;
+  .wheel-mobile-topics-bar {
+    display: flex;
   }
-  .blog-header-bar {
-    flex-direction: column !important;
-    gap: 16px !important;
-    margin-bottom: 28px !important;
+  .cacao-wheel-svg {
+    max-width: 100%;
   }
-  .search-container {
-    max-width: 100% !important;
-  }
-  .blog-filters-wrapper {
-    width: 100% !important;
-    justify-content: center !important;
-    gap: 8px !important;
-  }
-}
-
-.blog-page-hero-image::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(14, 10, 8, 0.1) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.blog-page-hero-image img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
 }
 
 .page-hero.about-page-hero {

@@ -145,17 +145,21 @@
       <?php foreach ($cartItems as $item): ?>
       <div id="cart-item-<?php echo $item['id']; ?>" class="cart-item-card">
         <!-- Image -->
-        <?php if ($item['image_main']): 
-          $cartImgSrc = (strpos($item['image_main'], 'http') === 0 || strpos($item['image_main'], '/') === 0) ? $item['image_main'] : '/' . ltrim($item['image_main'], '/');
+        <?php 
+          $cartProdUrl = 'product.php?slug=' . urlencode($item['slug'] ?? '');
+          $cartImgSrc = !empty($item['image_main']) ? ltrim($item['image_main'], '/') : 'assets/premium_chocolate.png';
         ?>
-        <a href="/shop/<?php echo htmlspecialchars($item['slug']); ?>">
-          <img src="<?php echo htmlspecialchars($cartImgSrc); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" loading="lazy" class="cart-item-img">
+        <a href="<?php echo $cartProdUrl; ?>">
+          <img src="<?php echo htmlspecialchars($cartImgSrc); ?>" 
+               alt="<?php echo htmlspecialchars($item['name']); ?>" 
+               loading="lazy" 
+               class="cart-item-img"
+               onerror="this.onerror=null;this.src='assets/premium_chocolate.png';">
         </a>
-        <?php endif; ?>
         
         <!-- Details -->
         <div class="cart-item-details">
-          <a href="/shop/<?php echo htmlspecialchars($item['slug']); ?>" style="text-decoration:none;">
+          <a href="<?php echo $cartProdUrl; ?>" style="text-decoration:none;">
             <h4 style="font-family:'Jost',sans-serif; font-size:15px; font-weight:600; color:var(--brown); margin:0 0 4px;"><?php echo htmlspecialchars($item['name']); ?></h4>
           </a>
           <p style="font-size:13px; color:var(--brown-light); margin:0;">₹<?php echo number_format($item['unit_price'], 0); ?> each</p>

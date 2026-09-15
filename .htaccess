@@ -70,10 +70,13 @@ Options +FollowSymLinks -Indexes
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^blog/([^/]+)/?$ blog-article.php?slug=$1 [L,QSA]
 
-    # Rewrite clean shop URLs
+    # Handle accidental nested /shop/shop/{slug} requests
+    RewriteRule ^(?:shop|blog)/(?:shop|blog)/([^/]+)/?$ /shop/$1 [R=301,L]
+
+    # Rewrite clean shop & product URLs
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^shop/([^/]+)/?$ product.php?slug=$1 [L,QSA]
+    RewriteRule ^(?:shop|product)/([^/]+)/?$ product.php?slug=$1 [L,QSA]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

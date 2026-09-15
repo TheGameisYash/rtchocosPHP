@@ -151,6 +151,32 @@
       ]
   ];
 
+  // Smart image resolver for shop catalog
+  if (!function_exists('resolveShopCatalogImage')) {
+      function resolveShopCatalogImage($img, $slug = '') {
+          if (!empty($img)) {
+              if (strpos($img, 'http://') === 0 || strpos($img, 'https://') === 0) {
+                  return $img;
+              }
+              $clean = ltrim($img, '/');
+              if (file_exists(__DIR__ . '/' . $clean)) {
+                  return $clean;
+              }
+          }
+          if (!empty($slug)) {
+              $slugJpg = 'assets/products/' . str_replace('-', '_', $slug) . '.jpg';
+              if (file_exists(__DIR__ . '/' . $slugJpg)) {
+                  return $slugJpg;
+              }
+              $slugPng = 'assets/products/' . str_replace('-', '_', $slug) . '.png';
+              if (file_exists(__DIR__ . '/' . $slugPng)) {
+                  return $slugPng;
+              }
+          }
+          return 'assets/premium_chocolate.png';
+      }
+  }
+
   // Fetch active products directly from MySQL database (fully integrated with Admin Panel)
   try {
       $pdo = get_db();
@@ -169,6 +195,8 @@
                   $catKey = 'gifting';
               }
 
+              $finalImage = resolveShopCatalogImage($dp['image_main'] ?? '', $dp['slug'] ?? '');
+
               $displayCatalog[] = [
                   'id' => (int)$dp['id'],
                   'name' => $dp['name'],
@@ -176,7 +204,7 @@
                   'category' => $dp['category'],
                   'category_key' => $catKey,
                   'short_description' => $dp['short_description'],
-                  'image' => !empty($dp['image_main']) ? $dp['image_main'] : 'assets/products/' . str_replace('-', '_', $dp['slug']) . '.jpg',
+                  'image' => $finalImage,
                   'customizable' => true,
                   'price' => (float)$dp['price'],
                   'sale_price' => (float)$dp['sale_price']
@@ -393,12 +421,18 @@
         $prodPrice = (!empty($prod['sale_price']) && $prod['sale_price'] > 0) ? $prod['sale_price'] : ($prod['price'] ?? 0);
         $origPrice = $prod['price'] ?? 0;
         $hasSale = (!empty($prod['sale_price']) && $prod['sale_price'] > 0 && $prod['sale_price'] < $origPrice);
+        $prodUrl = 'product.php?slug=' . urlencode($prod['slug']);
+        $prodImg = !empty($prod['image']) ? $prod['image'] : resolveShopCatalogImage('', $prod['slug'] ?? '');
       ?>
-      <div class="lux-product-card" data-category="<?php echo htmlspecialchars($prod['category_key']); ?>">
-        <a href="shop/<?php echo htmlspecialchars($prod['slug']); ?>" class="lux-prod-img-wrap" title="View <?php echo htmlspecialchars($prod['name']); ?> details">
-          <img src="<?php echo htmlspecialchars($prod['image']); ?>" 
+      <div class="lux-product-card" 
+           data-category="<?php echo htmlspecialchars($prod['category_key']); ?>"
+           onclick="if(!event.target.closest('button, .lux-btn-bulk-wa, input, a')) { window.location.href='<?php echo $prodUrl; ?>'; }"
+           style="cursor: pointer;">
+        <a href="<?php echo $prodUrl; ?>" class="lux-prod-img-wrap" title="View <?php echo htmlspecialchars($prod['name']); ?> details">
+          <img src="<?php echo htmlspecialchars($prodImg); ?>" 
                alt="<?php echo htmlspecialchars($prod['name']); ?> — RT Chocos" 
-               loading="lazy">
+               loading="lazy"
+               onerror="this.onerror=null;this.src='assets/premium_chocolate.png';">
           
           <!-- Mode-Aware Badges -->
           <span class="lux-card-badge-retail mode-section-retail <?php echo ($storeMode === 'bulk') ? 'mode-hidden' : ''; ?>">
@@ -412,7 +446,7 @@
           <?php endif; ?>
         </a>
         <div class="lux-prod-content">
-          <a href="shop/<?php echo htmlspecialchars($prod['slug']); ?>" class="lux-prod-title-link">
+          <a href="<?php echo $prodUrl; ?>" class="lux-prod-title-link">
             <h3 class="lux-prod-title"><?php echo htmlspecialchars($prod['name']); ?></h3>
           </a>
           <p class="lux-prod-desc"><?php echo htmlspecialchars($prod['short_description']); ?></p>
@@ -440,7 +474,7 @@
               </svg>
               <span>Add to Cart</span>
             </button>
-            <a href="shop/<?php echo htmlspecialchars($prod['slug']); ?>" class="lux-view-details-link">
+            <a href="<?php echo $prodUrl; ?>" class="lux-view-details-link">
               Details &rarr;
             </a>
           </div>
@@ -459,13 +493,21 @@
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
               </svg>
             </a>
-            <a href="shop/<?php echo htmlspecialchars($prod['slug']); ?>" class="lux-view-details-link">
+            <a href="<?php echo $prodUrl; ?>" class="lux-view-details-link">
               Details &rarr;
             </a>
           </div>
         </div>
       </div>
       <?php endforeach; ?>
+    </div>
+
+    <!-- Pagination & Page-Wise Indexing (Shows 6 products per page) -->
+    <div class="catalog-pagination-lux" id="catalog-pagination">
+      <div class="pagination-info" id="pagination-info">Showing 1–6 of <?php echo count($curatedCatalog); ?> creations</div>
+      <div class="pagination-buttons" id="pagination-buttons">
+        <!-- Rendered dynamically by JavaScript -->
+      </div>
     </div>
   </section>
 
@@ -962,48 +1004,131 @@
      CLIENT-SIDE FILTERING & MODAL SCRIPTS
      ========================================================================= -->
 <script>
-  // Tab Filter Logic
+  // Tab Filter & 6-Per-Page Pagination Logic
   document.addEventListener('DOMContentLoaded', function() {
+    const PRODUCTS_PER_PAGE = 6;
+    let currentCategory = 'all';
+    let currentPage = 1;
+
     const tabs = document.querySelectorAll('.cat-tab-lux');
-    const cards = document.querySelectorAll('.lux-product-card');
+    const allCards = Array.from(document.querySelectorAll('.lux-product-card'));
+    const paginationInfo = document.getElementById('pagination-info');
+    const paginationButtons = document.getElementById('pagination-buttons');
+
+    function getMatchingCards() {
+      if (currentCategory === 'all') {
+        return allCards;
+      }
+      return allCards.filter(card => card.getAttribute('data-category') === currentCategory);
+    }
+
+    function renderCatalog(page, smoothScroll = false) {
+      const matching = getMatchingCards();
+      const totalCount = matching.length;
+      const totalPages = Math.max(1, Math.ceil(totalCount / PRODUCTS_PER_PAGE));
+
+      if (page < 1) page = 1;
+      if (page > totalPages) page = totalPages;
+      currentPage = page;
+
+      const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
+      const endIndex = Math.min(startIndex + PRODUCTS_PER_PAGE, totalCount);
+
+      // Hide all cards first
+      allCards.forEach(card => {
+        card.style.display = 'none';
+        card.style.opacity = '0';
+      });
+
+      // Display the 6 items for the current page
+      matching.forEach((card, idx) => {
+        if (idx >= startIndex && idx < endIndex) {
+          card.style.display = 'flex';
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transition = 'opacity 0.25s ease';
+          }, 15);
+        }
+      });
+
+      // Update Pagination Controls
+      if (paginationInfo && paginationButtons) {
+        if (totalCount === 0) {
+          paginationInfo.textContent = 'No creations found in this collection.';
+          paginationButtons.innerHTML = '';
+        } else {
+          const displayStart = startIndex + 1;
+          paginationInfo.textContent = `Showing ${displayStart}–${endIndex} of ${totalCount} creations (Page ${currentPage} of ${totalPages})`;
+
+          if (totalPages <= 1) {
+            paginationButtons.innerHTML = '';
+          } else {
+            let btnsHtml = '';
+
+            // Prev Button
+            const prevDisabled = currentPage === 1 ? 'disabled' : '';
+            btnsHtml += `<button type="button" class="page-btn-lux page-btn-nav" ${prevDisabled} onclick="window.catalogGoToPage(${currentPage - 1})">&larr; Prev</button>`;
+
+            // Page Number Buttons
+            for (let p = 1; p <= totalPages; p++) {
+              const activeClass = p === currentPage ? 'active' : '';
+              btnsHtml += `<button type="button" class="page-btn-lux ${activeClass}" onclick="window.catalogGoToPage(${p})">${p}</button>`;
+            }
+
+            // Next Button
+            const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+            btnsHtml += `<button type="button" class="page-btn-lux page-btn-nav" ${nextDisabled} onclick="window.catalogGoToPage(${currentPage + 1})">Next &rarr;</button>`;
+
+            paginationButtons.innerHTML = btnsHtml;
+          }
+        }
+      }
+
+      if (smoothScroll) {
+        const grid = document.getElementById('catalog-filter-tabs');
+        if (grid) {
+          const topPos = grid.getBoundingClientRect().top + window.pageYOffset - 110;
+          window.scrollTo({ top: Math.max(0, topPos), behavior: 'smooth' });
+        }
+      }
+    }
+
+    window.catalogGoToPage = function(p) {
+      renderCatalog(p, true);
+    };
 
     tabs.forEach(tab => {
       tab.addEventListener('click', function() {
         tabs.forEach(t => t.classList.remove('active'));
         this.classList.add('active');
 
-        const cat = this.getAttribute('data-cat');
-        cards.forEach(card => {
-          const cardCat = card.getAttribute('data-category');
-          if (cat === 'all' || cardCat === cat) {
-            card.style.display = 'flex';
-            card.style.opacity = '0';
-            setTimeout(() => {
-              card.style.opacity = '1';
-              card.style.transition = 'opacity 0.3s ease';
-            }, 10);
-          } else {
-            card.style.display = 'none';
-          }
-        });
+        currentCategory = this.getAttribute('data-cat') || 'all';
+        renderCatalog(1, false);
       });
     });
 
-    // Check if category is preset in query params
+    // Check if category or page is preset in query params
     const urlParams = new URLSearchParams(window.location.search);
     const initialCategory = urlParams.get('category');
+    const initialPage = parseInt(urlParams.get('p') || urlParams.get('page') || '1') || 1;
+
     if (initialCategory) {
       const lower = initialCategory.toLowerCase();
       let matchedTab = null;
-      if (lower.includes('spread')) matchedTab = document.querySelector('[data-cat="spreads"]');
+      if (lower.includes('spread') || lower.includes('butter')) matchedTab = document.querySelector('[data-cat="spreads"]');
       else if (lower.includes('choco')) matchedTab = document.querySelector('[data-cat="chocolates"]');
-      else if (lower.includes('ingredient')) matchedTab = document.querySelector('[data-cat="ingredients"]');
+      else if (lower.includes('ingredient') || lower.includes('powder')) matchedTab = document.querySelector('[data-cat="ingredients"]');
       else if (lower.includes('gift') || lower.includes('corporate')) matchedTab = document.querySelector('[data-cat="gifting"]');
       
       if (matchedTab) {
-        matchedTab.click();
+        tabs.forEach(t => t.classList.remove('active'));
+        matchedTab.classList.add('active');
+        currentCategory = matchedTab.getAttribute('data-cat') || 'all';
       }
     }
+
+    // Initial render of page 1 (or requested page)
+    renderCatalog(initialPage, false);
   });
 
   // Hybrid Mode Visitor Switcher (Retail vs Bulk)

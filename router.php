@@ -126,8 +126,14 @@ if (preg_match('#^/blog/([^/]+)/?$#', $uri, $m)) {
     return true;
 }
 
-// Route clean shop product URLs: /shop/{slug}
-if (preg_match('#^/shop/([a-zA-Z0-9_\-]+)/?$#', $uri, $m)) {
+// Handle accidental nested /shop/shop/{slug} redirects
+if (preg_match('#^/(?:shop|blog)/(?:shop|blog)/([a-zA-Z0-9_\-]+)/?$#', $uri, $m)) {
+    header('Location: /shop/' . $m[1], true, 301);
+    return true;
+}
+
+// Route clean shop product URLs: /shop/{slug} or /product/{slug}
+if (preg_match('#^/(?:shop|product)/([a-zA-Z0-9_\-]+)/?$#', $uri, $m)) {
     $_GET['slug'] = $m[1];
     include __DIR__ . '/product.php';
     return true;
