@@ -584,6 +584,17 @@ if (!empty(trim($customHeadScripts))) {
         <span class="nav-label">CHOCOLATE AI</span>
       </button>
 
+      <!-- 7. FUNZONE -->
+      <a class="nav-item-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php" title="Funzone & Interactive Features">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="6" y1="12" x2="10" y2="12"/>
+          <line x1="8" y1="10" x2="8" y2="14"/>
+          <circle cx="15" cy="11" r="0.75" fill="currentColor"/>
+          <circle cx="17" cy="13" r="0.75" fill="currentColor"/>
+          <path d="M17.8 2a2 2 0 0 1 1.8 1.1l1.8 3.6a2 2 0 0 1 .6 2.3l-2.4 7.2a3 3 0 0 1-2.8 2.1h-9.6a3 3 0 0 1-2.8-2.1l-2.4-7.2a2 2 0 0 1 .6-2.3l1.8-3.6A2 2 0 0 1 6.2 2h11.6z"/>
+        </svg>
+        <span class="nav-label">FUNZONE</span>
+      </a>
     </nav>
 
     <div class="header-divider"></div>
@@ -667,6 +678,10 @@ if (!empty(trim($customHeadScripts))) {
       <span>CHOCOLATE AI</span>
     </button>
 
+    <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="11" r="0.75" fill="currentColor"/><circle cx="17" cy="13" r="0.75" fill="currentColor"/><path d="M17.8 2a2 2 0 0 1 1.8 1.1l1.8 3.6a2 2 0 0 1 .6 2.3l-2.4 7.2a3 3 0 0 1-2.8 2.1h-9.6a3 3 0 0 1-2.8-2.1l-2.4-7.2a2 2 0 0 1 .6-2.3l1.8-3.6A2 2 0 0 1 6.2 2h11.6z"/></svg>
+      <span>FUNZONE</span>
+    </a>
 
     <div style="padding: 16px 20px;">
       <a href="<?php echo $pathPrefix; ?>admin/login.php" class="signin-join-btn" style="width: 100%; justify-content: center;">
