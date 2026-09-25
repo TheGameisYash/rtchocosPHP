@@ -660,7 +660,9 @@
         drop.style.display = 'block';
         drop.dataset.index = index;
         drop.style.bottom = 'auto';
-        drop.style.top = '28px';
+        drop.style.top = '32px';
+        drop.style.right = '0';
+        drop.style.left = 'auto';
         
         const types = [
             { type: 'paragraph', name: 'Paragraph' },

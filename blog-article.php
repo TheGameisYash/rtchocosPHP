@@ -253,8 +253,22 @@ function parse_markdown($markdown) {
             continue;
         }
         
-        // HTML blocks (like div, img, hr, iframe, table)
-        if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|tr|td|th|iframe)/i', $block)) {
+        // HTML blocks (like div, img, hr, p, section, a, span, h\d, table, tr, td, th, iframe, blockquote, ul, ol, pre, figure)
+        if (preg_match('/^<h([23])(?:\s+id="([^"]+)")?[^>]*>(.*?)<\/h\1>/i', $block, $hMatches)) {
+            $hLevel = (int)$hMatches[1];
+            $hClean = strip_tags($hMatches[3]);
+            $hSlug = !empty($hMatches[2]) ? $hMatches[2] : strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $hClean), '-'));
+            global $headings_list;
+            $headings_list[] = [
+                'level' => $hLevel,
+                'text' => $hClean,
+                'slug' => $hSlug
+            ];
+            $html .= "<h{$hLevel} id=\"{$hSlug}\">{$hMatches[3]}</h{$hLevel}>\n";
+            continue;
+        }
+
+        if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|tr|td|th|iframe|blockquote|ul|ol|pre|figure)/i', $block)) {
             $html .= $block . "\n";
             continue;
         }

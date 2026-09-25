@@ -348,8 +348,9 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
             Immersive Preview
         </button>
-        <button type="button" class="drawer-toggle-btn" id="drawerToggle" title="Toggle Settings Drawer" style="position:static;box-shadow:none;">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <button type="button" class="btn btn-outline" id="drawerToggle" title="Open Article Settings, Cover & Thumbnail Images" style="display:inline-flex; align-items:center; gap:8px;">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span>Cover Images &amp; Settings</span>
         </button>
     </div>
 </div>
@@ -361,11 +362,83 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     <input type="hidden" id="blogId" value="<?php echo $post['id']; ?>">
 
     <div class="editor-canvas-wrapper">
-        <!-- Main Canvas Panel -->
-        <div class="editor-main-canvas">
-            <!-- Content Block Canvas Container -->
-            <div class="editor-blocks-container" id="editorBlocksContainer">
-                <!-- Blocks loaded dynamically via editor.js -->
+        <!-- Main Canvas Panel (Normal Word-Style Document Editor) -->
+        <div class="editor-main-canvas word-editor-canvas">
+            <!-- Word Formatting Toolbar -->
+            <div class="word-editor-toolbar" id="wordToolbar">
+                <select class="word-format-select" id="formatBlockSelect" title="Paragraph Style">
+                    <option value="p">Normal Text</option>
+                    <option value="h2">Heading 2</option>
+                    <option value="h3">Heading 3</option>
+                    <option value="h4">Heading 4</option>
+                    <option value="blockquote">Quote / Callout</option>
+                    <option value="pre">Code Block</option>
+                </select>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" data-action="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+                <button type="button" class="word-btn" data-action="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+                <button type="button" class="word-btn" data-action="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+                <button type="button" class="word-btn" data-action="strikeThrough" title="Strikethrough"><s>S</s></button>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" data-action="justifyLeft" title="Align Left">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h14"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-action="justifyCenter" title="Align Center">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M5 18h14"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-action="justifyRight" title="Align Right">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M10 12h10M6 18h14"/></svg>
+                </button>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" data-action="insertUnorderedList" title="Bullet List">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-action="insertOrderedList" title="Numbered List">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 6h11M10 12h11M10 18h11M4 6h1v4M4 10h2M3 18h3-3v-2a2 2 0 012-2h1"/></svg>
+                </button>
+                <button type="button" class="word-btn" id="insertQuoteBtn" data-action="toggleQuote" onclick="window.toggleWordQuote && window.toggleWordQuote()" title="Quote / Callout Box (Gold Bar)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"/></svg>
+                </button>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" id="insertLinkBtn" title="Insert Link (Ctrl+K)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                </button>
+                <button type="button" class="word-btn word-btn-featured" id="insertImageBtn" onclick="window.openWordImageModal && window.openWordImageModal()" title="Insert Article Image (Upload or URL)" style="display:inline-flex; align-items:center; gap:5px; padding:0 10px; font-weight:600;">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                    <span>Image</span>
+                </button>
+                <button type="button" class="word-btn" id="insertYoutubeBtn" title="Insert YouTube Embed">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-action="insertHorizontalRule" title="Horizontal Divider Line">—</button>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" data-action="removeFormat" title="Clear Formatting">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h12M12 4v16M4 20l4-4"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-action="undo" title="Undo (Ctrl+Z)">↶</button>
+                <button type="button" class="word-btn" data-action="redo" title="Redo (Ctrl+Y)">↷</button>
+            </div>
+
+            <!-- Single Continuous Editable Document Area -->
+            <div class="word-editor-body" id="wordEditorDoc" contenteditable="true" spellcheck="true" placeholder="Start typing your article here..."></div>
+
+            <!-- Stats Bar -->
+            <div class="word-editor-footer">
+                <span id="char-count">0 characters</span>
+                <span class="footer-dot">•</span>
+                <span id="word-count">0 words</span>
+                <span class="footer-dot">•</span>
+                <span id="read-time-calc">1 min read</span>
             </div>
         </div>
 
@@ -400,12 +473,12 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 
                 <div class="form-group">
                     <label class="static-label" for="read_time">Estimated Read Time</label>
-                    <input type="text" id="read_time" name="read_time" value="<?php echo htmlspecialchars($post['read_time']); ?>" placeholder="e.g. 5 min">
+                    <input type="text" id="read_time" name="read_time" value="<?php echo htmlspecialchars($post['read_time'] ?? ''); ?>" placeholder="e.g. 5 min">
                 </div>
 
                 <div class="form-group">
                     <label class="static-label" for="scheduled_at">Schedule Publish Date</label>
-                    <input type="datetime-local" id="scheduled_at" name="scheduled_at" value="<?php echo $post['scheduled_at'] ? date('Y-m-d\TH:i', strtotime($post['scheduled_at'])) : ''; ?>">
+                    <input type="datetime-local" id="scheduled_at" name="scheduled_at" value="<?php echo !empty($post['scheduled_at']) ? date('Y-m-d\TH:i', strtotime($post['scheduled_at'])) : ''; ?>">
                     <span style="font-size: 11px; color: var(--text-light); margin-top:4px; display:block;">Leave blank to publish immediately on saving.</span>
                 </div>
 
@@ -419,7 +492,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                             <?php foreach ($allTags as $tag): ?>
                                 <label style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:normal; margin-bottom:4px; cursor:pointer; text-transform: none;">
                                     <input type="checkbox" name="tags[]" value="<?php echo $tag['id']; ?>" <?php echo in_array($tag['id'], $selectedTags) ? 'checked' : ''; ?> style="width:16px; height:16px; accent-color:var(--green-900);">
-                                    <span><?php echo htmlspecialchars($tag['name']); ?></span>
+                                    <span><?php echo htmlspecialchars($tag['name'] ?? ''); ?></span>
                                 </label>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -429,7 +502,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 
                 <div class="form-group">
                     <label class="static-label" for="excerpt">Excerpt / Summary</label>
-                    <textarea id="excerpt" name="excerpt" rows="3" required placeholder="Write a short blog card teaser summary..."><?php echo htmlspecialchars($post['excerpt']); ?></textarea>
+                    <textarea id="excerpt" name="excerpt" rows="3" required placeholder="Write a short blog card teaser summary..."><?php echo htmlspecialchars($post['excerpt'] ?? ''); ?></textarea>
                 </div>
 
                 <!-- Google SEO Result Live Mockup Card -->
@@ -468,12 +541,12 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 
                 <div class="form-group">
                     <label class="static-label" for="youtube_url">YouTube URL</label>
-                    <input type="url" id="youtube_url" name="youtube_url" value="<?php echo htmlspecialchars($post['youtube_url']); ?>" placeholder="e.g. https://youtube.com/watch?v=...">
+                    <input type="url" id="youtube_url" name="youtube_url" value="<?php echo htmlspecialchars($post['youtube_url'] ?? ''); ?>" placeholder="e.g. https://youtube.com/watch?v=...">
                 </div>
 
                 <div class="form-group">
                     <label class="static-label" for="body_class">Body CSS Class</label>
-                    <input type="text" id="body_class" name="body_class" value="<?php echo htmlspecialchars($post['body_class']); ?>" placeholder="e.g. cocoa-article">
+                    <input type="text" id="body_class" name="body_class" value="<?php echo htmlspecialchars($post['body_class'] ?? ''); ?>" placeholder="e.g. cocoa-article">
                 </div>
 
                 <div class="form-group" style="display:flex; justify-content:space-between; align-items:center;">
@@ -493,17 +566,32 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     </div>
 </form>
 
-<!-- Formatting Selection Toolbar -->
-<div id="floatingFormatBar">
-    <button type="button" class="format-bar-btn" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
-    <button type="button" class="format-bar-btn" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
-    <button type="button" class="format-bar-btn" data-cmd="underline" title="Underline (Ctrl+U)"><u>U</u></button>
-    <button type="button" class="format-bar-btn" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
-    <div class="format-bar-divider"></div>
-    <button type="button" class="format-bar-btn" data-cmd="createLink" title="Insert Link">Link</button>
-    <div class="format-bar-link-input">
-        <input type="text" placeholder="https://...">
-        <button type="button" class="btn btn-secondary btn-sm link-submit" style="padding:4px 8px; font-size:11px;">Apply</button>
+<!-- Word Editor Image Insert Modal -->
+<div class="word-modal-overlay" id="wordEditorImageModal">
+    <div class="word-modal-card">
+        <div class="word-modal-header">
+            <h3>Insert Image</h3>
+            <button type="button" class="word-modal-close" id="closeWordImageModal">&times;</button>
+        </div>
+        <div class="word-image-dropzone" id="wordImageDropzone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/></svg>
+            <p style="margin:0; font-size:14px; font-weight:600; color:var(--text-main);">Click or Drag &amp; Drop Image File Here</p>
+            <span style="font-size:11.5px; color:var(--text-light); margin-top:4px; display:block;">Supports JPG, PNG, WEBP (Max 5MB)</span>
+            <input type="file" id="wordImageFileInput" accept="image/*" style="display:none;">
+        </div>
+        <div style="text-align:center; font-size:12px; color:var(--text-light); margin:12px 0;">— OR USE AN IMAGE URL —</div>
+        <div class="form-group" style="margin-bottom:12px;">
+            <label class="static-label" for="wordImageUrlInput">Image URL</label>
+            <input type="url" id="wordImageUrlInput" placeholder="https://example.com/image.jpg" style="font-size:13px;">
+        </div>
+        <div class="form-group" style="margin-bottom:20px;">
+            <label class="static-label" for="wordImageAltInput">Alt Text (Caption / Description)</label>
+            <input type="text" id="wordImageAltInput" placeholder="e.g. Cocoa beans drying under sun" style="font-size:13px;">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('wordEditorImageModal').style.display='none'">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="submitWordImageUrlBtn">Insert Image</button>
+        </div>
     </div>
 </div>
 
@@ -754,14 +842,14 @@ function parseMarkdown(markdown) {
 }
 </script>
 
-<script src="editor.js"></script>
+<script src="word-editor.js"></script>
 
 <!-- UI logic for drawer toggle, preview toggles, image previews, and SEO synchronization -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Initialize Block Editor Engine
-    const initialMarkdown = <?php echo json_encode($post['content']); ?>;
-    initBlockEditor(initialMarkdown);
+    // 1. Initialize Word Document Editor Engine
+    const initialContent = <?php echo json_encode($post['content']); ?>;
+    initWordEditor(initialContent);
 
     // 2. Settings Drawer Toggle
     const drawer = document.getElementById('settingsDrawer');

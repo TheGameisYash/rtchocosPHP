@@ -184,7 +184,7 @@
   background-color: var(--dark-800);
   background-image:
     linear-gradient(rgba(14, 10, 8, 0.55), rgba(14, 10, 8, 0.55)),
-    url('../assets/workshop.jpg');
+    url('../assets/workshop_hero.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -726,6 +726,195 @@
   line-height: 1.6;
   color: rgba(245, 237, 230, 0.7);
   max-width: 760px;
+}
+
+/* Workshops Hero Image Showcase */
+.workshops-hero-visual {
+  width: 100%;
+  max-width: 1080px;
+  margin: 32px auto 8px auto;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.workshops-hero-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--bg-card, #FAF6EF);
+  border: 1px solid rgba(var(--accent-rgb, 35, 84, 54), 0.16);
+  box-shadow:
+    0 24px 50px -15px rgba(17, 34, 23, 0.12),
+    0 10px 24px -8px rgba(17, 34, 23, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.workshops-hero-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 30px 60px -18px rgba(17, 34, 23, 0.16),
+    0 12px 24px -8px rgba(17, 34, 23, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+}
+
+.workshops-hero-media {
+  position: relative;
+  overflow: hidden;
+  background: #EAE3D2;
+  width: 100%;
+  display: block;
+}
+
+.workshops-hero-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.workshops-hero-card:hover .workshops-hero-img {
+  transform: scale(1.015);
+}
+
+.workshops-hero-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 40%, rgba(17, 34, 23, 0.05) 100%);
+}
+
+.workshops-hero-badge {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(247, 242, 232, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--accent-dark, #12321F);
+  border: 1px solid rgba(35, 84, 54, 0.20);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  z-index: 3;
+}
+
+.workshops-hero-badge .pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent, #235436);
+  box-shadow: 0 0 0 3px rgba(35, 84, 54, 0.2);
+}
+
+.workshops-stages-bar {
+  background: var(--bg-card, #FAF6EF);
+  padding: 14px 22px;
+  border-top: 1px solid rgba(35, 84, 54, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.workshops-stages-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Serif Display', 'Playfair Display', serif;
+  font-size: 15px;
+  color: var(--text-heading, #112217);
+  font-weight: 600;
+}
+
+.workshops-stages-title svg {
+  color: var(--accent, #235436);
+  flex-shrink: 0;
+}
+
+.workshops-stages-track {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.stage-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 11px;
+  border-radius: 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary, #34463B);
+  background: rgba(35, 84, 54, 0.05);
+  border: 1px solid rgba(35, 84, 54, 0.12);
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.stage-chip:hover {
+  background: var(--accent, #235436);
+  color: #FFFFFF;
+  border-color: var(--accent, #235436);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(35, 84, 54, 0.18);
+}
+
+.stage-arrow {
+  color: var(--text-muted, #566A5E);
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+@media (max-width: 900px) {
+  .workshops-stages-bar {
+    justify-content: center;
+    gap: 12px;
+  }
+  .workshops-stages-title {
+    width: 100%;
+    justify-content: center;
+  }
+  .workshops-stages-track {
+    justify-content: center;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 600px) {
+  .workshops-hero-visual {
+    margin: 20px auto 4px auto;
+  }
+  .workshops-hero-badge {
+    top: 10px;
+    left: 10px;
+    font-size: 10.5px;
+    padding: 4px 10px;
+  }
+  .stage-chip {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  .stage-arrow {
+    display: none;
+  }
+  .workshops-stages-track {
+    gap: 4px;
+  }
 }
 
 .about-page-hero .page-hero-content h1 {

@@ -103,8 +103,8 @@
 
 .editor-block-wrapper {
     position: relative;
-    margin: 0 -16px;
-    padding: 8px 16px;
+    margin: 2px -16px;
+    padding: 12px 16px 8px 16px;
     border-radius: 8px;
     transition: background-color 0.2s ease;
     display: flex;
@@ -125,55 +125,95 @@
     min-height: 24px;
 }
 
-/* Floating Block Controls on left side */
+/* Floating Block Controls - positioned at top-right above text to avoid overlapping */
 .editor-block-controls {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     position: absolute;
-    left: -48px;
-    top: 8px;
+    right: 12px;
+    top: -18px;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s ease, left 0.2s ease;
-    z-index: 10;
+    transform: translateY(3px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 30;
+    background: var(--bg-card, #1c1612);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15));
+    border-radius: 6px;
+    padding: 2px 4px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
 
 .editor-block-wrapper:hover .editor-block-controls {
     opacity: 1;
     pointer-events: auto;
-    left: -40px;
+    transform: translateY(0);
 }
 
 .block-ctrl-btn {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
+    background: transparent;
+    border: 1px solid transparent;
     color: var(--text-light);
     border-radius: 4px;
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all var(--transition);
+    transition: all var(--transition, 0.18s ease);
 }
 
 .block-ctrl-btn:hover {
     color: var(--text-main);
-    border-color: var(--gold);
-    background: var(--cream);
+    border-color: var(--border-color);
+    background: var(--bg-app);
 }
 
 .block-ctrl-btn.btn-delete:hover {
-    color: #d32f2f;
-    border-color: #d32f2f;
-    background: #ffebee;
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.12);
 }
 
 .block-ctrl-btn svg {
     width: 14px;
     height: 14px;
+}
+
+/* Dropdown menu for Block Type Converter */
+.block-converter-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px) !important;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.3));
+    z-index: 100;
+    min-width: 160px;
+    overflow: hidden;
+    padding: 4px;
+}
+
+.block-converter-dropdown button {
+    display: block;
+    width: 100%;
+    padding: 7px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-main);
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.block-converter-dropdown button:hover {
+    background: var(--bg-app);
+    color: var(--gold, #c7a66a);
 }
 
 /* Block types specific styling inside editor */
@@ -595,3 +635,303 @@
 .block-image-uploaded img.blog-img-left { float: left; max-width: 200px; margin: 10px; }
 .block-image-uploaded img.blog-img-right { float: right; max-width: 200px; margin: 10px; }
 .block-image-uploaded img.blog-img-end { margin: 20px auto 0; display: block; clear: both; }
+
+/* ==========================================================================
+   WORD-STYLE CONTINUOUS DOCUMENT EDITOR (NORMAL EDITOR, NO BLOCKS)
+   ========================================================================== */
+.word-editor-canvas {
+    padding: 28px 36px 40px !important;
+}
+
+.word-editor-toolbar {
+    position: sticky;
+    top: 76px;
+    z-index: 80;
+    background: var(--bg-card, #1c1612);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.word-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-light, #999);
+    border-radius: 6px;
+    padding: 4px 8px;
+    min-width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition, 0.15s ease);
+}
+
+.word-btn:hover {
+    background: var(--bg-app, #120e0b);
+    color: var(--gold, #c7a66a);
+    border-color: var(--border-color);
+}
+
+.word-btn.active {
+    background: var(--gold, #c7a66a) !important;
+    color: #111111 !important;
+    border-color: var(--gold, #c7a66a) !important;
+}
+
+.word-format-select {
+    background: var(--bg-app, #120e0b);
+    border: 1px solid var(--border-color);
+    color: var(--text-main, #f5ede6);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    height: 30px;
+}
+
+.word-format-select:focus {
+    border-color: var(--gold);
+}
+
+.toolbar-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--border-color, rgba(255, 255, 255, 0.1));
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+/* Document Body - Single continuous writing flow */
+.word-editor-body {
+    min-height: 600px;
+    outline: none;
+    padding: 8px 4px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--text-main);
+    word-break: break-word;
+    border-radius: 8px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.word-editor-body.drag-over {
+    border: 2px dashed var(--gold, #c7a66a);
+    background: rgba(199, 166, 106, 0.04);
+}
+
+.word-editor-body h1,
+.word-editor-body h2 {
+    font-family: var(--font-heading, 'DM Serif Display', 'Playfair Display', serif);
+    font-size: 26px;
+    font-weight: 700;
+    margin: 36px 0 16px;
+    color: var(--text-main);
+    line-height: 1.35;
+}
+
+.word-editor-body h3 {
+    font-family: var(--font-heading, 'DM Serif Display', 'Playfair Display', serif);
+    font-size: 21px;
+    font-weight: 600;
+    margin: 28px 0 12px;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+.word-editor-body h4 {
+    font-family: var(--font-heading, 'DM Serif Display', 'Playfair Display', serif);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 20px 0 10px;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+.word-editor-body p {
+    margin-bottom: 20px;
+}
+
+.word-editor-body blockquote {
+    border-left: 4px solid var(--gold, #c7a66a);
+    padding: 16px 24px;
+    margin: 24px 0;
+    font-style: italic;
+    background: rgba(199, 166, 106, 0.08);
+    border-radius: 0 8px 8px 0;
+    color: var(--text-main, #f5ede6);
+    line-height: 1.7;
+    position: relative;
+    font-size: 16.5px;
+}
+
+.word-editor-body blockquote.callout {
+    border-left-color: var(--green-900, #1b4d3e);
+    background: rgba(27, 77, 62, 0.08);
+}
+
+.word-editor-body blockquote p {
+    margin-bottom: 0;
+    font-style: italic;
+}
+
+.word-editor-body ul,
+.word-editor-body ol {
+    margin: 18px 0;
+    padding-left: 28px;
+}
+
+.word-editor-body li {
+    margin-bottom: 8px;
+}
+
+.word-editor-body pre {
+    background: var(--bg-app);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    font-family: monospace;
+    font-size: 14px;
+    overflow-x: auto;
+    margin: 20px 0;
+    color: var(--text-main);
+}
+
+.word-editor-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 20px 0;
+    box-shadow: var(--shadow-sm);
+    display: block;
+}
+
+.word-editor-body hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 32px 0;
+}
+
+.word-editor-body a {
+    color: var(--gold, #c7a66a);
+    text-decoration: underline;
+}
+
+.word-editor-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-color);
+}
+
+.footer-dot {
+    opacity: 0.4;
+}
+
+/* Modal Dialog for Image Insertion */
+.word-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.word-modal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 28px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+}
+
+.word-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.word-modal-header h3 {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    margin: 0;
+    color: var(--text-main);
+}
+
+.word-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.word-modal-close:hover {
+    color: var(--text-main);
+}
+
+.word-image-dropzone {
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition);
+    background: var(--bg-app);
+    margin-bottom: 18px;
+}
+
+.word-image-dropzone:hover,
+.word-image-dropzone.drag-over {
+    border-color: var(--gold);
+    background: rgba(199, 166, 106, 0.05);
+}
+
+.word-image-dropzone svg {
+    width: 36px;
+    height: 36px;
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+.autosave-recovery-bar {
+    background: rgba(199, 166, 106, 0.1);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-main);
+}
+
