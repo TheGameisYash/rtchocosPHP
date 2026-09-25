@@ -728,104 +728,215 @@
   max-width: 760px;
 }
 
-/* Workshops Hero Image Showcase */
-.workshops-hero-visual {
-  width: 100%;
-  max-width: 1080px;
-  margin: 32px auto 8px auto;
+/* ==========================================================================
+   WORKSHOP LUXURY FULL-SIZE HERO (Background Image — Same as Product Page Hero)
+   ========================================================================== */
+.workshop-hero-lux {
+  background-color: #EBD6C3;
+  background-image: 
+    linear-gradient(to right, 
+      rgba(235, 214, 195, 0.84) 0%, 
+      rgba(235, 214, 195, 0.72) 28%, 
+      rgba(235, 214, 195, 0.40) 44%, 
+      rgba(235, 214, 195, 0.10) 56%, 
+      rgba(235, 214, 195, 0) 66%
+    ),
+    url('../assets/workshop_hero.png');
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #0B1C12;
+  padding: 85px 24px 60px;
   position: relative;
-  z-index: 2;
+  overflow: hidden;
+  min-height: 660px;
+  display: flex;
+  align-items: center;
   box-sizing: border-box;
 }
 
-.workshops-hero-card {
+.workshop-hero-container {
+  max-width: 1380px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 40px;
+  align-items: center;
   position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  background: var(--bg-card, #FAF6EF);
-  border: 1px solid rgba(var(--accent-rgb, 35, 84, 54), 0.16);
-  box-shadow:
-    0 24px 50px -15px rgba(17, 34, 23, 0.12),
-    0 10px 24px -8px rgba(17, 34, 23, 0.06),
-    0 0 0 1px rgba(255, 255, 255, 0.7) inset;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
-}
-
-.workshops-hero-card:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 30px 60px -18px rgba(17, 34, 23, 0.16),
-    0 12px 24px -8px rgba(17, 34, 23, 0.08),
-    0 0 0 1px rgba(255, 255, 255, 0.9) inset;
-}
-
-.workshops-hero-media {
-  position: relative;
-  overflow: hidden;
-  background: #EAE3D2;
+  z-index: 2;
   width: 100%;
-  display: block;
 }
 
-.workshops-hero-img {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+.workshop-hero-left {
+  max-width: 560px;
 }
 
-.workshops-hero-card:hover .workshops-hero-img {
-  transform: scale(1.015);
+.workshop-hero-tag {
+  display: inline-block;
+  color: #835212;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
 }
 
-.workshops-hero-media::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 40%, rgba(17, 34, 23, 0.05) 100%);
+.workshop-hero-title {
+  font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(34px, 4.2vw, 54px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #0B1C12;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
 }
 
-.workshops-hero-badge {
-  position: absolute;
-  top: 16px;
-  left: 18px;
+.workshop-hero-desc {
+  font-size: 15.5px;
+  line-height: 1.68;
+  color: #1B2F23;
+  max-width: 580px;
+  margin-bottom: 34px;
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+/* 4 Feature Badges in Hero (Matching Product Hero) */
+.workshop-hero-badges {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 38px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(148, 99, 29, 0.22);
+}
+
+.workshop-badge-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.workshop-badge-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: #835212;
+  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.6));
+}
+
+.workshop-badge-icon svg {
+  width: 28px;
+  height: 28px;
+  stroke: #835212;
+}
+
+.workshop-badge-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #0B1C12;
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+/* Hero Action Buttons */
+.workshop-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.workshop-hero-actions .btn-gold-lux {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(247, 242, 232, 0.92);
+  background: linear-gradient(135deg, #0B1C12 0%, #163622 100%);
+  color: #F4D38E;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 13px 26px;
+  border-radius: 4px;
+  text-decoration: none;
+  border: 1px solid rgba(244, 211, 142, 0.35);
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(11, 28, 18, 0.25);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.workshop-hero-actions .btn-gold-lux:hover {
+  background: linear-gradient(135deg, #163622 0%, #204C30 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(11, 28, 18, 0.35);
+  color: #FFFFFF;
+}
+
+.workshop-hero-actions .btn-outline-lux {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #0B1C12;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border-radius: 4px;
+  text-decoration: none;
+  border: 1.5px solid #0B1C12;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.workshop-hero-actions .btn-outline-lux:hover {
+  background: #0B1C12;
+  border-color: #0B1C12;
+  color: #FAF6EF;
+  transform: translateY(-2px);
+}
+
+/* Right Showcase Wrap (Empty on Desktop so background image shines through, just like shop hero) */
+.workshop-hero-showcase-wrap {
+  min-height: 440px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workshop-hero-mobile-photo {
+  display: none;
+}
+
+/* Sleek Roadmap Bar across bottom of hero */
+.workshop-hero-roadmap-bar {
+  max-width: 1380px;
+  width: 100%;
+  margin: 44px auto 0 auto;
+  background: rgba(250, 246, 239, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 6px 14px;
-  border-radius: 30px;
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  color: var(--accent-dark, #12321F);
-  border: 1px solid rgba(35, 84, 54, 0.20);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-  z-index: 3;
-}
-
-.workshops-hero-badge .pulse-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent, #235436);
-  box-shadow: 0 0 0 3px rgba(35, 84, 54, 0.2);
-}
-
-.workshops-stages-bar {
-  background: var(--bg-card, #FAF6EF);
-  padding: 14px 22px;
-  border-top: 1px solid rgba(35, 84, 54, 0.08);
+  padding: 12px 24px;
+  border-radius: 40px;
+  border: 1px solid rgba(148, 99, 29, 0.22);
+  box-shadow: 0 8px 24px rgba(11, 28, 18, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
 }
 
 .workshops-stages-title {
@@ -833,13 +944,14 @@
   align-items: center;
   gap: 8px;
   font-family: 'DM Serif Display', 'Playfair Display', serif;
-  font-size: 15px;
-  color: var(--text-heading, #112217);
+  font-size: 14.5px;
+  color: #112217;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .workshops-stages-title svg {
-  color: var(--accent, #235436);
+  color: #235436;
   flex-shrink: 0;
 }
 
@@ -853,67 +965,196 @@
 .stage-chip {
   display: inline-flex;
   align-items: center;
-  padding: 5px 11px;
-  border-radius: 14px;
-  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
   font-weight: 600;
   font-family: 'Inter', sans-serif;
-  color: var(--text-secondary, #34463B);
-  background: rgba(35, 84, 54, 0.05);
-  border: 1px solid rgba(35, 84, 54, 0.12);
+  color: #34463B;
+  background: rgba(35, 84, 54, 0.06);
+  border: 1px solid rgba(35, 84, 54, 0.14);
   transition: all 0.25s ease;
   white-space: nowrap;
   cursor: default;
 }
 
 .stage-chip:hover {
-  background: var(--accent, #235436);
+  background: #235436;
   color: #FFFFFF;
-  border-color: var(--accent, #235436);
+  border-color: #235436;
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(35, 84, 54, 0.18);
 }
 
 .stage-arrow {
-  color: var(--text-muted, #566A5E);
+  color: #566A5E;
   font-size: 11px;
   opacity: 0.6;
 }
 
-@media (max-width: 900px) {
-  .workshops-stages-bar {
-    justify-content: center;
-    gap: 12px;
+/* Dark Theme Overrides */
+html.theme-midnight-gold .workshop-hero-lux,
+[data-theme="dark"] .workshop-hero-lux {
+  background-color: #0E0A08;
+  background-image: 
+    linear-gradient(to right, 
+      rgba(14, 10, 8, 0.85) 0%, 
+      rgba(14, 10, 8, 0.74) 28%, 
+      rgba(14, 10, 8, 0.42) 44%, 
+      rgba(14, 10, 8, 0.10) 56%, 
+      rgba(14, 10, 8, 0) 66%
+    ),
+    url('../assets/workshop_hero.png');
+  color: #FAF6EF;
+  border-bottom: 1px solid rgba(199, 166, 106, 0.15);
+}
+
+html.theme-midnight-gold .workshop-hero-title,
+[data-theme="dark"] .workshop-hero-title {
+  color: #FAF6EF;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+html.theme-midnight-gold .workshop-hero-desc,
+[data-theme="dark"] .workshop-hero-desc {
+  color: #E8DCCF;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+html.theme-midnight-gold .workshop-badge-label,
+[data-theme="dark"] .workshop-badge-label {
+  color: #FAF6EF;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+html.theme-midnight-gold .workshop-badge-icon svg,
+[data-theme="dark"] .workshop-badge-icon svg {
+  stroke: #C7A66A;
+}
+
+html.theme-midnight-gold .workshop-hero-badges,
+[data-theme="dark"] .workshop-hero-badges {
+  border-bottom-color: rgba(199, 166, 106, 0.2);
+}
+
+html.theme-midnight-gold .workshop-hero-actions .btn-outline-lux,
+[data-theme="dark"] .workshop-hero-actions .btn-outline-lux {
+  background: rgba(255, 255, 255, 0.05);
+  color: #FAF6EF;
+  border-color: rgba(244, 211, 142, 0.4);
+}
+
+html.theme-midnight-gold .workshop-hero-actions .btn-outline-lux:hover,
+[data-theme="dark"] .workshop-hero-actions .btn-outline-lux:hover {
+  background: #C7A66A;
+  color: #0E0A08;
+  border-color: #C7A66A;
+}
+
+html.theme-midnight-gold .workshop-hero-roadmap-bar,
+[data-theme="dark"] .workshop-hero-roadmap-bar {
+  background: rgba(24, 18, 13, 0.88);
+  border-color: rgba(199, 166, 106, 0.25);
+}
+
+html.theme-midnight-gold .workshops-stages-title,
+[data-theme="dark"] .workshops-stages-title {
+  color: #FAF6EF;
+}
+
+html.theme-midnight-gold .workshops-stages-title svg,
+[data-theme="dark"] .workshops-stages-title svg {
+  color: #C7A66A;
+}
+
+html.theme-midnight-gold .stage-chip,
+[data-theme="dark"] .stage-chip {
+  background: rgba(199, 166, 106, 0.1);
+  border-color: rgba(199, 166, 106, 0.2);
+  color: #E8DCCF;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .workshop-hero-lux {
+    background-image: none !important;
+    background-color: #EBD6C3;
+    padding: 48px 20px 40px;
+    min-height: auto;
   }
-  .workshops-stages-title {
-    width: 100%;
+  .workshop-hero-container {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .workshop-hero-left {
+    max-width: 100%;
+    text-align: center;
+  }
+  .workshop-hero-desc {
+    margin: 0 auto 28px;
+  }
+  .workshop-hero-badges {
+    max-width: 580px;
+    margin: 0 auto 32px;
+  }
+  .workshop-badge-icon {
     justify-content: center;
+  }
+  .workshop-hero-actions {
+    justify-content: center;
+  }
+  .workshop-hero-showcase-wrap {
+    min-height: auto;
+    pointer-events: auto;
+    order: 2;
+  }
+  .workshop-hero-mobile-photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(11, 28, 18, 0.15);
+  }
+  .workshop-hero-roadmap-bar {
+    border-radius: 20px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 16px;
+    margin-top: 24px;
   }
   .workshops-stages-track {
     justify-content: center;
-    gap: 5px;
   }
 }
 
-@media (max-width: 600px) {
-  .workshops-hero-visual {
-    margin: 20px auto 4px auto;
+@media (max-width: 640px) {
+  .workshop-hero-lux {
+    padding: 36px 16px 36px;
   }
-  .workshops-hero-badge {
-    top: 10px;
-    left: 10px;
-    font-size: 10.5px;
-    padding: 4px 10px;
+  .workshop-hero-badges {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 12px;
+  }
+  .workshop-badge-item {
+    align-items: center;
+    text-align: center;
+  }
+  .workshop-hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .workshop-hero-actions a {
+    width: 100%;
+    justify-content: center;
   }
   .stage-chip {
     font-size: 10px;
-    padding: 3px 8px;
+    padding: 3px 7px;
   }
   .stage-arrow {
     display: none;
-  }
-  .workshops-stages-track {
-    gap: 4px;
   }
 }
 

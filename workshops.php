@@ -42,46 +42,82 @@
 
 <!-- --- WORKSHOPS PAGE --- -->
 <div id="page-workshops" class="page active" style="padding-top:76px;">
-  <div class="page-hero workshops-page-hero">
-    <div class="page-hero-content">
-      <div class="section-label">RT Chocos Learning Studio</div>
-      <h1 class="fade-up">The Cacao Lab</h1>
-      <p class="fade-up-d1">A collection of premium, technical chocolate workshops and masterclasses. Learn bean-to-bar making, tempering science, and recipe formulation from expert Aarti Saluja Sahni.</p>
-    </div>
+  <!-- =========================================================================
+       SECTION 1: HERO SECTION (Full-Size Luxury Hero — Matching Product Page)
+       ========================================================================= -->
+  <section class="workshop-hero-lux">
+    <div class="workshop-hero-container">
 
-    <!-- Bean-to-Bar Process Showcase in Hero -->
-    <div class="workshops-hero-visual fade-up-d2">
-      <div class="workshops-hero-card">
-        <div class="workshops-hero-media">
-          <img src="assets/workshop_hero.png" alt="Bean-to-Bar Chocolate Making Process: Bean, Cleaning &amp; Sorting, Roasting, Winnowing, Grinding, Conching, Tempering" class="workshops-hero-img" width="1024" height="426" loading="eager" />
-          <div class="workshops-hero-badge">
-            <span class="pulse-dot"></span> 7 Stages of Bean-to-Bar Mastery
+      <!-- Left Column: Content, 4 Feature Badges, Action CTAs -->
+      <div class="workshop-hero-left">
+        <span class="workshop-hero-tag">RT Chocos Learning Studio &amp; Academy</span>
+        <h1 class="workshop-hero-title">The Cacao Lab.<br>Master Bean-to-Bar Chocolate.</h1>
+        <p class="workshop-hero-desc">
+          Step inside India's premier artisanal chocolate lab. Comprehensive masterclasses covering bean selection, roast profiling, stone melangeur conching, and Form V tempering science from expert chocolatier Aarti Saluja Sahni.
+        </p>
+
+        <!-- 4 Luxury Value Badges (Same Architecture as Product Page Hero) -->
+        <div class="workshop-hero-badges">
+          <!-- 1: 7-Stage Process -->
+          <div class="workshop-badge-item">
+            <div class="workshop-badge-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <span class="workshop-badge-label">7-Stage<br>Bean-to-Bar</span>
+          </div>
+
+          <!-- 2: Hands-on Studio -->
+          <div class="workshop-badge-item">
+            <div class="workshop-badge-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+            <span class="workshop-badge-label">Hands-on<br>Studio Practice</span>
+          </div>
+
+          <!-- 3: Tempering & Formulation -->
+          <div class="workshop-badge-item">
+            <div class="workshop-badge-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <span class="workshop-badge-label">Tempering<br>&amp; Formulation</span>
+          </div>
+
+          <!-- 4: Certification -->
+          <div class="workshop-badge-item">
+            <div class="workshop-badge-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <span class="workshop-badge-label">Certification<br>&amp; Take-Home</span>
           </div>
         </div>
-        <div class="workshops-stages-bar">
-          <div class="workshops-stages-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span>The Technical Roadmap</span>
-          </div>
-          <div class="workshops-stages-track">
-            <span class="stage-chip" title="1. Bean: Sourcing fine single-origin cacao">1. Bean</span>
-            <span class="stage-arrow">→</span>
-            <span class="stage-chip" title="2. Cleaning &amp; Sorting: Hand-selecting beans for purity">2. Cleaning &amp; Sorting</span>
-            <span class="stage-arrow">→</span>
-            <span class="stage-chip" title="3. Roasting: Calibrated thermal curves for flavor profile">3. Roasting</span>
-            <span class="stage-arrow">→</span>
-            <span class="stage-chip" title="4. Winnowing: Cracking &amp; husk aspiration to yield clean nibs">4. Winnowing</span>
-            <span class="stage-arrow">→</span>
-            <span class="stage-chip" title="5. Grinding: Granite melangeur liquor refining">5. Grinding</span>
-            <span class="stage-arrow">→</span>
-            <span class="stage-chip" title="6. Conching: Flavor development &amp; particle size reduction">6. Conching</span>
-            <span class="stage-arrow">→</span>
-            <span class="stage-chip" title="7. Tempering: Seeding Form V stable cocoa butter crystals">7. Tempering</span>
-          </div>
+
+        <!-- Action CTAs -->
+        <div class="workshop-hero-actions">
+          <a href="#workshops-grid" class="btn-gold-lux">
+            Explore Masterclasses &darr;
+          </a>
+          <a href="#workshop-faq" class="btn-outline-lux">
+            Curriculum &amp; FAQ &rarr;
+          </a>
         </div>
       </div>
+
+      <!-- Right Visual Showcase (Desktop shows background image seamlessly; Mobile shows crisp image card) -->
+      <div class="workshop-hero-showcase-wrap">
+        <img src="assets/workshop_hero.png" alt="Bean-to-Bar Chocolate Making Process: Bean, Cleaning &amp; Sorting, Roasting, Winnowing, Grinding, Conching, Tempering" class="workshop-hero-mobile-photo" width="1024" height="426" loading="eager" />
+      </div>
     </div>
-  </div>
+  </section>
   <div class="section">
 
     <!-- AI Class Insight -->
@@ -126,7 +162,7 @@
       </div>
     </section>
 
-    <section class="seo-faq" aria-labelledby="workshop-faq-title">
+    <section class="seo-faq" id="workshop-faq" aria-labelledby="workshop-faq-title">
       <div class="section-label">Frequently Asked Questions</div>
       <h2 id="workshop-faq-title" class="section-title">Chocolate workshop FAQs</h2>
       <?php foreach ($faqItems as $faq): ?>
