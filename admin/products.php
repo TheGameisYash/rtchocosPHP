@@ -425,6 +425,10 @@ render_admin_header("Product Catalog", "products");
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
             Categories
         </button>
+        <a href="export-backup.php" class="btn btn-outline btn-sm" style="border-color: var(--gold); color: var(--gold);" title="Backup &amp; Export all product descriptions, pricing, and images">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Backup &amp; Export
+        </a>
         <a href="product-editor.php" class="btn btn-primary btn-sm">
             <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
             Add Product
