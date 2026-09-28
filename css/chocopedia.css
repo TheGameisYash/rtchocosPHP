@@ -2200,6 +2200,125 @@
   line-height: 1.7;
 }
 
+/* Responsive Tables for Blog Articles */
+#blog-article-content .table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin: 36px 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(59, 42, 34, 0.08);
+  -webkit-overflow-scrolling: touch;
+}
+
+#blog-article-content table.blog-custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+#blog-article-content table.blog-custom-table th {
+  padding: 14px 18px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+#blog-article-content table.blog-custom-table td {
+  padding: 12px 18px;
+  border-top: 1px solid rgba(199, 166, 106, 0.15);
+}
+
+/* Artisan Table Theme */
+#blog-article-content table.blog-table-artisan {
+  background: var(--cream);
+  border: 1px solid var(--cream-dark);
+}
+
+#blog-article-content table.blog-table-artisan th {
+  background: var(--brown);
+  color: var(--accent);
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+}
+
+#blog-article-content table.blog-table-artisan tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* Minimal Table Theme */
+#blog-article-content table.blog-table-minimal th {
+  border-bottom: 2px solid var(--accent);
+  color: var(--brown);
+  font-weight: 700;
+}
+
+#blog-article-content table.blog-table-minimal td {
+  border-bottom: 1px solid var(--cream-dark);
+}
+
+/* Striped Table Theme */
+#blog-article-content table.blog-table-striped th {
+  background: #1b4d3e;
+  color: #ffffff;
+}
+
+#blog-article-content table.blog-table-striped tr:nth-child(even) td {
+  background: rgba(27, 77, 62, 0.04);
+}
+
+/* Figures & Inline Captions in Blog Article */
+#blog-article-content figure.blog-figure {
+  margin: 36px auto;
+  text-align: center;
+  display: block;
+  max-width: 100%;
+}
+
+#blog-article-content figure.blog-figure img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--cream-dark);
+  box-shadow: 0 4px 16px rgba(59, 42, 34, 0.06);
+  transition: transform 0.3s ease;
+}
+
+#blog-article-content figure.blog-figure img:hover {
+  transform: scale(1.01);
+}
+
+#blog-article-content figure.blog-figure figcaption {
+  font-size: 13.5px;
+  color: #8E7A70;
+  font-style: italic;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+#blog-article-content figure.blog-figure-center {
+  margin: 36px auto;
+}
+
+#blog-article-content figure.blog-figure-left {
+  float: left;
+  margin: 12px 28px 24px 0;
+  max-width: 48%;
+}
+
+#blog-article-content figure.blog-figure-right {
+  float: right;
+  margin: 12px 0 24px 28px;
+  max-width: 48%;
+}
+
+#blog-article-content figure.blog-figure-wide {
+  width: 100% !important;
+  max-width: 100%;
+  margin: 44px 0;
+}
+
 /* ===================================================================
    RESPONSIVE DESIGN
    =================================================================== */

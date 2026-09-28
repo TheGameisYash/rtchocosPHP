@@ -27,9 +27,36 @@ if (file_exists($livePath)) {
 }
 
 if (empty($path) || !file_exists($path) || is_dir($path)) {
-    header("HTTP/1.0 404 Not Found");
-    echo "Image not found.";
-    exit;
+    // Attempt to download and cache from live production website
+    $liveUrl = 'https://www.rtchocos.com/assets/blogs/' . $file;
+    $ctx = stream_context_create([
+        'http' => [
+            'timeout' => 10,
+            'user_agent' => 'Mozilla/5.0 RTChocos-MediaProxy/1.0',
+            'ignore_errors' => true
+        ],
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false
+        ]
+    ]);
+    
+    $remoteData = @file_get_contents($liveUrl, false, $ctx);
+    if ($remoteData !== false && strlen($remoteData) > 300 && !str_starts_with($remoteData, '<!DOCTYPE') && !str_starts_with($remoteData, '<html')) {
+        @mkdir(dirname($localPath), 0777, true);
+        @file_put_contents($localPath, $remoteData);
+        $path = $localPath;
+    } else {
+        // Fallback to placeholder image if available
+        $placeholder = $docRoot . '/assets/images/placeholder.jpg';
+        if (file_exists($placeholder)) {
+            $path = $placeholder;
+        } else {
+            header("HTTP/1.0 404 Not Found");
+            echo "Image not found.";
+            exit;
+        }
+    }
 }
 
 // Get the file extension to set appropriate Content-Type header

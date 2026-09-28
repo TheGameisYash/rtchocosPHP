@@ -53,6 +53,15 @@ function require_auth() {
     require_login();
 }
 
+// Check if admin or developer is currently logged in without redirecting
+function is_admin_logged_in() {
+    if (session_status() === PHP_SESSION_NONE) {
+        @session_start();
+    }
+    return (!empty($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true)
+        || (!empty($_SESSION['dev_logged_in']) && $_SESSION['dev_logged_in'] === true);
+}
+
 // CSRF token generation
 function get_csrf_token() {
     if (empty($_SESSION['csrf_token'])) {

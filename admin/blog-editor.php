@@ -1,6 +1,7 @@
 <?php
 // admin/blog-editor.php
 require_once __DIR__ . '/layout.php';
+require_once __DIR__ . '/../includes/blog-cache.php';
 
 $pdo = get_db();
 $error = '';
@@ -68,6 +69,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
         echo json_encode(['success' => false, 'message' => 'Failed to save uploaded image.']);
         exit;
     }
+}
+
+// 2. AJAX MEDIA LIBRARY FETCHER FOR IMAGE MODAL
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'get_media_library') {
+    header('Content-Type: application/json');
+    $token = $_POST['csrf_token'] ?? '';
+    if (!verify_csrf($token)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid security token.']);
+        exit;
+    }
+    try {
+        $stmt = $pdo->query("SELECT id, filename, path, size, created_at FROM media ORDER BY id DESC LIMIT 60");
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(['success' => true, 'media' => $items]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
+    exit;
 }
 
 $blogId = (int)($_GET['id'] ?? 0);
@@ -312,6 +331,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Re-load tags
                     $allTags = $pdo->query("SELECT id, name FROM blog_tags ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
 
+                    // Clear blog cache so frontend reflects changes instantly
+                    clear_blog_cache($slug);
+                    clear_blog_cache();
+
                     // Redirect to escape resubmission
                     header('Location: blogs.php?success=' . urlencode($success));
                     exit;
@@ -334,13 +357,28 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 <?php endif; ?>
 
 <!-- Sub-Header Actions -->
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px;">
-    <a href="blogs.php" class="btn btn-outline">
-        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Back to List
-    </a>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:16px;">
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <a href="blogs.php" class="btn btn-outline">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to List
+        </a>
+
+        <!-- Live Topbar Visibility Toggle Switch -->
+        <div class="topbar-visibility-box" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:8px; background:var(--bg-card); border:1px solid var(--border-color);">
+            <span style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--text-light); letter-spacing:0.5px;">Visibility:</span>
+            <label class="custom-toggle" style="transform:scale(0.85); margin:0;">
+                <input type="checkbox" id="topbarVisibilityToggle" <?php echo $post['is_published'] ? 'checked' : ''; ?> onchange="syncVisibilityState(this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+            <span id="topbarVisibilityBadge" class="status-badge <?php echo $post['is_published'] ? 'published' : 'draft'; ?>" style="font-size:11px; padding:3px 8px; <?php echo $post['is_published'] ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
+                <span id="topbarVisibilityIcon"><?php echo $post['is_published'] ? '👁️' : '🔒'; ?></span>
+                <span id="topbarVisibilityLabel"><?php echo $post['is_published'] ? 'Visible (Published)' : 'Hidden (Draft)'; ?></span>
+            </span>
+        </div>
+    </div>
     
-    <div style="display:flex; gap:12px; align-items:center;">
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
         <span id="autosaveIndicator" style="font-size:12.5px; color:var(--text-light); opacity:0.5; transition:opacity var(--transition);">Autosave is active</span>
         <button type="button" class="btn btn-outline" onclick="triggerUndo()" title="Undo (Ctrl+Z)">Undo</button>
         <button type="button" class="btn btn-outline" onclick="triggerRedo()" title="Redo (Ctrl+Y)">Redo</button>
@@ -350,7 +388,11 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
         </button>
         <button type="button" class="btn btn-outline" id="drawerToggle" title="Open Article Settings, Cover & Thumbnail Images" style="display:inline-flex; align-items:center; gap:8px;">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            <span>Cover Images &amp; Settings</span>
+            <span>Cover &amp; Settings</span>
+        </button>
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('editorForm').submit();" style="display:inline-flex; align-items:center; gap:6px; padding:8px 18px; font-weight:600;">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+            <span>Save Article</span>
         </button>
     </div>
 </div>
@@ -411,9 +453,13 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                 <button type="button" class="word-btn" id="insertLinkBtn" title="Insert Link (Ctrl+K)">
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
                 </button>
-                <button type="button" class="word-btn word-btn-featured" id="insertImageBtn" onclick="window.openWordImageModal && window.openWordImageModal()" title="Insert Article Image (Upload or URL)" style="display:inline-flex; align-items:center; gap:5px; padding:0 10px; font-weight:600;">
+                <button type="button" class="word-btn word-btn-featured" id="insertImageBtn" onclick="window.openWordImageModal && window.openWordImageModal()" title="Insert Article Image (Upload, Media Library, or URL)" style="display:inline-flex; align-items:center; gap:5px; padding:0 10px; font-weight:600;">
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
                     <span>Image</span>
+                </button>
+                <button type="button" class="word-btn word-btn-featured" id="insertTableBtn" onclick="window.openWordTableModal && window.openWordTableModal()" title="Insert Data / Comparison Table" style="display:inline-flex; align-items:center; gap:5px; padding:0 10px; font-weight:600;">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+                    <span>Table</span>
                 </button>
                 <button type="button" class="word-btn" id="insertYoutubeBtn" title="Insert YouTube Embed">
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
@@ -550,14 +596,17 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                 </div>
 
                 <div class="form-group" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span class="custom-toggle-label" style="font-weight:600; font-size:12.5px; color:var(--text-muted); text-transform:uppercase;">Publish Post</span>
+                    <div>
+                        <span class="custom-toggle-label" style="font-weight:600; font-size:12.5px; color:var(--text-muted); text-transform:uppercase; display:block;">Article Visibility</span>
+                        <span id="drawerVisibilityHint" style="font-size:11px; color:var(--text-light);"><?php echo $post['is_published'] ? 'Visible to public on website' : 'Hidden from public (Draft)'; ?></span>
+                    </div>
                     <label class="custom-toggle">
-                        <input type="checkbox" name="is_published" value="1" <?php echo $post['is_published'] ? 'checked' : ''; ?>>
+                        <input type="checkbox" id="drawerVisibilityToggle" name="is_published" value="1" <?php echo $post['is_published'] ? 'checked' : ''; ?> onchange="syncVisibilityState(this.checked)">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px;">
+                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px; font-weight:600;">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                     Save Article
                 </button>
@@ -566,33 +615,185 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     </div>
 </form>
 
-<!-- Word Editor Image Insert Modal -->
+<!-- Word Editor Image Insert Modal (Upgraded: Upload, Media Library, URL, Alignment, Sizing, Caption) -->
 <div class="word-modal-overlay" id="wordEditorImageModal">
-    <div class="word-modal-card">
+    <div class="word-modal-card word-modal-card-lg">
         <div class="word-modal-header">
-            <h3>Insert Image</h3>
-            <button type="button" class="word-modal-close" id="closeWordImageModal">&times;</button>
+            <h3>Insert Article Image</h3>
+            <button type="button" class="word-modal-close" id="closeWordImageModal" onclick="document.getElementById('wordEditorImageModal').style.display='none'">&times;</button>
         </div>
-        <div class="word-image-dropzone" id="wordImageDropzone">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/></svg>
-            <p style="margin:0; font-size:14px; font-weight:600; color:var(--text-main);">Click or Drag &amp; Drop Image File Here</p>
-            <span style="font-size:11.5px; color:var(--text-light); margin-top:4px; display:block;">Supports JPG, PNG, WEBP (Max 5MB)</span>
-            <input type="file" id="wordImageFileInput" accept="image/*" style="display:none;">
+
+        <!-- Image Source Tabs -->
+        <div class="modal-tabs">
+            <button type="button" class="modal-tab-btn active" data-tab="uploadTab" onclick="switchImageModalTab('uploadTab')">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                Upload File
+            </button>
+            <button type="button" class="modal-tab-btn" data-tab="mediaTab" onclick="switchImageModalTab('mediaTab'); loadEditorMediaLibrary();">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                Media Library
+            </button>
+            <button type="button" class="modal-tab-btn" data-tab="urlTab" onclick="switchImageModalTab('urlTab')">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                Image URL
+            </button>
         </div>
-        <div style="text-align:center; font-size:12px; color:var(--text-light); margin:12px 0;">— OR USE AN IMAGE URL —</div>
-        <div class="form-group" style="margin-bottom:12px;">
-            <label class="static-label" for="wordImageUrlInput">Image URL</label>
-            <input type="url" id="wordImageUrlInput" placeholder="https://example.com/image.jpg" style="font-size:13px;">
+
+        <!-- Tab 1: Upload File -->
+        <div class="modal-tab-pane active" id="uploadTab">
+            <div class="word-image-dropzone" id="wordImageDropzone">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/></svg>
+                <p style="margin:0; font-size:14px; font-weight:600; color:var(--text-main);">Click or Drag &amp; Drop Image Here</p>
+                <span style="font-size:11.5px; color:var(--text-light); margin-top:4px; display:block;">Supports JPG, PNG, WEBP (Max 5MB)</span>
+                <input type="file" id="wordImageFileInput" accept="image/*" style="display:none;">
+            </div>
+            <div id="imageUploadStatus" style="font-size:12px; color:var(--gold); text-align:center; display:none; margin-bottom:12px;"></div>
         </div>
-        <div class="form-group" style="margin-bottom:20px;">
-            <label class="static-label" for="wordImageAltInput">Alt Text (Caption / Description)</label>
-            <input type="text" id="wordImageAltInput" placeholder="e.g. Cocoa beans drying under sun" style="font-size:13px;">
+
+        <!-- Tab 2: Media Library -->
+        <div class="modal-tab-pane" id="mediaTab" style="display:none;">
+            <div style="margin-bottom:10px;">
+                <input type="text" id="mediaSearchInput" placeholder="Search media by filename..." oninput="filterMediaLibrary(this.value)" style="font-size:12.5px; padding:8px 12px; width:100%; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-app); color:var(--text-main);">
+            </div>
+            <div class="modal-media-grid" id="modalMediaGrid">
+                <div style="padding:30px; text-align:center; color:var(--text-light); font-size:13px; grid-column:1/-1;">Loading media items...</div>
+            </div>
         </div>
-        <div style="display:flex; justify-content:flex-end; gap:10px;">
-            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('wordEditorImageModal').style.display='none'">Cancel</button>
-            <button type="button" class="btn btn-primary btn-sm" id="submitWordImageUrlBtn">Insert Image</button>
+
+        <!-- Tab 3: Web URL -->
+        <div class="modal-tab-pane" id="urlTab" style="display:none;">
+            <div class="form-group" style="margin-bottom:12px;">
+                <label class="static-label" for="wordImageUrlInput">Direct Image URL</label>
+                <input type="url" id="wordImageUrlInput" placeholder="https://example.com/image.jpg" style="font-size:13px;" oninput="updateSelectedPreview(this.value, 'Direct URL Image')">
+            </div>
+        </div>
+
+        <!-- Selected Image Preview & Formatting Options -->
+        <div class="image-options-panel" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border-color);">
+            <div id="selectedImagePreviewBar" style="display:none; align-items:center; gap:12px; margin-bottom:14px; padding:8px 12px; background:var(--bg-app); border-radius:8px; border:1px solid var(--border-color);">
+                <img id="modalSelectedImgThumb" src="" style="width:48px; height:48px; object-fit:cover; border-radius:6px;">
+                <div style="flex:1; overflow:hidden;">
+                    <div id="modalSelectedImgName" style="font-size:13px; font-weight:600; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; color:var(--text-main);">Selected Image</div>
+                    <div id="modalSelectedImgUrl" style="font-size:11px; color:var(--text-light); font-family:monospace; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;"></div>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+                <div class="form-group">
+                    <label class="static-label" for="wordImageAlignSelect">Alignment / Text Wrap</label>
+                    <select id="wordImageAlignSelect" style="font-size:13px; width:100%;">
+                        <option value="center">Center Block (Full Column)</option>
+                        <option value="left">Float Left (Text wraps right)</option>
+                        <option value="right">Float Right (Text wraps left)</option>
+                        <option value="wide">Wide Showcase (Expanded)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="static-label" for="wordImageWidthSelect">Display Width</label>
+                    <select id="wordImageWidthSelect" style="font-size:13px; width:100%;">
+                        <option value="100%">100% (Full Width)</option>
+                        <option value="75%">75% (Medium)</option>
+                        <option value="50%">50% (Compact)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:12px;">
+                <label class="static-label" for="wordImageAltInput">Alt Text (For SEO &amp; Accessibility)</label>
+                <input type="text" id="wordImageAltInput" placeholder="e.g. Fine flavor cocoa beans drying under sun" style="font-size:13px;">
+            </div>
+
+            <div class="form-group" style="margin-bottom:18px;">
+                <label class="static-label" for="wordImageCaptionInput">Caption (Displayed under image in article)</label>
+                <input type="text" id="wordImageCaptionInput" placeholder="e.g. Fig 1. Sun-drying cacao beans on raised wooden beds" style="font-size:13px;">
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('wordEditorImageModal').style.display='none'">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" id="submitWordImageUrlBtn">Insert Image into Article</button>
+            </div>
         </div>
     </div>
+</div>
+
+<!-- Word Editor Table Insert Modal -->
+<div class="word-modal-overlay" id="wordEditorTableModal">
+    <div class="word-modal-card">
+        <div class="word-modal-header">
+            <h3>Insert Table</h3>
+            <button type="button" class="word-modal-close" id="closeWordTableModal" onclick="document.getElementById('wordEditorTableModal').style.display='none'">&times;</button>
+        </div>
+
+        <p style="font-size:13px; color:var(--text-light); margin-top:-10px; margin-bottom:16px;">
+            Choose dimensions and styling for your data or comparison table:
+        </p>
+
+        <!-- Visual Table Matrix Hover Selector -->
+        <div class="table-matrix-wrapper" style="text-align:center; margin-bottom:18px;">
+            <div id="tableMatrixGrid" class="table-matrix-grid"></div>
+            <div id="tableMatrixLabel" style="font-size:12.5px; font-weight:600; color:var(--gold); margin-top:8px;">3 Rows &times; 3 Columns</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:14px;">
+            <div class="form-group">
+                <label class="static-label" for="tableRowsInput">Rows (Excl. Header)</label>
+                <input type="number" id="tableRowsInput" min="1" max="25" value="3" style="font-size:13px;">
+            </div>
+            <div class="form-group">
+                <label class="static-label" for="tableColsInput">Columns</label>
+                <input type="number" id="tableColsInput" min="1" max="10" value="3" style="font-size:13px;">
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:18px;">
+            <div class="form-group">
+                <label class="static-label" for="tableStyleSelect">Table Style</label>
+                <select id="tableStyleSelect" style="font-size:13px; width:100%;">
+                    <option value="artisan">RT Artisan (Chocolate &amp; Cream)</option>
+                    <option value="minimal">Modern Minimal (Clean Borders)</option>
+                    <option value="striped">Zebra Striped (High Contrast)</option>
+                </select>
+            </div>
+            <div class="form-group" style="display:flex; flex-direction:column; justify-content:center;">
+                <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer; margin-top:16px; text-transform:none; font-weight:500;">
+                    <input type="checkbox" id="tableHeaderRowCheckbox" checked style="width:16px; height:16px; accent-color:var(--green-900);">
+                    <span>Include Header Row</span>
+                </label>
+            </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('wordEditorTableModal').style.display='none'">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="confirmInsertTableBtn" onclick="window.confirmInsertTable && window.confirmInsertTable()">Insert Table</button>
+        </div>
+    </div>
+</div>
+
+<!-- Contextual Floating Table Toolbar -->
+<div id="floatingTableToolbar" class="editor-floating-toolbar" style="display:none;">
+    <span class="floating-toolbar-title">Table:</span>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addRowAbove')" title="Add Row Above">+ Row &uarr;</button>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addRowBelow')" title="Add Row Below">+ Row &darr;</button>
+    <button type="button" class="floating-btn floating-btn-danger" onclick="window.tableAction && window.tableAction('deleteRow')" title="Delete Current Row">&minus; Row</button>
+    <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addColLeft')" title="Add Column Left">+ Col &larr;</button>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addColRight')" title="Add Column Right">+ Col &rarr;</button>
+    <button type="button" class="floating-btn floating-btn-danger" onclick="window.tableAction && window.tableAction('deleteCol')" title="Delete Current Column">&minus; Col</button>
+    <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('toggleHeader')" title="Toggle Table Header">Header</button>
+    <button type="button" class="floating-btn floating-btn-danger" onclick="window.tableAction && window.tableAction('deleteTable')" title="Delete Entire Table">Delete Table</button>
+</div>
+
+<!-- Contextual Floating Image Toolbar -->
+<div id="floatingImageToolbar" class="editor-floating-toolbar" style="display:none;">
+    <span class="floating-toolbar-title">Image:</span>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('alignLeft')" title="Float Left">&larr; Left</button>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('alignCenter')" title="Center Block">&#9632; Center</button>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('alignRight')" title="Float Right">&rarr; Right</button>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('alignWide')" title="Wide View">&harr; Wide</button>
+    <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('editCaption')" title="Edit Caption">Caption</button>
+    <button type="button" class="floating-btn floating-btn-danger" onclick="window.imageAction && window.imageAction('deleteImage')" title="Remove Image">Remove</button>
 </div>
 
 <!-- Immersive Full Preview Overlay -->
@@ -719,11 +920,17 @@ function parseMarkdown(markdown) {
             return;
         }
 
-        // Table support
+        // HTML blocks (div, figure, table, etc.)
+        if (/^<(div|img|hr|p|section|a|span|h[1-6]|table|thead|tbody|tr|td|th|iframe|blockquote|ul|ol|pre|figure)/i.test(block)) {
+            html += block + '\n';
+            return;
+        }
+
+        // Table support (Markdown table pipe syntax)
         if (block.startsWith('|')) {
             const lines = block.split('\n');
             if (lines.length >= 2) {
-                let tableHtml = '<div class="table-responsive"><table>\n';
+                let tableHtml = '<div class="table-responsive-wrapper"><table class="blog-custom-table blog-table-artisan">\n';
                 let hasHeader = false;
                 lines.forEach(line => {
                     const trimmedLine = line.trim().replace(/^\||\|$/g, '');
@@ -907,7 +1114,185 @@ document.addEventListener('DOMContentLoaded', function() {
     if (slugInput) slugInput.addEventListener('input', updateSeoPreview);
     if (excerptInput) excerptInput.addEventListener('input', updateSeoPreview);
     updateSeoPreview(); // Run initial SEO preview load
+
+    // Initialize Interactive Table Matrix Picker
+    initTableMatrix();
 });
+
+// Synchronize Article Visibility toggles and badges across Topbar and Drawer
+function syncVisibilityState(isChecked) {
+    const topToggle = document.getElementById('topbarVisibilityToggle');
+    const drawerToggle = document.getElementById('drawerVisibilityToggle');
+    const hiddenInput = document.getElementById('isPublishedHiddenInput');
+    const statusBadge = document.getElementById('topbarStatusBadge');
+    const drawerHint = document.getElementById('drawerVisibilityHint');
+
+    if (topToggle) topToggle.checked = isChecked;
+    if (drawerToggle) drawerToggle.checked = isChecked;
+    if (hiddenInput) hiddenInput.value = isChecked ? '1' : '0';
+
+    if (statusBadge) {
+        if (isChecked) {
+            statusBadge.className = 'topbar-badge topbar-badge-published';
+            statusBadge.innerText = 'Active / Published';
+        } else {
+            statusBadge.className = 'topbar-badge topbar-badge-draft';
+            statusBadge.innerText = 'Draft / Hidden';
+        }
+    }
+
+    if (drawerHint) {
+        drawerHint.innerText = isChecked ? 'Visible to public on website' : 'Hidden from public (Draft)';
+    }
+}
+
+// Image Modal Tabs
+function switchImageModalTab(tabId) {
+    const tabs = document.querySelectorAll('#wordEditorImageModal .modal-tab-btn');
+    const panes = document.querySelectorAll('#wordEditorImageModal .modal-tab-pane');
+    tabs.forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+    });
+    panes.forEach(pane => {
+        pane.style.display = pane.id === tabId ? 'block' : 'none';
+    });
+}
+
+// Media Library Loading & Filtering
+let loadedMediaItems = [];
+
+function loadEditorMediaLibrary() {
+    const grid = document.getElementById('modalMediaGrid');
+    if (!grid) return;
+    if (loadedMediaItems.length > 0) {
+        renderMediaLibrary(loadedMediaItems);
+        return;
+    }
+    grid.innerHTML = '<div style="padding:30px; text-align:center; color:var(--text-light); font-size:13px; grid-column:1/-1;">Loading media items...</div>';
+    fetch('blog-editor.php?action=get_media_library')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.media) {
+                loadedMediaItems = data.media;
+                renderMediaLibrary(loadedMediaItems);
+            } else {
+                grid.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-light); font-size:13px; grid-column:1/-1;">No media items found.</div>';
+            }
+        })
+        .catch(err => {
+            grid.innerHTML = '<div style="padding:20px; text-align:center; color:#e06c75; font-size:13px; grid-column:1/-1;">Failed to load media library.</div>';
+        });
+}
+
+function renderMediaLibrary(items) {
+    const grid = document.getElementById('modalMediaGrid');
+    if (!grid) return;
+    if (!items || items.length === 0) {
+        grid.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-light); font-size:13px; grid-column:1/-1;">No matching media items found.</div>';
+        return;
+    }
+    grid.innerHTML = items.map(item => `
+        <div class="modal-media-item" onclick="selectMediaItem('${item.url}', '${escapeHtml(item.filename)}')">
+            <img src="../${item.url}" alt="${escapeHtml(item.filename)}" loading="lazy">
+            <div class="modal-media-item-name" title="${escapeHtml(item.filename)}">${escapeHtml(item.filename)}</div>
+        </div>
+    `).join('');
+}
+
+function filterMediaLibrary(query) {
+    if (!query || !query.trim()) {
+        renderMediaLibrary(loadedMediaItems);
+        return;
+    }
+    const q = query.toLowerCase().trim();
+    const filtered = loadedMediaItems.filter(item => item.filename.toLowerCase().includes(q));
+    renderMediaLibrary(filtered);
+}
+
+function selectMediaItem(url, name) {
+    document.querySelectorAll('.modal-media-item').forEach(el => el.classList.remove('selected'));
+    if (window.event && window.event.currentTarget) {
+        window.event.currentTarget.classList.add('selected');
+    }
+    updateSelectedPreview(url, name);
+}
+
+function updateSelectedPreview(url, name) {
+    const previewBar = document.getElementById('selectedImagePreviewBar');
+    const imgThumb = document.getElementById('modalSelectedImgThumb');
+    const imgName = document.getElementById('modalSelectedImgName');
+    const imgUrl = document.getElementById('modalSelectedImgUrl');
+    const urlInput = document.getElementById('wordImageUrlInput');
+
+    if (!url || !url.trim()) {
+        if (previewBar) previewBar.style.display = 'none';
+        return;
+    }
+
+    const cleanUrl = url.trim();
+    const fullUrl = cleanUrl.startsWith('http') || cleanUrl.startsWith('/') ? cleanUrl : ('../' + cleanUrl);
+    
+    if (imgThumb) imgThumb.src = fullUrl;
+    if (imgName) imgName.innerText = name || cleanUrl.split('/').pop() || 'Selected Image';
+    if (imgUrl) imgUrl.innerText = cleanUrl;
+    if (urlInput) urlInput.value = cleanUrl;
+    if (previewBar) previewBar.style.display = 'flex';
+}
+
+// Table Matrix Hover Grid Builder
+function initTableMatrix() {
+    const matrixGrid = document.getElementById('tableMatrixGrid');
+    const matrixLabel = document.getElementById('tableMatrixLabel');
+    const rowsInput = document.getElementById('tableRowsInput');
+    const colsInput = document.getElementById('tableColsInput');
+    if (!matrixGrid) return;
+
+    matrixGrid.innerHTML = '';
+    const maxR = 6, maxC = 6;
+    for (let r = 1; r <= maxR; r++) {
+        for (let c = 1; c <= maxC; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'matrix-cell';
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            
+            cell.addEventListener('mouseenter', () => {
+                highlightMatrix(r, c);
+                if (matrixLabel) matrixLabel.innerText = `${r} Row${r > 1 ? 's' : ''} × ${c} Column${c > 1 ? 's' : ''}`;
+            });
+
+            cell.addEventListener('click', () => {
+                if (rowsInput) rowsInput.value = r;
+                if (colsInput) colsInput.value = c;
+                highlightMatrix(r, c);
+            });
+
+            matrixGrid.appendChild(cell);
+        }
+    }
+
+    function highlightMatrix(activeR, activeC) {
+        matrixGrid.querySelectorAll('.matrix-cell').forEach(c => {
+            const cr = parseInt(c.dataset.row, 10);
+            const cc = parseInt(c.dataset.col, 10);
+            c.classList.toggle('highlighted', cr <= activeR && cc <= activeC);
+        });
+    }
+
+    // Default highlight 3x3
+    highlightMatrix(3, 3);
+
+    if (rowsInput && colsInput) {
+        const updateFromInputs = () => {
+            const r = Math.min(6, Math.max(1, parseInt(rowsInput.value, 10) || 1));
+            const c = Math.min(6, Math.max(1, parseInt(colsInput.value, 10) || 1));
+            highlightMatrix(r, c);
+            if (matrixLabel) matrixLabel.innerText = `${rowsInput.value} Row${rowsInput.value > 1 ? 's' : ''} × ${colsInput.value} Column${colsInput.value > 1 ? 's' : ''}`;
+        };
+        rowsInput.addEventListener('input', updateFromInputs);
+        colsInput.addEventListener('input', updateFromInputs);
+    }
+}
 
 // Dropzone preview image loaders
 function previewFile(input, previewId) {

@@ -1,6 +1,7 @@
 <?php
 // admin/blogs.php
 require_once __DIR__ . '/layout.php';
+require_once __DIR__ . '/../includes/blog-cache.php';
 
 $pdo = get_db();
 $error = '';
@@ -12,14 +13,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $blogId = (int)($_POST['blog_id'] ?? 0);
     $token = $_POST['csrf_token'] ?? '';
+    $isAjax = !empty($_POST['is_ajax']) || (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 
     if (!verify_csrf($token)) {
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Invalid security token.']);
+            exit;
+        }
         $error = 'Invalid security token.';
     } else {
         try {
             if ($action === 'delete' && $blogId > 0) {
                 // Fetch image paths first to delete them from files
-                $stmt = $pdo->prepare("SELECT image_path, thumbnail_path FROM blogs WHERE id = ?");
+                $stmt = $pdo->prepare("SELECT slug, image_path, thumbnail_path FROM blogs WHERE id = ?");
                 $stmt->execute([$blogId]);
                 $post = $stmt->fetch();
                 
@@ -30,15 +37,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (!empty($post['thumbnail_path']) && strpos($post['thumbnail_path'], 'assets/blogs/') === 0 && file_exists(__DIR__ . '/../' . $post['thumbnail_path'])) {
                         unlink(__DIR__ . '/../' . $post['thumbnail_path']);
                     }
+                    clear_blog_cache($post['slug']);
                 }
 
                 $stmt = $pdo->prepare("DELETE FROM blogs WHERE id = ?");
                 $stmt->execute([$blogId]);
+                clear_blog_cache();
                 $success = 'Blog post deleted successfully.';
             } elseif ($action === 'toggle_publish' && $blogId > 0) {
                 $stmt = $pdo->prepare("UPDATE blogs SET is_published = 1 - is_published WHERE id = ?");
                 $stmt->execute([$blogId]);
-                $success = 'Blog publication status updated.';
+
+                $stmt = $pdo->prepare("SELECT id, slug, title, is_published FROM blogs WHERE id = ?");
+                $stmt->execute([$blogId]);
+                $updatedPost = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($updatedPost) {
+                    clear_blog_cache($updatedPost['slug']);
+                }
+                clear_blog_cache(); // also clear blog list
+
+                $isPub = $updatedPost ? (int)$updatedPost['is_published'] : 0;
+                $statusLabel = $isPub ? 'Visible' : 'Hidden';
+                $successMsg = 'Article "' . ($updatedPost['title'] ?? 'Post') . '" is now ' . ($isPub ? 'Visible to the public' : 'Hidden from the public (Draft)') . '.';
+
+                if ($isAjax) {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'success' => true,
+                        'blog_id' => $blogId,
+                        'is_published' => $isPub,
+                        'status_label' => $statusLabel,
+                        'message' => $successMsg
+                    ]);
+                    exit;
+                }
+                $success = $successMsg;
             } elseif ($action === 'duplicate' && $blogId > 0) {
                 $stmt = $pdo->prepare("SELECT * FROM blogs WHERE id = ?");
                 $stmt->execute([$blogId]);
@@ -61,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $blog['youtube_url'],
                         $blog['read_time']
                     ]);
+                    clear_blog_cache();
                     $success = 'Blog post duplicated as draft.';
                 } else {
                     $error = 'Original post not found.';
@@ -85,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     $stmt = $pdo->prepare("DELETE FROM blogs WHERE id IN ($placeholders)");
                     $stmt->execute($blogIds);
+                    clear_blog_cache();
                     $success = 'Selected blog posts deleted successfully.';
                 }
             } elseif ($action === 'bulk_publish') {
@@ -93,6 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $placeholders = implode(',', array_fill(0, count($blogIds), '?'));
                     $stmt = $pdo->prepare("UPDATE blogs SET is_published = 1 WHERE id IN ($placeholders)");
                     $stmt->execute($blogIds);
+                    clear_blog_cache();
                     $success = 'Selected blog posts published successfully.';
                 }
             } elseif ($action === 'bulk_unpublish') {
@@ -101,7 +138,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $placeholders = implode(',', array_fill(0, count($blogIds), '?'));
                     $stmt = $pdo->prepare("UPDATE blogs SET is_published = 0 WHERE id IN ($placeholders)");
                     $stmt->execute($blogIds);
-                    $success = 'Selected blog posts reverted to drafts.';
+                    clear_blog_cache();
+                    $success = 'Selected blog posts hidden (reverted to drafts).';
                 }
             }
         } catch (Exception $e) {
@@ -200,17 +238,27 @@ render_admin_header("Blog Posts", "blogs");
 
 <style>
     /* Styling for additional local items on this page */
-    .more-actions-dropdown {
+    .blog-card {
+        overflow: visible !important;
+    }
+    .blog-card:hover,
+    .blog-card:focus-within,
+    .blog-card.menu-active {
+        z-index: 100 !important;
+    }
+    .blog-card .more-actions-dropdown {
         display: none;
         position: absolute;
         right: 0;
-        bottom: calc(100% + 4px);
+        bottom: calc(100% + 8px) !important;
+        top: auto !important;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
-        border-radius: 8px;
-        box-shadow: var(--shadow-lg);
-        z-index: 150;
-        min-width: 130px;
+        border-radius: 10px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.3);
+        z-index: 9999 !important;
+        min-width: 155px;
+        overflow: hidden;
     }
     
     .more-actions-dropdown button,
@@ -218,7 +266,7 @@ render_admin_header("Blog Posts", "blogs");
         display: flex;
         align-items: center;
         width: 100%;
-        padding: 8px 16px;
+        padding: 9px 16px;
         background: none;
         border: none;
         text-align: left;
@@ -228,16 +276,17 @@ render_admin_header("Blog Posts", "blogs");
         cursor: pointer;
         font-family: var(--font-sans);
         transition: background-color var(--transition), color var(--transition);
+        white-space: nowrap;
     }
 
     .more-actions-dropdown button:hover,
     .more-actions-dropdown a:hover {
-        background-color: var(--cream);
+        background-color: var(--bg-subtle, var(--cream));
         color: var(--text-main);
     }
     
     .more-actions-dropdown button.delete-btn:hover {
-        background-color: rgba(211, 47, 47, 0.05);
+        background-color: rgba(211, 47, 47, 0.08);
         color: #d32f2f;
     }
 </style>
@@ -305,8 +354,8 @@ render_admin_header("Blog Posts", "blogs");
         <!-- Status Filter -->
         <select id="statusSelect" onchange="applyStatus(this.value)" style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size:13px; font-family: var(--font-sans); outline: none;">
             <option value="" <?php echo $statusFilter === '' ? 'selected' : ''; ?>>All Statuses</option>
-            <option value="published" <?php echo $statusFilter === 'published' ? 'selected' : ''; ?>>Published</option>
-            <option value="draft" <?php echo $statusFilter === 'draft' ? 'selected' : ''; ?>>Drafts</option>
+            <option value="published" <?php echo $statusFilter === 'published' ? 'selected' : ''; ?>>Visible (Published)</option>
+            <option value="draft" <?php echo $statusFilter === 'draft' ? 'selected' : ''; ?>>Hidden (Drafts)</option>
         </select>
 
         <!-- Layout Selector Toggle -->
@@ -326,6 +375,27 @@ render_admin_header("Blog Posts", "blogs");
     </div>
 </div>
 
+<!-- Quick Visibility Status Pills -->
+<div style="display:flex; gap:10px; align-items:center; margin-bottom:24px; flex-wrap:wrap; background:var(--bg-card); padding:10px 16px; border-radius:10px; border:1px solid var(--border-color);">
+    <span style="font-size:12px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:0.8px;">Visibility Filter:</span>
+    <a href="blogs.php?<?php echo http_build_query(array_merge($_GET, ['status' => ''])); ?>" 
+       class="filter-chip <?php echo $statusFilter === '' ? 'active' : ''; ?>" style="font-size:12.5px; padding:4px 14px;">
+       All Articles
+    </a>
+    <a href="blogs.php?<?php echo http_build_query(array_merge($_GET, ['status' => 'published'])); ?>" 
+       class="filter-chip <?php echo $statusFilter === 'published' ? 'active' : ''; ?>" 
+       style="font-size:12.5px; padding:4px 14px; <?php echo $statusFilter === 'published' ? 'background:#15803d; border-color:#15803d; color:#fff;' : 'color:#15803d;'; ?>">
+       <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:5px;"></span>
+       Visible (Published)
+    </a>
+    <a href="blogs.php?<?php echo http_build_query(array_merge($_GET, ['status' => 'draft'])); ?>" 
+       class="filter-chip <?php echo $statusFilter === 'draft' ? 'active' : ''; ?>" 
+       style="font-size:12.5px; padding:4px 14px; <?php echo $statusFilter === 'draft' ? 'background:#d97706; border-color:#d97706; color:#fff;' : 'color:#d97706;'; ?>">
+       <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; margin-right:5px;"></span>
+       Hidden (Drafts)
+    </a>
+</div>
+
 <?php if (empty($blogs)): ?>
     <div class="form-card" style="padding: 60px; text-align: center; color: var(--text-light);">
         <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="width: 48px; height: 48px; opacity: 0.5; margin-bottom: 16px;"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
@@ -339,15 +409,19 @@ render_admin_header("Blog Posts", "blogs");
             <?php 
                 $thumb = $blog['thumbnail_path'] ?: $blog['image_path'];
                 $thumbUrl = !empty($thumb) ? '../' . $thumb : '../assets/images/placeholder.jpg';
+                $isPub = (int)$blog['is_published'];
             ?>
-            <div class="blog-card">
+            <div class="blog-card" id="blog-card-<?php echo $blog['id']; ?>">
                 <div class="blog-card-image">
                     <div class="blog-card-badges">
-                        <span class="status-badge <?php echo $blog['is_published'] ? 'published' : 'draft'; ?>">
-                            <?php echo $blog['is_published'] ? 'Published' : 'Draft'; ?>
+                        <span class="status-badge <?php echo $isPub ? 'published' : 'draft'; ?>" 
+                              id="badge-blog-grid-<?php echo $blog['id']; ?>"
+                              style="<?php echo $isPub ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
+                            <span class="badge-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
+                            <span class="badge-label"><?php echo $isPub ? 'Visible' : 'Hidden'; ?></span>
                         </span>
                     </div>
-                    <img src="<?php echo htmlspecialchars($thumbUrl); ?>" alt="<?php echo htmlspecialchars($blog['title']); ?>">
+                    <img src="<?php echo htmlspecialchars($thumbUrl); ?>" alt="<?php echo htmlspecialchars($blog['title']); ?>" onerror="this.onerror=null; this.src='../assets/images/placeholder.jpg';" loading="lazy">
                     
                     <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px;">
                         <?php echo htmlspecialchars($blog['read_time'] ?: '5 min'); ?>
@@ -367,22 +441,22 @@ render_admin_header("Blog Posts", "blogs");
                         <div class="blog-card-actions">
                             <a href="blog-editor.php?id=<?php echo $blog['id']; ?>" class="btn btn-outline btn-sm" style="padding:6px 12px;">Edit</a>
                             
-                            <!-- Inline Toggle switch -->
-                            <form action="blogs.php" method="POST" style="display:inline-flex; align-items:center;" onsubmit="return confirm('Toggle status?');">
-                                <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                <input type="hidden" name="action" value="toggle_publish">
-                                <input type="hidden" name="blog_id" value="<?php echo $blog['id']; ?>">
-                                <label class="custom-toggle" style="transform: scale(0.85); margin-left:4px;">
-                                    <input type="checkbox" onchange="this.form.submit()" <?php echo $blog['is_published'] ? 'checked' : ''; ?>>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </form>
+                            <!-- Instant Visibility Toggle Button -->
+                            <button type="button" 
+                                    class="btn btn-outline btn-sm btn-visibility-toggle <?php echo $isPub ? 'btn-status-visible' : 'btn-status-hidden'; ?>" 
+                                    data-blog-id="<?php echo $blog['id']; ?>" 
+                                    onclick="toggleBlogVisibility(<?php echo $blog['id']; ?>, this)" 
+                                    title="<?php echo $isPub ? 'Click to Hide from website (Draft)' : 'Click to Make Visible on website (Publish)'; ?>"
+                                    style="padding:6px 10px; display:inline-flex; align-items:center; gap:5px; font-weight:600; <?php echo $isPub ? 'color:#15803d;' : 'color:#d97706;'; ?>">
+                                <span class="toggle-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
+                                <span class="toggle-text"><?php echo $isPub ? 'Hide' : 'Show'; ?></span>
+                            </button>
                             
                             <!-- More menu dropdown triggers -->
                             <div style="position: relative; display: inline-block;">
                                 <button type="button" class="btn btn-outline btn-sm" onclick="toggleMoreMenu(event, this)" style="padding: 6px 8px; min-width: 0;">&bull;&bull;&bull;</button>
                                 <div class="more-actions-dropdown">
-                                    <a href="../blog/article.php?slug=<?php echo $blog['slug']; ?>" target="_blank">View on Site &nearr;</a>
+                                    <a href="../blog/<?php echo htmlspecialchars($blog['slug']); ?>" target="_blank">View on Site &nearr;</a>
                                     <form action="blogs.php" method="POST" onsubmit="return confirm('Duplicate this article?');">
                                         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                         <input type="hidden" name="action" value="duplicate">
@@ -416,7 +490,7 @@ render_admin_header("Blog Posts", "blogs");
                     <th>Views</th>
                     <th>Status</th>
                     <th>Created On</th>
-                    <th style="text-align: right; width: 220px;">Actions</th>
+                    <th style="text-align: right; width: 240px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -424,14 +498,15 @@ render_admin_header("Blog Posts", "blogs");
                     <?php 
                         $thumb = $blog['thumbnail_path'] ?: $blog['image_path'];
                         $thumbUrl = !empty($thumb) ? '../' . $thumb : '../assets/images/placeholder.jpg';
+                        $isPub = (int)$blog['is_published'];
                     ?>
-                    <tr>
+                    <tr id="blog-row-<?php echo $blog['id']; ?>">
                         <td style="text-align: center;">
                             <input type="checkbox" class="blog-select-checkbox" value="<?php echo $blog['id']; ?>" onchange="updateBulkSelection()" style="width:16px; height:16px; cursor:pointer; accent-color: var(--green-900);">
                         </td>
                         <td>
                             <div style="width: 60px; height: 40px; border-radius: 6px; overflow: hidden; background: var(--cream); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;">
-                                <img src="<?php echo htmlspecialchars($thumbUrl); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="<?php echo htmlspecialchars($thumbUrl); ?>" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='../assets/images/placeholder.jpg';" loading="lazy">
                             </div>
                         </td>
                         <td>
@@ -445,22 +520,32 @@ render_admin_header("Blog Posts", "blogs");
                         <td><span class="status-badge active" style="font-size: 9.5px;"><?php echo htmlspecialchars($blog['category']); ?></span></td>
                         <td><strong><?php echo $blog['views']; ?></strong> views</td>
                         <td>
-                            <!-- Inline Toggle switch -->
-                            <form action="blogs.php" method="POST" style="display:inline-flex; align-items:center;" onsubmit="return confirm('Toggle status?');">
-                                <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                <input type="hidden" name="action" value="toggle_publish">
-                                <input type="hidden" name="blog_id" value="<?php echo $blog['id']; ?>">
-                                <label class="custom-toggle" style="transform: scale(0.85);">
-                                    <input type="checkbox" onchange="this.form.submit()" <?php echo $blog['is_published'] ? 'checked' : ''; ?>>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </form>
+                            <!-- Status Badge & Instant Toggle Button in Table -->
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="status-badge <?php echo $isPub ? 'published' : 'draft'; ?>" 
+                                      id="badge-blog-list-<?php echo $blog['id']; ?>"
+                                      style="<?php echo $isPub ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
+                                    <span class="badge-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
+                                    <span class="badge-label"><?php echo $isPub ? 'Visible' : 'Hidden'; ?></span>
+                                </span>
+                            </div>
                         </td>
                         <td style="white-space: nowrap;"><?php echo date('M d, Y', strtotime($blog['created_at'])); ?></td>
                         <td style="text-align: right;">
-                            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                            <div style="display: flex; gap: 6px; justify-content: flex-end; align-items:center;">
+                                <!-- Instant Visibility Toggle Button -->
+                                <button type="button" 
+                                        class="btn btn-outline btn-sm btn-visibility-toggle <?php echo $isPub ? 'btn-status-visible' : 'btn-status-hidden'; ?>" 
+                                        data-blog-id="<?php echo $blog['id']; ?>" 
+                                        onclick="toggleBlogVisibility(<?php echo $blog['id']; ?>, this)" 
+                                        title="<?php echo $isPub ? 'Click to Hide this article from public' : 'Click to Make Visible to public'; ?>"
+                                        style="padding: 5px 8px; font-weight:600; <?php echo $isPub ? 'color:#15803d;' : 'color:#d97706;'; ?>">
+                                    <span class="toggle-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
+                                    <span class="toggle-text"><?php echo $isPub ? 'Hide' : 'Show'; ?></span>
+                                </button>
+
                                 <a href="blog-editor.php?id=<?php echo $blog['id']; ?>" class="btn btn-outline btn-sm">Edit</a>
-                                <a href="../blog/article.php?slug=<?php echo $blog['slug']; ?>" target="_blank" class="btn btn-outline btn-sm">View</a>
+                                <a href="../blog/<?php echo htmlspecialchars($blog['slug']); ?>" target="_blank" class="btn btn-outline btn-sm">View</a>
                                 
                                 <div style="position: relative; display: inline-block;">
                                     <button type="button" class="btn btn-outline btn-sm" onclick="toggleMoreMenu(event, this)" style="padding: 6px 8px; min-width: 0;">&bull;&bull;&bull;</button>
@@ -539,26 +624,28 @@ render_admin_header("Blog Posts", "blogs");
     function toggleMoreMenu(event, btn) {
         event.stopPropagation();
         
-        // Close other dropdowns
-        const allDropdowns = document.querySelectorAll('.more-actions-dropdown');
-        allDropdowns.forEach(d => {
-            if (d !== btn.nextElementSibling) {
-                d.style.display = 'none';
-            }
-        });
-        
         const dropdown = btn.nextElementSibling;
-        if (dropdown.style.display === 'block') {
-            dropdown.style.display = 'none';
-        } else {
+        const willOpen = dropdown.style.display !== 'block';
+
+        // Close other dropdowns & remove active card classes
+        document.querySelectorAll('.more-actions-dropdown').forEach(d => d.style.display = 'none');
+        document.querySelectorAll('.blog-card').forEach(c => c.classList.remove('menu-active'));
+        
+        if (willOpen) {
             dropdown.style.display = 'block';
+            const card = btn.closest('.blog-card');
+            if (card) {
+                card.classList.add('menu-active');
+            }
         }
     }
     
-    // Close dropdowns on clicking window
-    window.addEventListener('click', function() {
-        const dropdowns = document.querySelectorAll('.more-actions-dropdown');
-        dropdowns.forEach(d => d.style.display = 'none');
+    // Close dropdowns on clicking outside
+    window.addEventListener('click', function(e) {
+        if (!e.target.closest('.more-actions-dropdown') && !e.target.closest('button[onclick^="toggleMoreMenu"]')) {
+            document.querySelectorAll('.more-actions-dropdown').forEach(d => d.style.display = 'none');
+            document.querySelectorAll('.blog-card').forEach(c => c.classList.remove('menu-active'));
+        }
     });
 
     // Apply Sorting select change
@@ -636,6 +723,104 @@ render_admin_header("Blog Posts", "blogs");
 
         document.getElementById('bulkActionField').value = action;
         document.getElementById('bulkForm').submit();
+    }
+
+    // Instant AJAX Visibility Toggle
+    function toggleBlogVisibility(blogId, btnEl) {
+        if (!blogId) return;
+
+        const csrfToken = <?php echo json_encode($csrfToken); ?>;
+        const formData = new FormData();
+        formData.append('action', 'toggle_publish');
+        formData.append('blog_id', blogId);
+        formData.append('csrf_token', csrfToken);
+        formData.append('is_ajax', '1');
+
+        if (btnEl) {
+            btnEl.disabled = true;
+            btnEl.style.opacity = '0.5';
+        }
+
+        fetch('blogs.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (btnEl) {
+                btnEl.disabled = false;
+                btnEl.style.opacity = '1';
+            }
+            if (data.success) {
+                const isPub = data.is_published === 1;
+
+                // Update all toggle buttons for this blog
+                document.querySelectorAll(`.btn-visibility-toggle[data-blog-id="${blogId}"]`).forEach(btn => {
+                    const iconSpan = btn.querySelector('.toggle-icon');
+                    const textSpan = btn.querySelector('.toggle-text');
+                    if (isPub) {
+                        btn.classList.remove('btn-status-hidden');
+                        btn.classList.add('btn-status-visible');
+                        btn.style.color = '#15803d';
+                        btn.title = 'Click to Hide from website (Draft)';
+                        if (iconSpan) iconSpan.innerText = '👁️';
+                        if (textSpan) textSpan.innerText = 'Hide';
+                    } else {
+                        btn.classList.remove('btn-status-visible');
+                        btn.classList.add('btn-status-hidden');
+                        btn.style.color = '#d97706';
+                        btn.title = 'Click to Make Visible on website (Publish)';
+                        if (iconSpan) iconSpan.innerText = '🔒';
+                        if (textSpan) textSpan.innerText = 'Show';
+                    }
+                });
+
+                // Update Grid & List badges
+                ['grid', 'list'].forEach(viewType => {
+                    const badge = document.getElementById(`badge-blog-${viewType}-${blogId}`);
+                    if (badge) {
+                        const iconSpan = badge.querySelector('.badge-icon');
+                        const labelSpan = badge.querySelector('.badge-label');
+                        if (isPub) {
+                            badge.className = 'status-badge published';
+                            badge.style.background = '';
+                            badge.style.color = '';
+                            badge.style.borderColor = '';
+                            if (iconSpan) iconSpan.innerText = '👁️';
+                            if (labelSpan) labelSpan.innerText = 'Visible';
+                        } else {
+                            badge.className = 'status-badge draft';
+                            badge.style.background = 'rgba(217, 119, 6, 0.15)';
+                            badge.style.color = '#d97706';
+                            badge.style.borderColor = 'rgba(217, 119, 6, 0.3)';
+                            if (iconSpan) iconSpan.innerText = '🔒';
+                            if (labelSpan) labelSpan.innerText = 'Hidden';
+                        }
+                    }
+                });
+
+                if (window.showToast) {
+                    showToast(data.message, isPub ? 'success' : 'warning');
+                }
+            } else {
+                if (window.showToast) {
+                    showToast(data.message || 'Failed to update visibility', 'danger');
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to update visibility'));
+                }
+            }
+        })
+        .catch(err => {
+            if (btnEl) {
+                btnEl.disabled = false;
+                btnEl.style.opacity = '1';
+            }
+            if (window.showToast) {
+                showToast('Network error: ' + err.message, 'danger');
+            } else {
+                alert('Network error: ' + err.message);
+            }
+        });
     }
 </script>
 

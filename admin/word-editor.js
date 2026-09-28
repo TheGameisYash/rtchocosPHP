@@ -49,7 +49,7 @@
         if (!raw || !raw.trim()) return '<p><br></p>';
 
         // If it's already full HTML (contains <p, <div, <h1, <h2, etc.)
-        if (/<(p|div|h[1-6]|ul|ol|blockquote|table|section)/i.test(raw)) {
+        if (/<(p|div|h[1-6]|ul|ol|blockquote|table|section|figure)/i.test(raw)) {
             return raw;
         }
 
@@ -61,6 +61,36 @@
         blocks.forEach(block => {
             block = block.trim();
             if (!block) return;
+
+            // Markdown Table block
+            if (block.startsWith('|')) {
+                const lines = block.split('\n');
+                if (lines.length >= 2) {
+                    let tableHtml = '<div class="table-responsive-wrapper" contenteditable="false"><table class="blog-custom-table blog-table-artisan" contenteditable="true">';
+                    let hasHeader = false;
+                    lines.forEach(line => {
+                        const trimmed = line.trim().replace(/^\||\|$/g, '');
+                        if (!trimmed || /^[:\-\s|]+$/.test(trimmed)) return;
+                        const cols = trimmed.split('|');
+                        let rowHtml = '<tr>';
+                        cols.forEach(col => {
+                            const tag = !hasHeader ? 'th' : 'td';
+                            rowHtml += `<${tag}>${parseInlineMd(col.trim())}</${tag}>`;
+                        });
+                        rowHtml += '</tr>';
+                        if (!hasHeader) {
+                            tableHtml += `<thead>${rowHtml}</thead><tbody>`;
+                            hasHeader = true;
+                        } else {
+                            tableHtml += rowHtml;
+                        }
+                    });
+                    if (hasHeader) tableHtml += '</tbody>';
+                    tableHtml += '</table></div><p><br></p>';
+                    html += tableHtml;
+                    return;
+                }
+            }
 
             // Headings
             const hMatch = block.match(/^(#{1,6})\s+(.+)$/);
@@ -112,7 +142,9 @@
             // Image markdown: ![alt](url)
             const imgMatch = block.match(/^!\[(.*?)\]\((.*?)\)/);
             if (imgMatch) {
-                html += `<p><img src="${imgMatch[2]}" alt="${escapeHtml(imgMatch[1])}"></p>`;
+                const alt = imgMatch[1];
+                const url = imgMatch[2];
+                html += `<figure class="blog-figure blog-figure-center" contenteditable="false"><img src="${url}" alt="${escapeHtml(alt)}" loading="lazy">${alt ? `<figcaption contenteditable="true">${escapeHtml(alt)}</figcaption>` : ''}</figure><p><br></p>`;
                 return;
             }
 
@@ -174,6 +206,24 @@
         return `<div class="blog-yt-embed" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin:24px 0;" contenteditable="false"><iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px;"></iframe></div><p><br></p>`;
     }
 
+    // Context references for floating toolbars
+    let currentActiveTable = null;
+    let currentActiveCell = null;
+    let currentActiveFigure = null;
+
+    // Helper: place caret at end of element
+    function placeCaretAtEnd(el) {
+        el.focus();
+        if (typeof window.getSelection !== "undefined" && typeof document.createRange !== "undefined") {
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(false);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+    }
+
     // EDITOR DOM & KEYBOARD EVENTS
     function setupEditorEvents() {
         // Sync content & stats on input
@@ -181,17 +231,100 @@
             syncContent();
         });
 
-        // Update toolbar active states on selection / caret change
-        editorDoc.addEventListener('keyup', updateToolbarState);
-        editorDoc.addEventListener('mouseup', updateToolbarState);
+        // Update toolbar active states on selection / caret change & check floating toolbars
+        const handleInteraction = (e) => {
+            updateToolbarState();
+            checkFloatingContext(e ? e.target : null);
+        };
+
+        editorDoc.addEventListener('keyup', handleInteraction);
+        editorDoc.addEventListener('mouseup', handleInteraction);
+        editorDoc.addEventListener('click', handleInteraction);
+        
         document.addEventListener('selectionchange', () => {
             if (document.activeElement === editorDoc || editorDoc.contains(document.activeElement)) {
                 updateToolbarState();
+                checkFloatingContext(null);
             }
         });
 
+        // Click outside editor & floating toolbars closes floating toolbars
+        document.addEventListener('mousedown', (e) => {
+            const tableToolbar = document.getElementById('floatingTableToolbar');
+            const imageToolbar = document.getElementById('floatingImageToolbar');
+            if (tableToolbar && !tableToolbar.contains(e.target) && !editorDoc.contains(e.target)) {
+                tableToolbar.style.display = 'none';
+            }
+            if (imageToolbar && !imageToolbar.contains(e.target) && !editorDoc.contains(e.target)) {
+                imageToolbar.style.display = 'none';
+            }
+        });
+
+        // Update floating positions on scroll/resize
+        window.addEventListener('scroll', () => {
+            if (currentActiveTable && document.body.contains(currentActiveTable)) {
+                positionFloatingToolbar(document.getElementById('floatingTableToolbar'), currentActiveTable);
+            }
+            if (currentActiveFigure && document.body.contains(currentActiveFigure)) {
+                positionFloatingToolbar(document.getElementById('floatingImageToolbar'), currentActiveFigure);
+            }
+        }, { passive: true });
+
         // Keyboard shortcuts
         editorDoc.addEventListener('keydown', (e) => {
+            // Tab key inside table cells for swift navigation and row creation
+            if (e.key === 'Tab') {
+                const sel = window.getSelection();
+                if (sel && sel.anchorNode) {
+                    let cell = sel.anchorNode;
+                    if (cell.nodeType === 3) cell = cell.parentNode;
+                    while (cell && cell !== editorDoc && cell.tagName !== 'TD' && cell.tagName !== 'TH') {
+                        cell = cell.parentNode;
+                    }
+                    if (cell && (cell.tagName === 'TD' || cell.tagName === 'TH')) {
+                        e.preventDefault();
+                        const row = cell.closest('tr');
+                        const table = cell.closest('table');
+                        if (!row || !table) return;
+
+                        const cells = Array.from(table.querySelectorAll('th, td'));
+                        const currentIndex = cells.indexOf(cell);
+
+                        if (e.shiftKey) {
+                            // Move to previous cell
+                            if (currentIndex > 0) {
+                                cells[currentIndex - 1].focus();
+                                placeCaretAtEnd(cells[currentIndex - 1]);
+                            }
+                        } else {
+                            // Move to next cell or create new row if at last cell
+                            if (currentIndex < cells.length - 1) {
+                                cells[currentIndex + 1].focus();
+                                placeCaretAtEnd(cells[currentIndex + 1]);
+                            } else {
+                                // Last cell! Append a new row to tbody
+                                const tbody = table.querySelector('tbody') || table;
+                                const colCount = row.children.length;
+                                const newRow = document.createElement('tr');
+                                for (let i = 0; i < colCount; i++) {
+                                    const td = document.createElement('td');
+                                    td.innerHTML = '<br>';
+                                    newRow.appendChild(td);
+                                }
+                                tbody.appendChild(newRow);
+                                syncContent();
+                                const firstNewCell = newRow.firstElementChild;
+                                if (firstNewCell) {
+                                    firstNewCell.focus();
+                                    placeCaretAtEnd(firstNewCell);
+                                }
+                            }
+                        }
+                        return;
+                    }
+                }
+            }
+
             if ((e.ctrlKey || e.metaKey) && !e.shiftKey) {
                 switch (e.key.toLowerCase()) {
                     case 'b':
@@ -586,6 +719,310 @@
         syncContent();
     }
 
+    // FLOATING TOOLBARS CONTEXT & POSITIONING
+    function checkFloatingContext(target) {
+        const tableToolbar = document.getElementById('floatingTableToolbar');
+        const imageToolbar = document.getElementById('floatingImageToolbar');
+
+        // If clicking on the toolbar itself, don't dismiss
+        if (target && (target.closest('#floatingTableToolbar') || target.closest('#floatingImageToolbar'))) {
+            return;
+        }
+
+        let node = target;
+        if (!node) {
+            const sel = window.getSelection();
+            if (sel && sel.anchorNode) {
+                node = sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentNode : sel.anchorNode;
+            }
+        }
+
+        let foundCell = null;
+        let foundTable = null;
+        let foundFigure = null;
+
+        let curr = node;
+        while (curr && curr !== editorDoc) {
+            if (!foundCell && (curr.tagName === 'TD' || curr.tagName === 'TH')) {
+                foundCell = curr;
+            }
+            if (!foundTable && (curr.tagName === 'TABLE' || curr.classList?.contains('blog-custom-table'))) {
+                foundTable = curr;
+            }
+            if (!foundFigure && (curr.tagName === 'FIGURE' || curr.classList?.contains('blog-figure'))) {
+                foundFigure = curr;
+            }
+            curr = curr.parentNode;
+        }
+
+        if (foundTable && foundCell) {
+            currentActiveTable = foundTable;
+            currentActiveCell = foundCell;
+            currentActiveFigure = null;
+            if (imageToolbar) imageToolbar.style.display = 'none';
+            positionFloatingToolbar(tableToolbar, foundTable);
+        } else if (foundFigure) {
+            currentActiveFigure = foundFigure;
+            currentActiveTable = null;
+            currentActiveCell = null;
+            if (tableToolbar) tableToolbar.style.display = 'none';
+            positionFloatingToolbar(imageToolbar, foundFigure);
+        } else {
+            currentActiveTable = null;
+            currentActiveCell = null;
+            currentActiveFigure = null;
+            if (tableToolbar) tableToolbar.style.display = 'none';
+            if (imageToolbar) imageToolbar.style.display = 'none';
+        }
+    }
+
+    function positionFloatingToolbar(toolbar, targetEl) {
+        if (!toolbar || !targetEl) return;
+        toolbar.style.display = 'flex';
+        const rect = targetEl.getBoundingClientRect();
+        const toolbarHeight = toolbar.offsetHeight || 38;
+        
+        let top = rect.top + window.scrollY - toolbarHeight - 8;
+        let left = rect.left + window.scrollX;
+
+        if (top < window.scrollY + 60) {
+            top = rect.top + window.scrollY + 10;
+        }
+        if (left < 10) left = 10;
+
+        toolbar.style.top = top + 'px';
+        toolbar.style.left = left + 'px';
+    }
+
+    // TABLE ACTIONS
+    window.tableAction = function(action) {
+        if (!currentActiveTable || !currentActiveCell) return;
+        const row = currentActiveCell.closest('tr');
+        if (!row) return;
+
+        const colIndex = Array.from(row.children).indexOf(currentActiveCell);
+
+        switch(action) {
+            case 'addRowAbove': {
+                const newRow = document.createElement('tr');
+                const colCount = row.children.length;
+                for (let i = 0; i < colCount; i++) {
+                    const td = document.createElement('td');
+                    td.innerHTML = '<br>';
+                    newRow.appendChild(td);
+                }
+                row.parentNode.insertBefore(newRow, row);
+                break;
+            }
+            case 'addRowBelow': {
+                const newRow = document.createElement('tr');
+                const colCount = row.children.length;
+                for (let i = 0; i < colCount; i++) {
+                    const td = document.createElement('td');
+                    td.innerHTML = '<br>';
+                    newRow.appendChild(td);
+                }
+                row.parentNode.insertBefore(newRow, row.nextSibling);
+                break;
+            }
+            case 'deleteRow': {
+                const allRows = currentActiveTable.querySelectorAll('tr');
+                if (allRows.length <= 1) {
+                    if (confirm('Delete entire table?')) {
+                        deleteTableWrapper(currentActiveTable);
+                    }
+                } else {
+                    row.remove();
+                }
+                break;
+            }
+            case 'addColLeft': {
+                currentActiveTable.querySelectorAll('tr').forEach(r => {
+                    const isHeader = r.parentElement.tagName === 'THEAD';
+                    const cell = document.createElement(isHeader ? 'th' : 'td');
+                    cell.innerHTML = isHeader ? 'Header' : '<br>';
+                    const refCell = r.children[colIndex];
+                    if (refCell) {
+                        r.insertBefore(cell, refCell);
+                    } else {
+                        r.appendChild(cell);
+                    }
+                });
+                break;
+            }
+            case 'addColRight': {
+                currentActiveTable.querySelectorAll('tr').forEach(r => {
+                    const isHeader = r.parentElement.tagName === 'THEAD';
+                    const cell = document.createElement(isHeader ? 'th' : 'td');
+                    cell.innerHTML = isHeader ? 'Header' : '<br>';
+                    const refCell = r.children[colIndex];
+                    if (refCell && refCell.nextSibling) {
+                        r.insertBefore(cell, refCell.nextSibling);
+                    } else {
+                        r.appendChild(cell);
+                    }
+                });
+                break;
+            }
+            case 'deleteCol': {
+                const totalCols = row.children.length;
+                if (totalCols <= 1) {
+                    if (confirm('Delete entire table?')) {
+                        deleteTableWrapper(currentActiveTable);
+                    }
+                } else {
+                    currentActiveTable.querySelectorAll('tr').forEach(r => {
+                        if (r.children[colIndex]) {
+                            r.children[colIndex].remove();
+                        }
+                    });
+                }
+                break;
+            }
+            case 'toggleHeader': {
+                let thead = currentActiveTable.querySelector('thead');
+                if (thead) {
+                    const tbody = currentActiveTable.querySelector('tbody') || currentActiveTable;
+                    const headerRow = thead.querySelector('tr');
+                    if (headerRow) {
+                        const newRow = document.createElement('tr');
+                        Array.from(headerRow.children).forEach(th => {
+                            const td = document.createElement('td');
+                            td.innerHTML = th.innerHTML;
+                            newRow.appendChild(td);
+                        });
+                        tbody.insertBefore(newRow, tbody.firstChild);
+                    }
+                    thead.remove();
+                } else {
+                    const firstRow = currentActiveTable.querySelector('tr');
+                    if (firstRow) {
+                        thead = document.createElement('thead');
+                        const headerRow = document.createElement('tr');
+                        const colCount = firstRow.children.length;
+                        for (let i = 0; i < colCount; i++) {
+                            const th = document.createElement('th');
+                            th.innerText = 'Header ' + (i + 1);
+                            headerRow.appendChild(th);
+                        }
+                        thead.appendChild(headerRow);
+                        currentActiveTable.insertBefore(thead, currentActiveTable.firstChild);
+                    }
+                }
+                break;
+            }
+            case 'deleteTable': {
+                deleteTableWrapper(currentActiveTable);
+                break;
+            }
+        }
+        syncContent();
+        const tableToolbar = document.getElementById('floatingTableToolbar');
+        if (tableToolbar && currentActiveTable && document.body.contains(currentActiveTable)) {
+            positionFloatingToolbar(tableToolbar, currentActiveTable);
+        } else if (tableToolbar) {
+            tableToolbar.style.display = 'none';
+        }
+    };
+
+    function deleteTableWrapper(table) {
+        const wrapper = table.closest('.table-responsive-wrapper');
+        if (wrapper) wrapper.remove();
+        else table.remove();
+        currentActiveTable = null;
+        currentActiveCell = null;
+        const tableToolbar = document.getElementById('floatingTableToolbar');
+        if (tableToolbar) tableToolbar.style.display = 'none';
+    }
+
+    // IMAGE ACTIONS
+    window.imageAction = function(action) {
+        if (!currentActiveFigure) return;
+        switch(action) {
+            case 'alignLeft':
+                currentActiveFigure.className = 'blog-figure blog-figure-left';
+                break;
+            case 'alignCenter':
+                currentActiveFigure.className = 'blog-figure blog-figure-center';
+                break;
+            case 'alignRight':
+                currentActiveFigure.className = 'blog-figure blog-figure-right';
+                break;
+            case 'alignWide':
+                currentActiveFigure.className = 'blog-figure blog-figure-wide';
+                break;
+            case 'editCaption': {
+                let figcaption = currentActiveFigure.querySelector('figcaption');
+                if (!figcaption) {
+                    figcaption = document.createElement('figcaption');
+                    figcaption.setAttribute('contenteditable', 'true');
+                    currentActiveFigure.appendChild(figcaption);
+                }
+                const currentCap = figcaption.innerText;
+                const newCap = prompt('Enter image caption:', currentCap);
+                if (newCap !== null) {
+                    figcaption.innerText = newCap.trim();
+                    if (!newCap.trim()) figcaption.remove();
+                }
+                break;
+            }
+            case 'deleteImage': {
+                currentActiveFigure.remove();
+                currentActiveFigure = null;
+                const imageToolbar = document.getElementById('floatingImageToolbar');
+                if (imageToolbar) imageToolbar.style.display = 'none';
+                break;
+            }
+        }
+        syncContent();
+        const imageToolbar = document.getElementById('floatingImageToolbar');
+        if (imageToolbar && currentActiveFigure && document.body.contains(currentActiveFigure)) {
+            positionFloatingToolbar(imageToolbar, currentActiveFigure);
+        }
+    };
+
+    // TABLE MODAL LOGIC
+    window.openWordTableModal = function() {
+        const modal = document.getElementById('wordEditorTableModal');
+        if (modal) {
+            if (modal.parentNode !== document.body) {
+                document.body.appendChild(modal);
+            }
+            modal.style.display = 'flex';
+        }
+    };
+
+    window.confirmInsertTable = function() {
+        const rows = parseInt(document.getElementById('tableRowsInput').value, 10) || 3;
+        const cols = parseInt(document.getElementById('tableColsInput').value, 10) || 3;
+        const style = document.getElementById('tableStyleSelect').value || 'artisan';
+        const includeHeader = document.getElementById('tableHeaderRowCheckbox').checked;
+
+        let tableHtml = `<div class="table-responsive-wrapper" contenteditable="false"><table class="blog-custom-table blog-table-${style}" contenteditable="true">`;
+        if (includeHeader) {
+            tableHtml += '<thead><tr>';
+            for (let c = 1; c <= cols; c++) {
+                tableHtml += `<th>Header ${c}</th>`;
+            }
+            tableHtml += '</tr></thead>';
+        }
+        tableHtml += '<tbody>';
+        for (let r = 1; r <= rows; r++) {
+            tableHtml += '<tr>';
+            for (let c = 1; c <= cols; c++) {
+                tableHtml += `<td>Data ${r}.${c}</td>`;
+            }
+            tableHtml += '</tr>';
+        }
+        tableHtml += '</tbody></table></div><p><br></p>';
+
+        insertHtmlAtCursor(tableHtml);
+        const modal = document.getElementById('wordEditorTableModal');
+        if (modal) modal.style.display = 'none';
+        syncContent();
+        if (window.showToast) showToast('Table inserted successfully', 'success');
+    };
+
     // UPLOAD IMAGE HELPER (AJAX)
     function setupImageUploadEvents() {
         const modal = document.getElementById('wordEditorImageModal');
@@ -608,9 +1045,19 @@
             submitUrlBtn.addEventListener('click', () => {
                 const url = document.getElementById('wordImageUrlInput').value.trim();
                 const alt = document.getElementById('wordImageAltInput').value.trim();
+                const caption = document.getElementById('wordImageCaptionInput').value.trim();
+                const align = document.getElementById('wordImageAlignSelect').value || 'center';
+                const width = document.getElementById('wordImageWidthSelect').value || '100%';
+
                 if (url) {
-                    insertHtmlAtCursor(`<p><img src="${url}" alt="${escapeHtml(alt)}" style="max-width:100%; border-radius:12px; margin:20px 0;"></p>`);
+                    const fullUrl = (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/') || url.startsWith('../')) ? url : ('../' + url);
+                    const figHtml = `<figure class="blog-figure blog-figure-${align}" style="width:${width};" contenteditable="false"><img src="${fullUrl}" alt="${escapeHtml(alt)}" loading="lazy">${caption ? `<figcaption contenteditable="true">${escapeHtml(caption)}</figcaption>` : ''}</figure><p><br></p>`;
+                    insertHtmlAtCursor(figHtml);
                     modal.style.display = 'none';
+                    syncContent();
+                    if (window.showToast) showToast('Image inserted successfully!', 'success');
+                } else {
+                    alert('Please select an image or enter a URL first.');
                 }
             });
         }
@@ -619,7 +1066,6 @@
             fileInput.addEventListener('change', () => {
                 if (fileInput.files && fileInput.files[0]) {
                     uploadAndInsertImage(fileInput.files[0]);
-                    modal.style.display = 'none';
                 }
             });
         }
@@ -633,7 +1079,6 @@
                 dropzone.classList.remove('drag-over');
                 if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
                     uploadAndInsertImage(e.dataTransfer.files[0]);
-                    modal.style.display = 'none';
                 }
             });
         }
@@ -648,6 +1093,12 @@
         formData.append('csrf_token', csrfToken);
         formData.append('inline_image', file);
 
+        const statusEl = document.getElementById('imageUploadStatus');
+        if (statusEl) {
+            statusEl.style.display = 'block';
+            statusEl.innerText = 'Uploading ' + file.name + '...';
+        }
+
         if (autosaveIndicator) {
             autosaveIndicator.style.opacity = '1';
             autosaveIndicator.innerText = 'Uploading image...';
@@ -659,19 +1110,30 @@
         })
         .then(res => res.json())
         .then(data => {
+            if (statusEl) statusEl.style.display = 'none';
             if (data.success && data.url) {
-                insertHtmlAtCursor(`<p><img src="../${data.url}" alt="${escapeHtml(file.name)}" style="max-width:100%; border-radius:12px; margin:20px 0;"></p><p><br></p>`);
+                const alt = document.getElementById('wordImageAltInput') ? document.getElementById('wordImageAltInput').value.trim() : file.name;
+                const caption = document.getElementById('wordImageCaptionInput') ? document.getElementById('wordImageCaptionInput').value.trim() : '';
+                const align = document.getElementById('wordImageAlignSelect') ? document.getElementById('wordImageAlignSelect').value : 'center';
+                const width = document.getElementById('wordImageWidthSelect') ? document.getElementById('wordImageWidthSelect').value : '100%';
+
+                const figHtml = `<figure class="blog-figure blog-figure-${align}" style="width:${width};" contenteditable="false"><img src="../${data.url}" alt="${escapeHtml(alt || file.name)}" loading="lazy">${caption ? `<figcaption contenteditable="true">${escapeHtml(caption)}</figcaption>` : ''}</figure><p><br></p>`;
+                insertHtmlAtCursor(figHtml);
                 syncContent();
+                const modal = document.getElementById('wordEditorImageModal');
+                if (modal) modal.style.display = 'none';
+
                 if (autosaveIndicator) {
                     autosaveIndicator.innerText = 'Image uploaded!';
                     setTimeout(() => { if (autosaveIndicator) autosaveIndicator.style.opacity = '0.5'; }, 1500);
                 }
-                if (window.showToast) showToast('Image inserted successfully!', 'success');
+                if (window.showToast) showToast('Image uploaded and inserted!', 'success');
             } else {
                 alert('Image upload failed: ' + (data.message || 'Unknown error'));
             }
         })
         .catch(err => {
+            if (statusEl) statusEl.style.display = 'none';
             alert('Image upload failed: ' + err.message);
         });
     }

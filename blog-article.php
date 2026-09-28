@@ -1,22 +1,39 @@
 <?php
 require_once __DIR__ . '/includes/blog-data.php';
 require_once __DIR__ . '/includes/db.php';
-
 require_once __DIR__ . '/includes/blog-cache.php';
+require_once __DIR__ . '/admin/auth.php';
+
+$articleKey = $articleKey ?? ($_GET['slug'] ?? ($_GET['article'] ?? null));
 
 $post = null;
 $markdown_content = '';
 $isFromDb = false;
+$isAdminPreview = false;
 
 // Try to fetch from DB first
 if (isset($articleKey)) {
     try {
         $pdo = get_db();
-        $stmt = $pdo->prepare("SELECT * FROM blogs WHERE slug = ? AND is_published = 1");
+        $stmt = $pdo->prepare("SELECT * FROM blogs WHERE slug = ?");
         $stmt->execute([$articleKey]);
         $dbPost = $stmt->fetch();
         if ($dbPost) {
+            // Check visibility / publish state
+            if ((int)$dbPost['is_published'] === 0) {
+                if (function_exists('is_admin_logged_in') && is_admin_logged_in()) {
+                    $isAdminPreview = true;
+                } else {
+                    // Hidden post requested by public user -> 404 immediately
+                    http_response_code(404);
+                    $pathPrefix = "../";
+                    include __DIR__ . '/error.php';
+                    exit;
+                }
+            }
+
             $post = [
+                'id' => (int)$dbPost['id'],
                 'title' => $dbPost['title'],
                 'category' => $dbPost['category'],
                 'date' => date('M Y', strtotime($dbPost['created_at'])),
@@ -27,23 +44,26 @@ if (isset($articleKey)) {
                 'image' => $dbPost['image_path'],
                 'thumbnail' => $dbPost['thumbnail_path'] ?: $dbPost['image_path'],
                 'bodyClass' => $dbPost['body_class'] ?: '',
-                'youtube_url' => $dbPost['youtube_url']
+                'youtube_url' => $dbPost['youtube_url'],
+                'is_published' => (int)$dbPost['is_published']
             ];
             $markdown_content = $dbPost['content'];
             $isFromDb = true;
 
-            // Cache article data for offline resilience
-            cache_blog_article($articleKey, [
-                'post' => $post,
-                'markdown_content' => $markdown_content
-            ]);
+            // Only cache and track views if article is published
+            if ((int)$dbPost['is_published'] === 1) {
+                cache_blog_article($articleKey, [
+                    'post' => $post,
+                    'markdown_content' => $markdown_content
+                ]);
 
-            // Increment article views (Analytics)
-            try {
-                $upStmt = $pdo->prepare("UPDATE blogs SET views = views + 1 WHERE id = ?");
-                $upStmt->execute([$dbPost['id']]);
-            } catch (Exception $ex) {
-                // Non-blocking
+                // Increment article views (Analytics)
+                try {
+                    $upStmt = $pdo->prepare("UPDATE blogs SET views = views + 1 WHERE id = ?");
+                    $upStmt->execute([$dbPost['id']]);
+                } catch (Exception $ex) {
+                    // Non-blocking
+                }
             }
         } else {
             // Check cache fallback
@@ -118,7 +138,7 @@ function parse_markdown($markdown) {
             $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0 || strpos($url, '../') === 0) 
                 ? $url 
                 : $pathPrefix . $url;
-            $html .= "<div class=\"article-image\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars($caption) . "\">" . (!empty($caption) ? "<span class=\"article-image-caption\">{$caption}</span>" : "") . "</div>\n";
+            $html .= "<figure class=\"blog-figure blog-figure-center\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars(strip_tags($caption)) . "\" loading=\"lazy\">" . (!empty($caption) ? "<figcaption>{$caption}</figcaption>" : "") . "</figure>\n";
             continue;
         }
 
@@ -153,7 +173,7 @@ function parse_markdown($markdown) {
         if (strpos($block, '|') === 0) {
             $lines = explode("\n", $block);
             if (count($lines) >= 2) {
-                $tableHtml = "<div class=\"table-responsive\"><table>\n";
+                $tableHtml = "<div class=\"table-responsive-wrapper\"><table class=\"blog-custom-table blog-table-artisan\">\n";
                 $hasHeader = false;
                 foreach ($lines as $line) {
                     $trimmedLine = trim($line, "| ");
@@ -268,7 +288,7 @@ function parse_markdown($markdown) {
             continue;
         }
 
-        if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|tr|td|th|iframe|blockquote|ul|ol|pre|figure)/i', $block)) {
+        if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|thead|tbody|tr|td|th|iframe|blockquote|ul|ol|pre|figure)/i', $block)) {
             $html .= $block . "\n";
             continue;
         }
@@ -581,7 +601,188 @@ include __DIR__ . '/includes/header.php';
         width: 100%; height: 100%;
         border: 0;
     }
+
+    /* Admin Preview Mode Banner */
+    .admin-preview-banner {
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+        background: #1c1511;
+        border-bottom: 2px solid var(--gold);
+        padding: 10px 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+    .admin-preview-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .admin-preview-badge {
+        background: #eab308;
+        color: #000;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: inline-block;
+    }
+    .admin-preview-text {
+        font-size: 13.5px;
+        color: #f7ede2;
+        flex: 1;
+    }
+    .admin-preview-edit-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--gold);
+        color: #111;
+        font-size: 12.5px;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .admin-preview-edit-btn:hover {
+        background: #d4b57b;
+        transform: translateY(-1px);
+    }
+
+    /* Production Table Responsive Wrappers & Tables */
+    .table-responsive-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        margin: 36px 0;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(59, 42, 34, 0.08);
+        -webkit-overflow-scrolling: touch;
+    }
+    table.blog-custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--font-sans);
+        font-size: 15px;
+        line-height: 1.6;
+        text-align: left;
+    }
+    table.blog-custom-table th {
+        padding: 14px 18px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
+    table.blog-custom-table td {
+        padding: 12px 18px;
+        border-top: 1px solid rgba(199, 166, 106, 0.15);
+    }
+
+    /* Table Styles */
+    table.blog-table-artisan {
+        background: var(--cream);
+        border: 1px solid var(--cream-dark);
+    }
+    table.blog-table-artisan th {
+        background: var(--brown);
+        color: var(--gold);
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 18px;
+    }
+    table.blog-table-artisan tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.6);
+    }
+
+    table.blog-table-minimal th {
+        border-bottom: 2px solid var(--gold);
+        color: var(--brown);
+        font-weight: 700;
+    }
+    table.blog-table-minimal td {
+        border-bottom: 1px solid var(--cream-dark);
+    }
+
+    table.blog-table-striped th {
+        background: var(--green-900, #1b4d3e);
+        color: #ffffff;
+    }
+    table.blog-table-striped tr:nth-child(even) td {
+        background: rgba(27, 77, 62, 0.04);
+    }
+
+    /* Production Figures & Captions */
+    figure.blog-figure {
+        margin: 36px auto;
+        text-align: center;
+        display: block;
+        max-width: 100%;
+    }
+    figure.blog-figure img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        border: 1px solid var(--cream-dark);
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.3s ease;
+    }
+    figure.blog-figure img:hover {
+        transform: scale(1.01);
+    }
+    figure.blog-figure figcaption {
+        font-size: 13.5px;
+        color: #8E7A70;
+        font-style: italic;
+        margin-top: 10px;
+        line-height: 1.5;
+    }
+
+    figure.blog-figure-center {
+        margin: 36px auto;
+    }
+    figure.blog-figure-left {
+        float: left;
+        margin: 12px 28px 24px 0;
+        max-width: 48%;
+    }
+    figure.blog-figure-right {
+        float: right;
+        margin: 12px 0 24px 28px;
+        max-width: 48%;
+    }
+    figure.blog-figure-wide {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 44px 0;
+    }
+
+    @media (max-width: 768px) {
+        figure.blog-figure-left,
+        figure.blog-figure-right {
+            float: none !important;
+            margin: 28px 0 !important;
+            max-width: 100% !important;
+        }
+    }
 </style>
+
+<?php if (!empty($isAdminPreview)): ?>
+<div class="admin-preview-banner">
+    <div class="admin-preview-content">
+        <div style="display:flex; align-items:center; gap:10px; flex:1;">
+            <span class="admin-preview-badge">Admin Preview Mode</span>
+            <span class="admin-preview-text">This article is currently <strong>HIDDEN (Draft)</strong> from the public. Only logged-in administrators can view this page.</span>
+        </div>
+        <a href="../admin/blog-editor.php?id=<?php echo (int)($post['id'] ?? 0); ?>" class="admin-preview-edit-btn">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit Article
+        </a>
+    </div>
+</div>
+<?php endif; ?>
 
 <!-- --- BLOG ARTICLE SECTION --- -->
 <div id="page-blog-article" class="page active">

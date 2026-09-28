@@ -62,4 +62,37 @@ function get_cached_blog_article($slug, $ttl = 3600) {
     }
     return null;
 }
+
+function clear_blog_cache($slug = null) {
+    try {
+        $dir = get_cache_dir();
+        // Clear blog list cache
+        $listFile = $dir . '/blogs.json';
+        if (file_exists($listFile)) {
+            @unlink($listFile);
+        }
+
+        if ($slug !== null) {
+            $safeSlug = preg_replace('/[^a-z0-9\-]/', '', $slug);
+            $artFile = $dir . '/article-' . $safeSlug . '.json';
+            if (file_exists($artFile)) {
+                @unlink($artFile);
+            }
+        } else {
+            // Clear all cached articles
+            $files = glob($dir . '/article-*.json');
+            if ($files) {
+                foreach ($files as $f) {
+                    if (is_file($f)) {
+                        @unlink($f);
+                    }
+                }
+            }
+        }
+        return true;
+    } catch (Exception $e) {
+        error_log("Failed to clear blog cache: " . $e->getMessage());
+        return false;
+    }
+}
 ?>
