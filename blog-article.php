@@ -746,17 +746,25 @@ include __DIR__ . '/includes/header.php';
     figure.blog-figure-left {
         float: left;
         margin: 12px 28px 24px 0;
-        max-width: 48%;
+        width: 48%;
+        max-width: 100%;
     }
     figure.blog-figure-right {
         float: right;
         margin: 12px 0 24px 28px;
-        max-width: 48%;
+        width: 48%;
+        max-width: 100%;
     }
     figure.blog-figure-wide {
         width: 100% !important;
         max-width: 100%;
         margin: 44px 0;
+    }
+    .article-main-body::after,
+    .blog-article-section::after {
+        content: "";
+        display: table;
+        clear: both;
     }
 
     @media (max-width: 768px) {

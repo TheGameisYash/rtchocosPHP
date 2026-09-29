@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $fileTmpPath = $_FILES['media_file']['tmp_name'];
                     $fileName = $_FILES['media_file']['name'];
                     $fileSize = $_FILES['media_file']['size'];
-                    $fileType = mime_content_type($fileTmpPath);
+                    $fileType = get_file_mime_type($fileTmpPath, $fileName);
                     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
                     $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];

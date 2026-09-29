@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
     $fileTmpPath = $_FILES['inline_image']['tmp_name'];
     $fileName = $_FILES['inline_image']['name'];
     $fileSize = $_FILES['inline_image']['size'];
-    $fileType = mime_content_type($fileTmpPath);
+    $fileType = get_file_mime_type($fileTmpPath, $fileName);
     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     
     $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -204,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $fileTmpPath = $_FILES['header_image']['tmp_name'];
                     $fileName = $_FILES['header_image']['name'];
                     $fileSize = $_FILES['header_image']['size'];
-                    $fileType = mime_content_type($fileTmpPath);
+                    $fileType = get_file_mime_type($fileTmpPath, $fileName);
                     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
                     if (!in_array($fileType, $allowedMimeTypes)) {
@@ -234,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $fileTmpPath = $_FILES['thumbnail_image']['tmp_name'];
                     $fileName = $_FILES['thumbnail_image']['name'];
                     $fileSize = $_FILES['thumbnail_image']['size'];
-                    $fileType = mime_content_type($fileTmpPath);
+                    $fileType = get_file_mime_type($fileTmpPath, $fileName);
                     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
                     if (!in_array($fileType, $allowedMimeTypes)) {
@@ -692,8 +692,10 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                     <label class="static-label" for="wordImageWidthSelect">Display Width</label>
                     <select id="wordImageWidthSelect" style="font-size:13px; width:100%;">
                         <option value="100%">100% (Full Width)</option>
-                        <option value="75%">75% (Medium)</option>
-                        <option value="50%">50% (Compact)</option>
+                        <option value="75%">75% (Medium Large)</option>
+                        <option value="50%">50% (Half Width)</option>
+                        <option value="33%">33% (One Third)</option>
+                        <option value="25%">25% (Compact / Thumbnail)</option>
                     </select>
                 </div>
             </div>
@@ -772,6 +774,22 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 <!-- Contextual Floating Table Toolbar -->
 <div id="floatingTableToolbar" class="editor-floating-toolbar" style="display:none;">
     <span class="floating-toolbar-title">Table:</span>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('moveUp')" title="Move Table Above Previous Block">&uarr; Move Up</button>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('moveDown')" title="Move Table Below Next Block">&darr; Move Down</button>
+    <div class="floating-sep"></div>
+    <select class="floating-select" id="floatingTableWidthSelect" onchange="window.tableAction && window.tableAction('setWidth', this.value)" title="Table Width">
+        <option value="100%">Width: 100%</option>
+        <option value="85%">Width: 85%</option>
+        <option value="70%">Width: 70%</option>
+        <option value="55%">Width: 55%</option>
+    </select>
+    <select class="floating-select" id="floatingTableAlignSelect" onchange="window.tableAction && window.tableAction('setAlign', this.value)" title="Table Alignment">
+        <option value="center">Align: Center</option>
+        <option value="left">Align: Left</option>
+        <option value="right">Align: Right</option>
+    </select>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('equalCols')" title="Distribute Columns Equally">Equal Cols</button>
+    <div class="floating-sep"></div>
     <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addRowAbove')" title="Add Row Above">+ Row &uarr;</button>
     <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addRowBelow')" title="Add Row Below">+ Row &darr;</button>
     <button type="button" class="floating-btn floating-btn-danger" onclick="window.tableAction && window.tableAction('deleteRow')" title="Delete Current Row">&minus; Row</button>
@@ -780,6 +798,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addColRight')" title="Add Column Right">+ Col &rarr;</button>
     <button type="button" class="floating-btn floating-btn-danger" onclick="window.tableAction && window.tableAction('deleteCol')" title="Delete Current Column">&minus; Col</button>
     <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('insertParagraphBelow')" title="Insert an empty paragraph below this table">+ Paragraph</button>
     <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('toggleHeader')" title="Toggle Table Header">Header</button>
     <button type="button" class="floating-btn floating-btn-danger" onclick="window.tableAction && window.tableAction('deleteTable')" title="Delete Entire Table">Delete Table</button>
 </div>
@@ -787,11 +806,23 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 <!-- Contextual Floating Image Toolbar -->
 <div id="floatingImageToolbar" class="editor-floating-toolbar" style="display:none;">
     <span class="floating-toolbar-title">Image:</span>
-    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('alignLeft')" title="Float Left">&larr; Left</button>
-    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('alignCenter')" title="Center Block">&#9632; Center</button>
-    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('alignRight')" title="Float Right">&rarr; Right</button>
-    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('alignWide')" title="Wide View">&harr; Wide</button>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('moveUp')" title="Move Image Above Previous Block">&uarr; Move Up</button>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('moveDown')" title="Move Image Below Next Block">&darr; Move Down</button>
     <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" data-img-align="left" onclick="window.imageAction && window.imageAction('alignLeft')" title="Float Left with text wrap">&larr; Left</button>
+    <button type="button" class="floating-btn" data-img-align="center" onclick="window.imageAction && window.imageAction('alignCenter')" title="Center Block">&#9632; Center</button>
+    <button type="button" class="floating-btn" data-img-align="right" onclick="window.imageAction && window.imageAction('alignRight')" title="Float Right with text wrap">&rarr; Right</button>
+    <button type="button" class="floating-btn" data-img-align="wide" onclick="window.imageAction && window.imageAction('alignWide')" title="Full Bleed Wide">&harr; Wide</button>
+    <div class="floating-sep"></div>
+    <div class="floating-size-group" title="Quick Image Size">
+        <button type="button" class="floating-btn floating-size-btn" data-img-size="25%" onclick="window.imageAction && window.imageAction('setSize', '25%')">25%</button>
+        <button type="button" class="floating-btn floating-size-btn" data-img-size="33%" onclick="window.imageAction && window.imageAction('setSize', '33%')">33%</button>
+        <button type="button" class="floating-btn floating-size-btn" data-img-size="50%" onclick="window.imageAction && window.imageAction('setSize', '50%')">50%</button>
+        <button type="button" class="floating-btn floating-size-btn" data-img-size="75%" onclick="window.imageAction && window.imageAction('setSize', '75%')">75%</button>
+        <button type="button" class="floating-btn floating-size-btn" data-img-size="100%" onclick="window.imageAction && window.imageAction('setSize', '100%')">100%</button>
+    </div>
+    <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('insertParagraphBelow')" title="Insert an empty paragraph below this image">+ Paragraph</button>
     <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('editCaption')" title="Edit Caption">Caption</button>
     <button type="button" class="floating-btn floating-btn-danger" onclick="window.imageAction && window.imageAction('deleteImage')" title="Remove Image">Remove</button>
 </div>
@@ -861,6 +892,61 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     border-radius: 8px;
     margin: 24px 0;
     box-shadow: var(--shadow-sm);
+}
+
+/* Figures & Tables in Preview */
+.blog-article-section figure.blog-figure {
+    margin: 32px auto;
+    text-align: center;
+    display: block;
+    max-width: 100%;
+}
+.blog-article-section figure.blog-figure img {
+    margin: 0 !important;
+}
+.blog-article-section figure.blog-figure figcaption {
+    font-size: 13px;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 8px;
+}
+.blog-article-section figure.blog-figure-left {
+    float: left;
+    margin: 12px 24px 20px 0;
+    width: 48%;
+    max-width: 100%;
+}
+.blog-article-section figure.blog-figure-right {
+    float: right;
+    margin: 12px 0 20px 24px;
+    width: 48%;
+    max-width: 100%;
+}
+.blog-article-section figure.blog-figure-wide {
+    width: 100% !important;
+    max-width: 100%;
+    margin: 40px 0;
+}
+.blog-article-section::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.blog-article-section .table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin: 32px 0;
+    border-radius: 10px;
+}
+.blog-article-section table.blog-custom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.blog-article-section table.blog-custom-table th,
+.blog-article-section table.blog-custom-table td {
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    text-align: left;
 }
 </style>
 

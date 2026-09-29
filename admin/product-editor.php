@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $fileTmp = $_FILES['main_image_file']['tmp_name'];
                     $fileName = $_FILES['main_image_file']['name'];
                     $fileSize = $_FILES['main_image_file']['size'];
-                    $fileType = mime_content_type($fileTmp);
+                    $fileType = get_file_mime_type($fileTmp, $fileName);
                     $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
                     if (!in_array($fileType, $allowedMimeTypes)) {
@@ -169,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $gTmp = $_FILES['gallery_files']['tmp_name'][$i];
                             $gName = $_FILES['gallery_files']['name'][$i];
                             $gSize = $_FILES['gallery_files']['size'][$i];
-                            $gType = mime_content_type($gTmp);
+                            $gType = get_file_mime_type($gTmp, $gName);
                             $gExt = strtolower(pathinfo($gName, PATHINFO_EXTENSION));
 
                             if (in_array($gType, $allowedMimeTypes) && $gSize <= $maxFileSize) {

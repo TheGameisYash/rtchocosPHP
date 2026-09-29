@@ -117,4 +117,64 @@ function reset_failed_logins() {
     unset($_SESSION['failed_logins']);
     unset($_SESSION['login_locked_until']);
 }
+
+// Robust MIME type detection helper with multiple fallbacks (no recursion)
+function get_file_mime_type($filePath, $originalFileName = '') {
+    // 1. Try finfo if available (standard PHP Fileinfo extension)
+    if (class_exists('finfo')) {
+        try {
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime = $finfo->file($filePath);
+            if (!empty($mime) && $mime !== 'application/octet-stream') {
+                return $mime;
+            }
+        } catch (\Exception $e) { }
+    }
+
+    // 2. Try getimagesize for images (reads file header magic bytes directly from disk)
+    if (function_exists('getimagesize')) {
+        try {
+            $imgInfo = @getimagesize($filePath);
+            if (!empty($imgInfo['mime'])) {
+                return $imgInfo['mime'];
+            }
+        } catch (\Exception $e) { }
+    }
+
+    // 3. Try exif_imagetype
+    if (function_exists('exif_imagetype')) {
+        try {
+            $type = @exif_imagetype($filePath);
+            if ($type === IMAGETYPE_JPEG) return 'image/jpeg';
+            if ($type === IMAGETYPE_PNG) return 'image/png';
+            if ($type === IMAGETYPE_WEBP) return 'image/webp';
+            if ($type === IMAGETYPE_GIF) return 'image/gif';
+        } catch (\Exception $e) { }
+    }
+
+    // 4. Fallback based on extension
+    $fileName = $originalFileName ?: $filePath;
+    $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $mimeTypes = [
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'webp' => 'image/webp',
+        'gif' => 'image/gif',
+        'svg' => 'image/svg+xml',
+        'ico' => 'image/x-icon',
+        'pdf' => 'application/pdf',
+        'mp4' => 'video/mp4',
+        'webm' => 'video/webm'
+    ];
+
+    return $mimeTypes[$ext] ?? 'application/octet-stream';
+}
+
+// Global polyfill for mime_content_type when fileinfo extension is disabled in PHP
+if (!function_exists('mime_content_type')) {
+    function mime_content_type($filename) {
+        return get_file_mime_type($filename);
+    }
+}
 ?>
