@@ -25,17 +25,7 @@ if (strpos($ogImage, 'http') !== 0) {
 $ogTitle = !empty($pageTitle) ? $pageTitle : "RT Chocos | India's Chocolate Blog & Learning";
 $ogType = !empty($pageType) ? $pageType : "website";
 
-$adminSiteTheme = 'theme-cream-forest';
-try {
-    $pdo = get_db();
-    $stmt = $pdo->query("SELECT setting_value FROM site_settings WHERE setting_key = 'default_site_theme' LIMIT 1");
-    $dbTheme = $stmt->fetchColumn();
-    if (!empty($dbTheme)) {
-        $adminSiteTheme = $dbTheme;
-    }
-} catch (Exception $e) {
-    // Fallback
-}
+$adminSiteTheme = get_site_setting('default_site_theme', 'theme-cream-forest');
 ?>
 <!DOCTYPE html>
 <html lang="en-IN" class="<?php echo htmlspecialchars($adminSiteTheme, ENT_QUOTES, 'UTF-8'); ?>">

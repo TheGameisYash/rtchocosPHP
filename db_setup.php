@@ -79,7 +79,9 @@ try {
         read_time VARCHAR(50) NULL,
         is_published TINYINT(1) NOT NULL DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_blogs_pub_date (is_published, created_at),
+        INDEX idx_blogs_cat (category)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     echo "OK<br>";
 
@@ -102,7 +104,8 @@ try {
         subject VARCHAR(150) NULL,
         message TEXT NOT NULL,
         is_read TINYINT(1) NOT NULL DEFAULT 0,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_contacts_is_read (is_read)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     echo "OK<br>";
 

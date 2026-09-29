@@ -16,12 +16,27 @@
 
   // Load database connection and fetch the latest 5 cached insights for server-side scrolling ticker rendering
   require_once $pathPrefix . 'includes/db.php';
-  try {
-      $pdo = get_db();
-      $insightStmt = $pdo->query("SELECT insight_text FROM ai_insights ORDER BY id DESC LIMIT 5");
-      $cachedInsights = $insightStmt->fetchAll(PDO::FETCH_COLUMN);
-  } catch (Exception $e) {
-      $cachedInsights = [];
+  $tickerCacheFile = __DIR__ . '/data/cache/ticker_insights.json';
+  $cachedInsights = null;
+  if (file_exists($tickerCacheFile) && (time() - filemtime($tickerCacheFile) < 1800)) {
+      $tickerRaw = @file_get_contents($tickerCacheFile);
+      if ($tickerRaw !== false) {
+          $cachedInsights = json_decode($tickerRaw, true);
+      }
+  }
+  if (!is_array($cachedInsights) || empty($cachedInsights)) {
+      try {
+          $pdo = get_db();
+          $insightStmt = $pdo->query("SELECT insight_text FROM ai_insights ORDER BY id DESC LIMIT 5");
+          $cachedInsights = $insightStmt->fetchAll(PDO::FETCH_COLUMN);
+          if (!empty($cachedInsights)) {
+              $cacheDir = dirname($tickerCacheFile);
+              if (!is_dir($cacheDir)) @mkdir($cacheDir, 0755, true);
+              @file_put_contents($tickerCacheFile, json_encode($cachedInsights, JSON_UNESCAPED_SLASHES));
+          }
+      } catch (Exception $e) {
+          $cachedInsights = [];
+      }
   }
   if (empty($cachedInsights)) {
       $cachedInsights = [

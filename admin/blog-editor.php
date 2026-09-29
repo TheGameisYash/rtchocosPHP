@@ -72,13 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
 }
 
 // 2. AJAX MEDIA LIBRARY FETCHER FOR IMAGE MODAL
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'get_media_library') {
+if (($_GET['action'] ?? ($_POST['action'] ?? '')) === 'get_media_library') {
     header('Content-Type: application/json');
-    $token = $_POST['csrf_token'] ?? '';
-    if (!verify_csrf($token)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid security token.']);
-        exit;
-    }
     try {
         $stmt = $pdo->query("SELECT id, filename, path, size, created_at FROM media ORDER BY id DESC LIMIT 60");
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -263,8 +258,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $thumbnailPath = $imagePath;
                 }
 
-                // Save or Update details
+                // Save or Update details in a single database transaction
                 if (empty($error)) {
+                    $pdo->beginTransaction();
+
                     if ($isEdit) {
                         $stmt = $pdo->prepare("UPDATE blogs SET slug = ?, title = ?, category = ?, excerpt = ?, content = ?, image_path = ?, thumbnail_path = ?, youtube_url = ?, body_class = ?, read_time = ?, is_published = ?, scheduled_at = ? WHERE id = ?");
                         $stmt->execute([
@@ -314,22 +311,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
 
-                    // Map associations
+                    // Batch map associations in 1 single query instead of a loop
                     $tags = array_unique(array_map('intval', $tags));
                     if (!empty($tags)) {
-                        $stmt = $pdo->prepare("INSERT INTO blog_tag_map (blog_id, tag_id) VALUES (?, ?)");
+                        $placeholders = implode(',', array_fill(0, count($tags), '(?, ?)'));
+                        $insertParams = [];
                         foreach ($tags as $tagIdVal) {
-                            $stmt->execute([$blogId, $tagIdVal]);
+                            $insertParams[] = $blogId;
+                            $insertParams[] = $tagIdVal;
                         }
+                        $stmt = $pdo->prepare("INSERT INTO blog_tag_map (blog_id, tag_id) VALUES $placeholders");
+                        $stmt->execute($insertParams);
                     }
 
-                    // Reload configurations
-                    $post['image_path'] = $imagePath;
-                    $post['thumbnail_path'] = $thumbnailPath;
-                    $selectedTags = $tags;
-                    
-                    // Re-load tags
-                    $allTags = $pdo->query("SELECT id, name FROM blog_tags ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+                    $pdo->commit();
 
                     // Clear blog cache so frontend reflects changes instantly
                     clear_blog_cache($slug);
@@ -341,6 +336,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             $error = 'Save failed: ' . $e->getMessage();
         }
     }
@@ -379,7 +377,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     </div>
     
     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-        <span id="autosaveIndicator" style="font-size:12.5px; color:var(--text-light); opacity:0.5; transition:opacity var(--transition);">Autosave is active</span>
+        <span id="autosaveIndicator" style="font-size:12.5px; color:var(--text-light); opacity:0.75; transition:opacity var(--transition);"><span style="color:#2e7d32;">●</span> Browser draft active (Offline-safe)</span>
         <button type="button" class="btn btn-outline" onclick="triggerUndo()" title="Undo (Ctrl+Z)">Undo</button>
         <button type="button" class="btn btn-outline" onclick="triggerRedo()" title="Redo (Ctrl+Y)">Redo</button>
         <button type="button" class="btn btn-outline" onclick="openFullPreview()">
@@ -423,6 +421,54 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                 <button type="button" class="word-btn" data-action="italic" title="Italic (Ctrl+I)"><i>I</i></button>
                 <button type="button" class="word-btn" data-action="underline" title="Underline (Ctrl+U)"><u>U</u></button>
                 <button type="button" class="word-btn" data-action="strikeThrough" title="Strikethrough"><s>S</s></button>
+
+                <!-- Text Color Dropdown -->
+                <div class="word-color-dropdown-wrapper">
+                    <button type="button" class="word-btn word-color-btn" id="textColorBtn" title="Text Color" onclick="toggleColorDropdown('textColorDropdown')">
+                        <span style="font-weight:700; font-size:13px; line-height:1;">A</span>
+                        <span class="color-indicator-bar" id="textColorIndicator" style="background:var(--gold);"></span>
+                    </button>
+                    <div class="word-color-dropdown" id="textColorDropdown" style="display:none;">
+                        <div class="color-dropdown-header">Text Color</div>
+                        <div class="color-swatches-grid">
+                            <button type="button" class="color-swatch-item" data-color="" title="Default Theme Color" style="background:var(--text-main); border:1px solid var(--border-color);"></button>
+                            <button type="button" class="color-swatch-item" data-color="#c7a66a" title="Luxury Gold" style="background:#c7a66a;"></button>
+                            <button type="button" class="color-swatch-item" data-color="#5a3825" title="Deep Cocoa" style="background:#5a3825;"></button>
+                            <button type="button" class="color-swatch-item" data-color="#1b4d3e" title="Forest Green" style="background:#1b4d3e;"></button>
+                            <button type="button" class="color-swatch-item" data-color="#9e2a2b" title="Berry Crimson" style="background:#9e2a2b;"></button>
+                            <button type="button" class="color-swatch-item" data-color="#d97706" title="Warm Amber" style="background:#d97706;"></button>
+                            <button type="button" class="color-swatch-item" data-color="#2563eb" title="Royal Blue" style="background:#2563eb;"></button>
+                            <button type="button" class="color-swatch-item" data-color="#1d1510" title="Dark Noir" style="background:#1d1510;"></button>
+                            <button type="button" class="color-swatch-item" data-color="#888888" title="Muted Gray" style="background:#888888;"></button>
+                            <button type="button" class="color-swatch-item" data-color="#faf6ee" title="Warm Ivory" style="background:#faf6ee; border:1px solid #ccc;"></button>
+                        </div>
+                        <div class="color-custom-row">
+                            <label for="customTextColorPicker">Custom:</label>
+                            <input type="color" id="customTextColorPicker" value="#c7a66a">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Highlight / Background Dropdown -->
+                <div class="word-color-dropdown-wrapper">
+                    <button type="button" class="word-btn word-color-btn" id="textHighlightBtn" title="Highlight Text" onclick="toggleColorDropdown('textHighlightDropdown')">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        <span class="color-indicator-bar" id="highlightColorIndicator" style="background:#fff3b0;"></span>
+                    </button>
+                    <div class="word-color-dropdown" id="textHighlightDropdown" style="display:none;">
+                        <div class="color-dropdown-header">Highlight Color</div>
+                        <div class="color-swatches-grid">
+                            <button type="button" class="color-swatch-item" data-highlight="" title="No Highlight (Clear)" style="background:transparent; border:1px dashed var(--border-color); position:relative;"><span style="color:#ef4444; font-size:10px; font-weight:700;">&times;</span></button>
+                            <button type="button" class="color-swatch-item" data-highlight="rgba(254, 240, 138, 0.55)" title="Yellow Tint" style="background:#fef08a;"></button>
+                            <button type="button" class="color-swatch-item" data-highlight="rgba(199, 166, 106, 0.35)" title="Gold Tint" style="background:#c7a66a;"></button>
+                            <button type="button" class="color-swatch-item" data-highlight="rgba(187, 247, 208, 0.55)" title="Mint Tint" style="background:#bbf7d0;"></button>
+                            <button type="button" class="color-swatch-item" data-highlight="rgba(254, 205, 211, 0.55)" title="Berry Tint" style="background:#fecdd3;"></button>
+                            <button type="button" class="color-swatch-item" data-highlight="rgba(191, 219, 254, 0.55)" title="Sky Tint" style="background:#bfdbfe;"></button>
+                            <button type="button" class="color-swatch-item" data-highlight="rgba(233, 213, 255, 0.55)" title="Lavender Tint" style="background:#e9d5ff;"></button>
+                            <button type="button" class="color-swatch-item" data-highlight="rgba(254, 215, 170, 0.55)" title="Peach Tint" style="background:#fed7aa;"></button>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="toolbar-sep"></div>
 

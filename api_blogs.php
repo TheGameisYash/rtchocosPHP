@@ -1,11 +1,23 @@
 <?php
 // api_blogs.php
 header('Content-Type: application/json; charset=utf-8');
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-header('Cache-Control: post-check=0, pre-check=0', false);
-header('Pragma: no-cache');
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/blog-cache.php';
+
+// 1. Check cache FIRST before querying database (Ultra-fast, zero MySQL connection)
+$cached = get_cached_blog_list(1800);
+if ($cached !== null && is_array($cached)) {
+    $etag = '"' . md5(json_encode($cached)) . '"';
+    header('ETag: ' . $etag);
+    header('Cache-Control: public, max-age=180, stale-while-revalidate=300');
+    if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
+        http_response_code(304);
+        exit;
+    }
+    header('X-Data-Source: cache');
+    echo json_encode($cached, JSON_UNESCAPED_SLASHES);
+    exit;
+}
 
 try {
     $pdo = get_db();
@@ -36,8 +48,11 @@ try {
     
     // Save to cache
     cache_blog_list($response);
+    $etag = '"' . md5(json_encode($response)) . '"';
+    header('ETag: ' . $etag);
+    header('Cache-Control: public, max-age=180, stale-while-revalidate=300');
     header('X-Data-Source: database');
-    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    echo json_encode($response, JSON_UNESCAPED_SLASHES);
 } catch (Exception $e) {
     error_log("Failed to fetch blog list from database: " . $e->getMessage() . ". Checking file cache fallback.");
     

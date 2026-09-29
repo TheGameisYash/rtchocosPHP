@@ -144,20 +144,35 @@ function sendTroubleshootQuery(promptText) {
 
 async function loadDynamicAiInsight() {
   try {
+    // Only check if session hasn't checked recently (once per browser session)
+    if (sessionStorage.getItem('ai_insight_triggered')) return;
+    sessionStorage.setItem('ai_insight_triggered', 'true');
+
     const isBlogSubfolder = window.location.pathname.includes('/blog/');
     const prefix = isBlogSubfolder ? '../' : '';
 
     // Trigger background generation for the next visit
     await fetch(prefix + 'api_generate_insight.php');
-  } catch (err) {
-    console.error("Failed to trigger background AI insight generation:", err);
-  }
+  } catch (err) {}
 }
 
 async function loadDynamicAiRecipe() {
   const titleEl = document.getElementById('ai-dynamic-recipe-title');
   const descEl = document.getElementById('ai-dynamic-recipe-desc');
   if (!titleEl || !descEl) return;
+
+  // Check 24-hour local storage cache to eliminate redundant server AI calls
+  try {
+    const cachedRecipe = localStorage.getItem('rt_ai_recipe_cache');
+    if (cachedRecipe) {
+      const parsed = JSON.parse(cachedRecipe);
+      if (parsed && parsed.title && parsed.desc && (Date.now() - parsed.time < 86400000)) {
+        titleEl.textContent = parsed.title;
+        descEl.textContent = parsed.desc;
+        return;
+      }
+    }
+  } catch (e) {}
 
   try {
     const isBlogSubfolder = window.location.pathname.includes('/blog/');
@@ -176,25 +191,47 @@ async function loadDynamicAiRecipe() {
       const data = await response.json();
       if (data.reply) {
         const parts = data.reply.trim().split('|');
+        let t = "Lavender & Sea Salt Ganache";
+        let d = data.reply.trim();
         if (parts.length >= 2) {
-          titleEl.textContent = parts[0].trim();
-          descEl.textContent = parts[1].trim();
-        } else {
-          titleEl.textContent = "Lavender & Sea Salt Ganache";
-          descEl.textContent = data.reply.trim();
+          t = parts[0].trim();
+          d = parts[1].trim();
         }
+        titleEl.textContent = t;
+        descEl.textContent = d;
+        try {
+          localStorage.setItem('rt_ai_recipe_cache', JSON.stringify({ title: t, desc: d, time: Date.now() }));
+        } catch (e) {}
+        return;
       }
     }
   } catch (err) {
     console.error("Failed to load AI recipe:", err);
-    titleEl.textContent = "Chilli & Lime Dark Truffles";
-    descEl.textContent = "A fiery kick of bird's eye chilli paired with fresh lime zest in an organic 70% Malabar dark chocolate shell.";
   }
+  titleEl.textContent = "Chilli & Lime Dark Truffles";
+  descEl.textContent = "A fiery kick of bird's eye chilli paired with fresh lime zest in an organic 70% Malabar dark chocolate shell.";
 }
 
 async function loadDynamicAiClassInsight() {
   const el = document.getElementById('ai-dynamic-class-insight');
   if (!el) return;
+
+  // If already rendered with a fact by PHP server-side, keep it and avoid network call
+  if (el.textContent && el.textContent.trim().length > 20) {
+    return;
+  }
+
+  // Check 24-hour local storage cache
+  try {
+    const cachedFact = localStorage.getItem('rt_ai_class_fact_cache');
+    if (cachedFact) {
+      const parsed = JSON.parse(cachedFact);
+      if (parsed && parsed.fact && (Date.now() - parsed.time < 86400000)) {
+        el.textContent = parsed.fact;
+        return;
+      }
+    }
+  } catch (e) {}
 
   try {
     const isBlogSubfolder = window.location.pathname.includes('/blog/');
@@ -212,13 +249,18 @@ async function loadDynamicAiClassInsight() {
     if (response.ok) {
       const data = await response.json();
       if (data.reply) {
-        el.textContent = data.reply.trim();
+        const fact = data.reply.trim();
+        el.textContent = fact;
+        try {
+          localStorage.setItem('rt_ai_class_fact_cache', JSON.stringify({ fact: fact, time: Date.now() }));
+        } catch (e) {}
+        return;
       }
     }
   } catch (err) {
     console.error("Failed to load AI class insight:", err);
-    el.textContent = "Stable Form V crystallization occurs best when dark chocolate is held between 31°C and 32°C.";
   }
+  el.textContent = "Stable Form V crystallization occurs best when dark chocolate is held between 31°C and 32°C.";
 }
 
 // --- AI CHOCOLAB FORMULATION ENGINE ---

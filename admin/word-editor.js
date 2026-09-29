@@ -55,6 +55,11 @@
             hiddenContent.value = cleanHtmlForSave(editorDoc.innerHTML);
         }
 
+        // Enforce standard paragraph creation on Enter
+        try {
+            document.execCommand('defaultParagraphSeparator', false, 'p');
+        } catch (e) { }
+
         // Setup event listeners
         setupEditorEvents();
         setupToolbarEvents();
@@ -769,17 +774,11 @@
         const temp = document.createElement('div');
         temp.innerHTML = html;
 
-        // 1. Remove dark inline color/bg styles that make text invisible in dark mode
+        // 1. Clean redundant or transparent background styles, preserving author colors
         temp.querySelectorAll('*').forEach(el => {
-            if (el.style.color) {
-                const c = el.style.color.toLowerCase().replace(/\s+/g, '');
-                if (c.includes('rgb(29,21,16)') || c.includes('#1d1510') || c.includes('rgb(0,0,0)') || c.includes('black') || c === '#000' || c === '#111' || c === '#222' || c === '#333') {
-                    el.style.color = '';
-                }
-            }
             if (el.style.backgroundColor) {
                 const bg = el.style.backgroundColor.toLowerCase().replace(/\s+/g, '');
-                if (bg.includes('white') || bg.includes('rgb(255,255,255)') || bg.includes('#fff')) {
+                if (bg.includes('rgba(0,0,0,0)') || bg === 'transparent') {
                     el.style.backgroundColor = '';
                 }
             }
@@ -788,14 +787,17 @@
             }
         });
 
-        // 2. Unwrap any headings (h1-h6) that mistakenly wrap paragraphs
+        // 2. Headings: If a heading (h1-h6) has nested block children (like <p>, <div>),
+        // flatten/unwrap the children SO THE HEADING ITSELF IS PRESERVED!
         temp.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
-            const hasBlocks = h.querySelector('p, ul, ol, table, blockquote, div');
-            if (hasBlocks) {
-                while (h.firstChild) {
-                    h.parentNode.insertBefore(h.firstChild, h);
-                }
-                h.remove();
+            const innerBlocks = h.querySelectorAll('p, div, blockquote');
+            if (innerBlocks.length > 0) {
+                innerBlocks.forEach(inner => {
+                    while (inner.firstChild) {
+                        inner.parentNode.insertBefore(inner.firstChild, inner);
+                    }
+                    inner.remove();
+                });
             }
         });
 
@@ -988,6 +990,19 @@
             el.removeAttribute('contenteditable');
         });
 
+        // Clean empty style attributes
+        temp.querySelectorAll('*').forEach(el => {
+            if (!el.getAttribute('style') || !el.getAttribute('style').trim()) {
+                el.removeAttribute('style');
+            }
+        });
+
+        // Separate top-level block elements with double newlines for parser/database indexing
+        const children = Array.from(temp.children);
+        if (children.length > 0) {
+            return children.map(c => c.outerHTML.trim()).filter(Boolean).join('\n\n');
+        }
+
         return temp.innerHTML;
     }
 
@@ -995,11 +1010,18 @@
     // 8. EDITOR DOM & KEYBOARD EVENTS
     // =========================================================================
     function setupEditorEvents() {
-        // Sync content & stats on input
+        // Sync content & stats on input with lightweight debounce
+        let inputDebounceTimer = null;
         editorDoc.addEventListener('input', () => {
+            window.__isEditorDirty = true;
             saveCurrentCaret();
-            attachAllControls();
-            syncContent();
+            updateStats();
+
+            clearTimeout(inputDebounceTimer);
+            inputDebounceTimer = setTimeout(() => {
+                attachAllControls();
+                syncContent();
+            }, 600);
         });
 
         const handleInteraction = (e) => {
@@ -1243,6 +1265,7 @@
         const form = document.getElementById('editorForm');
         if (form) {
             form.addEventListener('submit', () => {
+                window.__isEditorDirty = false;
                 syncContent();
             });
         }
@@ -1327,6 +1350,83 @@
                 openYoutubeModal();
             });
         }
+
+        // Color dropdown toggle helper
+        window.toggleColorDropdown = function (dropdownId) {
+            const dd = document.getElementById(dropdownId);
+            if (!dd) return;
+            const isShown = dd.style.display === 'block';
+            document.querySelectorAll('.word-color-dropdown').forEach(d => d.style.display = 'none');
+            if (!isShown) {
+                dd.style.display = 'block';
+            }
+        };
+
+        // Text color swatches
+        toolbar.querySelectorAll('.color-swatch-item[data-color]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                saveCurrentCaret();
+                const color = btn.getAttribute('data-color');
+                const ind = document.getElementById('textColorIndicator');
+                if (ind) ind.style.background = color || 'var(--gold)';
+                editorDoc.focus();
+                if (!color) {
+                    document.execCommand('removeFormat', false, null);
+                } else {
+                    document.execCommand('foreColor', false, color);
+                }
+                syncContent();
+                document.querySelectorAll('.word-color-dropdown').forEach(d => d.style.display = 'none');
+            });
+        });
+
+        // Custom text color input
+        const customColorInput = document.getElementById('customTextColorPicker');
+        if (customColorInput) {
+            customColorInput.addEventListener('input', (e) => {
+                const color = e.target.value;
+                const ind = document.getElementById('textColorIndicator');
+                if (ind) ind.style.background = color;
+                editorDoc.focus();
+                document.execCommand('foreColor', false, color);
+                syncContent();
+            });
+        }
+
+        // Text highlight swatches
+        toolbar.querySelectorAll('.color-swatch-item[data-highlight]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                saveCurrentCaret();
+                const color = btn.getAttribute('data-highlight');
+                const ind = document.getElementById('highlightColorIndicator');
+                if (ind) ind.style.background = color || '#fff3b0';
+                editorDoc.focus();
+                if (!color) {
+                    try {
+                        document.execCommand('hiliteColor', false, 'transparent');
+                    } catch (err) {
+                        document.execCommand('backColor', false, 'transparent');
+                    }
+                } else {
+                    try {
+                        document.execCommand('hiliteColor', false, color);
+                    } catch (err) {
+                        document.execCommand('backColor', false, color);
+                    }
+                }
+                syncContent();
+                document.querySelectorAll('.word-color-dropdown').forEach(d => d.style.display = 'none');
+            });
+        });
+
+        // Close color dropdowns when clicking outside
+        document.addEventListener('mousedown', (e) => {
+            if (!e.target.closest('.word-color-dropdown-wrapper')) {
+                document.querySelectorAll('.word-color-dropdown').forEach(d => d.style.display = 'none');
+            }
+        });
     }
 
     function toggleQuote() {
@@ -1406,9 +1506,10 @@
     // =========================================================================
     function syncContent() {
         if (!editorDoc || !hiddenContent) return;
-        hiddenContent.value = cleanHtmlForSave(editorDoc.innerHTML);
+        const cleaned = cleanHtmlForSave(editorDoc.innerHTML);
+        hiddenContent.value = cleaned;
         updateStats();
-        triggerAutosave();
+        triggerAutosave(cleaned);
     }
 
     function updateStats() {
@@ -1429,27 +1530,23 @@
     }
 
     let autosaveTimer = null;
-    function triggerAutosave() {
-        if (autosaveIndicator) {
-            autosaveIndicator.style.opacity = '1';
-            autosaveIndicator.innerText = 'Saving changes...';
-        }
-
+    function triggerAutosave(cleaned) {
         clearTimeout(autosaveTimer);
         autosaveTimer = setTimeout(() => {
             const blogId = document.getElementById('blogId') ? document.getElementById('blogId').value : '0';
             const saveKey = 'rt_blog_word_autosave_' + blogId;
             const data = {
-                content: cleanHtmlForSave(editorDoc.innerHTML),
+                content: cleaned || cleanHtmlForSave(editorDoc.innerHTML),
                 timestamp: Date.now()
             };
             try {
                 localStorage.setItem(saveKey, JSON.stringify(data));
                 if (autosaveIndicator) {
-                    autosaveIndicator.innerText = 'All changes saved locally';
+                    autosaveIndicator.style.opacity = '1';
+                    autosaveIndicator.innerHTML = '<span style="color:#2e7d32; font-weight:600;">✓</span> Saved to browser draft';
                     setTimeout(() => {
-                        if (autosaveIndicator) autosaveIndicator.style.opacity = '0.5';
-                    }, 1500);
+                        if (autosaveIndicator) autosaveIndicator.style.opacity = '0.7';
+                    }, 2500);
                 }
             } catch (e) { }
         }, 800);

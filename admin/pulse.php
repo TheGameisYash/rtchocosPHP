@@ -9,33 +9,45 @@ require_auth();
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, no-store, must-revalidate');
 
+// Fast short-term cache for pulse polling across multiple tabs / rapid checks
+$pulseCacheFile = __DIR__ . '/../data/cache/pulse_cache.json';
+if (file_exists($pulseCacheFile) && (time() - filemtime($pulseCacheFile) < 15)) {
+    $cached = @file_get_contents($pulseCacheFile);
+    if ($cached !== false) {
+        echo $cached;
+        exit;
+    }
+}
+
 try {
     $pdo = get_db();
 
-    // 1. Pending & Total Orders
-    $stmt = $pdo->query("SELECT COUNT(*) FROM orders WHERE order_status = 'pending'");
-    $pendingOrders = (int)$stmt->fetchColumn();
+    // 1. Consolidated Counts Query (1 single ultra-fast query instead of 5 separate queries)
+    $stmt = $pdo->query("SELECT 
+        (SELECT COUNT(*) FROM orders WHERE order_status = 'pending') as pending_orders,
+        (SELECT COUNT(*) FROM orders) as total_orders,
+        (SELECT COUNT(*) FROM contacts WHERE is_read = 0) as unread_messages,
+        (SELECT COUNT(*) FROM products) as total_products,
+        (SELECT COUNT(*) FROM subscribers) as total_subscribers
+    ");
+    $countsRow = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
-    $stmt = $pdo->query("SELECT COUNT(*) FROM orders");
-    $totalOrders = (int)$stmt->fetchColumn();
+    $pendingOrders = (int)($countsRow['pending_orders'] ?? 0);
+    $totalOrders = (int)($countsRow['total_orders'] ?? 0);
+    $unreadMessages = (int)($countsRow['unread_messages'] ?? 0);
+    $totalProducts = (int)($countsRow['total_products'] ?? 0);
+    $totalSubscribers = (int)($countsRow['total_subscribers'] ?? 0);
 
     // 2. Latest Order Details
     $stmt = $pdo->query("SELECT id, order_number, customer_name, total, order_status, payment_status, created_at FROM orders ORDER BY id DESC LIMIT 1");
     $latestOrder = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
 
-    // 3. Unread Messages
-    $stmt = $pdo->query("SELECT COUNT(*) FROM contacts WHERE is_read = 0");
-    $unreadMessages = (int)$stmt->fetchColumn();
-
-    $stmt = $pdo->query("SELECT id, name, subject, created_at FROM contacts WHERE is_read = 0 ORDER BY id DESC LIMIT 1");
-    $latestMessage = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-
-    // 4. Products & Subscribers Counts
-    $stmt = $pdo->query("SELECT COUNT(*) FROM products");
-    $totalProducts = (int)$stmt->fetchColumn();
-
-    $stmt = $pdo->query("SELECT COUNT(*) FROM subscribers");
-    $totalSubscribers = (int)$stmt->fetchColumn();
+    // 3. Unread Message Details (Only query if unread count > 0)
+    $latestMessage = null;
+    if ($unreadMessages > 0) {
+        $stmt = $pdo->query("SELECT id, name, subject, created_at FROM contacts WHERE is_read = 0 ORDER BY id DESC LIMIT 1");
+        $latestMessage = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
 
     // 5. System Health
     $uploadsPath = __DIR__ . '/../assets/products';
@@ -79,7 +91,12 @@ try {
         ]
     ];
 
-    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    $jsonOutput = json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    $cacheDir = dirname($pulseCacheFile);
+    if (!is_dir($cacheDir)) @mkdir($cacheDir, 0755, true);
+    @file_put_contents($pulseCacheFile, $jsonOutput);
+
+    echo $jsonOutput;
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([

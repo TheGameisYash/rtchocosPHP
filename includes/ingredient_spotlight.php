@@ -12,9 +12,22 @@ require_once __DIR__ . '/db.php';
 function get_current_ingredient_spotlight($forceRefresh = false) {
     $cacheHours = 6;
     $cacheSeconds = $cacheHours * 3600;
+    $cacheFile = __DIR__ . '/../data/cache/ingredient_spotlight.json';
+
+    // 1. Fast file cache check (Ultra-fast, zero MySQL queries)
+    if (!$forceRefresh && file_exists($cacheFile) && (time() - filemtime($cacheFile) < $cacheSeconds)) {
+        $cachedRaw = @file_get_contents($cacheFile);
+        if ($cachedRaw !== false) {
+            $cached = json_decode($cachedRaw, true);
+            if (is_array($cached) && !empty($cached['ingredient_name'])) {
+                return $cached;
+            }
+        }
+    }
+
     $pdo = get_db();
 
-    // 1. Fetch latest spotlight from database
+    // 2. Fetch latest spotlight from database
     $latest = null;
     try {
         $stmt = $pdo->query("SELECT * FROM ai_ingredient_spotlights ORDER BY id DESC LIMIT 1");
@@ -23,60 +36,73 @@ function get_current_ingredient_spotlight($forceRefresh = false) {
         // DB error fallback
     }
 
-    $isFresh = false;
-    if ($latest && !empty($latest['created_at'])) {
-        $age = time() - strtotime($latest['created_at']);
-        if ($age < $cacheSeconds && !$forceRefresh) {
-            $isFresh = true;
+    // 3. If latest exists and not forced refresh, ALWAYS return it immediately
+    // Never block visitor page load on slow external AI calls!
+    if ($latest && !empty($latest['ingredient_name']) && !$forceRefresh) {
+        $age = !empty($latest['created_at']) ? (time() - strtotime($latest['created_at'])) : 0;
+        $output = format_spotlight_output($latest, max(0, $cacheSeconds - $age), true);
+        
+        $cacheDir = dirname($cacheFile);
+        if (!is_dir($cacheDir)) @mkdir($cacheDir, 0755, true);
+        @file_put_contents($cacheFile, json_encode($output, JSON_UNESCAPED_SLASHES));
+        
+        return $output;
+    }
+
+    // 4. Generate a new spotlight via OpenRouter/Gemini AI only when explicitly forced (e.g. from admin or regenerate action)
+    if ($forceRefresh) {
+        $generated = generate_spotlight_from_ai();
+
+        if ($generated && !empty($generated['ingredient_name']) && !empty($generated['short_desc'])) {
+            try {
+                $ins = $pdo->prepare("INSERT INTO ai_ingredient_spotlights 
+                    (ingredient_name, tag, short_desc, detailed_notes, flavor_notes, origin_region, modal_key, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+                $ins->execute([
+                    $generated['ingredient_name'],
+                    $generated['tag'] ?? '🌱 INGREDIENT SPOTLIGHT',
+                    $generated['short_desc'],
+                    $generated['detailed_notes'] ?? '',
+                    $generated['flavor_notes'] ?? '',
+                    $generated['origin_region'] ?? '',
+                    $generated['modal_key'] ?? 'ingredient-spotlight'
+                ]);
+
+                $newId = $pdo->lastInsertId();
+                $generated['id'] = $newId;
+                $generated['created_at'] = date('Y-m-d H:i:s');
+
+                // Retain only latest 20 spotlights
+                $pdo->exec("DELETE FROM ai_ingredient_spotlights WHERE id NOT IN (
+                    SELECT id FROM (
+                        SELECT id FROM ai_ingredient_spotlights ORDER BY id DESC LIMIT 20
+                    ) as temp
+                )");
+
+                $output = format_spotlight_output($generated, $cacheSeconds, false);
+                $cacheDir = dirname($cacheFile);
+                if (!is_dir($cacheDir)) @mkdir($cacheDir, 0755, true);
+                @file_put_contents($cacheFile, json_encode($output, JSON_UNESCAPED_SLASHES));
+
+                return $output;
+            } catch (Exception $e) {
+                return format_spotlight_output($generated, $cacheSeconds, false);
+            }
         }
     }
 
-    // Return cached entry if fresh
-    if ($isFresh && $latest) {
-        return format_spotlight_output($latest, max(0, $cacheSeconds - (time() - strtotime($latest['created_at']))), true);
+    // 5. Fallback to existing latest or curated list
+    if ($latest && !empty($latest['ingredient_name'])) {
+        $output = format_spotlight_output($latest, 0, true);
+        @file_put_contents($cacheFile, json_encode($output, JSON_UNESCAPED_SLASHES));
+        return $output;
     }
 
-    // 2. Generate a new spotlight via OpenRouter AI
-    $generated = generate_spotlight_from_ai();
-
-    if ($generated && !empty($generated['ingredient_name']) && !empty($generated['short_desc'])) {
-        try {
-            $ins = $pdo->prepare("INSERT INTO ai_ingredient_spotlights 
-                (ingredient_name, tag, short_desc, detailed_notes, flavor_notes, origin_region, modal_key, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
-            $ins->execute([
-                $generated['ingredient_name'],
-                $generated['tag'] ?? '🌱 INGREDIENT SPOTLIGHT',
-                $generated['short_desc'],
-                $generated['detailed_notes'] ?? '',
-                $generated['flavor_notes'] ?? '',
-                $generated['origin_region'] ?? '',
-                $generated['modal_key'] ?? 'ingredient-spotlight'
-            ]);
-
-            $newId = $pdo->lastInsertId();
-            $generated['id'] = $newId;
-            $generated['created_at'] = date('Y-m-d H:i:s');
-
-            // Retain only latest 20 spotlights
-            $pdo->exec("DELETE FROM ai_ingredient_spotlights WHERE id NOT IN (
-                SELECT id FROM (
-                    SELECT id FROM ai_ingredient_spotlights ORDER BY id DESC LIMIT 20
-                ) as temp
-            )");
-
-            return format_spotlight_output($generated, $cacheSeconds, false);
-        } catch (Exception $e) {
-            return format_spotlight_output($generated, $cacheSeconds, false);
-        }
-    }
-
-    // 3. Fallback to existing or curated list
-    if ($latest) {
-        return format_spotlight_output($latest, 0, true);
-    }
-
-    return format_spotlight_output(get_curated_spotlight_fallback(), $cacheSeconds, true);
+    $fallback = format_spotlight_output(get_curated_spotlight_fallback(), $cacheSeconds, true);
+    $cacheDir = dirname($cacheFile);
+    if (!is_dir($cacheDir)) @mkdir($cacheDir, 0755, true);
+    @file_put_contents($cacheFile, json_encode($fallback, JSON_UNESCAPED_SLASHES));
+    return $fallback;
 }
 
 /**

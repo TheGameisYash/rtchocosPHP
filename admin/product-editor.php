@@ -1004,10 +1004,11 @@ render_admin_header($isEdit ? "Edit: " . ($productNameSafe ?: 'Product') : "Crea
     // Mark dirty on any input change
     const formEl = document.getElementById('productForm');
     if (formEl) {
-        formEl.addEventListener('input', () => { isDirty = true; });
-        formEl.addEventListener('change', () => { isDirty = true; });
+        formEl.addEventListener('input', () => { isDirty = true; window.__isEditorDirty = true; });
+        formEl.addEventListener('change', () => { isDirty = true; window.__isEditorDirty = true; });
         formEl.addEventListener('submit', () => {
             isSubmitting = true;
+            window.__isEditorDirty = false;
             localStorage.removeItem(draftKey);
         });
     }

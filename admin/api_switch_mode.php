@@ -28,6 +28,7 @@ try {
     $pdo = get_db();
     $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES ('store_mode', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
     $stmt->execute([$mode, $mode]);
+    clear_site_settings_cache();
 
     $labels = [
         'retail' => 'Retail Mode (B2C Online Shop)',

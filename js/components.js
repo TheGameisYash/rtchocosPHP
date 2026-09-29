@@ -561,7 +561,7 @@ initInteractiveForms();
 // --- INIT -------------------------------------------------------
 async function initApp() {
   try {
-    const response = await fetch(getCorrectedPath('api_blogs.php?t=' + Date.now()));
+    const response = await fetch(getCorrectedPath('api_blogs.php'));
     if (response.ok) {
       const data = await response.json();
       BLOGS = data.map(b => ({

@@ -32,23 +32,55 @@ function get_db() {
 
 function get_site_setting($key, $default = '', $forceReload = false) {
     static $settingsCache = null;
-    if ($settingsCache === null || $forceReload) {
-        try {
-            $pdo = get_db();
-            $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings");
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $settingsCache = [];
-            foreach ($rows as $row) {
-                $settingsCache[$row['setting_key']] = $row['setting_value'];
+    if ($settingsCache !== null && !$forceReload) {
+        return $settingsCache[$key] ?? $default;
+    }
+
+    $cacheFile = __DIR__ . '/../data/cache/site_settings.json';
+    $cacheTtl = 1800; // 30 minutes
+
+    // 1. Try reading from disk cache if fresh and not force-reloading
+    if (!$forceReload && file_exists($cacheFile) && (time() - filemtime($cacheFile) < $cacheTtl)) {
+        $content = @file_get_contents($cacheFile);
+        if ($content !== false) {
+            $decoded = json_decode($content, true);
+            if (is_array($decoded)) {
+                $settingsCache = $decoded;
+                return $settingsCache[$key] ?? $default;
             }
-        } catch (Exception $e) {
+        }
+    }
+
+    // 2. Query database when cache is missing, expired, or force-reloaded
+    try {
+        $pdo = get_db();
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings");
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $settingsCache = [];
+        foreach ($rows as $row) {
+            $settingsCache[$row['setting_key']] = $row['setting_value'];
+        }
+
+        // Persist to cache file
+        $cacheDir = dirname($cacheFile);
+        if (!is_dir($cacheDir)) {
+            @mkdir($cacheDir, 0755, true);
+        }
+        @file_put_contents($cacheFile, json_encode($settingsCache, JSON_UNESCAPED_SLASHES));
+    } catch (Exception $e) {
+        if ($settingsCache === null) {
             $settingsCache = [];
         }
     }
+
     return $settingsCache[$key] ?? $default;
 }
 
 function clear_site_settings_cache() {
+    $cacheFile = __DIR__ . '/../data/cache/site_settings.json';
+    if (file_exists($cacheFile)) {
+        @unlink($cacheFile);
+    }
     get_site_setting('', '', true);
 }
 ?>

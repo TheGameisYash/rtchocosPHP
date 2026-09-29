@@ -11,62 +11,63 @@ $markdown_content = '';
 $isFromDb = false;
 $isAdminPreview = false;
 
-// Try to fetch from DB first
+// Try to fetch from cache first for fast response, unless admin is logged in previewing drafts
 if (isset($articleKey)) {
-    try {
-        $pdo = get_db();
-        $stmt = $pdo->prepare("SELECT * FROM blogs WHERE slug = ?");
-        $stmt->execute([$articleKey]);
-        $dbPost = $stmt->fetch();
-        if ($dbPost) {
-            // Check visibility / publish state
-            if ((int)$dbPost['is_published'] === 0) {
-                if (function_exists('is_admin_logged_in') && is_admin_logged_in()) {
-                    $isAdminPreview = true;
-                } else {
-                    // Hidden post requested by public user -> 404 immediately
-                    http_response_code(404);
-                    $pathPrefix = "../";
-                    include __DIR__ . '/error.php';
-                    exit;
+    $isAdmin = function_exists('is_admin_logged_in') && is_admin_logged_in();
+    $cached = !$isAdmin ? get_cached_blog_article($articleKey, 1800) : null;
+
+    if ($cached && !empty($cached['post'])) {
+        $post = $cached['post'];
+        $markdown_content = $cached['markdown_content'] ?? '';
+        $isFromDb = true;
+    } else {
+        try {
+            $pdo = get_db();
+            $stmt = $pdo->prepare("SELECT * FROM blogs WHERE slug = ?");
+            $stmt->execute([$articleKey]);
+            $dbPost = $stmt->fetch();
+            if ($dbPost) {
+                // Check visibility / publish state
+                if ((int)$dbPost['is_published'] === 0) {
+                    if ($isAdmin) {
+                        $isAdminPreview = true;
+                    } else {
+                        // Hidden post requested by public user -> 404 immediately
+                        http_response_code(404);
+                        $pathPrefix = "../";
+                        include __DIR__ . '/error.php';
+                        exit;
+                    }
+                }
+
+                $post = [
+                    'id' => (int)$dbPost['id'],
+                    'title' => $dbPost['title'],
+                    'category' => $dbPost['category'],
+                    'date' => date('M Y', strtotime($dbPost['created_at'])),
+                    'read' => $dbPost['read_time'] ?: '5 min',
+                    'excerpt' => $dbPost['excerpt'],
+                    'published' => $dbPost['created_at'],
+                    'modified' => $dbPost['updated_at'],
+                    'image' => $dbPost['image_path'],
+                    'thumbnail' => $dbPost['thumbnail_path'] ?: $dbPost['image_path'],
+                    'bodyClass' => $dbPost['body_class'] ?: '',
+                    'youtube_url' => $dbPost['youtube_url'],
+                    'is_published' => (int)$dbPost['is_published']
+                ];
+                $markdown_content = $dbPost['content'];
+                $isFromDb = true;
+
+                // Cache article if published
+                if ((int)$dbPost['is_published'] === 1) {
+                    cache_blog_article($articleKey, [
+                        'post' => $post,
+                        'markdown_content' => $markdown_content
+                    ]);
                 }
             }
-
-            $post = [
-                'id' => (int)$dbPost['id'],
-                'title' => $dbPost['title'],
-                'category' => $dbPost['category'],
-                'date' => date('M Y', strtotime($dbPost['created_at'])),
-                'read' => $dbPost['read_time'] ?: '5 min',
-                'excerpt' => $dbPost['excerpt'],
-                'published' => $dbPost['created_at'],
-                'modified' => $dbPost['updated_at'],
-                'image' => $dbPost['image_path'],
-                'thumbnail' => $dbPost['thumbnail_path'] ?: $dbPost['image_path'],
-                'bodyClass' => $dbPost['body_class'] ?: '',
-                'youtube_url' => $dbPost['youtube_url'],
-                'is_published' => (int)$dbPost['is_published']
-            ];
-            $markdown_content = $dbPost['content'];
-            $isFromDb = true;
-
-            // Only cache and track views if article is published
-            if ((int)$dbPost['is_published'] === 1) {
-                cache_blog_article($articleKey, [
-                    'post' => $post,
-                    'markdown_content' => $markdown_content
-                ]);
-
-                // Increment article views (Analytics)
-                try {
-                    $upStmt = $pdo->prepare("UPDATE blogs SET views = views + 1 WHERE id = ?");
-                    $upStmt->execute([$dbPost['id']]);
-                } catch (Exception $ex) {
-                    // Non-blocking
-                }
-            }
-        } else {
-            // Check cache fallback
+        } catch (Exception $e) {
+            error_log("Database error fetching blog '$articleKey': " . $e->getMessage() . ". Checking cache fallback.");
             $cached = get_cached_blog_article($articleKey);
             if ($cached) {
                 $post = $cached['post'];
@@ -74,13 +75,17 @@ if (isset($articleKey)) {
                 $isFromDb = true;
             }
         }
-    } catch (Exception $e) {
-        error_log("Database error fetching blog '$articleKey': " . $e->getMessage() . ". Checking cache fallback.");
-        $cached = get_cached_blog_article($articleKey);
-        if ($cached) {
-            $post = $cached['post'];
-            $markdown_content = $cached['markdown_content'];
-            $isFromDb = true;
+    }
+
+    // Increment article views (Analytics) - only once per visitor session to eliminate DB row locking
+    if (!empty($post['id']) && empty($_SESSION['viewed_article_' . $post['id']]) && empty($isAdminPreview)) {
+        $_SESSION['viewed_article_' . $post['id']] = true;
+        try {
+            $pdo = get_db();
+            $upStmt = $pdo->prepare("UPDATE blogs SET views = views + 1 WHERE id = ?");
+            $upStmt->execute([$post['id']]);
+        } catch (Exception $ex) {
+            // Non-blocking
         }
     }
 }

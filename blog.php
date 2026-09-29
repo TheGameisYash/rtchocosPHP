@@ -3,31 +3,34 @@
   require_once __DIR__ . '/includes/blog-cache.php';
   require_once __DIR__ . '/includes/blog-data.php';
 
-  $blogs = [];
-  try {
-      $pdo = get_db();
-      $stmt = $pdo->query("SELECT id, slug, title, category, created_at, excerpt, image_path, thumbnail_path, youtube_url, body_class, read_time FROM blogs WHERE is_published = 1 ORDER BY created_at DESC");
-      $dbBlogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      foreach ($dbBlogs as $blog) {
-          $blogs[] = [
-              'id' => (int)$blog['id'],
-              'slug' => $blog['slug'],
-              'title' => $blog['title'],
-              'category' => $blog['category'],
-              'date' => date('M Y', strtotime($blog['created_at'])),
-              'read_time' => $blog['read_time'] ?: '5 min',
-              'excerpt' => $blog['excerpt'],
-              'image' => $blog['image_path'],
-              'thumbnail' => $blog['thumbnail_path'] ?: $blog['image_path'],
-              'youtube_url' => $blog['youtube_url'],
-              'body_class' => $blog['body_class'] ?: ''
-          ];
-      }
-  } catch (Exception $e) {
-      $cached = get_cached_blog_list();
-      if ($cached) {
-          $blogs = $cached;
-      } else {
+  $blogs = get_cached_blog_list(1800);
+  if ($blogs === null || empty($blogs)) {
+      try {
+          $pdo = get_db();
+          $stmt = $pdo->query("SELECT id, slug, title, category, created_at, excerpt, image_path, thumbnail_path, youtube_url, body_class, read_time FROM blogs WHERE is_published = 1 ORDER BY created_at DESC");
+          $dbBlogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          $blogs = [];
+          foreach ($dbBlogs as $blog) {
+              $blogs[] = [
+                  'id' => (int)$blog['id'],
+                  'slug' => $blog['slug'],
+                  'title' => $blog['title'],
+                  'category' => $blog['category'],
+                  'date' => date('M Y', strtotime($blog['created_at'])),
+                  'read_time' => $blog['read_time'] ?: '5 min',
+                  'excerpt' => $blog['excerpt'],
+                  'image' => $blog['image_path'],
+                  'thumbnail' => $blog['thumbnail_path'] ?: $blog['image_path'],
+                  'youtube_url' => $blog['youtube_url'],
+                  'body_class' => $blog['body_class'] ?: ''
+              ];
+          }
+          cache_blog_list($blogs);
+      } catch (Exception $e) {
+          $cached = get_cached_blog_list();
+          if ($cached) {
+              $blogs = $cached;
+          } else {
           $idx = 1;
           $reversedBlogs = array_reverse($BLOGS, true);
           foreach ($reversedBlogs as $slug => $meta) {
@@ -44,8 +47,9 @@
                   'youtube_url' => $meta['youtube_url'] ?? null,
                   'body_class' => $meta['bodyClass'] ?? ''
               ];
-          }
-      }
+        }
+    }
+  }
   }
 
   $pageTitle = "Chocolate Blog India: Cocoa Science & Making | RT Chocos";

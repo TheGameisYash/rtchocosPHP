@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute([$key, trim($val), trim($val)]);
                 }
                 $pdo->commit();
+                clear_site_settings_cache();
                 
                 $success = 'Site settings updated successfully!';
             } elseif ($action === 'change_password') {

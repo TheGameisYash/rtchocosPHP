@@ -677,18 +677,22 @@ function render_admin_footer() {
                     .catch(() => {});
             }
 
-            // Optimized Polling Timer (Runs every 60s only when browser tab is active/visible)
+            // Optimized Polling Timer (Runs only when browser tab is active/visible and backs off during active content editing)
+            const isEditorPage = window.location.pathname.includes('blog-editor') || window.location.pathname.includes('product-editor');
+            const pollInterval = isEditorPage ? 180000 : 60000; // 3 min on editor pages, 60s elsewhere
             let lastPollTime = Date.now();
             setInterval(function() {
                 if (document.visibilityState === 'visible') {
+                    // Back off polling if author is actively editing in the editor
+                    if (window.__isEditorDirty) return;
                     runPulseCheck();
                     lastPollTime = Date.now();
                 }
-            }, 60000);
+            }, pollInterval);
 
-            // Re-sync when user returns to this tab if more than 60s elapsed
+            // Re-sync when user returns to this tab if more than interval elapsed
             document.addEventListener('visibilitychange', function() {
-                if (document.visibilityState === 'visible' && (Date.now() - lastPollTime > 60000)) {
+                if (document.visibilityState === 'visible' && !window.__isEditorDirty && (Date.now() - lastPollTime > pollInterval)) {
                     runPulseCheck();
                     lastPollTime = Date.now();
                 }
