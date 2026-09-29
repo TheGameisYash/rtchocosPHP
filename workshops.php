@@ -53,7 +53,7 @@
         <span class="workshop-hero-tag">RT Chocos Learning Studio &amp; Academy</span>
         <h1 class="workshop-hero-title">The Cacao Lab.<br>Master Bean-to-Bar Chocolate.</h1>
         <p class="workshop-hero-desc">
-          Step inside India's premier artisanal chocolate lab. Comprehensive masterclasses covering bean selection, roast profiling, stone melangeur conching, and Form V tempering science from expert chocolatier Aarti Saluja Sahni.
+          A collection of premium, technical chocolate workshops and masterclasses. Learn bean-to-bar making, tempering science, and recipe formulation from expert Aarti Saluja Sahni.
         </p>
 
         <!-- 4 Luxury Value Badges (Same Architecture as Product Page Hero) -->
