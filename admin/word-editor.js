@@ -70,6 +70,8 @@
         setupEditorEvents();
         setupToolbarEvents();
         setupImageUploadEvents();
+        setupFloatingToolbarScroll();
+        setupFloatingBubbleToolbar();
         updateStats();
         updateToolbarState();
         updatePasteModeButton();
@@ -823,52 +825,64 @@
     function isApprovedBrandColor(colorStr) {
         if (!colorStr) return false;
         const c = colorStr.trim().toLowerCase().replace(/\s+/g, '');
-        // Whitelisted brand accents:
-        // RT Gold: #c7a66a, rgb(199,166,106), var(--gold)
-        // Deep Cocoa: #5a3825, rgb(90,56,37)
-        // Forest Green: #1b4d3e, rgb(27,77,62)
-        if (c === '#c7a66a' || c === 'rgb(199,166,106)' || c.includes('var(--gold)')) return true;
-        if (c === '#5a3825' || c === 'rgb(90,56,37)') return true;
-        if (c === '#1b4d3e' || c === 'rgb(27,77,62)') return true;
-        return false;
+        // Strip only purely unreadable or broken colors:
+        // Pure white or near-white on light editor background
+        if (c === '#ffffff' || c === '#fff' || c === 'rgb(255,255,255)' || c === 'rgba(255,255,255,1)') return false;
+        if (c === 'transparent' || c === 'rgba(0,0,0,0)') return false;
+        if (c === 'inherit' || c === 'initial') return false;
+        return true;
     }
 
     function isApprovedBrandHighlight(bgStr) {
         if (!bgStr) return false;
         const b = bgStr.trim().toLowerCase().replace(/\s+/g, '');
-        // Whitelisted subtle brand tints:
-        if (b.includes('rgba(199,166,106') || b.includes('rgba(27,77,62') || b === '#fff3b0' || b.includes('rgba(254,240,138')) return true;
-        return false;
+        // Strip opaque black or opaque white backgrounds copied from foreign pages
+        if (b === '#000000' || b === '#000' || b === 'rgb(0,0,0)' || b === 'rgba(0,0,0,1)' || b === '#121212' || b === '#1a1a1a') return false;
+        if (b === '#ffffff' || b === '#fff' || b === 'rgb(255,255,255)' || b === 'rgba(255,255,255,1)') return false;
+        if (b === 'transparent' || b === 'none') return false;
+        return true;
     }
 
     function scrubElementStyles(container) {
         if (!container) return;
 
         // 1. Unwrap deprecated presentation containers: font, center, big, small, marquee
-        container.querySelectorAll('font, center, big, small, marquee').forEach(tag => {
+        container.querySelectorAll('center, big, small, marquee').forEach(tag => {
             while (tag.firstChild) tag.parentNode.insertBefore(tag.firstChild, tag);
             tag.remove();
         });
 
-        // 2. Headings (h1..h6): clean ALL inline styles, attributes & nested spans so theme CSS sets clean font, size, & color
+        // 2. Headings (h1..h6): clean foreign presentation attributes while preserving author custom colors
         container.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
-            h.removeAttribute('style');
             h.removeAttribute('face');
             h.removeAttribute('size');
-            h.removeAttribute('color');
             h.removeAttribute('bgcolor');
             h.removeAttribute('align');
             
-            // Clean children inside headings
+            // Clean children inside headings but retain author colors
             h.querySelectorAll('*').forEach(child => {
-                if (child.tagName === 'SPAN' || child.tagName === 'FONT') {
-                    while (child.firstChild) child.parentNode.insertBefore(child.firstChild, child);
-                    child.remove();
+                if (child.tagName === 'SPAN') {
+                    if (child.style && child.style.color && isApprovedBrandColor(child.style.color)) {
+                        child.style.fontFamily = '';
+                        child.style.fontSize = '';
+                        child.style.lineHeight = '';
+                    } else if (!child.getAttribute('style') || !child.getAttribute('style').trim()) {
+                        while (child.firstChild) child.parentNode.insertBefore(child.firstChild, child);
+                        child.remove();
+                    }
+                } else if (child.tagName === 'FONT') {
+                    if (child.color && isApprovedBrandColor(child.color)) {
+                        const span = document.createElement('span');
+                        span.style.color = child.color;
+                        while (child.firstChild) span.appendChild(child.firstChild);
+                        child.parentNode.replaceChild(span, child);
+                    } else {
+                        while (child.firstChild) child.parentNode.insertBefore(child.firstChild, child);
+                        child.remove();
+                    }
                 } else {
-                    child.removeAttribute('style');
                     child.removeAttribute('face');
                     child.removeAttribute('size');
-                    child.removeAttribute('color');
                 }
             });
         });
@@ -1945,10 +1959,190 @@
             });
         });
 
+        // Custom Text Color Picker
+        const customColorInput = document.getElementById('customTextColorPicker');
+        if (customColorInput) {
+            customColorInput.addEventListener('input', (e) => {
+                const color = e.target.value;
+                const ind = document.getElementById('textColorIndicator');
+                if (ind) ind.style.background = color;
+                restoreSavedCaret();
+                editorDoc.focus();
+                document.execCommand('foreColor', false, color);
+                saveCurrentCaret();
+                syncContent();
+            });
+            customColorInput.addEventListener('change', () => {
+                document.querySelectorAll('.word-color-dropdown').forEach(d => d.style.display = 'none');
+            });
+        }
+
+        // Custom Highlight / Tint Picker
+        const customHighlightInput = document.getElementById('customHighlightPicker');
+        if (customHighlightInput) {
+            customHighlightInput.addEventListener('input', (e) => {
+                const hex = e.target.value;
+                const rgb = parseColorRgb(hex);
+                const rgba = rgb ? `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.35)` : hex;
+                const ind = document.getElementById('highlightColorIndicator');
+                if (ind) ind.style.background = hex;
+                restoreSavedCaret();
+                editorDoc.focus();
+                try {
+                    document.execCommand('hiliteColor', false, rgba);
+                } catch (err) {
+                    document.execCommand('backColor', false, rgba);
+                }
+                saveCurrentCaret();
+                syncContent();
+            });
+            customHighlightInput.addEventListener('change', () => {
+                document.querySelectorAll('.word-color-dropdown').forEach(d => d.style.display = 'none');
+            });
+        }
+
         // Close color dropdowns when clicking outside
         document.addEventListener('mousedown', (e) => {
             if (!e.target.closest('.word-color-dropdown-wrapper')) {
                 document.querySelectorAll('.word-color-dropdown').forEach(d => d.style.display = 'none');
+            }
+        });
+    }
+
+    // =========================================================================
+    // 9b. FLOATING STICKY TOOLBAR & SELECTION BUBBLE
+    // =========================================================================
+    function setupFloatingToolbarScroll() {
+        const toolbar = document.getElementById('wordToolbar');
+        if (!toolbar) return;
+
+        let ticking = false;
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const rect = toolbar.getBoundingClientRect();
+                    // When toolbar is at top: 72px (sticky position)
+                    if (rect.top <= 75) {
+                        toolbar.classList.add('is-floating');
+                    } else {
+                        toolbar.classList.remove('is-floating');
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+    }
+
+    function setupFloatingBubbleToolbar() {
+        const bubble = document.getElementById('floatingBubbleToolbar');
+        if (!bubble || !editorDoc) return;
+
+        // Prevent clicking bubble buttons from dropping selection
+        bubble.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+
+        // Bubble action buttons
+        bubble.querySelectorAll('[data-bubble-action]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = btn.getAttribute('data-bubble-action');
+                if (action === 'removeFormat') {
+                    handleClearFormatting();
+                } else {
+                    document.execCommand(action, false, null);
+                    syncContent();
+                }
+                updateBubblePosition();
+            });
+        });
+
+        // Bubble block buttons (h2, h3, blockquote)
+        bubble.querySelectorAll('[data-bubble-block]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const block = btn.getAttribute('data-bubble-block');
+                if (block === 'blockquote') {
+                    toggleQuote();
+                } else {
+                    document.execCommand('formatBlock', false, '<' + block + '>');
+                    syncContent();
+                }
+                updateBubblePosition();
+            });
+        });
+
+        // Bubble link button
+        const bubbleLink = document.getElementById('bubbleLinkBtn');
+        if (bubbleLink) {
+            bubbleLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleInsertLink();
+            });
+        }
+
+        // Bubble color buttons
+        bubble.querySelectorAll('[data-bubble-color]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const color = btn.getAttribute('data-bubble-color');
+                document.execCommand('foreColor', false, color);
+                syncContent();
+            });
+        });
+
+        // Bubble highlight button
+        bubble.querySelectorAll('[data-bubble-highlight]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const hl = btn.getAttribute('data-bubble-highlight');
+                try {
+                    document.execCommand('hiliteColor', false, hl);
+                } catch (err) {
+                    document.execCommand('backColor', false, hl);
+                }
+                syncContent();
+            });
+        });
+
+        function updateBubblePosition() {
+            const sel = window.getSelection();
+            if (!sel || sel.isCollapsed || sel.rangeCount === 0 || !editorDoc.contains(sel.anchorNode)) {
+                bubble.style.display = 'none';
+                return;
+            }
+
+            const text = sel.toString().trim();
+            if (text.length === 0) {
+                bubble.style.display = 'none';
+                return;
+            }
+
+            const range = sel.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            if (rect.width === 0 && rect.height === 0) {
+                bubble.style.display = 'none';
+                return;
+            }
+
+            bubble.style.display = 'flex';
+            const left = Math.max(140, Math.min(window.innerWidth - 140, rect.left + rect.width / 2));
+            const top = Math.max(80, rect.top - 12);
+            bubble.style.left = `${left}px`;
+            bubble.style.top = `${top}px`;
+        }
+
+        document.addEventListener('selectionchange', () => {
+            setTimeout(updateBubblePosition, 40);
+        });
+
+        document.addEventListener('mousedown', (e) => {
+            if (!bubble.contains(e.target) && !editorDoc.contains(e.target)) {
+                bubble.style.display = 'none';
             }
         });
     }

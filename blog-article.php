@@ -378,6 +378,198 @@ include __DIR__ . '/includes/header.php';
 
 <style>
     /* Premium style overrides for public article pages */
+    /* ==========================================================================
+       LUXURY EDITORIAL TYPOGRAPHY & CONSISTENT ARTICLE STYLES
+       ========================================================================== */
+    #blog-article-content {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 17.5px;
+        line-height: 1.88;
+        color: var(--text-primary, #1F2E25);
+        letter-spacing: -0.003em;
+    }
+
+    #blog-article-content > p:first-of-type {
+        font-size: 19.5px;
+        line-height: 1.85;
+        color: var(--text-heading, #112217);
+        font-weight: 400;
+        margin-bottom: 34px;
+    }
+
+    #blog-article-content > p:first-of-type::first-letter {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 3.8rem;
+        float: left;
+        line-height: 0.78;
+        margin-right: 12px;
+        margin-top: 4px;
+        font-weight: 700;
+        color: var(--gold, #C7A66A);
+        text-shadow: 0 2px 8px rgba(199, 166, 106, 0.2);
+    }
+
+    #blog-article-content p {
+        margin-bottom: 26px;
+        color: var(--text-primary, #1F2E25);
+        font-weight: 400;
+    }
+
+    #blog-article-content h1 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(32px, 5vw, 44px);
+        font-weight: 700;
+        color: var(--text-heading, #112217);
+        margin-top: 52px;
+        margin-bottom: 24px;
+        line-height: 1.25;
+        letter-spacing: -0.015em;
+    }
+
+    #blog-article-content h2 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(26px, 3.5vw, 33px);
+        font-weight: 700;
+        color: var(--text-heading, #112217) !important;
+        margin-top: 56px;
+        margin-bottom: 22px;
+        line-height: 1.32;
+        letter-spacing: -0.01em;
+        padding-bottom: 12px;
+        border-bottom: 2px solid rgba(199, 166, 106, 0.35);
+    }
+
+    #blog-article-content h3 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(21px, 2.6vw, 25px);
+        font-weight: 600;
+        color: var(--text-heading, #16261c) !important;
+        margin-top: 42px;
+        margin-bottom: 18px;
+        line-height: 1.38;
+    }
+
+    #blog-article-content h4 {
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent, #235436);
+        margin-top: 32px;
+        margin-bottom: 14px;
+    }
+
+    /* Freedom to set everything: Author-defined custom text & background colors */
+    #blog-article-content h1 *:not([style*="color"]):not([color]),
+    #blog-article-content h2 *:not([style*="color"]):not([color]),
+    #blog-article-content h3 *:not([style*="color"]):not([color]),
+    #blog-article-content h4 *:not([style*="color"]):not([color]) {
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
+
+    #blog-article-content [style*="color"] {
+        /* Let author inline style apply directly */
+    }
+
+    #blog-article-content font[color] {
+        /* Let font color attribute apply */
+    }
+
+    #blog-article-content mark,
+    #blog-article-content [style*="background-color"] {
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    #blog-article-content strong,
+    #blog-article-content b {
+        color: var(--text-heading, #112217);
+        font-weight: 600;
+    }
+
+    #blog-article-content a {
+        color: var(--gold, #C7A66A);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color 0.2s ease;
+    }
+
+    #blog-article-content a:hover {
+        color: var(--accent, #235436);
+    }
+
+    #blog-article-content blockquote {
+        border-left: 4px solid var(--gold, #C7A66A);
+        padding: 24px 32px;
+        margin: 40px 0;
+        font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+        font-size: 22px;
+        line-height: 1.65;
+        font-style: italic;
+        background: rgba(199, 166, 106, 0.08);
+        border-radius: 0 12px 12px 0;
+        position: relative;
+        color: var(--text-heading, #112217);
+        box-shadow: 0 4px 16px rgba(17, 34, 23, 0.03);
+    }
+
+    #blog-article-content blockquote p {
+        margin: 0;
+        font-family: inherit;
+        font-style: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        color: inherit;
+    }
+
+    #blog-article-content ul {
+        list-style: none;
+        margin: 24px 0;
+        padding-left: 12px;
+    }
+
+    #blog-article-content ul li {
+        position: relative;
+        padding-left: 26px;
+        margin-bottom: 12px;
+        color: var(--text-primary, #1F2E25);
+    }
+
+    #blog-article-content ul li::before {
+        content: '✦';
+        position: absolute;
+        left: 0;
+        color: var(--gold, #C7A66A);
+        font-size: 13px;
+        top: 0;
+    }
+
+    #blog-article-content ol {
+        margin: 24px 0;
+        padding-left: 24px;
+    }
+
+    #blog-article-content ol li {
+        margin-bottom: 12px;
+        padding-left: 6px;
+        color: var(--text-primary, #1F2E25);
+    }
+
+    #blog-article-content ol li::marker {
+        color: var(--gold, #C7A66A);
+        font-weight: 700;
+    }
+
+    #blog-article-content hr.block-divider,
+    #blog-article-content hr {
+        border: none;
+        border-top: 1px solid rgba(199, 166, 106, 0.25);
+        margin: 40px 0;
+    }
+
     .article-layout-wrapper {
         display: flex;
         gap: 48px;

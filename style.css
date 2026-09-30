@@ -1,5 +1,6 @@
 /* ==========================================================================
    RT CHOCOS MASTER STYLESHEET (MODULAR HUB)
+   Updated: 2026-10-01 - High-contrast luxury article typography & floating editor bar
    ========================================================================== */
 
 @import url('css/variables.css');
@@ -9,3 +10,4 @@
 @import url('css/pages.css');
 @import url('css/chocopedia.css');
 @import url('css/ai-assistant.css');
+

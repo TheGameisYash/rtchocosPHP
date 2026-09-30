@@ -387,7 +387,7 @@ $csrfToken = generate_csrf();
 render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 ?>
 
-<link rel="stylesheet" href="editor-style.css">
+<link rel="stylesheet" href="editor-style.css?v=<?php echo filemtime(__DIR__ . '/editor-style.css'); ?>">
 
 <?php if (!empty($error)): ?>
     <script>window.addEventListener('DOMContentLoaded', () => showToast(<?php echo json_encode($error); ?>, 'danger'));</script>
@@ -462,16 +462,16 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                 <button type="button" class="word-btn" data-action="underline" title="Underline (Ctrl+U)"><u>U</u></button>
                 <button type="button" class="word-btn" data-action="strikeThrough" title="Strikethrough"><s>S</s></button>
 
-                <!-- Text Color Dropdown (Curated Editorial Brand Palette) -->
+                <!-- Text Color Dropdown (Curated Editorial Brand Palette & Custom Color) -->
                 <div class="word-color-dropdown-wrapper">
-                    <button type="button" class="word-btn word-color-btn" id="textColorBtn" title="Text Color (Editorial Palette)" onclick="toggleColorDropdown('textColorDropdown')">
+                    <button type="button" class="word-btn word-color-btn" id="textColorBtn" title="Text Color (Editorial Palette & Custom)" onclick="toggleColorDropdown('textColorDropdown')">
                         <span style="font-weight:700; font-size:13px; line-height:1;">A</span>
                         <span class="color-indicator-bar" id="textColorIndicator" style="background:var(--gold, #c7a66a);"></span>
                     </button>
-                    <div class="word-color-dropdown" id="textColorDropdown" style="display:none; min-width:185px; padding:10px 8px;">
+                    <div class="word-color-dropdown" id="textColorDropdown" style="display:none; min-width:200px; padding:10px 8px;">
                         <div class="color-dropdown-header" style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; color:var(--text-light); font-weight:700;">Text Color</div>
                         <div style="display:flex; flex-direction:column; gap:4px;">
-                            <button type="button" class="color-swatch-row" data-color="" title="Default Theme — Adapts automatically to Light & Dark themes" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                            <button type="button" class="color-swatch-row" data-color="" title="Default Theme — High-contrast luxury tone" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
                                 <span style="width:14px; height:14px; border-radius:50%; background:var(--text-main); border:1px solid var(--border-color); display:inline-block; flex-shrink:0;"></span>
                                 <span style="font-weight:600;">Theme Default</span>
                             </button>
@@ -483,35 +483,63 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                                 <span style="width:14px; height:14px; border-radius:50%; background:#5a3825; border:1px solid rgba(255,255,255,0.25); display:inline-block; flex-shrink:0;"></span>
                                 <span>Deep Cocoa</span>
                             </button>
-                            <button type="button" class="color-swatch-row" data-color="#1b4d3e" title="Forest Green — For cacao origin & organic callouts" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                            <button type="button" class="color-swatch-row" data-color="#1c1511" title="Dark Espresso — Rich charcoal black" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:#1c1511; border:1px solid rgba(255,255,255,0.25); display:inline-block; flex-shrink:0;"></span>
+                                <span>Dark Espresso</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-color="#1b4d3e" title="Forest Green — Cacao origin & botanical accent" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
                                 <span style="width:14px; height:14px; border-radius:50%; background:#1b4d3e; display:inline-block; flex-shrink:0;"></span>
                                 <span>Artisan Green</span>
                             </button>
+                            <button type="button" class="color-swatch-row" data-color="#8b1e2d" title="Artisan Crimson — Berry & fruit notes" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:#8b1e2d; display:inline-block; flex-shrink:0;"></span>
+                                <span>Artisan Crimson</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-color="#c25e2e" title="Warm Terracotta — Earthy roast notes" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:#c25e2e; display:inline-block; flex-shrink:0;"></span>
+                                <span>Warm Terracotta</span>
+                            </button>
+                        </div>
+                        <div class="color-picker-custom-row">
+                            <input type="color" id="customTextColorPicker" class="color-picker-custom-input" value="#c7a66a" title="Choose custom text color">
+                            <label for="customTextColorPicker" style="font-size:12px; cursor:pointer; color:var(--text-main); font-weight:500;">Custom Color...</label>
                         </div>
                     </div>
                 </div>
 
-                <!-- Text Highlight / Background Dropdown (Curated Brand Tints) -->
+                <!-- Text Highlight / Background Dropdown (Curated Brand Tints & Custom Tint) -->
                 <div class="word-color-dropdown-wrapper">
-                    <button type="button" class="word-btn word-color-btn" id="textHighlightBtn" title="Highlight Text" onclick="toggleColorDropdown('textHighlightDropdown')">
+                    <button type="button" class="word-btn word-color-btn" id="textHighlightBtn" title="Highlight Text (Tints & Custom)" onclick="toggleColorDropdown('textHighlightDropdown')">
                         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                         <span class="color-indicator-bar" id="highlightColorIndicator" style="background:#c7a66a;"></span>
                     </button>
-                    <div class="word-color-dropdown" id="textHighlightDropdown" style="display:none; min-width:185px; padding:10px 8px;">
+                    <div class="word-color-dropdown" id="textHighlightDropdown" style="display:none; min-width:200px; padding:10px 8px;">
                         <div class="color-dropdown-header" style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; color:var(--text-light); font-weight:700;">Highlight (Tint)</div>
                         <div style="display:flex; flex-direction:column; gap:4px;">
                             <button type="button" class="color-swatch-row" data-highlight="" title="No Highlight (Clear)" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
                                 <span style="width:14px; height:14px; border-radius:50%; background:transparent; border:1px dashed var(--border-color); display:inline-flex; align-items:center; justify-content:center; color:#ef4444; font-size:11px; font-weight:700; flex-shrink:0;">&times;</span>
                                 <span style="font-weight:600;">Clear Highlight</span>
                             </button>
-                            <button type="button" class="color-swatch-row" data-highlight="rgba(199, 166, 106, 0.28)" title="Gold Glow Tint — Luxury subtle highlight" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
-                                <span style="width:14px; height:14px; border-radius:3px; background:rgba(199, 166, 106, 0.4); border:1px solid #c7a66a; display:inline-block; flex-shrink:0;"></span>
+                            <button type="button" class="color-swatch-row" data-highlight="rgba(199, 166, 106, 0.3)" title="Gold Glow Tint — Luxury subtle highlight" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:3px; background:rgba(199, 166, 106, 0.45); border:1px solid #c7a66a; display:inline-block; flex-shrink:0;"></span>
                                 <span>Gold Glow Tint</span>
                             </button>
-                            <button type="button" class="color-swatch-row" data-highlight="rgba(27, 77, 62, 0.22)" title="Artisan Mint Tint — Botanical emphasis" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                            <button type="button" class="color-swatch-row" data-highlight="rgba(27, 77, 62, 0.25)" title="Artisan Mint Tint — Botanical emphasis" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
                                 <span style="width:14px; height:14px; border-radius:3px; background:rgba(27, 77, 62, 0.35); border:1px solid #1b4d3e; display:inline-block; flex-shrink:0;"></span>
                                 <span>Artisan Mint Tint</span>
                             </button>
+                            <button type="button" class="color-swatch-row" data-highlight="rgba(194, 65, 84, 0.22)" title="Rose Blush Tint" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:3px; background:rgba(194, 65, 84, 0.35); border:1px solid #c24154; display:inline-block; flex-shrink:0;"></span>
+                                <span>Rose Blush Tint</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-highlight="rgba(245, 158, 11, 0.25)" title="Amber Honey Tint" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:3px; background:rgba(245, 158, 11, 0.38); border:1px solid #f59e0b; display:inline-block; flex-shrink:0;"></span>
+                                <span>Amber Honey Tint</span>
+                            </button>
+                        </div>
+                        <div class="color-picker-custom-row">
+                            <input type="color" id="customHighlightPicker" class="color-picker-custom-input" value="#fef08a" title="Choose custom highlight color">
+                            <label for="customHighlightPicker" style="font-size:12px; cursor:pointer; color:var(--text-main); font-weight:500;">Custom Tint...</label>
                         </div>
                     </div>
                 </div>
@@ -580,6 +608,28 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 
                 <button type="button" class="word-btn" data-action="undo" title="Undo (Ctrl+Z)">↶</button>
                 <button type="button" class="word-btn" data-action="redo" title="Redo (Ctrl+Y)">↷</button>
+            </div>
+
+            <!-- Floating Selection Mini Bubble Toolbar -->
+            <div class="editor-floating-bubble-toolbar" id="floatingBubbleToolbar">
+                <button type="button" class="word-btn" data-bubble-action="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+                <button type="button" class="word-btn" data-bubble-action="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+                <button type="button" class="word-btn" data-bubble-action="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+                <div class="toolbar-sep" style="height:14px; margin:0 3px;"></div>
+                <button type="button" class="word-btn" data-bubble-block="h2" title="Heading 2" style="font-weight:700; font-size:11px;">H2</button>
+                <button type="button" class="word-btn" data-bubble-block="h3" title="Heading 3" style="font-weight:700; font-size:11px;">H3</button>
+                <button type="button" class="word-btn" data-bubble-block="blockquote" title="Quote" style="font-size:14px; font-weight:700;">”</button>
+                <div class="toolbar-sep" style="height:14px; margin:0 3px;"></div>
+                <button type="button" class="word-btn" id="bubbleLinkBtn" title="Link (Ctrl+K)">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-bubble-color="#c7a66a" title="Gold Accent Color" style="color:#c7a66a; font-weight:700; font-size:13px;">A</button>
+                <button type="button" class="word-btn" data-bubble-highlight="rgba(199, 166, 106, 0.35)" title="Gold Glow Tint" style="padding:0 5px;">
+                    <span style="display:inline-block; width:12px; height:12px; background:rgba(199, 166, 106, 0.45); border:1px solid #c7a66a; border-radius:3px;"></span>
+                </button>
+                <button type="button" class="word-btn" data-bubble-action="removeFormat" title="Clear Formatting">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h12M12 4v16M4 20l4-4"/></svg>
+                </button>
             </div>
 
             <!-- Single Continuous Editable Document Area -->
@@ -1256,7 +1306,7 @@ function parseMarkdown(markdown) {
 }
 </script>
 
-<script src="word-editor.js"></script>
+<script src="word-editor.js?v=<?php echo filemtime(__DIR__ . '/word-editor.js'); ?>"></script>
 
 <!-- UI logic for drawer toggle, preview toggles, image previews, and SEO synchronization -->
 <script>
