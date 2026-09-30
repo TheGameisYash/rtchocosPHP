@@ -690,6 +690,40 @@
     border-color: var(--gold, #c7a66a) !important;
 }
 
+.word-paste-mode-btn {
+    padding: 0 10px;
+    gap: 6px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    color: var(--text-main);
+}
+
+.word-paste-mode-btn:hover {
+    background: rgba(212, 175, 55, 0.16);
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.word-paste-mode-btn.active {
+    background: rgba(212, 175, 55, 0.18) !important;
+    border-color: var(--gold) !important;
+    color: var(--gold) !important;
+}
+
+.word-btn-scrub {
+    padding: 0 10px;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--gold);
+}
+
+.word-btn-scrub:hover {
+    background: rgba(212, 175, 55, 0.12);
+    border-color: var(--gold);
+    color: var(--gold-light, #e8d293);
+}
+
 .word-format-select {
     background: var(--bg-app, #120e0b);
     border: 1px solid var(--border-color);
@@ -872,6 +906,28 @@
     color: inherit;
 }
 
+/* Typography Uniformity Shield — Prevents pasted font-family/size mutations */
+.word-editor-body p *,
+.word-editor-body li *,
+.word-editor-body blockquote *,
+.word-editor-body td *,
+.word-editor-body th * {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+}
+
+.word-editor-body font {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    color: inherit !important;
+}
+
+.color-swatch-row:hover {
+    background: rgba(199, 166, 106, 0.12) !important;
+    border-color: rgba(199, 166, 106, 0.3) !important;
+}
+
 .word-editor-body strong,
 .word-editor-body b {
     color: var(--text-main);
@@ -887,6 +943,104 @@
 .word-editor-body [style*="background-color"] {
     border-radius: 3px;
     padding: 1px 3px;
+}
+
+/* Visibility Safeguards: Force text visibility and reset foreign copied properties */
+/* Inherit typography on all heading children so headings never shrink or change font */
+.word-editor-body h1 *,
+.word-editor-body h2 *,
+.word-editor-body h3 *,
+.word-editor-body h4 *,
+.word-editor-body h5 *,
+.word-editor-body h6 * {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+}
+
+[data-theme="dark"] .word-editor-body h1 *,
+[data-theme="dark"] .word-editor-body h2 *,
+[data-theme="dark"] .word-editor-body h3 *,
+[data-theme="dark"] .word-editor-body h4 *,
+[data-theme="dark"] .word-editor-body h5 *,
+[data-theme="dark"] .word-editor-body h6 * {
+    color: var(--text-main) !important;
+}
+
+/* Light Mode: Override white / near-white colors copied from dark mode sites */
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: #fff"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: #FFF"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: #ffffff"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: #FFFFFF"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="rgb(255, 255, 255)"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="rgb(255,255,255)"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: white"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: #faf6ee"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: #FAF6EE"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="250, 246, 238"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="250,246,238"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: #eee"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: #f5"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: #f8"],
+:root:not([data-theme="dark"]) .word-editor-body [style*="color: #f9"] {
+    color: var(--text-main) !important;
+}
+
+/* Dark Mode: Override dark / near-black / dark brown colors (including RT light text #1D1510 and rgb(29, 21, 16)) */
+[data-theme="dark"] .word-editor-body [style*="color: #000"],
+[data-theme="dark"] .word-editor-body [style*="color: #000000"],
+[data-theme="dark"] .word-editor-body [style*="color: #111"],
+[data-theme="dark"] .word-editor-body [style*="color: #1a"],
+[data-theme="dark"] .word-editor-body [style*="color: #1A"],
+[data-theme="dark"] .word-editor-body [style*="color: #1d"],
+[data-theme="dark"] .word-editor-body [style*="color: #1D"],
+[data-theme="dark"] .word-editor-body [style*="color: #222"],
+[data-theme="dark"] .word-editor-body [style*="color: #2a"],
+[data-theme="dark"] .word-editor-body [style*="color: #2A"],
+[data-theme="dark"] .word-editor-body [style*="color: #2c"],
+[data-theme="dark"] .word-editor-body [style*="color: #2d"],
+[data-theme="dark"] .word-editor-body [style*="color: #333"],
+[data-theme="dark"] .word-editor-body [style*="color: #3a"],
+[data-theme="dark"] .word-editor-body [style*="color: #3c"],
+[data-theme="dark"] .word-editor-body [style*="color: #444"],
+[data-theme="dark"] .word-editor-body [style*="color: #4a"],
+[data-theme="dark"] .word-editor-body [style*="color: #555"],
+[data-theme="dark"] .word-editor-body [style*="rgb(0, 0, 0)"],
+[data-theme="dark"] .word-editor-body [style*="rgb(0,0,0)"],
+[data-theme="dark"] .word-editor-body [style*="29, 21, 16"],
+[data-theme="dark"] .word-editor-body [style*="29,21,16"],
+[data-theme="dark"] .word-editor-body [style*="1d1510"],
+[data-theme="dark"] .word-editor-body [style*="1D1510"],
+[data-theme="dark"] .word-editor-body [style*="rgb(34, 34, 34)"],
+[data-theme="dark"] .word-editor-body [style*="rgb(34,34,34)"],
+[data-theme="dark"] .word-editor-body [style*="rgb(17, 24, 39)"],
+[data-theme="dark"] .word-editor-body [style*="rgb(15, 23, 42)"],
+[data-theme="dark"] .word-editor-body [style*="rgb(30, 41, 59)"],
+[data-theme="dark"] .word-editor-body [style*="rgb(51, 51, 51)"],
+[data-theme="dark"] .word-editor-body [style*="rgb(44, 24, 16)"],
+[data-theme="dark"] .word-editor-body [style*="color: black"],
+[data-theme="dark"] .word-editor-body [style*="color: #140f0c"],
+[data-theme="dark"] .word-editor-body [style*="color: #140F0C"] {
+    color: var(--text-main) !important;
+}
+
+/* Neutralize foreign solid backgrounds copied from light/dark pages */
+.word-editor-body [style*="background-color: rgb(255, 255, 255)"],
+.word-editor-body [style*="background-color: rgb(255,255,255)"],
+.word-editor-body [style*="background-color: #fff"],
+.word-editor-body [style*="background-color: #ffffff"],
+.word-editor-body [style*="background-color: white"],
+[data-theme="dark"] .word-editor-body [style*="background-color: rgb(0, 0, 0)"],
+[data-theme="dark"] .word-editor-body [style*="background-color: #000"],
+[data-theme="dark"] .word-editor-body [style*="background-color: black"] {
+    background-color: transparent !important;
+}
+
+/* Ensure consistent font family and font sizing */
+.word-editor-body font {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    color: inherit !important;
 }
 
 .word-editor-body blockquote {

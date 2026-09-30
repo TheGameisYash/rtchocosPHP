@@ -780,6 +780,39 @@ include __DIR__ . '/includes/header.php';
             max-width: 100% !important;
         }
     }
+
+    /* Public article content typography & color consistency safeguard */
+    #blog-article-content p *,
+    #blog-article-content li *,
+    #blog-article-content blockquote *,
+    #blog-article-content td *,
+    #blog-article-content th * {
+        font-family: inherit !important;
+        font-size: inherit !important;
+        line-height: inherit !important;
+    }
+    #blog-article-content [style*="color: #fff"],
+    #blog-article-content [style*="color: #FFF"],
+    #blog-article-content [style*="color: #ffffff"],
+    #blog-article-content [style*="color: #FFFFFF"],
+    #blog-article-content [style*="color: rgb(255, 255, 255)"],
+    #blog-article-content [style*="color: rgb(255,255,255)"],
+    #blog-article-content [style*="color: white"] {
+        color: inherit !important;
+    }
+    #blog-article-content [style*="background-color: rgb(255, 255, 255)"],
+    #blog-article-content [style*="background-color: #fff"],
+    #blog-article-content [style*="background-color: #ffffff"],
+    #blog-article-content [style*="background-color: white"],
+    #blog-article-content [style*="background-color: rgb(0, 0, 0)"],
+    #blog-article-content [style*="background-color: #000"] {
+        background-color: transparent !important;
+    }
+    #blog-article-content font {
+        color: inherit !important;
+        font-family: inherit !important;
+        font-size: inherit !important;
+    }
 </style>
 
 <?php if (!empty($isAdminPreview)): ?>

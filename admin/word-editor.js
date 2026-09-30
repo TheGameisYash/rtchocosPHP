@@ -29,6 +29,9 @@
     // Drag-and-drop state
     let currentDraggedBlock = null;
 
+    // Paste mode state (Default: true = Plain Text mode to ensure zero foreign properties)
+    let pasteAsPlainText = localStorage.getItem('rt_editor_paste_plain') !== 'false';
+
     // =========================================================================
     // 1. INITIALIZATION
     // =========================================================================
@@ -46,6 +49,9 @@
         // Convert initial content (Markdown or HTML) to clean editable HTML
         const html = convertToEditableHtml(initialContent || '');
         editorDoc.innerHTML = html.trim() || '<p><br></p>';
+
+        // Scrub any foreign inline styles/low-contrast colors on initial document load
+        scrubElementStyles(editorDoc);
 
         // Attach interactive controls to existing figures & tables
         attachAllControls();
@@ -66,6 +72,7 @@
         setupImageUploadEvents();
         updateStats();
         updateToolbarState();
+        updatePasteModeButton();
 
         // Autosave recovery check
         checkAutosaveRecovery();
@@ -767,25 +774,197 @@
     }
 
     // =========================================================================
-    // 6. CONVERT INITIAL CONTENT (Markdown & HTML support)
+    // 6. STYLE & TYPOGRAPHY NORMALIZER (Best Practices: Zero Inconsistent Fonts or Colors)
     // =========================================================================
+    function parseColorRgb(str) {
+        if (!str) return null;
+        str = str.trim().toLowerCase();
+        if (str === 'black' || str === '#000' || str === '#000000') return { r: 0, g: 0, b: 0 };
+        if (str === 'white' || str === '#fff' || str === '#ffffff') return { r: 255, g: 255, b: 255 };
+
+        const hexMatch = str.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+        if (hexMatch) {
+            let hex = hexMatch[1];
+            if (hex.length === 3) {
+                hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+            }
+            return {
+                r: parseInt(hex.substring(0, 2), 16),
+                g: parseInt(hex.substring(2, 4), 16),
+                b: parseInt(hex.substring(4, 6), 16)
+            };
+        }
+
+        const rgbMatch = str.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+        if (rgbMatch) {
+            return {
+                r: parseInt(rgbMatch[1], 10),
+                g: parseInt(rgbMatch[2], 10),
+                b: parseInt(rgbMatch[3], 10)
+            };
+        }
+
+        return null;
+    }
+
+    function isApprovedBrandColor(colorStr) {
+        if (!colorStr) return false;
+        const c = colorStr.trim().toLowerCase().replace(/\s+/g, '');
+        // Whitelisted brand accents:
+        // RT Gold: #c7a66a, rgb(199,166,106), var(--gold)
+        // Deep Cocoa: #5a3825, rgb(90,56,37)
+        // Forest Green: #1b4d3e, rgb(27,77,62)
+        if (c === '#c7a66a' || c === 'rgb(199,166,106)' || c.includes('var(--gold)')) return true;
+        if (c === '#5a3825' || c === 'rgb(90,56,37)') return true;
+        if (c === '#1b4d3e' || c === 'rgb(27,77,62)') return true;
+        return false;
+    }
+
+    function isApprovedBrandHighlight(bgStr) {
+        if (!bgStr) return false;
+        const b = bgStr.trim().toLowerCase().replace(/\s+/g, '');
+        // Whitelisted subtle brand tints:
+        if (b.includes('rgba(199,166,106') || b.includes('rgba(27,77,62') || b === '#fff3b0' || b.includes('rgba(254,240,138')) return true;
+        return false;
+    }
+
+    function scrubElementStyles(container) {
+        if (!container) return;
+
+        // 1. Unwrap deprecated presentation containers: font, center, big, small, marquee
+        container.querySelectorAll('font, center, big, small, marquee').forEach(tag => {
+            while (tag.firstChild) tag.parentNode.insertBefore(tag.firstChild, tag);
+            tag.remove();
+        });
+
+        // 2. Headings (h1..h6): clean ALL inline styles, attributes & nested spans so theme CSS sets clean font, size, & color
+        container.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+            h.removeAttribute('style');
+            h.removeAttribute('face');
+            h.removeAttribute('size');
+            h.removeAttribute('color');
+            h.removeAttribute('bgcolor');
+            h.removeAttribute('align');
+            
+            // Clean children inside headings
+            h.querySelectorAll('*').forEach(child => {
+                if (child.tagName === 'SPAN' || child.tagName === 'FONT') {
+                    while (child.firstChild) child.parentNode.insertBefore(child.firstChild, child);
+                    child.remove();
+                } else {
+                    child.removeAttribute('style');
+                    child.removeAttribute('face');
+                    child.removeAttribute('size');
+                    child.removeAttribute('color');
+                }
+            });
+        });
+
+        // 3. Process all elements
+        container.querySelectorAll('*').forEach(el => {
+            // Never strip editor UI controls or widgets
+            if (el.classList && (
+                el.classList.contains('editor-figure-topbar') || 
+                el.classList.contains('editor-table-topbar') || 
+                el.classList.contains('editor-block-drag-handle') ||
+                el.classList.contains('editor-resize-handle') ||
+                el.classList.contains('editor-table-resize-handle') ||
+                el.classList.contains('editor-size-badge') ||
+                el.classList.contains('color-indicator-bar')
+            )) {
+                return;
+            }
+
+            // Strip foreign non-semantic attributes
+            el.removeAttribute('face');
+            el.removeAttribute('size');
+            el.removeAttribute('color');
+            el.removeAttribute('bgcolor');
+            el.removeAttribute('dir');
+            el.removeAttribute('valign');
+
+            // Strip align on standard text elements
+            if (['P', 'LI', 'BLOCKQUOTE', 'SPAN', 'DIV'].includes(el.tagName)) {
+                el.removeAttribute('align');
+            }
+
+            if (el.hasAttribute('style')) {
+                const s = el.style;
+
+                // A. Strip all typography overrides that cause inconsistency across fonts and devices
+                s.removeProperty('font-family');
+                s.removeProperty('font-size');
+                s.removeProperty('line-height');
+                s.removeProperty('letter-spacing');
+                s.removeProperty('word-spacing');
+                s.removeProperty('text-indent');
+                s.removeProperty('text-transform');
+
+                // Clean inline font-weight and font-style on non-formatting elements
+                if (el.tagName !== 'STRONG' && el.tagName !== 'B' && el.tagName !== 'EM' && el.tagName !== 'I') {
+                    if (s.fontWeight === 'normal' || s.fontWeight === '400') s.removeProperty('font-weight');
+                    if (s.fontStyle === 'normal') s.removeProperty('font-style');
+                }
+
+                // Strip margin & padding on inline elements and basic paragraphs
+                if (el.tagName === 'SPAN') {
+                    s.removeProperty('margin');
+                    s.removeProperty('margin-top');
+                    s.removeProperty('margin-bottom');
+                    s.removeProperty('margin-left');
+                    s.removeProperty('margin-right');
+                    s.removeProperty('padding');
+                    s.removeProperty('padding-top');
+                    s.removeProperty('padding-bottom');
+                    s.removeProperty('padding-left');
+                    s.removeProperty('padding-right');
+                }
+
+                // B. Enforce Color Consistency:
+                // Only allow approved brand accents (e.g. RT Gold Accent).
+                // Strip all foreign colors (black, white, greys, random RGBs from other sites)
+                // so text inherits the theme color naturally!
+                if (s.color) {
+                    if (!isApprovedBrandColor(s.color)) {
+                        s.removeProperty('color');
+                    }
+                }
+
+                // C. Enforce Background / Highlight Consistency:
+                // Strip solid black, white, gray, or foreign backgrounds pasted from web pages.
+                // Only allow curated subtle brand tints on highlights.
+                if (s.backgroundColor) {
+                    if (!isApprovedBrandHighlight(s.backgroundColor)) {
+                        s.removeProperty('background-color');
+                        s.removeProperty('background');
+                    }
+                }
+
+                // Clean empty style attributes
+                if (!el.getAttribute('style') || !el.getAttribute('style').trim()) {
+                    el.removeAttribute('style');
+                }
+            }
+
+            // D. Unwrap redundant spans that have no attributes or only empty styles
+            if (el.tagName === 'SPAN') {
+                const hasStyle = el.hasAttribute('style') && el.getAttribute('style').trim().length > 0;
+                const hasClass = el.hasAttribute('class') && el.getAttribute('class').trim().length > 0;
+                if (!hasStyle && !hasClass) {
+                    while (el.firstChild) el.parentNode.insertBefore(el.firstChild, el);
+                    el.remove();
+                }
+            }
+        });
+    }
+
     function sanitizeHtmlContent(html) {
         if (!html) return '<p><br></p>';
         const temp = document.createElement('div');
         temp.innerHTML = html;
 
-        // 1. Clean redundant or transparent background styles, preserving author colors
-        temp.querySelectorAll('*').forEach(el => {
-            if (el.style.backgroundColor) {
-                const bg = el.style.backgroundColor.toLowerCase().replace(/\s+/g, '');
-                if (bg.includes('rgba(0,0,0,0)') || bg === 'transparent') {
-                    el.style.backgroundColor = '';
-                }
-            }
-            if (!el.getAttribute('style') || !el.getAttribute('style').trim()) {
-                el.removeAttribute('style');
-            }
-        });
+        // 1. Scrub foreign colors, fonts, backgrounds
+        scrubElementStyles(temp);
 
         // 2. Headings: If a heading (h1-h6) has nested block children (like <p>, <div>),
         // flatten/unwrap the children SO THE HEADING ITSELF IS PRESERVED!
@@ -961,6 +1140,8 @@
         return `<div class="blog-yt-embed" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin:24px 0;" contenteditable="false"><iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px;"></iframe></div><p><br></p>`;
     }
 
+
+
     // =========================================================================
     // 7. CLEAN HTML SERIALIZATION (For Database & Frontend)
     // =========================================================================
@@ -989,6 +1170,9 @@
         temp.querySelectorAll('figure[contenteditable], .table-responsive-wrapper[contenteditable]').forEach(el => {
             el.removeAttribute('contenteditable');
         });
+
+        // Scrub foreign colors/fonts/backgrounds before saving
+        scrubElementStyles(temp);
 
         // Clean empty style attributes
         temp.querySelectorAll('*').forEach(el => {
@@ -1150,24 +1334,285 @@
             }
         });
 
-        // Paste handling
+        // Paste handling — Intercepts and strips foreign properties/styles to keep editor 100% consistent
         editorDoc.addEventListener('paste', (e) => {
-            const clipboard = e.clipboardData;
+            const clipboard = e.clipboardData || window.clipboardData;
             if (!clipboard) return;
 
+            // 1. Direct image file paste
             if (clipboard.files && clipboard.files.length > 0) {
                 const file = clipboard.files[0];
-                if (file.type.startsWith('image/')) {
+                if (file.type && file.type.startsWith('image/')) {
                     e.preventDefault();
                     uploadAndInsertImage(file);
                     return;
                 }
             }
-            setTimeout(() => {
-                attachAllControls();
-                syncContent();
-            }, 20);
+
+            // 2. Prevent default browser paste (which injects dirty HTML with external styles/properties)
+            e.preventDefault();
+
+            const plainText = clipboard.getData('text/plain') || '';
+            const htmlText = clipboard.getData('text/html') || '';
+
+            handleSmartPaste(plainText, htmlText);
         });
+
+        function handleSmartPaste(plainText, htmlText) {
+            if (!editorDoc) return;
+            editorDoc.focus();
+
+            if (pasteAsPlainText || !htmlText || !htmlText.trim()) {
+                insertPlainTextAtCaret(plainText);
+            } else {
+                insertCleanHtmlAtCaret(htmlText, plainText);
+            }
+
+            attachAllControls();
+            syncContent();
+
+            if (window.showToast) {
+                showToast(pasteAsPlainText ? 'Pasted as clean text (foreign properties stripped)' : 'Pasted with clean formatting (foreign styles stripped)', 'info');
+            }
+        }
+
+        function insertPlainTextAtCaret(plainText) {
+            if (!plainText) return;
+            saveCurrentCaret();
+
+            const normalized = plainText.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+            if (!normalized) return;
+
+            const sel = window.getSelection();
+            if (!sel || sel.rangeCount === 0 || !editorDoc.contains(sel.anchorNode)) {
+                const p = document.createElement('p');
+                p.textContent = normalized;
+                editorDoc.appendChild(p);
+                placeCaretAtEnd(p);
+                return;
+            }
+
+            const range = sel.getRangeAt(0);
+
+            // Single line text without newlines (inline insert at cursor)
+            if (!normalized.includes('\n')) {
+                range.deleteContents();
+                const textNode = document.createTextNode(normalized);
+                range.insertNode(textNode);
+                range.setStartAfter(textNode);
+                range.setEndAfter(textNode);
+                sel.removeAllRanges();
+                sel.addRange(range);
+                return;
+            }
+
+            // Multi-line text: detect lists or split into paragraphs
+            const lines = normalized.split('\n').map(l => l.trim()).filter(Boolean);
+            const isBulletList = lines.length > 1 && lines.every(l => /^[-*•]\s+/.test(l));
+            const isNumList = lines.length > 1 && lines.every(l => /^\d+[\.\)]\s+/.test(l));
+
+            const newElements = [];
+
+            if (isBulletList) {
+                const ul = document.createElement('ul');
+                lines.forEach(l => {
+                    const li = document.createElement('li');
+                    li.textContent = l.replace(/^[-*•]\s+/, '');
+                    ul.appendChild(li);
+                });
+                newElements.push(ul);
+            } else if (isNumList) {
+                const ol = document.createElement('ol');
+                lines.forEach(l => {
+                    const li = document.createElement('li');
+                    li.textContent = l.replace(/^\d+[\.\)]\s+/, '');
+                    ol.appendChild(li);
+                });
+                newElements.push(ol);
+            } else {
+                const rawParas = normalized.split(/\n\s*\n+/).map(p => p.trim()).filter(Boolean);
+                rawParas.forEach(para => {
+                    const p = document.createElement('p');
+                    const sublines = para.split('\n').map(s => s.trim());
+                    if (sublines.length > 1) {
+                        p.innerHTML = sublines.map(escapeHtml).join('<br>');
+                    } else {
+                        p.textContent = para;
+                    }
+                    newElements.push(p);
+                });
+            }
+
+            if (newElements.length === 0) return;
+
+            range.deleteContents();
+
+            let targetBlock = getDirectBlockChild(range.startContainer);
+            if (!targetBlock || !editorDoc.contains(targetBlock)) {
+                targetBlock = editorDoc.lastElementChild;
+            }
+
+            const isTargetEmpty = targetBlock && targetBlock.tagName === 'P' && 
+                (targetBlock.innerHTML.trim() === '<br>' || targetBlock.innerText.trim() === '');
+
+            if (isTargetEmpty) {
+                newElements.forEach(el => editorDoc.insertBefore(el, targetBlock));
+                targetBlock.remove();
+            } else if (targetBlock) {
+                let ref = targetBlock.nextSibling;
+                newElements.forEach(el => {
+                    if (ref) {
+                        editorDoc.insertBefore(el, ref);
+                    } else {
+                        editorDoc.appendChild(el);
+                    }
+                });
+            } else {
+                newElements.forEach(el => editorDoc.appendChild(el));
+            }
+
+            const lastEl = newElements[newElements.length - 1];
+            if (lastEl) {
+                placeCaretAtEnd(lastEl);
+                savedActiveBlock = lastEl;
+            }
+        }
+
+        function insertCleanHtmlAtCaret(rawHtml, fallbackPlainText) {
+            if (!rawHtml || !rawHtml.trim()) {
+                insertPlainTextAtCaret(fallbackPlainText);
+                return;
+            }
+
+            const cleaned = sanitizePastedHtml(rawHtml);
+            if (!cleaned || !cleaned.trim()) {
+                insertPlainTextAtCaret(fallbackPlainText);
+                return;
+            }
+
+            const sel = window.getSelection();
+            if (!sel || sel.rangeCount === 0 || !editorDoc.contains(sel.anchorNode)) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = cleaned;
+                while (tempDiv.firstChild) {
+                    editorDoc.appendChild(tempDiv.firstChild);
+                }
+                return;
+            }
+
+            const range = sel.getRangeAt(0);
+            range.deleteContents();
+
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = cleaned;
+
+            const frag = document.createDocumentFragment();
+            let lastNode = null;
+            while (tempDiv.firstChild) {
+                lastNode = tempDiv.firstChild;
+                frag.appendChild(tempDiv.firstChild);
+            }
+
+            range.insertNode(frag);
+            if (lastNode) {
+                placeCaretAtEnd(lastNode.nodeType === 3 ? lastNode.parentNode : lastNode);
+            }
+        }
+
+        function sanitizePastedHtml(rawHtml) {
+            if (!rawHtml) return '';
+            // Remove MS Word comments <!--[if ...]> and standard HTML comments
+            rawHtml = rawHtml.replace(/<!--[\s\S]*?-->/g, '');
+
+            const temp = document.createElement('div');
+            temp.innerHTML = rawHtml;
+
+            // 1. Remove dangerous or non-content tags & Office XML
+            temp.querySelectorAll('script, style, meta, link, xml, o\\:p, w\\:worddocument, noscript, iframe:not([src*="youtube"]), form, input, button, select, textarea').forEach(el => el.remove());
+
+            // 2. Demote pasted h1 to h2 (article must only have 1 H1 which is title)
+            temp.querySelectorAll('h1').forEach(h => {
+                const h2 = document.createElement('h2');
+                h2.innerHTML = h.innerHTML;
+                h.parentNode.replaceChild(h2, h);
+            });
+
+            // Demote h5, h6 to h4
+            temp.querySelectorAll('h5, h6').forEach(h => {
+                const h4 = document.createElement('h4');
+                h4.innerHTML = h.innerHTML;
+                h.parentNode.replaceChild(h4, h);
+            });
+
+            // 3. Normalize <b> to <strong>, <i> to <em>
+            temp.querySelectorAll('b').forEach(b => {
+                const s = document.createElement('strong');
+                s.innerHTML = b.innerHTML;
+                b.parentNode.replaceChild(s, b);
+            });
+            temp.querySelectorAll('i').forEach(i => {
+                const em = document.createElement('em');
+                em.innerHTML = i.innerHTML;
+                i.parentNode.replaceChild(em, i);
+            });
+
+            // 4. Unwrap presentation containers (font, span, center)
+            temp.querySelectorAll('font, span, center').forEach(el => {
+                while (el.firstChild) {
+                    el.parentNode.insertBefore(el.firstChild, el);
+                }
+                el.remove();
+            });
+
+            // 5. Remove ALL attributes except safe attributes
+            temp.querySelectorAll('*').forEach(el => {
+                const tag = el.tagName.toLowerCase();
+
+                // Strip style, class, id, dir, bgcolor, color, align, etc.
+                el.removeAttribute('style');
+                el.removeAttribute('class');
+                el.removeAttribute('id');
+                el.removeAttribute('dir');
+                el.removeAttribute('align');
+                el.removeAttribute('valign');
+                el.removeAttribute('bgcolor');
+                el.removeAttribute('width');
+                el.removeAttribute('height');
+
+                if (tag === 'a') {
+                    const href = el.getAttribute('href') || '';
+                    Array.from(el.attributes).forEach(attr => {
+                        if (attr.name !== 'href') el.removeAttribute(attr.name);
+                    });
+                    if (!href.startsWith('http') && !href.startsWith('/') && !href.startsWith('mailto:') && !href.startsWith('#')) {
+                        el.removeAttribute('href');
+                    } else {
+                        el.setAttribute('target', '_blank');
+                        el.setAttribute('rel', 'noopener');
+                    }
+                } else if (tag === 'img') {
+                    const src = el.getAttribute('src');
+                    const alt = el.getAttribute('alt') || '';
+                    Array.from(el.attributes).forEach(attr => {
+                        if (attr.name !== 'src' && attr.name !== 'alt') el.removeAttribute(attr.name);
+                    });
+                    el.setAttribute('loading', 'lazy');
+                } else {
+                    while (el.attributes.length > 0) {
+                        el.removeAttribute(el.attributes[0].name);
+                    }
+                }
+            });
+
+            // 6. Flatten div to p
+            temp.querySelectorAll('div').forEach(d => {
+                const p = document.createElement('p');
+                p.innerHTML = d.innerHTML;
+                d.parentNode.replaceChild(p, d);
+            });
+
+            return temp.innerHTML;
+        }
 
         // Dragover & Drop on EditorDoc for block reordering
         editorDoc.addEventListener('dragover', (e) => {
@@ -1194,6 +1639,28 @@
 
         editorDoc.addEventListener('drop', (e) => {
             editorDoc.classList.remove('drag-over');
+
+            // Handle external drop (files or pasted text)
+            if (!currentDraggedBlock) {
+                const dt = e.dataTransfer;
+                if (dt) {
+                    if (dt.files && dt.files.length > 0) {
+                        const file = dt.files[0];
+                        if (file.type && file.type.startsWith('image/')) {
+                            e.preventDefault();
+                            uploadAndInsertImage(file);
+                            return;
+                        }
+                    }
+                    const plainText = dt.getData('text/plain') || '';
+                    const htmlText = dt.getData('text/html') || '';
+                    if (plainText || htmlText) {
+                        e.preventDefault();
+                        handleSmartPaste(plainText, htmlText);
+                        return;
+                    }
+                }
+            }
 
             // Handle internal block drop
             if (currentDraggedBlock) {
@@ -1283,9 +1750,31 @@
                 e.preventDefault();
                 saveCurrentCaret();
                 const action = btn.getAttribute('data-action');
-                execFormat(action);
+                if (action === 'removeFormat') {
+                    handleClearFormatting();
+                } else {
+                    execFormat(action);
+                }
             });
         });
+
+        // Paste Mode Toggle Button
+        const pasteBtn = document.getElementById('pasteModeToggleBtn');
+        if (pasteBtn) {
+            pasteBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.togglePasteMode();
+            });
+        }
+
+        // Fix Invisible Text & Document Scrubber Button
+        const scrubBtn = document.getElementById('scrubDocFormattingBtn');
+        if (scrubBtn) {
+            scrubBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrubDocumentFormatting(true);
+            });
+        }
 
         if (formatSelect) {
             formatSelect.addEventListener('change', () => {
@@ -1362,17 +1851,34 @@
             }
         };
 
-        // Text color swatches
-        toolbar.querySelectorAll('.color-swatch-item[data-color]').forEach(btn => {
+        // Text color swatches (Editorial Brand Palette)
+        toolbar.querySelectorAll('[data-color]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 saveCurrentCaret();
                 const color = btn.getAttribute('data-color');
                 const ind = document.getElementById('textColorIndicator');
-                if (ind) ind.style.background = color || 'var(--gold)';
+                if (ind) ind.style.background = color || 'var(--gold, #c7a66a)';
                 editorDoc.focus();
                 if (!color) {
+                    // Default Theme: Strip all custom colors on selection
                     document.execCommand('removeFormat', false, null);
+                    const sel = window.getSelection();
+                    if (sel && sel.rangeCount > 0 && !sel.isCollapsed && editorDoc.contains(sel.anchorNode)) {
+                        const range = sel.getRangeAt(0);
+                        const container = range.commonAncestorContainer;
+                        const parentEl = container.nodeType === 3 ? container.parentNode : container;
+                        if (parentEl && parentEl !== editorDoc) {
+                            parentEl.querySelectorAll('*').forEach(el => {
+                                el.style.color = '';
+                                if (el.tagName === 'FONT') {
+                                    while (el.firstChild) el.parentNode.insertBefore(el.firstChild, el);
+                                    el.remove();
+                                }
+                            });
+                            if (parentEl.style) parentEl.style.color = '';
+                        }
+                    }
                 } else {
                     document.execCommand('foreColor', false, color);
                 }
@@ -1381,27 +1887,14 @@
             });
         });
 
-        // Custom text color input
-        const customColorInput = document.getElementById('customTextColorPicker');
-        if (customColorInput) {
-            customColorInput.addEventListener('input', (e) => {
-                const color = e.target.value;
-                const ind = document.getElementById('textColorIndicator');
-                if (ind) ind.style.background = color;
-                editorDoc.focus();
-                document.execCommand('foreColor', false, color);
-                syncContent();
-            });
-        }
-
-        // Text highlight swatches
-        toolbar.querySelectorAll('.color-swatch-item[data-highlight]').forEach(btn => {
+        // Text highlight swatches (Curated Brand Tints)
+        toolbar.querySelectorAll('[data-highlight]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 saveCurrentCaret();
                 const color = btn.getAttribute('data-highlight');
                 const ind = document.getElementById('highlightColorIndicator');
-                if (ind) ind.style.background = color || '#fff3b0';
+                if (ind) ind.style.background = color || '#c7a66a';
                 editorDoc.focus();
                 if (!color) {
                     try {
@@ -1409,6 +1902,10 @@
                     } catch (err) {
                         document.execCommand('backColor', false, 'transparent');
                     }
+                    editorDoc.querySelectorAll('[style*="transparent"]').forEach(el => {
+                        el.style.backgroundColor = '';
+                        if (!el.getAttribute('style') || !el.getAttribute('style').trim()) el.removeAttribute('style');
+                    });
                 } else {
                     try {
                         document.execCommand('hiliteColor', false, color);
@@ -1461,6 +1958,86 @@
         syncContent();
         updateToolbarState();
     }
+
+    function updatePasteModeButton() {
+        const btn = document.getElementById('pasteModeToggleBtn');
+        const label = document.getElementById('pasteModeLabel');
+        if (btn) {
+            btn.classList.toggle('active', pasteAsPlainText);
+            btn.title = pasteAsPlainText
+                ? 'Paste Mode: Text Only (Active - foreign properties & colors stripped). Click to toggle Clean Format mode'
+                : 'Paste Mode: Clean Format (Active - basic semantics kept, foreign styles stripped). Click to toggle Text Only mode';
+        }
+        if (label) {
+            label.innerText = pasteAsPlainText ? 'Paste: Text Only' : 'Paste: Clean Format';
+        }
+    }
+
+    window.togglePasteMode = function () {
+        pasteAsPlainText = !pasteAsPlainText;
+        localStorage.setItem('rt_editor_paste_plain', pasteAsPlainText ? 'true' : 'false');
+        updatePasteModeButton();
+        if (window.showToast) {
+            showToast(pasteAsPlainText ? 'Paste mode: Text Only (Properties stripped)' : 'Paste mode: Clean Format (Styles stripped)', 'info');
+        }
+    };
+
+    function handleClearFormatting() {
+        if (!editorDoc) return;
+        editorDoc.focus();
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && !sel.isCollapsed && editorDoc.contains(sel.anchorNode)) {
+            document.execCommand('removeFormat', false, null);
+
+            const range = sel.getRangeAt(0);
+            const container = range.commonAncestorContainer;
+            const parentEl = container.nodeType === 3 ? container.parentNode : container;
+
+            if (parentEl && parentEl !== editorDoc) {
+                parentEl.querySelectorAll('*').forEach(el => {
+                    el.removeAttribute('style');
+                    if (el.tagName === 'FONT' || el.tagName === 'SPAN') {
+                        while (el.firstChild) el.parentNode.insertBefore(el.firstChild, el);
+                        el.remove();
+                    }
+                });
+                if (parentEl.tagName === 'SPAN' || parentEl.tagName === 'FONT') {
+                    parentEl.removeAttribute('style');
+                }
+            }
+            syncContent();
+            if (window.showToast) showToast('Formatting cleared on selected text', 'info');
+        } else {
+            if (savedActiveBlock && editorDoc.contains(savedActiveBlock)) {
+                savedActiveBlock.querySelectorAll('*').forEach(el => el.removeAttribute('style'));
+                savedActiveBlock.removeAttribute('style');
+                syncContent();
+                if (window.showToast) showToast('Formatting cleared on current paragraph', 'info');
+            } else {
+                scrubDocumentFormatting(true);
+            }
+        }
+    }
+
+    function scrubDocumentFormatting(showToastNotice = true) {
+        if (!editorDoc) return;
+
+        scrubElementStyles(editorDoc);
+
+        // Also clean empty spans
+        editorDoc.querySelectorAll('span:not([style]):not([class])').forEach(s => {
+            while (s.firstChild) s.parentNode.insertBefore(s.firstChild, s);
+            s.remove();
+        });
+
+        attachAllControls();
+        syncContent();
+
+        if (showToastNotice && window.showToast) {
+            showToast('✨ Cleaned! All invisible text made visible & fonts standardized.', 'success');
+        }
+    }
+    window.scrubDocumentFormatting = scrubDocumentFormatting;
 
     function updateToolbarState() {
         const commands = ['bold', 'italic', 'underline', 'strikeThrough', 'justifyLeft', 'justifyCenter', 'justifyRight', 'insertUnorderedList', 'insertOrderedList'];
