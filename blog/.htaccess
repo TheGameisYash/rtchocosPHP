@@ -1,0 +1,18 @@
+# ----------------------------------------------------------------------
+# | Blog Directory Rewrite Rules (Hostinger / LiteSpeed)               |
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /blog/
+
+    # Prevent direct access to markdown posts
+    RewriteRule ^posts/ - [F,L]
+
+    # Route /blog/ or empty slug to blog listing
+    RewriteRule ^$ ../blog.php [L]
+
+    # Route clean blog article URLs (/blog/{slug}) to article.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^([^/]+)/?$ article.php?slug=$1 [L,QSA]
+</IfModule>

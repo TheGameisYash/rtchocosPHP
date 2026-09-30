@@ -44,13 +44,14 @@ Options +FollowSymLinks -Indexes
 # ----------------------------------------------------------------------
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
 
     # Prevent direct access to includes & data
     RewriteRule ^includes/ - [F,L]
     RewriteRule ^data/ - [F,L]
 
     # Sitemap rule
-    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+    RewriteRule ^sitemap\.xml$ /sitemap.php [L]
 
     # Handle /admin without trailing slash and /login shortcuts
     RewriteRule ^admin$ /admin/ [R=301,L]
@@ -60,15 +61,15 @@ Options +FollowSymLinks -Indexes
     RewriteRule ^dev$ /dev/ [R=301,L]
 
     # Handle /maintenance clean URL
-    RewriteRule ^maintenance/?$ maintenance.php [L]
+    RewriteRule ^maintenance/?$ /maintenance.php [L]
 
     # Handle /blog and /blog/ requests
-    RewriteRule ^blog/?$ blog.php [L]
+    RewriteRule ^blog/?$ /blog.php [L]
 
     # Rewrite clean blog article URLs (/blog/article-slug) to blog-article.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^blog/([^/]+)/?$ blog-article.php?slug=$1 [L,QSA]
+    RewriteRule ^blog/([^/]+)/?$ /blog-article.php?slug=$1 [L,QSA]
 
     # Handle accidental nested /shop/shop/{slug} requests
     RewriteRule ^(?:shop|blog)/(?:shop|blog)/([^/]+)/?$ /shop/$1 [R=301,L]
@@ -76,26 +77,26 @@ Options +FollowSymLinks -Indexes
     # Rewrite clean shop & product URLs
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(?:shop|product)/([^/]+)/?$ product.php?slug=$1 [L,QSA]
+    RewriteRule ^(?:shop|product)/([^/]+)/?$ /product.php?slug=$1 [L,QSA]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^shop/?$ shop.php [L]
+    RewriteRule ^shop/?$ /shop.php [L]
 
     # Rewrite clean listicle URL
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^indian-chocolate-brands/?$ brand-listicle.php [L]
+    RewriteRule ^indian-chocolate-brands/?$ /brand-listicle.php [L]
 
     # Route missing blog images to blog_image.php
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^assets/blogs/(.+)$ blog_image.php?file=$1 [L,QSA]
+    RewriteRule ^assets/blogs/(.+)$ /blog_image.php?file=$1 [L,QSA]
 
     # Map extensionless URL requests to actual .php files
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME}.php -f
-    RewriteRule ^(.*)$ $1.php [L,QSA]
+    RewriteRule ^(.*)$ /$1.php [L,QSA]
 </IfModule>
 
 # ----------------------------------------------------------------------
