@@ -17,9 +17,23 @@ if (isset($articleKey)) {
     $cached = !$isAdmin ? get_cached_blog_article($articleKey, 1800) : null;
 
     if ($cached && !empty($cached['post'])) {
-        $post = $cached['post'];
-        $markdown_content = $cached['markdown_content'] ?? '';
-        $isFromDb = true;
+        if (isset($cached['post']['is_published']) && (int)$cached['post']['is_published'] === 0) {
+            if ($isAdmin) {
+                $isAdminPreview = true;
+                $post = $cached['post'];
+                $markdown_content = $cached['markdown_content'] ?? '';
+                $isFromDb = true;
+            } else {
+                http_response_code(404);
+                $pathPrefix = "../";
+                include __DIR__ . '/error.php';
+                exit;
+            }
+        } else {
+            $post = $cached['post'];
+            $markdown_content = $cached['markdown_content'] ?? '';
+            $isFromDb = true;
+        }
     } else {
         try {
             $pdo = get_db();
@@ -822,12 +836,38 @@ include __DIR__ . '/includes/header.php';
             <span class="admin-preview-badge">Admin Preview Mode</span>
             <span class="admin-preview-text">This article is currently <strong>HIDDEN (Draft)</strong> from the public. Only logged-in administrators can view this page.</span>
         </div>
-        <a href="../admin/blog-editor.php?id=<?php echo (int)($post['id'] ?? 0); ?>" class="admin-preview-edit-btn">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            Edit Article
-        </a>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <button type="button" onclick="publishThisArticleNow(<?php echo (int)($post['id'] ?? 0); ?>)" class="admin-preview-publish-btn" style="background:#15803d; color:#fff; border:none; border-radius:6px; font-weight:700; font-size:12.5px; padding:6px 14px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:background 0.2s;">
+                <span>👁️</span> Make Visible (Publish)
+            </button>
+            <a href="../admin/blog-editor.php?id=<?php echo (int)($post['id'] ?? 0); ?>" class="admin-preview-edit-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit Article
+            </a>
+        </div>
     </div>
 </div>
+<script>
+function publishThisArticleNow(blogId) {
+    if (!confirm('Make this article visible to the public now?')) return;
+    const form = new FormData();
+    form.append('action', 'toggle_publish');
+    form.append('blog_id', blogId);
+    form.append('is_published', '1');
+    form.append('csrf_token', <?php echo json_encode(generate_csrf()); ?>);
+    fetch('../admin/blog-editor.php', { method: 'POST', body: form })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Article is now published and visible to the public!');
+                location.reload();
+            } else {
+                alert('Failed to publish: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(err => alert('Network error: ' + err.message));
+}
+</script>
 <?php endif; ?>
 
 <!-- --- BLOG ARTICLE SECTION --- -->

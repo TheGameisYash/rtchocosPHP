@@ -9,7 +9,7 @@ $cached = get_cached_blog_list(1800);
 if ($cached !== null && is_array($cached)) {
     $etag = '"' . md5(json_encode($cached)) . '"';
     header('ETag: ' . $etag);
-    header('Cache-Control: public, max-age=180, stale-while-revalidate=300');
+    header('Cache-Control: no-cache, must-revalidate, max-age=0');
     if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
         http_response_code(304);
         exit;
@@ -50,7 +50,7 @@ try {
     cache_blog_list($response);
     $etag = '"' . md5(json_encode($response)) . '"';
     header('ETag: ' . $etag);
-    header('Cache-Control: public, max-age=180, stale-while-revalidate=300');
+    header('Cache-Control: no-cache, must-revalidate, max-age=0');
     header('X-Data-Source: database');
     echo json_encode($response, JSON_UNESCAPED_SLASHES);
 } catch (Exception $e) {

@@ -106,6 +106,19 @@
         }
     }
 
+    function restoreSavedCaret() {
+        if (!editorDoc) return;
+        if (savedSelectionRange) {
+            try {
+                const sel = window.getSelection();
+                if (sel) {
+                    sel.removeAllRanges();
+                    sel.addRange(savedSelectionRange);
+                }
+            } catch (err) { }
+        }
+    }
+
     function placeCaretAtEnd(el) {
         if (!el) return;
         el.focus();
@@ -1131,6 +1144,10 @@
 
     function extractYoutubeId(url) {
         if (!url) return null;
+        const shortsMatch = url.match(/(?:shorts\/|youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([a-zA-Z0-9_-]{11})/);
+        if (shortsMatch && shortsMatch[1]) {
+            return shortsMatch[1];
+        }
         const reg = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const m = url.match(reg);
         return (m && m[2].length === 11) ? m[2] : null;
@@ -1745,10 +1762,17 @@
         const toolbar = document.getElementById('wordToolbar');
         if (!toolbar) return;
 
+        // Prevent toolbar buttons from stealing focus / collapsing selection on mousedown
+        toolbar.addEventListener('mousedown', (e) => {
+            const btn = e.target.closest('button, .word-btn, .word-color-btn, .word-color-swatch');
+            if (btn) {
+                e.preventDefault();
+            }
+        });
+
         toolbar.querySelectorAll('.word-btn[data-action]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                saveCurrentCaret();
                 const action = btn.getAttribute('data-action');
                 if (action === 'removeFormat') {
                     handleClearFormatting();
@@ -1778,7 +1802,8 @@
 
         if (formatSelect) {
             formatSelect.addEventListener('change', () => {
-                saveCurrentCaret();
+                restoreSavedCaret();
+                editorDoc.focus();
                 const val = formatSelect.value;
                 if (val === 'p') {
                     document.execCommand('formatBlock', false, '<p>');
@@ -1789,7 +1814,7 @@
                 } else if (val === 'pre') {
                     document.execCommand('formatBlock', false, '<pre>');
                 }
-                editorDoc.focus();
+                saveCurrentCaret();
                 syncContent();
                 updateToolbarState();
             });
@@ -1855,7 +1880,7 @@
         toolbar.querySelectorAll('[data-color]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                saveCurrentCaret();
+                restoreSavedCaret();
                 const color = btn.getAttribute('data-color');
                 const ind = document.getElementById('textColorIndicator');
                 if (ind) ind.style.background = color || 'var(--gold, #c7a66a)';
@@ -1882,6 +1907,7 @@
                 } else {
                     document.execCommand('foreColor', false, color);
                 }
+                saveCurrentCaret();
                 syncContent();
                 document.querySelectorAll('.word-color-dropdown').forEach(d => d.style.display = 'none');
             });
@@ -1891,7 +1917,7 @@
         toolbar.querySelectorAll('[data-highlight]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                saveCurrentCaret();
+                restoreSavedCaret();
                 const color = btn.getAttribute('data-highlight');
                 const ind = document.getElementById('highlightColorIndicator');
                 if (ind) ind.style.background = color || '#c7a66a';
@@ -1913,6 +1939,7 @@
                         document.execCommand('backColor', false, color);
                     }
                 }
+                saveCurrentCaret();
                 syncContent();
                 document.querySelectorAll('.word-color-dropdown').forEach(d => d.style.display = 'none');
             });
@@ -1953,8 +1980,10 @@
     window.toggleWordQuote = toggleQuote;
 
     function execFormat(command, value = null) {
+        restoreSavedCaret();
         editorDoc.focus();
         document.execCommand(command, false, value);
+        saveCurrentCaret();
         syncContent();
         updateToolbarState();
     }
@@ -2172,10 +2201,11 @@
     // 11. MODALS: LINK, IMAGE, YOUTUBE
     // =========================================================================
     function openLinkModal() {
+        restoreSavedCaret();
         const sel = window.getSelection();
         let existingUrl = '';
 
-        if (sel.anchorNode) {
+        if (sel && sel.anchorNode) {
             let p = sel.anchorNode.parentNode;
             if (p && p.tagName === 'A') {
                 existingUrl = p.getAttribute('href') || '';
@@ -2184,7 +2214,24 @@
 
         const url = prompt('Enter link URL (e.g. https://...):', existingUrl || 'https://');
         if (url && url.trim() && url !== 'https://') {
-            document.execCommand('createLink', false, url.trim());
+            restoreSavedCaret();
+            editorDoc.focus();
+            const currentSel = window.getSelection();
+            if (currentSel && currentSel.isCollapsed) {
+                const safeUrl = encodeURI(url.trim());
+                document.execCommand('insertHTML', false, `<a href="${safeUrl}" target="_blank" rel="noopener">${escapeHtml(url.trim())}</a>`);
+            } else {
+                document.execCommand('createLink', false, url.trim());
+                if (currentSel && currentSel.anchorNode) {
+                    let anchor = currentSel.anchorNode;
+                    if (anchor.nodeType === 3) anchor = anchor.parentNode;
+                    if (anchor && anchor.tagName === 'A') {
+                        anchor.setAttribute('target', '_blank');
+                        anchor.setAttribute('rel', 'noopener');
+                    }
+                }
+            }
+            saveCurrentCaret();
             syncContent();
         }
     }
@@ -2827,5 +2874,10 @@
             syncContent();
         }
     };
+
+    // Global exports for blog editor and previews
+    window.syncWordEditorContent = syncContent;
+    window.cleanHtmlForSave = cleanHtmlForSave;
+    window.restoreWordEditorSelection = restoreSavedCaret;
 
 })();

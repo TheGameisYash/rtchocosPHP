@@ -75,12 +75,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
 if (($_GET['action'] ?? ($_POST['action'] ?? '')) === 'get_media_library') {
     header('Content-Type: application/json');
     try {
-        $stmt = $pdo->query("SELECT id, filename, path, size, created_at FROM media ORDER BY id DESC LIMIT 60");
+        $stmt = $pdo->query("SELECT id, filename, path, path as url, size, created_at FROM media ORDER BY id DESC LIMIT 60");
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode(['success' => true, 'media' => $items]);
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
+    exit;
+}
+
+// 3. AJAX INSTANT VISIBILITY TOGGLE (Instant Hide / Publish)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggle_publish') {
+    header('Content-Type: application/json');
+    $token = $_POST['csrf_token'] ?? '';
+    if (!verify_csrf($token)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid security token.']);
+        exit;
+    }
+    $bId = (int)($_POST['blog_id'] ?? 0);
+    $targetState = isset($_POST['is_published']) ? ((int)$_POST['is_published'] === 1 ? 1 : 0) : null;
+    if ($bId > 0) {
+        if ($targetState !== null) {
+            $stmt = $pdo->prepare("UPDATE blogs SET is_published = ? WHERE id = ?");
+            $stmt->execute([$targetState, $bId]);
+        } else {
+            $stmt = $pdo->prepare("UPDATE blogs SET is_published = 1 - is_published WHERE id = ?");
+            $stmt->execute([$bId]);
+        }
+        $stmt = $pdo->prepare("SELECT id, slug, title, is_published FROM blogs WHERE id = ?");
+        $stmt->execute([$bId]);
+        $updatedPost = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($updatedPost) {
+            clear_blog_cache($updatedPost['slug']);
+        }
+        clear_blog_cache();
+        $isPub = $updatedPost ? (int)$updatedPost['is_published'] : 0;
+        echo json_encode([
+            'success' => true,
+            'blog_id' => $bId,
+            'is_published' => $isPub,
+            'status_label' => $isPub ? 'Visible (Published)' : 'Hidden (Draft)',
+            'message' => 'Article "' . ($updatedPost['title'] ?? 'Post') . '" is now ' . ($isPub ? 'Visible to the public' : 'Hidden from the public (Draft)') . '.'
+        ]);
+        exit;
+    }
+    echo json_encode(['success' => false, 'message' => 'Blog not saved in database yet. Save the article first to toggle visibility.']);
     exit;
 }
 
@@ -147,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $readTime = trim($_POST['read_time'] ?? '');
     $bodyClass = trim($_POST['body_class'] ?? '');
     $youtubeUrl = trim($_POST['youtube_url'] ?? '');
-    $isPublished = isset($_POST['is_published']) ? 1 : 0;
+    $isPublished = (!empty($_POST['is_published']) && $_POST['is_published'] !== '0') ? 1 : 0;
     
     $scheduledAt = trim($_POST['scheduled_at'] ?? '');
     $scheduledVal = !empty($scheduledAt) ? date('Y-m-d H:i:s', strtotime($scheduledAt)) : null;
@@ -366,7 +405,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
         <div class="topbar-visibility-box" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:8px; background:var(--bg-card); border:1px solid var(--border-color);">
             <span style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--text-light); letter-spacing:0.5px;">Visibility:</span>
             <label class="custom-toggle" style="transform:scale(0.85); margin:0;">
-                <input type="checkbox" id="topbarVisibilityToggle" <?php echo $post['is_published'] ? 'checked' : ''; ?> onchange="syncVisibilityState(this.checked)">
+                <input type="checkbox" id="topbarVisibilityToggle" <?php echo $post['is_published'] ? 'checked' : ''; ?> onchange="syncVisibilityState(this.checked, true)">
                 <span class="toggle-slider"></span>
             </label>
             <span id="topbarVisibilityBadge" class="status-badge <?php echo $post['is_published'] ? 'published' : 'draft'; ?>" style="font-size:11px; padding:3px 8px; <?php echo $post['is_published'] ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
@@ -388,7 +427,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
             <span>Cover &amp; Settings</span>
         </button>
-        <button type="button" class="btn btn-primary" onclick="document.getElementById('editorForm').submit();" style="display:inline-flex; align-items:center; gap:6px; padding:8px 18px; font-weight:600;">
+        <button type="button" class="btn btn-primary" onclick="saveArticleForm()" style="display:inline-flex; align-items:center; gap:6px; padding:8px 18px; font-weight:600;">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
             <span>Save Article</span>
         </button>
@@ -398,6 +437,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 <!-- Main Forms -->
 <form action="blog-editor.php<?php echo $isEdit ? '?id=' . $blogId : ''; ?>" method="POST" enctype="multipart/form-data" id="editorForm">
     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
+    <input type="hidden" name="is_published" id="isPublishedHiddenInput" value="<?php echo $post['is_published'] ? '1' : '0'; ?>">
     <input type="hidden" name="content" id="content" value="<?php echo htmlspecialchars($post['content']); ?>">
     <input type="hidden" id="blogId" value="<?php echo $post['id']; ?>">
 
@@ -668,12 +708,12 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                         <span id="drawerVisibilityHint" style="font-size:11px; color:var(--text-light);"><?php echo $post['is_published'] ? 'Visible to public on website' : 'Hidden from public (Draft)'; ?></span>
                     </div>
                     <label class="custom-toggle">
-                        <input type="checkbox" id="drawerVisibilityToggle" name="is_published" value="1" <?php echo $post['is_published'] ? 'checked' : ''; ?> onchange="syncVisibilityState(this.checked)">
+                        <input type="checkbox" id="drawerVisibilityToggle" <?php echo $post['is_published'] ? 'checked' : ''; ?> onchange="syncVisibilityState(this.checked, true)">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px; font-weight:600;">
+                <button type="button" onclick="saveArticleForm()" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px; font-weight:600;">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                     Save Article
                 </button>
@@ -1287,11 +1327,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Synchronize Article Visibility toggles and badges across Topbar and Drawer
-function syncVisibilityState(isChecked) {
+function syncVisibilityState(isChecked, triggerAjax = false) {
     const topToggle = document.getElementById('topbarVisibilityToggle');
     const drawerToggle = document.getElementById('drawerVisibilityToggle');
     const hiddenInput = document.getElementById('isPublishedHiddenInput');
-    const statusBadge = document.getElementById('topbarStatusBadge');
+    const statusBadge = document.getElementById('topbarVisibilityBadge');
+    const statusIcon = document.getElementById('topbarVisibilityIcon');
+    const statusLabel = document.getElementById('topbarVisibilityLabel');
     const drawerHint = document.getElementById('drawerVisibilityHint');
 
     if (topToggle) topToggle.checked = isChecked;
@@ -1299,18 +1341,106 @@ function syncVisibilityState(isChecked) {
     if (hiddenInput) hiddenInput.value = isChecked ? '1' : '0';
 
     if (statusBadge) {
+        statusBadge.className = 'status-badge ' + (isChecked ? 'published' : 'draft');
         if (isChecked) {
-            statusBadge.className = 'topbar-badge topbar-badge-published';
-            statusBadge.innerText = 'Active / Published';
+            statusBadge.style.background = '';
+            statusBadge.style.color = '';
+            statusBadge.style.borderColor = '';
         } else {
-            statusBadge.className = 'topbar-badge topbar-badge-draft';
-            statusBadge.innerText = 'Draft / Hidden';
+            statusBadge.style.background = 'rgba(217, 119, 6, 0.15)';
+            statusBadge.style.color = '#d97706';
+            statusBadge.style.borderColor = 'rgba(217, 119, 6, 0.3)';
         }
     }
+    if (statusIcon) statusIcon.innerText = isChecked ? '👁️' : '🔒';
+    if (statusLabel) statusLabel.innerText = isChecked ? 'Visible (Published)' : 'Hidden (Draft)';
 
     if (drawerHint) {
         drawerHint.innerText = isChecked ? 'Visible to public on website' : 'Hidden from public (Draft)';
     }
+
+    // If existing blog, also perform instant AJAX toggle so status is saved immediately
+    const blogIdEl = document.getElementById('blogId');
+    const blogId = blogIdEl ? parseInt(blogIdEl.value, 10) : 0;
+    if (triggerAjax && blogId > 0) {
+        const csrfTokenEl = document.querySelector('input[name="csrf_token"]');
+        const csrfToken = csrfTokenEl ? csrfTokenEl.value : '';
+        const formData = new FormData();
+        formData.append('action', 'toggle_publish');
+        formData.append('blog_id', blogId);
+        formData.append('is_published', isChecked ? '1' : '0');
+        formData.append('csrf_token', csrfToken);
+
+        fetch('blog-editor.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (window.showToast) {
+                    showToast(data.message, isChecked ? 'success' : 'warning');
+                }
+            } else {
+                if (window.showToast) showToast(data.message || 'Failed to update visibility', 'danger');
+            }
+        })
+        .catch(err => {
+            if (window.showToast) showToast('Network error updating visibility: ' + err.message, 'danger');
+        });
+    }
+}
+
+// Global Save Article Form with Auto-Drawer Expansion on Validation Errors
+function saveArticleForm() {
+    if (window.syncWordEditorContent) {
+        window.syncWordEditorContent();
+    }
+    const form = document.getElementById('editorForm');
+    if (!form) return;
+
+    const titleInput = document.getElementById('title');
+    const slugInput = document.getElementById('slug');
+    const excerptInput = document.getElementById('excerpt');
+    const contentInput = document.getElementById('content');
+    const drawer = document.getElementById('settingsDrawer');
+
+    if (!titleInput.value.trim()) {
+        if (drawer && !drawer.classList.contains('open')) {
+            drawer.classList.add('open');
+        }
+        titleInput.focus();
+        if (window.showToast) showToast('Please enter an article title in Cover & Settings', 'danger');
+        return;
+    }
+
+    if (!slugInput.value.trim()) {
+        if (drawer && !drawer.classList.contains('open')) {
+            drawer.classList.add('open');
+        }
+        slugInput.focus();
+        if (window.showToast) showToast('Please enter a URL slug in Cover & Settings', 'danger');
+        return;
+    }
+
+    if (!excerptInput.value.trim()) {
+        if (drawer && !drawer.classList.contains('open')) {
+            drawer.classList.add('open');
+        }
+        excerptInput.focus();
+        if (window.showToast) showToast('Please provide an excerpt summary in Cover & Settings', 'danger');
+        return;
+    }
+
+    if (!contentInput.value.trim() || contentInput.value.trim() === '<p><br></p>') {
+        if (window.showToast) showToast('Article content cannot be empty. Please write your article.', 'danger');
+        const doc = document.getElementById('wordEditorDoc');
+        if (doc) doc.focus();
+        return;
+    }
+
+    window.__isEditorDirty = false;
+    form.submit();
 }
 
 // Image Modal Tabs
@@ -1358,12 +1488,16 @@ function renderMediaLibrary(items) {
         grid.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-light); font-size:13px; grid-column:1/-1;">No matching media items found.</div>';
         return;
     }
-    grid.innerHTML = items.map(item => `
-        <div class="modal-media-item" onclick="selectMediaItem('${item.url}', '${escapeHtml(item.filename)}')">
-            <img src="../${item.url}" alt="${escapeHtml(item.filename)}" loading="lazy">
-            <div class="modal-media-item-name" title="${escapeHtml(item.filename)}">${escapeHtml(item.filename)}</div>
+    grid.innerHTML = items.map(item => {
+        const itemUrl = item.url || item.path || '';
+        const itemName = item.filename || 'Image';
+        return `
+        <div class="modal-media-item" onclick="selectMediaItem('${itemUrl}', '${escapeHtml(itemName)}')">
+            <img src="../${itemUrl}" alt="${escapeHtml(itemName)}" loading="lazy">
+            <div class="modal-media-item-name" title="${escapeHtml(itemName)}">${escapeHtml(itemName)}</div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function filterMediaLibrary(query) {
@@ -1481,7 +1615,6 @@ function openFullPreview() {
     const overlay = document.getElementById('fullPreviewOverlay');
     const title = document.getElementById('title').value.trim();
     const category = document.getElementById('category').value;
-    const contentMarkdown = document.getElementById('content').value;
     
     document.getElementById('previewFullTitle').innerText = title || 'Untitled Blog Post';
     document.getElementById('previewFullCategory').innerText = category;
@@ -1496,7 +1629,18 @@ function openFullPreview() {
         headerWrapper.style.display = 'none';
     }
 
-    document.getElementById('previewFullContent').innerHTML = parseMarkdown(contentMarkdown);
+    if (window.syncWordEditorContent) {
+        window.syncWordEditorContent();
+    }
+    const docEl = document.getElementById('wordEditorDoc');
+    let previewHtml = '';
+    if (window.cleanHtmlForSave && docEl) {
+        previewHtml = window.cleanHtmlForSave(docEl.innerHTML);
+    } else {
+        previewHtml = document.getElementById('content')?.value || '';
+    }
+
+    document.getElementById('previewFullContent').innerHTML = previewHtml;
     overlay.style.display = 'block';
 }
 

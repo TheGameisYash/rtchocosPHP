@@ -2,8 +2,10 @@
   require_once __DIR__ . '/includes/db.php';
   require_once __DIR__ . '/includes/blog-cache.php';
   require_once __DIR__ . '/includes/blog-data.php';
+  require_once __DIR__ . '/admin/auth.php';
 
-  $blogs = get_cached_blog_list(1800);
+  $isAdmin = function_exists('is_admin_logged_in') && is_admin_logged_in();
+  $blogs = !$isAdmin ? get_cached_blog_list(1800) : null;
   if ($blogs === null || empty($blogs)) {
       try {
           $pdo = get_db();
