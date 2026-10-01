@@ -2,6 +2,7 @@
 // includes/db.php - Centralized PDO Database Connection
 
 require_once __DIR__ . '/env_loader.php';
+require_once __DIR__ . '/blog-uploads.php';
 
 function get_db() {
     static $pdo = null;

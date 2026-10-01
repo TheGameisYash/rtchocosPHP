@@ -13,16 +13,16 @@ if (empty($file)) {
     exit;
 }
 
-// Find document root parent
-$docRoot = $_SERVER['DOCUMENT_ROOT'] ?? __DIR__;
-$parentDir = dirname($docRoot);
-$livePath = $parentDir . '/uploads_blogs/' . $file;
-$localPath = $docRoot . '/assets/blogs/' . $file;
+require_once __DIR__ . '/includes/blog-uploads.php';
+
+$uploadsDir = get_blog_uploads_dir();
+$livePath = $uploadsDir . '/' . $file;
+$localPath = __DIR__ . '/assets/blogs/' . $file;
 
 $path = '';
-if (file_exists($livePath)) {
+if (file_exists($livePath) && !is_dir($livePath)) {
     $path = $livePath;
-} elseif (file_exists($localPath)) {
+} elseif (file_exists($localPath) && !is_dir($localPath)) {
     $path = $localPath;
 }
 

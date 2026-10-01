@@ -22,14 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
         exit;
     }
     
-    $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
-    $parentDir = dirname($docRoot);
-    $liveUploadsDir = $parentDir . '/uploads_blogs';
-    if (is_dir($liveUploadsDir)) {
-        $blogsDir = $liveUploadsDir;
-    } else {
-        $blogsDir = $docRoot . '/assets/blogs';
-    }
+    $blogsDir = get_blog_uploads_dir();
     if (!file_exists($blogsDir)) {
         mkdir($blogsDir, 0755, true);
     }
@@ -229,16 +222,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->fetch()) {
                 $error = "The URL slug '{$slug}' is already in use by another article. URL slugs must be unique.";
             } else {
-                $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
-                $parentDir = dirname($docRoot);
-                $liveUploadsDir = $parentDir . '/uploads_blogs';
-                if (is_dir($liveUploadsDir)) {
-                    $blogsDir = $liveUploadsDir;
-                    $thumbsDir = $liveUploadsDir . '/thumbnails';
-                } else {
-                    $blogsDir = $docRoot . '/assets/blogs';
-                    $thumbsDir = $docRoot . '/assets/blogs/thumbnails';
-                }
+                $blogsDir = get_blog_uploads_dir();
+                $thumbsDir = get_blog_thumbnails_dir();
                 if (!file_exists($blogsDir)) mkdir($blogsDir, 0755, true);
                 if (!file_exists($thumbsDir)) mkdir($thumbsDir, 0755, true);
 
@@ -262,12 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $error = 'Header Image file size must be less than 5MB.';
                     } else {
                         if (!empty($imagePath) && strpos($imagePath, 'assets/blogs/') === 0) {
-                            $oldBase = basename($imagePath);
-                            if (file_exists($blogsDir . '/' . $oldBase)) {
-                                @unlink($blogsDir . '/' . $oldBase);
-                            } elseif (file_exists(__DIR__ . '/../' . $imagePath)) {
-                                @unlink(__DIR__ . '/../' . $imagePath);
-                            }
+                            delete_blog_image_file($imagePath);
                         }
                         $newFileName = $slug . '-header-' . time() . '.' . $fileExtension;
                         $destPath = $blogsDir . '/' . $newFileName;
@@ -297,12 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $error = 'Thumbnail Image file size must be less than 5MB.';
                     } else {
                         if (!empty($thumbnailPath) && strpos($thumbnailPath, 'assets/blogs/') === 0) {
-                            $oldThumbBase = basename($thumbnailPath);
-                            if (file_exists($thumbsDir . '/' . $oldThumbBase)) {
-                                @unlink($thumbsDir . '/' . $oldThumbBase);
-                            } elseif (file_exists(__DIR__ . '/../' . $thumbnailPath)) {
-                                @unlink(__DIR__ . '/../' . $thumbnailPath);
-                            }
+                            delete_blog_image_file($thumbnailPath);
                         }
                         $newFileName = $slug . '-thumb-' . time() . '.' . $fileExtension;
                         $destPath = $thumbsDir . '/' . $newFileName;

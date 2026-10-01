@@ -31,14 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } elseif ($fileSize > $maxFileSize) {
                         $error = 'File size must be less than 5MB.';
                     } else {
-                        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
-                        $parentDir = dirname($docRoot);
-                        $liveUploadsDir = $parentDir . '/uploads_blogs';
-                        if (is_dir($liveUploadsDir)) {
-                            $blogsDir = $liveUploadsDir;
-                        } else {
-                            $blogsDir = $docRoot . '/assets/blogs';
-                        }
+                        $blogsDir = get_blog_uploads_dir();
                         if (!file_exists($blogsDir)) {
                             mkdir($blogsDir, 0755, true);
                         }
@@ -73,16 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if ($path) {
                         // Delete file
-                        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
-                        $parentDir = dirname($docRoot);
-                        $liveFile = $parentDir . '/uploads_blogs/' . basename($path);
-                        $localFile = __DIR__ . '/../' . $path;
-                        if (file_exists($liveFile)) {
-                            @unlink($liveFile);
-                        }
-                        if (file_exists($localFile)) {
-                            @unlink($localFile);
-                        }
+                        delete_blog_image_file($path);
                         
                         // Delete DB entry
                         $stmt = $pdo->prepare("DELETE FROM media WHERE id = ?");
