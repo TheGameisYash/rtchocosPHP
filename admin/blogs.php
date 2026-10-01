@@ -31,11 +31,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $post = $stmt->fetch();
                 
                 if ($post) {
-                    if (!empty($post['image_path']) && strpos($post['image_path'], 'assets/blogs/') === 0 && file_exists(__DIR__ . '/../' . $post['image_path'])) {
-                        unlink(__DIR__ . '/../' . $post['image_path']);
+                    $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
+                    $parentDir = dirname($docRoot);
+                    if (!empty($post['image_path']) && strpos($post['image_path'], 'assets/blogs/') === 0) {
+                        $liveImg = $parentDir . '/uploads_blogs/' . basename($post['image_path']);
+                        $localImg = __DIR__ . '/../' . $post['image_path'];
+                        if (file_exists($liveImg)) @unlink($liveImg);
+                        if (file_exists($localImg)) @unlink($localImg);
                     }
-                    if (!empty($post['thumbnail_path']) && strpos($post['thumbnail_path'], 'assets/blogs/') === 0 && file_exists(__DIR__ . '/../' . $post['thumbnail_path'])) {
-                        unlink(__DIR__ . '/../' . $post['thumbnail_path']);
+                    if (!empty($post['thumbnail_path']) && strpos($post['thumbnail_path'], 'assets/blogs/') === 0) {
+                        $liveThumb = $parentDir . '/uploads_blogs/thumbnails/' . basename($post['thumbnail_path']);
+                        $localThumb = __DIR__ . '/../' . $post['thumbnail_path'];
+                        if (file_exists($liveThumb)) @unlink($liveThumb);
+                        if (file_exists($localThumb)) @unlink($localThumb);
                     }
                     clear_blog_cache($post['slug']);
                 }
@@ -109,12 +117,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute($blogIds);
                     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     
+                    $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
+                    $parentDir = dirname($docRoot);
                     foreach ($posts as $post) {
-                        if (!empty($post['image_path']) && strpos($post['image_path'], 'assets/blogs/') === 0 && file_exists(__DIR__ . '/../' . $post['image_path'])) {
-                            unlink(__DIR__ . '/../' . $post['image_path']);
+                        if (!empty($post['image_path']) && strpos($post['image_path'], 'assets/blogs/') === 0) {
+                            $liveImg = $parentDir . '/uploads_blogs/' . basename($post['image_path']);
+                            $localImg = __DIR__ . '/../' . $post['image_path'];
+                            if (file_exists($liveImg)) @unlink($liveImg);
+                            if (file_exists($localImg)) @unlink($localImg);
                         }
-                        if (!empty($post['thumbnail_path']) && strpos($post['thumbnail_path'], 'assets/blogs/') === 0 && file_exists(__DIR__ . '/../' . $post['thumbnail_path'])) {
-                            unlink(__DIR__ . '/../' . $post['thumbnail_path']);
+                        if (!empty($post['thumbnail_path']) && strpos($post['thumbnail_path'], 'assets/blogs/') === 0) {
+                            $liveThumb = $parentDir . '/uploads_blogs/thumbnails/' . basename($post['thumbnail_path']);
+                            $localThumb = __DIR__ . '/../' . $post['thumbnail_path'];
+                            if (file_exists($liveThumb)) @unlink($liveThumb);
+                            if (file_exists($localThumb)) @unlink($localThumb);
                         }
                     }
                     

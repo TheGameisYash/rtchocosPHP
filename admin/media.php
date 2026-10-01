@@ -31,7 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } elseif ($fileSize > $maxFileSize) {
                         $error = 'File size must be less than 5MB.';
                     } else {
-                        $blogsDir = __DIR__ . '/../assets/blogs';
+                        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
+                        $parentDir = dirname($docRoot);
+                        $liveUploadsDir = $parentDir . '/uploads_blogs';
+                        if (is_dir($liveUploadsDir)) {
+                            $blogsDir = $liveUploadsDir;
+                        } else {
+                            $blogsDir = $docRoot . '/assets/blogs';
+                        }
                         if (!file_exists($blogsDir)) {
                             mkdir($blogsDir, 0755, true);
                         }
@@ -66,8 +73,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if ($path) {
                         // Delete file
-                        if (file_exists(__DIR__ . '/../' . $path)) {
-                            unlink(__DIR__ . '/../' . $path);
+                        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
+                        $parentDir = dirname($docRoot);
+                        $liveFile = $parentDir . '/uploads_blogs/' . basename($path);
+                        $localFile = __DIR__ . '/../' . $path;
+                        if (file_exists($liveFile)) {
+                            @unlink($liveFile);
+                        }
+                        if (file_exists($localFile)) {
+                            @unlink($localFile);
                         }
                         
                         // Delete DB entry
