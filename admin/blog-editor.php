@@ -1547,9 +1547,10 @@ function renderMediaLibrary(items) {
     grid.innerHTML = items.map(item => {
         const itemUrl = item.url || item.path || '';
         const itemName = item.filename || 'Image';
+        const displaySrc = itemUrl.startsWith('http') ? itemUrl : ('/' + itemUrl.replace(/^(\.\.\/|\/)/, ''));
         return `
         <div class="modal-media-item" onclick="selectMediaItem('${itemUrl}', '${escapeHtml(itemName)}')">
-            <img src="../${itemUrl}" alt="${escapeHtml(itemName)}" loading="lazy">
+            <img src="${displaySrc}" alt="${escapeHtml(itemName)}" loading="lazy">
             <div class="modal-media-item-name" title="${escapeHtml(itemName)}">${escapeHtml(itemName)}</div>
         </div>
     `;
