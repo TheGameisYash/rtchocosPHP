@@ -34,6 +34,16 @@ if (!file_exists($safeThumbsDir)) {
     @mkdir($safeThumbsDir, 0755, true);
 }
 
+function delete_dir_recursive($dir) {
+    if (!file_exists($dir)) return true;
+    if (!is_dir($dir)) return @unlink($dir);
+    foreach (scandir($dir) as $item) {
+        if ($item == '.' || $item == '..') continue;
+        if (!delete_dir_recursive($dir . DIRECTORY_SEPARATOR . $item)) return false;
+    }
+    return @rmdir($dir);
+}
+
 // 2. Restore from any previous backup directories created during earlier attempts
 $backupDirs = glob($assetsDir . '/blogs_backup_*');
 if (!empty($backupDirs)) {
@@ -61,7 +71,7 @@ if (!empty($backupDirs)) {
             }
         }
         // Remove restored backup directory
-        @exec("rm -rf " . escapeshellarg($bDir));
+        delete_dir_recursive($bDir);
         echo "✓ Restored files from <code>" . basename($bDir) . "</code> into <code>assets/blogs</code><br>";
     }
 }
