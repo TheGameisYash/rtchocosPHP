@@ -626,6 +626,73 @@ include __DIR__ . '/includes/header.php';
         min-width: 0;
         max-width: 760px; /* Limit text container size for professional typography reading layout */
     }
+
+    /* Clean, responsive inline article figures and images */
+    #blog-article-content img,
+    .article-main-body img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+    #blog-article-content figure.blog-figure {
+        margin: 32px auto;
+        text-align: center;
+        display: block;
+        max-width: 100%;
+        clear: both;
+    }
+    #blog-article-content figure.blog-figure img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 520px;
+        object-fit: contain;
+        border-radius: 12px;
+        border: 1px solid var(--cream-dark, #EDE7DB);
+        box-shadow: 0 4px 18px rgba(59, 42, 34, 0.08);
+        margin: 0 auto;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+    #blog-article-content figure.blog-figure img:hover {
+        transform: scale(1.01);
+    }
+    #blog-article-content figure.blog-figure figcaption {
+        font-size: 13.5px;
+        color: var(--brown-light, #7D6B62);
+        font-style: italic;
+        margin-top: 10px;
+        line-height: 1.5;
+        text-align: center;
+    }
+    #blog-article-content figure.blog-figure-center {
+        margin: 32px auto;
+    }
+    #blog-article-content figure.blog-figure-left {
+        float: left;
+        margin: 12px 28px 20px 0;
+        max-width: 48%;
+    }
+    #blog-article-content figure.blog-figure-right {
+        float: right;
+        margin: 12px 0 20px 28px;
+        max-width: 48%;
+    }
+    #blog-article-content figure.blog-figure-wide {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 40px 0;
+    }
+    @media (max-width: 768px) {
+        #blog-article-content figure.blog-figure,
+        #blog-article-content figure.blog-figure-left,
+        #blog-article-content figure.blog-figure-right {
+            float: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 20px auto !important;
+        }
+    }
     .article-sidebar {
         width: 260px;
         position: sticky;

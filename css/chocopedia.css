@@ -2309,19 +2309,32 @@
 }
 
 /* Figures & Inline Captions in Blog Article */
+#blog-article-content img,
+.article-main-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
 #blog-article-content figure.blog-figure {
-  margin: 36px auto;
+  margin: 32px auto;
   text-align: center;
   display: block;
   max-width: 100%;
+  clear: both;
 }
 
 #blog-article-content figure.blog-figure img {
+  width: 100%;
   max-width: 100%;
   height: auto;
+  max-height: 520px;
+  object-fit: contain;
   border-radius: 12px;
   border: 1px solid var(--cream-dark);
-  box-shadow: 0 4px 16px rgba(59, 42, 34, 0.06);
+  box-shadow: 0 4px 18px rgba(59, 42, 34, 0.08);
+  margin: 0 auto;
+  display: block;
   transition: transform 0.3s ease;
 }
 
