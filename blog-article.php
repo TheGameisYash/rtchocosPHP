@@ -226,6 +226,7 @@ function parse_markdown($markdown) {
         // Headers
         if (preg_match('/^(#{1,6})\s+(.+)$/', $block, $matches)) {
             $level = strlen($matches[1]);
+            if ($level === 1) $level = 2; // Demote H1 to H2 so article has only 1 H1 (post title)
             $content = parse_inline($matches[2]);
             $cleanText = strip_tags($content);
             $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $cleanText), '-'));
@@ -291,10 +292,54 @@ function parse_markdown($markdown) {
             $html .= $listHtml;
             continue;
         }
+
+        // Paragraph blocks containing markdown heading like <p># Title</p> or <p>## Heading</p> or <p>### Heading</p>
+        if (preg_match('/^<p>\s*(#{1,6})\s+(.*?)\s*<\/p>$/is', $block, $pHeadingMatch)) {
+            $level = strlen($pHeadingMatch[1]);
+            if ($level === 1) $level = 2; // Demote H1 to H2
+            $level = min(4, max(2, $level));
+            $content = parse_inline($pHeadingMatch[2]);
+            $cleanText = strip_tags($content);
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $cleanText), '-'));
+
+            if ($level === 2 || $level === 3) {
+                global $headings_list;
+                $headings_list[] = [
+                    'level' => $level,
+                    'text' => $cleanText,
+                    'slug' => $slug
+                ];
+                $html .= "<h{$level} id=\"{$slug}\">{$content}</h{$level}>\n";
+            } else {
+                $html .= "<h{$level}>{$content}</h{$level}>\n";
+            }
+            continue;
+        }
+
+        // Paragraph blocks containing markdown bullet list like <p>* item<br>* item</p>
+        if (preg_match('/^<p>\s*([*•\-]\s+.*?)\s*<\/p>$/is', $block, $pListMatch)) {
+            $rawList = preg_replace('/<br\s*\/?>/i', "\n", $pListMatch[1]);
+            $lines = explode("\n", $rawList);
+            if (count($lines) > 0 && preg_match('/^[*•\-]\s+/', trim($lines[0]))) {
+                $listHtml = "<ul>\n";
+                foreach ($lines as $line) {
+                    $trimmedLine = trim($line);
+                    if (preg_match('/^[*•\-]\s+(.+)$/', $trimmedLine, $lMatches)) {
+                        $listHtml .= "  <li>" . parse_inline($lMatches[1]) . "</li>\n";
+                    } elseif (!empty($trimmedLine)) {
+                        $listHtml .= "  <li>" . parse_inline($trimmedLine) . "</li>\n";
+                    }
+                }
+                $listHtml .= "</ul>\n";
+                $html .= $listHtml;
+                continue;
+            }
+        }
         
         // HTML blocks (like div, img, hr, p, section, a, span, h\d, table, tr, td, th, iframe, blockquote, ul, ol, pre, figure)
-        if (preg_match('/^<h([23])(?:\s+id="([^"]+)")?[^>]*>(.*?)<\/h\1>/i', $block, $hMatches)) {
+        if (preg_match('/^<h([1-4])(?:\s+id="([^"]+)")?[^>]*>(.*?)<\/h\1>/i', $block, $hMatches)) {
             $hLevel = (int)$hMatches[1];
+            if ($hLevel === 1) $hLevel = 2; // Demote H1 to H2 so article has only 1 H1 (post title)
             $hClean = strip_tags($hMatches[3]);
             $hSlug = !empty($hMatches[2]) ? $hMatches[2] : strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $hClean), '-'));
             global $headings_list;

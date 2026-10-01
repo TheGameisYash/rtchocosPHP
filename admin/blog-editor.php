@@ -1243,6 +1243,11 @@ function parseMarkdown(markdown) {
             }
         }
 
+        // Heading 1 (demoted to H2 for SEO)
+        if (block.startsWith('# ')) {
+            html += `<h2>${parseInline(block.substring(2))}</h2>\n`;
+            return;
+        }
         // Heading 2
         if (block.startsWith('## ')) {
             html += `<h2>${parseInline(block.substring(3))}</h2>\n`;

@@ -1007,15 +1007,34 @@
             }
         });
 
+        // 3. Convert any paragraphs/divs starting with markdown hashes (#{1,6}) into proper headings
+        temp.querySelectorAll('p, div').forEach(el => {
+            const text = el.textContent.trim();
+            const hMatch = text.match(/^(#{1,6})\s+(.+)$/s);
+            if (hMatch && !el.querySelector('table, img, figure, blockquote, ul, ol')) {
+                const level = Math.min(4, Math.max(2, hMatch[1].length));
+                const h = document.createElement(`h${level}`);
+                h.innerHTML = parseInlineMd(hMatch[2].trim());
+                el.parentNode.replaceChild(h, el);
+            }
+        });
+
         return temp.innerHTML;
     }
 
-    function convertToEditableHtml(raw) {
-        if (!raw || !raw.trim()) return '<p><br></p>';
+    function parseInlineMd(text) {
+        if (!text) return '';
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        text = text.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+        text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+        text = text.replace(/_([^_]+)_/g, '<em>$1</em>');
+        text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+        text = text.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+        return text;
+    }
 
-        if (/<(p|div|h[1-6]|ul|ol|blockquote|table|section|figure)/i.test(raw)) {
-            return sanitizeHtmlContent(raw);
-        }
+    function convertMarkdownTextToHtml(raw) {
+        if (!raw || !raw.trim()) return '<p><br></p>';
 
         raw = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
         const blocks = raw.split(/\n\n+/);
@@ -1025,7 +1044,7 @@
             block = block.trim();
             if (!block) return;
 
-            // Markdown Table block
+            // 1. Markdown Table block
             if (block.startsWith('|')) {
                 const lines = block.split('\n');
                 if (lines.length >= 2) {
@@ -1055,17 +1074,24 @@
                 }
             }
 
-            // Headings
-            const hMatch = block.match(/^(#{1,6})\s+(.+)$/);
-            if (hMatch) {
-                const level = Math.min(6, Math.max(2, hMatch[1].length));
-                html += `<h${level}>${parseInlineMd(hMatch[2])}</h${level}>`;
+            // 2. Code block
+            if (block.startsWith('```')) {
+                const code = block.replace(/^```[a-z]*\n?/i, '').replace(/```$/, '');
+                html += `<pre><code>${escapeHtml(code)}</code></pre>`;
                 return;
             }
 
-            // Blockquote / Callout
-            if (block.startsWith('> ')) {
-                let quoteText = block.split('\n').map(l => l.replace(/^>\s?/, '')).join(' ');
+            // 3. Standalone Heading (entire block is a single-line heading #, ##, ###, ####, etc.)
+            const singleHMatch = block.match(/^(#{1,6})\s+(.+)$/);
+            if (singleHMatch && !block.includes('\n')) {
+                const level = Math.min(4, Math.max(2, singleHMatch[1].length));
+                html += `<h${level}>${parseInlineMd(singleHMatch[2].trim())}</h${level}>`;
+                return;
+            }
+
+            // 4. Blockquote / Callout
+            if (block.startsWith('>')) {
+                let quoteText = block.split('\n').map(l => l.replace(/^>\s?/, '')).join(' ').trim();
                 if (/^\[!(NOTE|TIP|WARNING)\]/i.test(quoteText)) {
                     quoteText = quoteText.replace(/^\[!(NOTE|TIP|WARNING)\]\s*/i, '');
                     html += `<blockquote class="callout"><p>${parseInlineMd(quoteText)}</p></blockquote>`;
@@ -1075,44 +1101,13 @@
                 return;
             }
 
-            // Unordered List
-            if (/^[\*\-]\s+/m.test(block)) {
-                const items = block.split('\n')
-                    .filter(l => /^[\*\-]\s+/.test(l))
-                    .map(l => `<li>${parseInlineMd(l.replace(/^[\*\-]\s+/, ''))}</li>`)
-                    .join('');
-                html += `<ul>${items}</ul>`;
+            // 5. Divider
+            if (block === '---' || block === '***') {
+                html += '<hr>';
                 return;
             }
 
-            // Ordered List
-            if (/^\d+\.\s+/m.test(block)) {
-                const items = block.split('\n')
-                    .filter(l => /^\d+\.\s+/.test(l))
-                    .map(l => `<li>${parseInlineMd(l.replace(/^\d+\.\s+/, ''))}</li>`)
-                    .join('');
-                html += `<ol>${items}</ol>`;
-                return;
-            }
-
-            // Code block
-            if (block.startsWith('```')) {
-                const code = block.replace(/^```[a-z]*\n?/i, '').replace(/```$/, '');
-                html += `<pre><code>${escapeHtml(code)}</code></pre>`;
-                return;
-            }
-
-            // Image markdown: ![alt](url){pos}
-            const imgMatch = block.match(/^!\[(.*?)\]\((.*?)\)(?:\{(left|right|center|wide)\})?/);
-            if (imgMatch) {
-                const alt = imgMatch[1];
-                const url = imgMatch[2];
-                const pos = imgMatch[3] || 'center';
-                html += `<figure class="blog-figure blog-figure-${pos}" style="width:100%; max-width:100%;" contenteditable="false"><img src="${url}" alt="${escapeHtml(alt)}" loading="lazy">${alt ? `<figcaption contenteditable="true">${escapeHtml(alt)}</figcaption>` : ''}</figure><p><br></p>`;
-                return;
-            }
-
-            // YouTube embed
+            // 6. YouTube embed
             if (block.startsWith('{{youtube:') && block.endsWith('}}')) {
                 const id = block.replace('{{youtube:', '').replace('}}', '').trim();
                 html += createYoutubeEmbedHtml(id);
@@ -1127,26 +1122,128 @@
                 }
             }
 
-            // Divider
-            if (block === '---' || block === '***') {
-                html += '<hr>';
+            // 7. Image markdown: ![alt](url){pos}
+            const imgMatch = block.match(/^!\[(.*?)\]\((.*?)\)(?:\{(left|right|center|wide)\})?/);
+            if (imgMatch) {
+                const alt = imgMatch[1];
+                const url = imgMatch[2];
+                const pos = imgMatch[3] || 'center';
+                html += `<figure class="blog-figure blog-figure-${pos}" style="width:100%; max-width:100%;" contenteditable="false"><img src="${url}" alt="${escapeHtml(alt)}" loading="lazy">${alt ? `<figcaption contenteditable="true">${escapeHtml(alt)}</figcaption>` : ''}</figure><p><br></p>`;
                 return;
             }
 
-            // Normal paragraph
-            html += `<p>${parseInlineMd(block)}</p>`;
+            // 8. Multi-line block: Check for lists, mixed headings, or paragraphs
+            const lines = block.split('\n');
+
+            // Pure bullet list
+            if (lines.length > 0 && lines.every(l => /^[-*•]\s+/.test(l.trim()))) {
+                const items = lines.map(l => `<li>${parseInlineMd(l.trim().replace(/^[-*•]\s+/, ''))}</li>`).join('');
+                html += `<ul>${items}</ul>`;
+                return;
+            }
+
+            // Pure numbered list
+            if (lines.length > 0 && lines.every(l => /^\d+[\.\)]\s+/.test(l.trim()))) {
+                const items = lines.map(l => `<li>${parseInlineMd(l.trim().replace(/^\d+[\.\)]\s+/, ''))}</li>`).join('');
+                html += `<ol>${items}</ol>`;
+                return;
+            }
+
+            // Mixed lines: could contain headings or list items without blank lines
+            const hasHeadingOrList = lines.some(l => {
+                const tl = l.trim();
+                return /^#{1,6}\s+/.test(tl) || /^[-*•]\s+/.test(tl) || /^\d+[\.\)]\s+/.test(tl);
+            });
+
+            if (hasHeadingOrList) {
+                let curListType = null;
+                let curListItems = [];
+                let curParaLines = [];
+
+                function flushCurPara() {
+                    if (curParaLines.length > 0) {
+                        html += `<p>${curParaLines.map(s => parseInlineMd(s)).join('<br>')}</p>`;
+                        curParaLines = [];
+                    }
+                }
+
+                function flushCurList() {
+                    if (curListItems.length > 0 && curListType) {
+                        html += `<${curListType}>${curListItems.join('')}</${curListType}>`;
+                        curListItems = [];
+                        curListType = null;
+                    }
+                }
+
+                lines.forEach(line => {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) return;
+
+                    const lineHMatch = trimmedLine.match(/^(#{1,6})\s+(.+)$/);
+                    if (lineHMatch) {
+                        flushCurList();
+                        flushCurPara();
+                        const level = Math.min(4, Math.max(2, lineHMatch[1].length));
+                        html += `<h${level}>${parseInlineMd(lineHMatch[2].trim())}</h${level}>`;
+                        return;
+                    }
+
+                    if (/^[-*•]\s+/.test(trimmedLine)) {
+                        flushCurPara();
+                        if (curListType !== 'ul') {
+                            flushCurList();
+                            curListType = 'ul';
+                        }
+                        curListItems.push(`<li>${parseInlineMd(trimmedLine.replace(/^[-*•]\s+/, ''))}</li>`);
+                        return;
+                    }
+
+                    if (/^\d+[\.\)]\s+/.test(trimmedLine)) {
+                        flushCurPara();
+                        if (curListType !== 'ol') {
+                            flushCurList();
+                            curListType = 'ol';
+                        }
+                        curListItems.push(`<li>${parseInlineMd(trimmedLine.replace(/^\d+[\.\)]\s+/, ''))}</li>`);
+                        return;
+                    }
+
+                    // Regular paragraph line
+                    flushCurList();
+                    curParaLines.push(trimmedLine);
+                });
+
+                flushCurList();
+                flushCurPara();
+                return;
+            }
+
+            // 9. Standard paragraph
+            if (lines.length > 1) {
+                html += `<p>${lines.map(s => parseInlineMd(s.trim())).join('<br>')}</p>`;
+            } else {
+                html += `<p>${parseInlineMd(block)}</p>`;
+            }
         });
 
         return html;
     }
 
-    function parseInlineMd(text) {
-        if (!text) return '';
-        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        text = text.replace(/_([^_]+)_/g, '<em>$1</em>');
-        text = text.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-        return text;
+    function convertMarkdownTextToElements(text) {
+        const html = convertMarkdownTextToHtml(text);
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        return Array.from(temp.children);
+    }
+
+    function convertToEditableHtml(raw) {
+        if (!raw || !raw.trim()) return '<p><br></p>';
+
+        if (/<(p|div|h[1-6]|ul|ol|blockquote|table|section|figure)/i.test(raw)) {
+            return sanitizeHtmlContent(raw);
+        }
+
+        return convertMarkdownTextToHtml(raw);
     }
 
     function escapeHtml(str) {
@@ -1205,6 +1302,18 @@
         // Scrub foreign colors/fonts/backgrounds before saving
         scrubElementStyles(temp);
 
+        // Convert any lingering accidental markdown headings inside <p> or <div> into proper headings
+        temp.querySelectorAll('p, div').forEach(el => {
+            const text = el.textContent.trim();
+            const hMatch = text.match(/^(#{1,6})\s+(.+)$/s);
+            if (hMatch && !el.querySelector('table, img, figure, blockquote, ul, ol')) {
+                const level = Math.min(4, Math.max(2, hMatch[1].length));
+                const h = document.createElement(`h${level}`);
+                h.innerHTML = parseInlineMd(hMatch[2].trim());
+                el.parentNode.replaceChild(h, el);
+            }
+        });
+
         // Clean empty style attributes
         temp.querySelectorAll('*').forEach(el => {
             if (!el.getAttribute('style') || !el.getAttribute('style').trim()) {
@@ -1227,10 +1336,33 @@
     function setupEditorEvents() {
         // Sync content & stats on input with lightweight debounce
         let inputDebounceTimer = null;
-        editorDoc.addEventListener('input', () => {
+        editorDoc.addEventListener('input', (e) => {
             window.__isEditorDirty = true;
             saveCurrentCaret();
             updateStats();
+
+            // Shortcut trigger on typing Space after #, ##, ###, #### at start of paragraph
+            if (e.data === ' ') {
+                const sel = window.getSelection();
+                if (sel && sel.anchorNode) {
+                    let node = sel.anchorNode;
+                    if (node.nodeType === 3) node = node.parentNode;
+                    const block = getDirectBlockChild(node);
+                    if (block && block.tagName === 'P') {
+                        const text = block.textContent;
+                        const hMatch = text.match(/^(#{1,6})\s$/);
+                        if (hMatch) {
+                            const level = Math.min(4, Math.max(2, hMatch[1].length));
+                            const h = document.createElement(`h${level}`);
+                            h.innerHTML = '<br>';
+                            editorDoc.replaceChild(h, block);
+                            placeCaretAtEnd(h);
+                            updateToolbarState();
+                            return;
+                        }
+                    }
+                }
+            }
 
             clearTimeout(inputDebounceTimer);
             inputDebounceTimer = setTimeout(() => {
@@ -1393,7 +1525,12 @@
             if (!editorDoc) return;
             editorDoc.focus();
 
-            if (pasteAsPlainText || !htmlText || !htmlText.trim()) {
+            // If plainText contains Markdown headings (# Heading) but htmlText doesn't have real h1-h6 tags,
+            // or if pasteAsPlainText is enabled, process as markdown/plain text!
+            const hasMarkdownHeadings = /^#{1,6}\s+/m.test(plainText || '');
+            const hasHtmlHeadings = /<h[1-6]/i.test(htmlText || '');
+
+            if (pasteAsPlainText || !htmlText || !htmlText.trim() || (hasMarkdownHeadings && !hasHtmlHeadings)) {
                 insertPlainTextAtCaret(plainText);
             } else {
                 insertCleanHtmlAtCaret(htmlText, plainText);
@@ -1416,64 +1553,47 @@
 
             const sel = window.getSelection();
             if (!sel || sel.rangeCount === 0 || !editorDoc.contains(sel.anchorNode)) {
-                const p = document.createElement('p');
-                p.textContent = normalized;
-                editorDoc.appendChild(p);
-                placeCaretAtEnd(p);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = convertMarkdownTextToHtml(normalized);
+                while (tempDiv.firstChild) {
+                    editorDoc.appendChild(tempDiv.firstChild);
+                }
+                const last = editorDoc.lastElementChild;
+                if (last) placeCaretAtEnd(last);
                 return;
             }
 
             const range = sel.getRangeAt(0);
 
-            // Single line text without newlines (inline insert at cursor)
+            // Single line text without newlines (inline insert at cursor, unless it is a heading or list item)
             if (!normalized.includes('\n')) {
-                range.deleteContents();
-                const textNode = document.createTextNode(normalized);
-                range.insertNode(textNode);
-                range.setStartAfter(textNode);
-                range.setEndAfter(textNode);
-                sel.removeAllRanges();
-                sel.addRange(range);
-                return;
-            }
+                const hMatch = normalized.match(/^(#{1,6})\s+(.+)$/);
+                const listMatch = normalized.match(/^[-*•]\s+(.+)$/);
+                const numMatch = normalized.match(/^\d+[\.\)]\s+(.+)$/);
 
-            // Multi-line text: detect lists or split into paragraphs
-            const lines = normalized.split('\n').map(l => l.trim()).filter(Boolean);
-            const isBulletList = lines.length > 1 && lines.every(l => /^[-*•]\s+/.test(l));
-            const isNumList = lines.length > 1 && lines.every(l => /^\d+[\.\)]\s+/.test(l));
-
-            const newElements = [];
-
-            if (isBulletList) {
-                const ul = document.createElement('ul');
-                lines.forEach(l => {
-                    const li = document.createElement('li');
-                    li.textContent = l.replace(/^[-*•]\s+/, '');
-                    ul.appendChild(li);
-                });
-                newElements.push(ul);
-            } else if (isNumList) {
-                const ol = document.createElement('ol');
-                lines.forEach(l => {
-                    const li = document.createElement('li');
-                    li.textContent = l.replace(/^\d+[\.\)]\s+/, '');
-                    ol.appendChild(li);
-                });
-                newElements.push(ol);
-            } else {
-                const rawParas = normalized.split(/\n\s*\n+/).map(p => p.trim()).filter(Boolean);
-                rawParas.forEach(para => {
-                    const p = document.createElement('p');
-                    const sublines = para.split('\n').map(s => s.trim());
-                    if (sublines.length > 1) {
-                        p.innerHTML = sublines.map(escapeHtml).join('<br>');
+                if (!hMatch && !listMatch && !numMatch) {
+                    range.deleteContents();
+                    const parsedInline = parseInlineMd(normalized);
+                    if (parsedInline.includes('<')) {
+                        const tempSpan = document.createElement('span');
+                        tempSpan.innerHTML = parsedInline;
+                        const frag = document.createDocumentFragment();
+                        while (tempSpan.firstChild) frag.appendChild(tempSpan.firstChild);
+                        range.insertNode(frag);
                     } else {
-                        p.textContent = para;
+                        const textNode = document.createTextNode(normalized);
+                        range.insertNode(textNode);
+                        range.setStartAfter(textNode);
+                        range.setEndAfter(textNode);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
                     }
-                    newElements.push(p);
-                });
+                    return;
+                }
             }
 
+            // Convert multi-line or block text into DOM elements
+            const newElements = convertMarkdownTextToElements(normalized);
             if (newElements.length === 0) return;
 
             range.deleteContents();
@@ -1566,6 +1686,18 @@
                 const h2 = document.createElement('h2');
                 h2.innerHTML = h.innerHTML;
                 h.parentNode.replaceChild(h2, h);
+            });
+
+            // 2b. Convert pasted paragraphs/divs starting with markdown hashes into proper headings
+            temp.querySelectorAll('p, div').forEach(el => {
+                const text = el.textContent.trim();
+                const hMatch = text.match(/^(#{1,6})\s+(.+)$/s);
+                if (hMatch && !el.querySelector('table, img, figure, blockquote, ul, ol')) {
+                    const level = Math.min(4, Math.max(2, hMatch[1].length));
+                    const h = document.createElement(`h${level}`);
+                    h.innerHTML = parseInlineMd(hMatch[2].trim());
+                    el.parentNode.replaceChild(h, el);
+                }
             });
 
             // Demote h5, h6 to h4
