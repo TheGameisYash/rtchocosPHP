@@ -37,10 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
 
                         $newFileName = 'media-' . time() . '-' . rand(100, 999) . '.' . $fileExtension;
-                        $destPath = $blogsDir . '/' . $newFileName;
                         $relativePath = 'assets/blogs/' . $newFileName;
 
-                        if (move_uploaded_file($fileTmpPath, $destPath)) {
+                        if (save_blog_upload($fileTmpPath, $newFileName)) {
                             // Register in media table
                             $stmt = $pdo->prepare("INSERT INTO media (filename, path, mime_type, size) VALUES (?, ?, ?, ?)");
                             $stmt->execute([

@@ -1019,6 +1019,16 @@
             }
         });
 
+        // 4. Ensure all images have root-relative /assets/blogs/ src so they load in /admin/
+        temp.querySelectorAll('img').forEach(img => {
+            let src = img.getAttribute('src') || '';
+            if (src.startsWith('assets/blogs/')) {
+                img.setAttribute('src', '/' + src);
+            } else if (src.startsWith('../assets/blogs/')) {
+                img.setAttribute('src', src.replace(/^\.\.\//, '/'));
+            }
+        });
+
         return temp.innerHTML;
     }
 
@@ -1318,6 +1328,16 @@
         temp.querySelectorAll('*').forEach(el => {
             if (!el.getAttribute('style') || !el.getAttribute('style').trim()) {
                 el.removeAttribute('style');
+            }
+        });
+
+        // Normalize all image src to /assets/blogs/ so it is universal across admin, frontend, and clean URLs
+        temp.querySelectorAll('img').forEach(img => {
+            let src = img.getAttribute('src') || '';
+            if (src.startsWith('../assets/blogs/')) {
+                img.setAttribute('src', src.replace(/^\.\.\//, '/'));
+            } else if (src.startsWith('assets/blogs/')) {
+                img.setAttribute('src', '/' + src);
             }
         });
 
@@ -3093,8 +3113,15 @@
                 const width = document.getElementById('wordImageWidthSelect').value || '100%';
 
                 if (url) {
-                    const fullUrl = (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/') || url.startsWith('../')) ? url : ('../' + url);
-                    const figHtml = `<figure class="blog-figure blog-figure-${align}" style="width:${width}; max-width:100%;" contenteditable="false"><img src="${fullUrl}" alt="${escapeHtml(alt)}" loading="lazy">${caption ? `<figcaption contenteditable="true">${escapeHtml(caption)}</figcaption>` : ''}</figure>`;
+                    let cleanUrl = url;
+                    if (cleanUrl.startsWith('assets/blogs/')) {
+                        cleanUrl = '/' + cleanUrl;
+                    } else if (cleanUrl.startsWith('../assets/blogs/')) {
+                        cleanUrl = cleanUrl.replace(/^\.\.\//, '/');
+                    } else if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://') && !cleanUrl.startsWith('/')) {
+                        cleanUrl = '/' + cleanUrl;
+                    }
+                    const figHtml = `<figure class="blog-figure blog-figure-${align}" style="width:${width}; max-width:100%;" contenteditable="false"><img src="${cleanUrl}" alt="${escapeHtml(alt)}" loading="lazy">${caption ? `<figcaption contenteditable="true">${escapeHtml(caption)}</figcaption>` : ''}</figure>`;
                     insertBlockElement(figHtml);
                     modal.style.display = 'none';
                     if (window.showToast) showToast('Image inserted successfully!', 'success');
@@ -3159,7 +3186,8 @@
                     const align = document.getElementById('wordImageAlignSelect') ? document.getElementById('wordImageAlignSelect').value : 'center';
                     const width = document.getElementById('wordImageWidthSelect') ? document.getElementById('wordImageWidthSelect').value : '100%';
 
-                    const figHtml = `<figure class="blog-figure blog-figure-${align}" style="width:${width}; max-width:100%;" contenteditable="false"><img src="../${data.url}" alt="${escapeHtml(alt || file.name)}" loading="lazy">${caption ? `<figcaption contenteditable="true">${escapeHtml(caption)}</figcaption>` : ''}</figure>`;
+                    const imageSrc = data.full_url || ('/' + data.url.replace(/^(\.\.\/|\/)/, ''));
+                    const figHtml = `<figure class="blog-figure blog-figure-${align}" style="width:${width}; max-width:100%;" contenteditable="false"><img src="${imageSrc}" alt="${escapeHtml(alt || file.name)}" loading="lazy">${caption ? `<figcaption contenteditable="true">${escapeHtml(caption)}</figcaption>` : ''}</figure>`;
                     insertBlockElement(figHtml);
 
                     const modal = document.getElementById('wordEditorImageModal');

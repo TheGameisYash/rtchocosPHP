@@ -47,9 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
     }
     
     $newFileName = 'inline-' . time() . '-' . rand(1000, 9999) . '.' . $fileExtension;
-    $destPath = $blogsDir . '/' . $newFileName;
     
-    if (move_uploaded_file($fileTmpPath, $destPath)) {
+    if (save_blog_upload($fileTmpPath, $newFileName)) {
         // Register image in media table
         try {
             $stmt = $pdo->prepare("INSERT INTO media (filename, path, mime_type, size) VALUES (?, ?, ?, ?)");
@@ -63,7 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
             // Non-blocking fallback
         }
 
-        echo json_encode(['success' => true, 'url' => 'assets/blogs/' . $newFileName]);
+        echo json_encode([
+            'success' => true,
+            'url' => 'assets/blogs/' . $newFileName,
+            'full_url' => '/assets/blogs/' . $newFileName
+        ]);
         exit;
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to save uploaded image.']);
@@ -250,8 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             delete_blog_image_file($imagePath);
                         }
                         $newFileName = $slug . '-header-' . time() . '.' . $fileExtension;
-                        $destPath = $blogsDir . '/' . $newFileName;
-                        if (move_uploaded_file($fileTmpPath, $destPath)) {
+                        if (save_blog_upload($fileTmpPath, $newFileName)) {
                             $imagePath = 'assets/blogs/' . $newFileName;
                             
                             // Insert to media library
@@ -280,8 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             delete_blog_image_file($thumbnailPath);
                         }
                         $newFileName = $slug . '-thumb-' . time() . '.' . $fileExtension;
-                        $destPath = $thumbsDir . '/' . $newFileName;
-                        if (move_uploaded_file($fileTmpPath, $destPath)) {
+                        if (save_blog_upload($fileTmpPath, $newFileName, 'thumbnails')) {
                             $thumbnailPath = 'assets/blogs/thumbnails/' . $newFileName;
                             
                             // Insert to media library

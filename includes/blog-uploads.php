@@ -97,6 +97,51 @@ function get_blog_thumbnails_dir() {
 }
 
 /**
+ * Saves an uploaded blog image into both the persistent safe uploads directory
+ * and the local web-accessible assets/blogs directory.
+ * Ensures the image is immediately visible without relying on symlinks or rewrites,
+ * while keeping the permanent copy in uploads_blogs.
+ */
+function save_blog_upload($tmpPath, $fileName, $subDir = '') {
+    $uploadsDir = get_blog_uploads_dir();
+    $webAssetsDir = dirname(__DIR__) . '/assets/blogs';
+
+    if (!empty($subDir)) {
+        $sub = trim($subDir, '/\\');
+        $uploadsDir .= '/' . $sub;
+        $webAssetsDir .= '/' . $sub;
+    }
+
+    if (!file_exists($uploadsDir)) @mkdir($uploadsDir, 0755, true);
+    if (!file_exists($webAssetsDir)) @mkdir($webAssetsDir, 0755, true);
+
+    $destPrimary = $uploadsDir . '/' . $fileName;
+    $destWeb = $webAssetsDir . '/' . $fileName;
+
+    $success = false;
+
+    if (is_uploaded_file($tmpPath)) {
+        if (@copy($tmpPath, $destPrimary) || @move_uploaded_file($tmpPath, $destPrimary)) {
+            $success = true;
+            @copy($destPrimary, $destWeb);
+        } elseif (@move_uploaded_file($tmpPath, $destWeb)) {
+            $success = true;
+            @copy($destWeb, $destPrimary);
+        }
+    } else {
+        if (@copy($tmpPath, $destPrimary)) {
+            $success = true;
+            @copy($destPrimary, $destWeb);
+        } elseif (@copy($tmpPath, $destWeb)) {
+            $success = true;
+            @copy($destWeb, $destPrimary);
+        }
+    }
+
+    return $success;
+}
+
+/**
  * Attempts to delete a blog image from both live uploads_blogs and local assets/blogs.
  */
 function delete_blog_image_file($relativePath) {

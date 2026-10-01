@@ -21,6 +21,9 @@ $localPath = __DIR__ . '/assets/blogs/' . $file;
 
 $path = '';
 if (file_exists($livePath) && !is_dir($livePath)) {
+    // Cache it into localPath so future requests are served directly by web server!
+    @mkdir(dirname($localPath), 0755, true);
+    @copy($livePath, $localPath);
     $path = $livePath;
 } elseif (file_exists($localPath) && !is_dir($localPath)) {
     $path = $localPath;
@@ -48,7 +51,7 @@ if (empty($path) || !file_exists($path) || is_dir($path)) {
         $path = $localPath;
     } else {
         // Fallback to placeholder image if available
-        $placeholder = $docRoot . '/assets/images/placeholder.jpg';
+        $placeholder = __DIR__ . '/assets/images/placeholder.jpg';
         if (file_exists($placeholder)) {
             $path = $placeholder;
         } else {

@@ -90,7 +90,7 @@ Options +FollowSymLinks -Indexes
 
     # Route missing blog images to blog_image.php
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^assets/blogs/(.+)$ blog_image.php?file=$1 [L,QSA]
+    RewriteRule ^assets/blogs/(.+)$ /blog_image.php?file=$1 [L,QSA]
 
     # Map extensionless URL requests to actual .php files
     RewriteCond %{REQUEST_FILENAME} !-d
