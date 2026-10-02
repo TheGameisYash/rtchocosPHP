@@ -68,19 +68,19 @@
 }
 
 .fade-up {
-  animation: fadeUp 0.7s ease-out 0.0s both;
+  animation: fadeUp 0.5s ease-out 0.0s both;
 }
 
 .fade-up-d1 {
-  animation: fadeUp 0.7s ease-out 0.15s both;
+  animation: fadeUp 0.5s ease-out 0.08s both;
 }
 
 .fade-up-d2 {
-  animation: fadeUp 0.7s ease-out 0.3s both;
+  animation: fadeUp 0.5s ease-out 0.16s both;
 }
 
 .fade-up-d3 {
-  animation: fadeUp 0.7s ease-out 0.45s both;
+  animation: fadeUp 0.5s ease-out 0.24s both;
 }
 
 .fade-in {

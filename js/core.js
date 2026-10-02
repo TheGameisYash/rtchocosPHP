@@ -217,15 +217,15 @@ function updateActiveNavLinks() {
   document.querySelectorAll('.nav-link, .nav-item-link, .mobile-nav-link, .dropdown-item, .mobile-nav-sublink').forEach(link => {
     link.classList.toggle('active', link.dataset.page === navPage);
   });
-  const academyToggle = document.querySelector('.nav-item-dropdown:not(.nav-item-products) .dropdown-toggle');
+  const academyToggle = document.querySelector('.nav-item-dropdown .dropdown-toggle');
   if (academyToggle) {
     const isAcademyActive = (navPage === 'workshops' || navPage === 'gallery' || navPage === 'academy');
     academyToggle.classList.toggle('active', isAcademyActive);
   }
-  const productsToggle = document.querySelector('.nav-item-products .dropdown-toggle');
-  if (productsToggle) {
+  const productsLink = document.querySelector('.nav-item-link[data-page="shop"]');
+  if (productsLink) {
     const isProductsActive = (navPage === 'shop' || navPage === 'product' || navPage === 'cart' || navPage === 'checkout');
-    productsToggle.classList.toggle('active', isProductsActive);
+    productsLink.classList.toggle('active', isProductsActive);
   }
 }
 

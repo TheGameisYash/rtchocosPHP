@@ -392,132 +392,17 @@ if (!empty(trim($customHeadScripts))) {
         <span class="nav-label">EXPLORE</span>
       </a>
 
-      <!-- 2. PRODUCTS / BOUTIQUE (MEGA-MENU) -->
-      <div class="nav-item-dropdown nav-item-products">
-        <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'shop') ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php" title="Artisanal Chocolate Boutique & Shop">
-          <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2.5"/>
-            <line x1="3" y1="9" x2="21" y2="9"/>
-            <line x1="3" y1="15" x2="21" y2="15"/>
-            <line x1="9" y1="3" x2="9" y2="21"/>
-            <line x1="15" y1="3" x2="15" y2="21"/>
-          </svg>
-          <span class="nav-label">PRODUCTS</span>
-        </a>
-
-        <div class="nav-dropdown-menu products-mega-menu">
-          <div class="mega-menu-grid">
-            <!-- Left Panel: Curated Collections -->
-            <div class="mega-categories-col">
-              <div class="mega-col-header">
-                <span class="mega-col-tag">ARTISANAL CREATIONS</span>
-                <h4 class="mega-col-title">Curated Collections</h4>
-              </div>
-
-              <div class="mega-categories-list">
-                <!-- 1. Bean-to-Bar Bars -->
-                <a href="<?php echo $pathPrefix; ?>shop.php?category=Chocolates" class="mega-product-item">
-                  <div class="mega-item-icon-box">
-                    <span class="mega-item-emoji">🍫</span>
-                  </div>
-                  <div class="mega-item-info">
-                    <div class="mega-item-top">
-                      <span class="mega-item-name">Bean-to-Bar Chocolate Bars</span>
-                      <span class="mega-badge-pill">Single Estate</span>
-                    </div>
-                    <p class="mega-item-desc">72% Idukki Dark, 55% Craft Milk &amp; roasted nib inclusions</p>
-                  </div>
-                  <span class="mega-item-arrow">→</span>
-                </a>
-
-                <!-- 2. Starter & Masterclass Kits -->
-                <a href="<?php echo $pathPrefix; ?>shop.php?category=Kits" class="mega-product-item">
-                  <div class="mega-item-icon-box">
-                    <span class="mega-item-emoji">🎁</span>
-                  </div>
-                  <div class="mega-item-info">
-                    <div class="mega-item-top">
-                      <span class="mega-item-name">Starter &amp; Tempering Kits</span>
-                      <span class="mega-badge-pill gold">Academy Pick</span>
-                    </div>
-                    <p class="mega-item-desc">Polycarbonate moulds, thermometers &amp; bean-to-bar maker sets</p>
-                  </div>
-                  <span class="mega-item-arrow">→</span>
-                </a>
-
-                <!-- 3. Raw Cacao & Pantry -->
-                <a href="<?php echo $pathPrefix; ?>shop.php?category=Cacao" class="mega-product-item">
-                  <div class="mega-item-icon-box">
-                    <span class="mega-item-emoji">🌱</span>
-                  </div>
-                  <div class="mega-item-info">
-                    <div class="mega-item-top">
-                      <span class="mega-item-name">Pure Cacao &amp; Pantry</span>
-                      <span class="mega-badge-pill">Direct Farm</span>
-                    </div>
-                    <p class="mega-item-desc">Single-origin roasted nibs, pure cacao butter &amp; husk tea</p>
-                  </div>
-                  <span class="mega-item-arrow">→</span>
-                </a>
-
-                <!-- 4. Bonbons & Truffles -->
-                <a href="<?php echo $pathPrefix; ?>shop.php?category=Bonbons" class="mega-product-item">
-                  <div class="mega-item-icon-box">
-                    <span class="mega-item-emoji">🍬</span>
-                  </div>
-                  <div class="mega-item-info">
-                    <div class="mega-item-top">
-                      <span class="mega-item-name">Artisan Bonbons &amp; Truffles</span>
-                      <span class="mega-badge-pill">Fresh Made</span>
-                    </div>
-                    <p class="mega-item-desc">Hand-painted cocoa butter gems with passion fruit &amp; spice ganache</p>
-                  </div>
-                  <span class="mega-item-arrow">→</span>
-                </a>
-              </div>
-            </div>
-
-            <!-- Right Panel: Featured Product Spotlight -->
-            <div class="mega-featured-col">
-              <div class="mega-featured-card">
-                <div class="mega-featured-img-wrap">
-                  <img src="<?php echo $pathPrefix; ?>assets/recipe_single_origin.png" alt="Signature 72% Bean-to-Bar Dark Chocolate Bar" loading="lazy" />
-                  <span class="mega-featured-badge">⭐ BESTSELLER</span>
-                </div>
-                <div class="mega-featured-body">
-                  <div class="mega-featured-origin">🇮🇳 Kerala Single-Estate Cacao</div>
-                  <h5 class="mega-featured-title">Signature 72% Bean-to-Bar Dark Chocolate</h5>
-                  <p class="mega-featured-desc">Stone-ground for 48 hours. Rich notes of dark raisins, vanilla pod &amp; roasted hazelnuts.</p>
-                  <div class="mega-featured-pricing">
-                    <span class="mega-price-current">₹250</span>
-                    <span class="mega-price-old">₹295</span>
-                    <span class="mega-discount-tag">Save 15%</span>
-                  </div>
-                  <a href="<?php echo $pathPrefix; ?>shop/signature-dark-chocolate-72" class="mega-order-btn">
-                    <span>Order Now</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bottom Trust & Perks Bar -->
-          <div class="mega-menu-footer">
-            <div class="mega-trust-badges">
-              <span class="trust-item"><span class="trust-icon">🌿</span> 100% Indian Estate Cacao</span>
-              <span class="trust-item"><span class="trust-icon">🚚</span> Free Shipping above ₹999</span>
-              <span class="trust-item"><span class="trust-icon">❄️</span> Insulated Fresh Delivery</span>
-            </div>
-            <div class="mega-footer-actions">
-              <a href="<?php echo $pathPrefix; ?>shop.php" class="mega-all-link">
-                <span>View Full Boutique (All Items)</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- 2. PRODUCTS / BOUTIQUE -->
+      <a class="nav-item-link <?php echo ($activeNav === 'shop') ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php" title="Artisanal Chocolate Boutique & Shop">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2.5"/>
+          <line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="3" y1="15" x2="21" y2="15"/>
+          <line x1="9" y1="3" x2="9" y2="21"/>
+          <line x1="15" y1="3" x2="15" y2="21"/>
+        </svg>
+        <span class="nav-label">PRODUCTS</span>
+      </a>
 
       <!-- 3. ACADEMY -->
       <div class="nav-item-dropdown">

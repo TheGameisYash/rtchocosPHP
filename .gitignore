@@ -5,4 +5,9 @@ scratch/
 data/
 node_modules/
 backups/*.zip
+/*.jpg
+/*.mp4
+assets/*_backup.mp4
+assets/*_clean.mp4
+
 
