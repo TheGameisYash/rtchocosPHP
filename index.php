@@ -532,14 +532,6 @@
     </div>
   </div>
 
-   <!-- Credibility & Trust Strip -->
-  <div id="cred-strip" class="trust-proof-bar">
-    <div class="cred-item"><div class="cred-num">10+</div><div class="cred-label">Years of Experience</div></div>
-    <div class="cred-item"><div class="cred-num">2,000+</div><div class="cred-label">Students Trained</div></div>
-    <div class="cred-item"><div class="cred-num">50+</div><div class="cred-label">Workshops Conducted</div></div>
-    <div class="cred-item"><div class="cred-num">100%</div><div class="cred-label">Bean-to-Bar &amp; Science First</div></div>
-  </div>
-
   <!-- Section 01: Featured Workshops -->
   <section id="featured-workshops">
     <div class="section">
