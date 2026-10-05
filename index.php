@@ -59,10 +59,23 @@
   include $pathPrefix . 'includes/header.php';
 ?>
 
+<!-- Luxury Landing Page Scoped Stylesheet -->
+<link rel="stylesheet" href="<?php echo $pathPrefix; ?>css/landing-luxury.css?v=<?php echo file_exists(__DIR__ . '/css/landing-luxury.css') ? filemtime(__DIR__ . '/css/landing-luxury.css') : time(); ?>">
+
 <!-- --- HOME PAGE --- -->
 <div id="page-home" class="page active">
-  <div class="deco-leaf-left"></div>
-  <div class="deco-leaf-right"></div>
+  <!-- Top Viewport Scroll Journey Progress -->
+  <div id="landing-scroll-progress" aria-hidden="true"></div>
+
+  <!-- Ambient Luxury Cursor Aurora Glow (Desktop Only) -->
+  <div id="landing-cursor-glow" aria-hidden="true"></div>
+
+  <!-- Multi-Layer Botanical Scroll Parallax Leaves -->
+  <div class="parallax-leaf leaf-gold leaf-1" data-speed="0.22" data-base-rot="-15" aria-hidden="true"></div>
+  <div class="parallax-leaf leaf-emerald leaf-2" data-speed="0.32" data-base-rot="25" aria-hidden="true"></div>
+  <div class="parallax-leaf leaf-cacao leaf-3" data-speed="0.18" data-base-rot="45" aria-hidden="true"></div>
+  <div class="parallax-leaf leaf-gold leaf-4" data-speed="0.28" data-base-rot="-35" aria-hidden="true"></div>
+  <div class="parallax-leaf leaf-emerald leaf-5" data-speed="0.15" data-base-rot="18" aria-hidden="true"></div>
 
   <!-- Split Hero with Full Video Background -->
   <section id="hero">
@@ -274,56 +287,56 @@
         <!-- 1. Bean to Bar → Wooden bowl of cacao beans (top-center-left) -->
         <div class="table-hotspot" style="top: 18%; left: 32%;" onclick="openTableModal('bean-to-bar')">
           <div class="hotspot-pin">
-            <span class="hotspot-dot"></span>
-            <span>Bean to Bar</span>
+            <span class="hotspot-dot" style="pointer-events: none;"></span>
+            <span style="pointer-events: none;">Bean to Bar</span>
           </div>
         </div>
 
         <!-- 2. Knowledge Hub → Open leather recipe journal (center of table) -->
         <div class="table-hotspot" style="top: 52%; left: 48%;" onclick="openTableModal('knowledge-hub')">
           <div class="hotspot-pin">
-            <span class="hotspot-dot"></span>
-            <span>Knowledge Hub</span>
+            <span class="hotspot-dot" style="pointer-events: none;"></span>
+            <span style="pointer-events: none;">Knowledge Hub</span>
           </div>
         </div>
 
         <!-- 3. Chocolate Lab → Brass magnifying glass / microscope (top-right) -->
         <div class="table-hotspot" style="top: 14%; left: 80%;" onclick="openTableModal('chocolate-lab')">
           <div class="hotspot-pin">
-            <span class="hotspot-dot"></span>
-            <span>Chocolate Lab</span>
+            <span class="hotspot-dot" style="pointer-events: none;"></span>
+            <span style="pointer-events: none;">Chocolate Lab</span>
           </div>
         </div>
 
         <!-- 4. Recipes & Formulations → Dark chocolate bar broken into pieces (right) -->
         <div class="table-hotspot" style="top: 38%; left: 86%;" onclick="openTableModal('recipes-formulations')">
           <div class="hotspot-pin">
-            <span class="hotspot-dot"></span>
-            <span>Recipes &amp; Formulations</span>
+            <span class="hotspot-dot" style="pointer-events: none;"></span>
+            <span style="pointer-events: none;">Recipes &amp; Formulations</span>
           </div>
         </div>
 
         <!-- 5. Techniques → Palette knife, spatula & bench scraper (bottom-left) -->
         <div class="table-hotspot" style="top: 82%; left: 28%;" onclick="openTableModal('techniques')">
           <div class="hotspot-pin">
-            <span class="hotspot-dot"></span>
-            <span>Techniques</span>
+            <span class="hotspot-dot" style="pointer-events: none;"></span>
+            <span style="pointer-events: none;">Techniques</span>
           </div>
         </div>
 
         <!-- 6. Origins & Atlas → Cacao pod split open + vintage map (far left) -->
         <div class="table-hotspot" style="top: 58%; left: 10%;" onclick="openTableModal('origins-atlas')">
           <div class="hotspot-pin">
-            <span class="hotspot-dot"></span>
-            <span>Origins &amp; Atlas</span>
+            <span class="hotspot-dot" style="pointer-events: none;"></span>
+            <span style="pointer-events: none;">Origins &amp; Atlas</span>
           </div>
         </div>
 
         <!-- 7. Workshops & Academy → Whisk + chocolate mould (bottom-right) -->
         <div class="table-hotspot" style="top: 82%; left: 78%;" onclick="openTableModal('workshops-academy')">
           <div class="hotspot-pin">
-            <span class="hotspot-dot"></span>
-            <span>Workshops &amp; Academy</span>
+            <span class="hotspot-dot" style="pointer-events: none;"></span>
+            <span style="pointer-events: none;">Workshops &amp; Academy</span>
           </div>
         </div>
       </div>
@@ -499,20 +512,233 @@
       btn2.href = data.btn2Href;
 
       const modal = document.getElementById('table-interactive-modal');
-      modal.classList.add('active');
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+      if (scrollBarWidth > 0) {
+        document.body.style.paddingRight = scrollBarWidth + 'px';
+      }
       document.body.style.overflow = 'hidden';
+      modal.classList.add('active');
     }
 
     function closeTableModal() {
       const modal = document.getElementById('table-interactive-modal');
       modal.classList.remove('active');
       document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     }
 
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeTableModal();
     });
   </script>
+
+  <!-- Section 11: Interactive Tempering Lab (Six Crystals. Only one is worth having.) -->
+  <section id="bean-to-bar-stepper" class="tempering-lab-sec">
+    <div class="tempering-lab-container">
+      
+      <!-- Compact Section Header -->
+      <div class="tempering-lab-header">
+        <div class="tempering-lab-badge">
+          <span class="lab-badge-pulse"></span>
+          <span>THE TEMPERING LAB &bull; MOLECULAR CRYSTALLIZATION</span>
+        </div>
+        <h2 class="tempering-lab-title">Six crystals. Only <em>one</em> is worth having.</h2>
+        <p class="tempering-lab-desc">
+          Cocoa butter sets into six polymorphs. Form V is the only lattice that delivers mirror gloss, crisp acoustic snap, and clean palate melt. Select a chocolate to inspect its thermal transition curve.
+        </p>
+      </div>
+
+      <!-- Main Interactive Laboratory Console -->
+      <div class="tempering-lab-card">
+        
+        <!-- Upper Deck: Controls & Thermal Curve Graph -->
+        <div class="tempering-lab-main-grid">
+          
+          <!-- Left Column: Controls, Metrics & Science Callout -->
+          <div class="tempering-control-col">
+            <div class="tempering-col-header">
+              <span class="tempering-type-label">CHOCOLATE PROFILE</span>
+              <span class="tempering-status-tag">✦ Target: Form V (&beta;<sub>2</sub>)</span>
+            </div>
+            
+            <div class="chocolate-type-pills" role="tablist" aria-label="Chocolate Types">
+              <button class="choco-pill-btn" data-type="dark" role="tab" aria-selected="false">
+                <span>DARK 70%</span>
+              </button>
+              <button class="choco-pill-btn active" data-type="milk" role="tab" aria-selected="true">
+                <span>MILK 38%</span>
+              </button>
+              <button class="choco-pill-btn" data-type="white" role="tab" aria-selected="false">
+                <span>WHITE 32%</span>
+              </button>
+              <button class="choco-pill-btn" data-type="ruby" role="tab" aria-selected="false">
+                <span>RUBY</span>
+              </button>
+            </div>
+
+            <!-- 3 Stat Metric Displays -->
+            <div class="tempering-metrics-row">
+              <div class="tempering-metric-box">
+                <span class="metric-deg-val" id="metric-melt">45°</span>
+                <span class="metric-deg-sub">MELT OUT</span>
+              </div>
+              <div class="tempering-metric-box">
+                <span class="metric-deg-val" id="metric-seed">27°</span>
+                <span class="metric-deg-sub">SEED / COOL</span>
+              </div>
+              <div class="tempering-metric-box active-metric">
+                <span class="metric-deg-val" id="metric-work">29.5°</span>
+                <span class="metric-deg-sub">WORKING TEMP</span>
+              </div>
+            </div>
+
+            <!-- Science Callout Explanation -->
+            <div class="tempering-science-callout">
+              <div class="science-callout-icon">💡</div>
+              <div class="science-callout-body">
+                <div class="science-callout-heading">CRYSTAL DYNAMICS</div>
+                <p class="science-callout-text" id="tempering-science-text">
+                  Milk fat is soft and disruptive: it slots between cocoa butter triglycerides and lowers the whole melting range. Everything drops roughly 2 °C, and the temper is less forgiving of overheating.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Interactive Temperature Curve SVG Chart -->
+          <div class="tempering-chart-col">
+            <div class="tempering-chart-header">
+              <span class="chart-header-title">THERMAL TRANSITION PROFILE</span>
+              <span class="chart-header-sub">CALIBRATED SVG TELEMETRY</span>
+            </div>
+            <div class="tempering-chart-wrapper">
+              <svg class="tempering-svg-chart" viewBox="0 0 520 180" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <!-- Glowing gradient for temperature curve line -->
+                  <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#d4af37" stop-opacity="0.85" />
+                    <stop offset="50%" stop-color="#ffd859" stop-opacity="1" />
+                    <stop offset="100%" stop-color="#d4af37" stop-opacity="0.9" />
+                  </linearGradient>
+                  <!-- Area glow gradient under curve -->
+                  <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#d4af37" stop-opacity="0.2" />
+                    <stop offset="100%" stop-color="#d4af37" stop-opacity="0.0" />
+                  </linearGradient>
+                  <!-- Drop shadow filter for glow -->
+                  <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+
+                <!-- Gridlines & Y-Axis Labels (20° to 55°) -->
+                <g class="chart-gridlines">
+                  <text x="34" y="23" class="y-label">55°</text>
+                  <line x1="44" y1="20" x2="498" y2="20" class="grid-line" />
+
+                  <text x="34" y="42.3" class="y-label">50°</text>
+                  <line x1="44" y1="39.3" x2="498" y2="39.3" class="grid-line" />
+
+                  <text x="34" y="61.6" class="y-label">45°</text>
+                  <line x1="44" y1="58.6" x2="498" y2="58.6" class="grid-line" />
+
+                  <text x="34" y="80.9" class="y-label">40°</text>
+                  <line x1="44" y1="77.9" x2="498" y2="77.9" class="grid-line" />
+
+                  <text x="34" y="100.1" class="y-label">35°</text>
+                  <line x1="44" y1="97.1" x2="498" y2="97.1" class="grid-line" />
+
+                  <text x="34" y="119.4" class="y-label">30°</text>
+                  <line x1="44" y1="116.4" x2="498" y2="116.4" class="grid-line" />
+
+                  <text x="34" y="138.7" class="y-label">25°</text>
+                  <line x1="44" y1="135.7" x2="498" y2="135.7" class="grid-line" />
+
+                  <text x="34" y="158" class="y-label">20°</text>
+                  <line x1="44" y1="155" x2="498" y2="155" class="grid-line baseline-grid" />
+                </g>
+
+                <!-- Area Fill under curve -->
+                <path id="curveAreaPath" class="curve-area" fill="url(#areaGrad)" d="M 48 142 C 80 138, 110 70.6, 148 58.6 L 182 58.6 C 225 58.6, 268 118.0, 310 128.0 C 355 132.0, 398 126.4, 442 118.4 L 498 118.4 L 498 155 L 48 155 Z" />
+
+                <!-- Main Tempering Curve Path -->
+                <path id="curveLinePath" class="curve-line" stroke="url(#curveGrad)" filter="url(#glowFilter)" d="M 48 142 C 80 138, 110 70.6, 148 58.6 L 182 58.6 C 225 58.6, 268 118.0, 310 128.0 C 355 132.0, 398 126.4, 442 118.4 L 498 118.4" />
+
+                <!-- X-Axis Labels (MELT, COOL, WORK) -->
+                <g class="chart-x-labels">
+                  <text x="165" y="172" class="x-label">MELT OUT</text>
+                  <text x="310" y="172" class="x-label">SEED / COOL</text>
+                  <text x="442" y="172" class="x-label">WORKING</text>
+                </g>
+
+                <!-- Node 1: Melt Out -->
+                <g id="node-melt" class="curve-node" transform="translate(165, 58.6)">
+                  <circle cx="0" cy="0" r="8" class="node-halo" />
+                  <circle cx="0" cy="0" r="3.5" class="node-dot" />
+                  <text x="0" y="-10" class="node-label" id="label-melt">MELT OUT 45°C</text>
+                </g>
+
+                <!-- Node 2: Seed / Cool -->
+                <g id="node-seed" class="curve-node" transform="translate(310, 128.0)">
+                  <circle cx="0" cy="0" r="8" class="node-halo" />
+                  <circle cx="0" cy="0" r="3.5" class="node-dot" />
+                  <text x="0" y="-10" class="node-label" id="label-seed">SEED 27°C</text>
+                </g>
+
+                <!-- Node 3: Working Temp -->
+                <g id="node-work" class="curve-node" transform="translate(442, 118.4)">
+                  <circle cx="0" cy="0" r="8" class="node-halo" />
+                  <circle cx="0" cy="0" r="3.5" class="node-dot" />
+                  <text x="0" y="-10" class="node-label" id="label-work">WORK 29.5°C</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Integrated Lower Deck: 6-Crystal Polymorphic Spectrum Ribbon -->
+        <div class="tempering-spectrum-ribbon">
+          <div class="spectrum-ribbon-label">
+            <span>POLYMORPHIC SPECTRUM &bull; SIX CRYSTAL STRUCTURES</span>
+            <span class="spectrum-sublabel">Why Form V is the Chocolatier's Holy Grail</span>
+          </div>
+          <div class="spectrum-ribbon-track">
+            <div class="spectrum-chip">
+              <div class="chip-head"><span class="chip-name">FORM I</span><span class="chip-temp">17°C</span></div>
+              <div class="chip-sub">Loose sub-&alpha; &bull; Melts on touch</div>
+            </div>
+            <div class="spectrum-chip">
+              <div class="chip-head"><span class="chip-name">FORM II</span><span class="chip-temp">21°C</span></div>
+              <div class="chip-sub">&alpha; phase &bull; Crumbly, no snap</div>
+            </div>
+            <div class="spectrum-chip">
+              <div class="chip-head"><span class="chip-name">FORM III</span><span class="chip-temp">26°C</span></div>
+              <div class="chip-sub">&beta;&prime;<sub>1</sub> phase &bull; Weak lattice</div>
+            </div>
+            <div class="spectrum-chip">
+              <div class="chip-head"><span class="chip-name">FORM IV</span><span class="chip-temp">28°C</span></div>
+              <div class="chip-sub">&beta;&prime;<sub>2</sub> phase &bull; Greasy palate</div>
+            </div>
+            <div class="spectrum-chip target-form-v">
+              <div class="chip-badge">IDEAL</div>
+              <div class="chip-head"><span class="chip-name">FORM V</span><span class="chip-temp">34°C</span></div>
+              <div class="chip-sub">&beta;<sub>2</sub> &bull; Gloss, snap &amp; release</div>
+            </div>
+            <div class="spectrum-chip">
+              <div class="chip-head"><span class="chip-name">FORM VI</span><span class="chip-temp">36°C</span></div>
+              <div class="chip-sub">&beta;<sub>1</sub> &bull; Over-aged bloom</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
 
   <!-- Moving AI Insights Ticker Bar (Looping horizontal ticker) -->
   <div class="ticker-wrap">
@@ -556,24 +782,43 @@
   </section>
 
 
-  <!-- Section 02: Interactive Flavor Wheel Section -->
-  <section id="flavor-wheel-sec">
+  <!-- Section 02: Interactive Flavor Wheel Section (Haute Cacao Sensory Lab) -->
+  <section id="flavor-wheel-sec" class="luxury-flavor-wheel-sec">
     <div class="wheel-layout">
       <!-- Title Column -->
       <div class="wheel-title-col">
-        <div class="wheel-section-badge">02 / SCIENCE</div>
+        <div class="wheel-section-badge">
+          <span class="badge-pulse-dot"></span>
+          <span>02 / SENSORY LAB</span>
+        </div>
         <h2 class="wheel-main-heading">
-          <span class="wheel-sub-prefix">CHOCOLATE</span>
-          Flavor Wheel
+          <span class="wheel-sub-prefix">CACAO MOLECULAR TERROIR</span>
+          The Flavor <em>Wheel</em>
         </h2>
         <div class="wheel-gold-bar"></div>
-        <p class="wheel-desc">Explore the intricate dimensions of bean-to-bar chocolate. Click on the main sectors of the wheel or the cards on the right to discover how cacao origin, farm processing, and taste profiles shape the final bar's character.</p>
+        <p class="wheel-desc">
+          Explore the multi-dimensional flavor taxonomy of bean-to-bar craft chocolate. Click any sector on the wheel or select a category card to unpack how terroir, roast profiling, and palate kinetics shape the bar's sensory fingerprint.
+        </p>
+
+        <!-- Interactive Helper Pill -->
+        <div class="wheel-interactive-hint">
+          <span class="hint-pulse">✦</span>
+          <span>Click any wheel sector or tasting note to inspect chemistry</span>
+        </div>
+
+        <!-- Terroir Quick Stats -->
+        <div class="wheel-stat-pills">
+          <span class="stat-pill">16 DESCRIPTORS</span>
+          <span class="stat-pill">3 CORE PILLARS</span>
+          <span class="stat-pill">SINGLE-ORIGIN</span>
+        </div>
       </div>
 
       <!-- Wheel Column -->
       <div class="wheel-svg-col">
+        <div class="wheel-ambient-aura"></div>
         <div class="wheel-svg-wrapper">
-          <svg class="wheel-svg" viewBox="0 0 500 500" id="interactive-wheel">
+          <svg class="wheel-svg" viewBox="0 0 540 540" id="interactive-wheel">
             <!-- Dynamic SVG content will be injected here by JS -->
           </svg>
         </div>
@@ -584,122 +829,180 @@
         <!-- Flavor Notes Card -->
         <div class="wheel-detail-card" data-sector="flavor" id="card-flavor">
           <div class="card-header-row">
-            <div class="card-icon-container">
-              <!-- Inline SVG cup icon -->
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff5252" stroke-width="2">
-                <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-                <line x1="6" y1="1" x2="6" y2="4" />
-                <line x1="10" y1="1" x2="10" y2="4" />
-                <line x1="14" y1="1" x2="14" y2="4" />
+            <div class="card-icon-container icon-flavor">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2">
+                <path d="M12 2C6.5 2 2 6.5 2 12c0 3.5 1.8 6.6 4.6 8.4l1.4-1.4C5.7 17.5 4.3 14.9 4.3 12c0-4.2 3.5-7.7 7.7-7.7s7.7 3.5 7.7 7.7c0 2.9-1.4 5.5-3.7 7l1.4 1.4C20.2 18.6 22 15.5 22 12c0-5.5-4.5-10-10-10z"/>
+                <path d="M12 6a6 6 0 0 0-6 6c0 2.1.8 4 2.2 5.3l1.4-1.4A4 4 0 0 1 8 12a4 4 0 1 1 8 0c0 1.5-.7 2.8-1.6 3.9l1.4 1.4C19.2 16 20 14.1 20 12a6 6 0 0 0-6-6z"/>
+                <circle cx="12" cy="12" r="2" fill="#d4af37"/>
               </svg>
             </div>
-            <span class="card-title-text">1. Flavor Notes</span>
+            <div class="card-title-group">
+              <span class="card-cat-badge badge-flavor">TERROIR &amp; BOTANY</span>
+              <span class="card-title-text">1. Flavor Notes</span>
+            </div>
           </div>
-          <p>Aromas and flavors derived from the ingredients, soil, climate (terroir), and natural chemical compounds in the cacao beans.</p>
+          <p>Aromas driven by volcanic soil chemistry, heirloom genetics (Criollo, Trinitario, Nacional), and post-harvest anaerobic pulp breakdown.</p>
+          <div class="descriptor-pills-row" data-parent="flavor">
+            <span class="descriptor-pill" data-desc="Earthy">Earthy</span>
+            <span class="descriptor-pill" data-desc="Spicy">Spicy</span>
+            <span class="descriptor-pill" data-desc="Sweet">Sweet</span>
+            <span class="descriptor-pill" data-desc="Nutty">Nutty</span>
+            <span class="descriptor-pill" data-desc="Floral">Floral</span>
+            <span class="descriptor-pill" data-desc="Fruity">Fruity</span>
+          </div>
         </div>
 
         <!-- Process Card -->
         <div class="wheel-detail-card" data-sector="process" id="card-process">
           <div class="card-header-row">
-            <div class="card-icon-container">
-              <!-- Inline SVG gear icon -->
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f39c12" stroke-width="2">
+            <div class="card-icon-container icon-process">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7acb92" stroke-width="2">
                 <circle cx="12" cy="12" r="3" />
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
               </svg>
             </div>
-            <span class="card-title-text">2. Process</span>
+            <div class="card-title-group">
+              <span class="card-cat-badge badge-process">CRAFT &amp; ROAST</span>
+              <span class="card-title-text">2. Process</span>
+            </div>
           </div>
-          <p>The crucial post-harvest and production steps—fermenting, drying, roasting, conching, and tempering—that shape chocolate's character.</p>
+          <p>Artisan transformation stages—box fermentation, solar drying, aerodynamic roasting, micro-shear conching, and crystal tempering.</p>
+          <div class="descriptor-pills-row" data-parent="process">
+            <span class="descriptor-pill" data-desc="Roasted">Roasted</span>
+            <span class="descriptor-pill" data-desc="Fermented">Fermented</span>
+            <span class="descriptor-pill" data-desc="Dried">Dried</span>
+            <span class="descriptor-pill" data-desc="Conched">Conched</span>
+            <span class="descriptor-pill" data-desc="Tempered">Tempered</span>
+          </div>
         </div>
 
         <!-- Taste Profile Card -->
         <div class="wheel-detail-card" data-sector="taste" id="card-taste">
           <div class="card-header-row">
-            <div class="card-icon-container">
-              <!-- Inline SVG tongue icon -->
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#82c91e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="card-icon-container icon-taste">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e5c453" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2 10h20" />
                 <path d="M21.5 10c-.5 5-4.5 9-9.5 9s-9-4-9-9" />
                 <path d="M12 10v9" />
                 <path d="M12 14c1.5 0 2.5.5 2.5 1" />
               </svg>
             </div>
-            <span class="card-title-text">3. Taste Profile</span>
+            <div class="card-title-group">
+              <span class="card-cat-badge badge-taste">PALATE SENSORY</span>
+              <span class="card-title-text">3. Taste Profile</span>
+            </div>
           </div>
-          <p>The tactile and basic taste sensations perceived on the palate—sweetness, acidity, bitterness, saltiness, melt rate, and texture.</p>
+          <p>Direct palate sensations—tactile mouthfeel, melt velocity, acidity snap, astringency balance, and lingering velvety finish.</p>
+          <div class="descriptor-pills-row" data-parent="taste">
+            <span class="descriptor-pill" data-desc="Smooth">Smooth</span>
+            <span class="descriptor-pill" data-desc="Creamy">Creamy</span>
+            <span class="descriptor-pill" data-desc="Salty">Salty</span>
+            <span class="descriptor-pill" data-desc="Sour">Sour / Tart</span>
+            <span class="descriptor-pill" data-desc="Bittersweet">Bittersweet</span>
+          </div>
         </div>
       </div>
-
-
     </div>
 
-    <!-- Inline Script for interactive wheel logic -->
+    <!-- Live Molecular Sensory Telemetry Bar -->
+    <div class="wheel-telemetry-container">
+      <div class="wheel-telemetry-inner">
+        <div class="telemetry-pill">
+          <span class="telemetry-dot"></span>
+          <span class="telemetry-label">MOLECULAR SENSORY DRIVER</span>
+        </div>
+        <div class="telemetry-content">
+          <strong id="telemetry-note-name">SELECT ANY SLICE OR DESCRIPTOR</strong>
+          <span class="telemetry-divider">&bull;</span>
+          <span id="telemetry-note-desc">Click any wheel sector or tasting chip to inspect its origin chemistry and molecular flavor precursors.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Interactive Wheel Script -->
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-        const cx = 250;
-        const cy = 250;
-        const R0 = 62; // Center hub radius
-        const R1 = 62;
-        const R2 = 138; // Main sector outer radius
-        const R3 = 220; // Subsector outer radius
+        const cx = 270;
+        const cy = 270;
+        const R0 = 68;  // Center hub radius
+        const R1 = 70;  // Main sector inner radius
+        const R2 = 150; // Main sector outer radius
+        const R3 = 246; // Subsector outer radius
+
+        const MOLECULAR_DATA = {
+          "Earthy": "Volatile pyrazines and geosmin from volcanic terroir and biodynamic equatorial soil microbes.",
+          "Spicy": "Warm eugenol and phenylpropanoid fractions that develop in Criollo genetics under moderate fermentation.",
+          "Sweet": "Naturally occurring fructose and sucrose caramelized during thermal conching below 75°C, yielding maltol.",
+          "Nutty": "2,3,5-trimethylpyrazine produced via gentle convective roasting of raw cocoa nibs at 115°C–125°C.",
+          "Floral": "Volatile linalool and beta-damascenone monoterpenes characteristic of fine Nacional and Porcelana heirlooms.",
+          "Fruity": "Ethyl 2-methylbutyrate and isoamyl acetate esters synthesized during anaerobic cacao pulp fermentation.",
+          "Roasted": "Maillard reaction pyrazines formed when amino acids react with reducing sugars at peak roast crack.",
+          "Fermented": "Acetic and lactic organic acids produced during 5-to-7 day hardwood cascade box fermentation.",
+          "Dried": "Solar drying on elevated cedar beds reduces bean moisture to 7%, locking in vital flavor precursors.",
+          "Conched": "Multi-axis mechanical shear reducing particle size below 20 microns while evaporating volatile harsh acids.",
+          "Tempered": "Controlled heating cycle establishing stable Form V (β2) crystal network for clean snap and 34°C palate melt.",
+          "Smooth": "Sub-20 micron cocoa solids suspended homogeneously in a continuous cocoa butter triglyceride matrix.",
+          "Creamy": "High natural cocoa butter ratio (36%–42%) coating taste buds for slow, luxurious flavor release.",
+          "Salty": "Natural oceanic mineral trace elements enhancing sweetness perception and elevating cocoa depth.",
+          "Sour": "Natural citric and malic fruit acids providing a bright, wine-like, vibrant acidity on the palate edges.",
+          "Bittersweet": "Purine alkaloids (theobromine, caffeine) paired with antioxidant flavan-3-ols for authentic dark structure."
+        };
+
         const WHEEL_DATA = [
           {
             id: "flavor",
             label: "1. FLAVOR NOTES",
-            color: "#361b20", // Deep Cacao Mahogany
+            color: "#46141c",
             accentColor: "#d4af37",
             textLight: "#ffffff",
             startAngle: 180,
             endAngle: 300,
-            icon: `<path d="M-6 -2c0-3.3 2.7-6 6-6s6 2.7 6 6v2c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4v-2zm12 6h2v-2h-2v2zM0 -14v2M-3 -13v1.5M3 -13v1.5" stroke="#d4af37" fill="none" stroke-width="1.4"/>`,
             subsectors: [
-              { label: "Earthy", startAngle: 180, endAngle: 200, icon: `<path d="M0 -6 C4 -2 4 4 0 6 C-4 4 -4 -2 0 -6 Z M0 -6 L0 6" stroke="#ffffff" fill="none" stroke-width="1.3"/>` },
-              { label: "Spicy", startAngle: 200, endAngle: 220, icon: `<path d="M0 -6 L1.5 -2 L6 -2 L2.5 1 L4 5 L0 2.5 L-4 5 L-2.5 1 L-6 -2 L-1.5 -2 Z" stroke="#ffffff" fill="none" stroke-width="1.3"/>` },
-              { label: "Sweet", startAngle: 220, endAngle: 240, icon: `<path d="M-5 -5 L5 5 M-5 5 L5 -5 M-2.5 0 A 2.5 2.5 0 1 0 2.5 0 A 2.5 2.5 0 1 0 -2.5 0 Z" stroke="#ffffff" fill="none" stroke-width="1.3"/>` },
-              { label: "Nutty", startAngle: 240, endAngle: 260, icon: `<path d="M-3 -2 C-3 2 3 2 3 -2 C3 -4 -3 -4 -3 -2 Z M-3 -2 Q 0 -6 3 -2" stroke="#ffffff" fill="none" stroke-width="1.3"/>` },
-              { label: "Floral", startAngle: 260, endAngle: 280, icon: `<circle cx="0" cy="0" r="2" fill="#ffffff"/><circle cx="0" cy="-4" r="1.8" fill="none" stroke="#ffffff" stroke-width="1.3"/><circle cx="4" cy="0" r="1.8" fill="none" stroke="#ffffff" stroke-width="1.3"/><circle cx="0" cy="4" r="1.8" fill="none" stroke="#ffffff" stroke-width="1.3"/><circle cx="-4" cy="0" r="1.8" fill="none" stroke="#ffffff" stroke-width="1.3"/>` },
-              { label: "Fruity", startAngle: 280, endAngle: 300, icon: `<path d="M-1.5 -4 A 2.5 2.5 0 1 0 -1.5 1 A 2.5 2.5 0 1 0 -1.5 -4 Z M1.5 -1 A 2.5 2.5 0 1 0 1.5 4 A 2.5 2.5 0 1 0 1.5 -1 Z M-1.5 -1 Q 0 -6 3 -5" stroke="#ffffff" fill="none" stroke-width="1.3"/>` }
+              { label: "Earthy", startAngle: 180, endAngle: 200, color: "#3f1c22" },
+              { label: "Spicy", startAngle: 200, endAngle: 220, color: "#501e27" },
+              { label: "Sweet", startAngle: 220, endAngle: 240, color: "#61202c" },
+              { label: "Nutty", startAngle: 240, endAngle: 260, color: "#732332" },
+              { label: "Floral", startAngle: 260, endAngle: 280, color: "#852639" },
+              { label: "Fruity", startAngle: 280, endAngle: 300, color: "#992940" }
             ]
           },
           {
             id: "process",
             label: "2. PROCESS",
-            color: "#142e20", // Dark Forest Emerald
-            accentColor: "#569269",
+            color: "#0c2c1a",
+            accentColor: "#7acb92",
             textLight: "#ffffff",
             startAngle: 300,
             endAngle: 420,
-            icon: `<path d="M-3 0 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 M7 0 a1.6 1.6 0 0 0 .3 1.8 l.1.1 a2 2 0 1 1 -2.8 2.8 l-.1-.1 a1.6 1.6 0 0 0 -1.8-.3 a1.6 1.6 0 0 0 -1 1.5 v.1 a2 2 0 0 1 -4 0 v-.1 a1.6 1.6 0 0 0 -1-1.5 a1.6 1.6 0 0 0 -1.8.3 l-.1.1 a2 2 0 1 1 -2.8 -2.8 l.1-.1 a1.6 1.6 0 0 0 .3 -1.8 a1.6 1.6 0 0 0 -1.5 -1 h-.1 a2 2 0 0 1 0 4 h.1 a1.6 1.6 0 0 0 1.5 -1 a1.6 1.6 0 0 0 -.3 -1.8 l-.1-.1 a2 2 0 1 1 2.8 -2.8 l.1.1 a1.6 1.6 0 0 0 1.8 .3 a1.6 1.6 0 0 0 1 -1.5 v-.1 a2 2 0 0 1 4 0 v.1 a1.6 1.6 0 0 0 1 1.5 a1.6 1.6 0 0 0 1.8 -.3 l.1-.1 a2 2 0 1 1 2.8 2.8 l-.1.1 a1.6 1.6 0 0 0 -.3 1.8 a1.6 1.6 0 0 0 1.5 1 h.1 a2 2 0 0 1 0 4 h-.1 a1.6 1.6 0 0 0 -1.5 1 z" stroke="#7acb92" fill="none" stroke-width="1.4"/>`,
             subsectors: [
-              { label: "Roasted", startAngle: 300, endAngle: 324, icon: `<path d="M0 5 C-3.5 5 -4 2.5 -2.5 0 C-3 -1.5 -1.5 -5 0 -7 C1.5 -5 3 -1.5 2.5 0 C4 2.5 3.5 5 0 5 Z" stroke="#ffffff" fill="none" stroke-width="1.3"/>` },
-              { label: "Fermented", startAngle: 324, endAngle: 348, icon: `<path d="M-2.5 -5 H2.5 V-3 H-2.5 Z M-3 -3 H3 V4 C3 5 2.5 5.5 -3 5.5 H-3 Z" stroke="#ffffff" fill="none" stroke-width="1.3"/>` },
-              { label: "Dried", startAngle: 348, endAngle: 372, icon: `<circle cx="0" cy="0" r="3" stroke="#ffffff" fill="none" stroke-width="1.3"/><path d="M0 -5 V-7 M0 5 V7 M-5 0 H-7 M5 0 H7" stroke="#ffffff" stroke-width="1.3"/>` },
-              { label: "Conched", startAngle: 372, endAngle: 396, icon: `<path d="M-4 4 V-4 L-1.5 -1.5 V-4 L1 -1.5 V-4 L4 -0.5 V4 Z M-1.5 4 V1.5 H1.5 V4" stroke="#ffffff" fill="none" stroke-width="1.3"/>` },
-              { label: "Tempered", startAngle: 396, endAngle: 420, icon: `<path d="M-1.5 -6 H1.5 V2.5 A 2.5 2.5 0 1 1 -1.5 2.5 Z M0 -3.5 V1" stroke="#ffffff" fill="none" stroke-width="1.3"/>` }
+              { label: "Roasted", startAngle: 300, endAngle: 324, color: "#143622" },
+              { label: "Fermented", startAngle: 324, endAngle: 348, color: "#18422a" },
+              { label: "Dried", startAngle: 348, endAngle: 372, color: "#1d4e32" },
+              { label: "Conched", startAngle: 372, endAngle: 396, color: "#225a3a" },
+              { label: "Tempered", startAngle: 396, endAngle: 420, color: "#286843" }
             ]
           },
           {
             id: "taste",
             label: "3. TASTE PROFILE",
-            color: "#382a18", // Roasted Cocoa Amber
+            color: "#3a230e",
             accentColor: "#e5c453",
             textLight: "#ffffff",
             startAngle: 60,
             endAngle: 180,
-            icon: `<path d="M-6 0c0 0 3 3 6 3s6-3 6-3M-5 0c0 4 2.5 7 5 7s5-3 5-7" stroke="#e5c453" fill="none" stroke-width="1.4"/>`,
             subsectors: [
-              { label: "Smooth", startAngle: 60, endAngle: 84, icon: `<path d="M-5 -1.5 Q-2.5 -4 0 -1.5 T5 -1.5 M-5 1.5 Q-2.5 -1 0 1.5 T5 1.5" stroke="#ffffff" fill="none" stroke-width="1.3" stroke-linecap="round"/>` },
-              { label: "Creamy", startAngle: 84, endAngle: 108, icon: `<path d="M0 -6 C3 -2.5 4 1 2.5 3.5 C0 6 -2.5 6 -2.5 3.5 C-4 1 -3 -2.5 0 -6 Z" stroke="#ffffff" fill="none" stroke-width="1.3"/>` },
-              { label: "Salty", startAngle: 108, endAngle: 132, icon: `<path d="M-2.5 -3.5 H2.5 V5 H-2.5 Z M-1.5 -5 H1.5 V-3.5 H-1.5 Z M-1 -1 H1 M-1 1.5 H1" stroke="#ffffff" fill="none" stroke-width="1.3"/>` },
-              { label: "Sour", startAngle: 132, endAngle: 156, icon: `<path d="M0 -5 A 5 5 0 1 0 0 5 A 5 5 0 1 0 0 -5 Z M0 0 L4 0 M0 0 L-2 -3.5 M0 0 L-2 3.5" stroke="#ffffff" fill="none" stroke-width="1.3"/>` },
-              { label: "Other", startAngle: 156, endAngle: 180, icon: `<circle cx="-4" cy="0" r="1.2" fill="#ffffff"/><circle cx="0" cy="0" r="1.2" fill="#ffffff"/><circle cx="4" cy="0" r="1.2" fill="#ffffff"/>` }
+              { label: "Smooth", startAngle: 60, endAngle: 84, color: "#472c14" },
+              { label: "Creamy", startAngle: 84, endAngle: 108, color: "#543419" },
+              { label: "Salty", startAngle: 108, endAngle: 132, color: "#633d1e" },
+              { label: "Sour", startAngle: 132, endAngle: 156, color: "#724723" },
+              { label: "Bittersweet", startAngle: 156, endAngle: 180, color: "#825029" }
             ]
           }
         ];
 
         const svg = document.getElementById("interactive-wheel");
+        if (!svg) return;
+
         let activeSectorId = null;
         let gRotation = 0;
 
@@ -727,36 +1030,36 @@
           return `M ${start.x} ${start.y} A ${r} ${r} 0 0 ${sweep} ${end.x} ${end.y}`;
         }
 
-        // Generate the SVG contents dynamically
-        let svgContent = "";
-        
-        svgContent += `
+        // Generate SVG content with luxury gradients and filter definitions
+        let svgContent = `
           <defs>
-            <filter id="glow-flavor" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="8" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            <radialGradient id="hubBgGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#0e2617" />
+              <stop offset="70%" stop-color="#07160d" />
+              <stop offset="100%" stop-color="#030b06" />
+            </radialGradient>
+            <filter id="wheelSliceGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
             </filter>
-            <filter id="glow-process" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="8" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
-            <filter id="glow-taste" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="8" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            <filter id="hubShadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000000" flood-opacity="0.7"/>
             </filter>
           </defs>
+          <g id="rotating-group">
         `;
 
-        svgContent += `<g id="rotating-group">`;
-
         WHEEL_DATA.forEach((category) => {
-          // --- 1. MAIN SECTOR ---
+          // --- 1. MAIN SECTOR (INNER PILLAR RING) ---
           const mainPath = getSectorPath(cx, cy, R1, R2, category.startAngle, category.endAngle);
           svgContent += `
             <path class="wheel-sector wheel-main-sector" 
                   d="${mainPath}" 
                   fill="${category.color}" 
-                  stroke="rgba(212, 175, 55, 0.35)"
+                  stroke="rgba(212, 175, 55, 0.45)"
                   stroke-width="1.5"
                   data-category="${category.id}"
                   style="color: ${category.accentColor};"
@@ -766,10 +1069,9 @@
           const midAngle = (category.startAngle + category.endAngle) / 2;
           const normAngle = ((midAngle % 360) + 360) % 360;
           const isBottom = (normAngle > 0 && normAngle < 180);
-          const textR = (R1 + R2) / 2 + 2;
-          const textSpan = 42;
+          const textR = (R1 + R2) / 2;
+          const textSpan = (category.endAngle - category.startAngle) * 0.44;
           
-          // Draw counter-clockwise if in bottom half so text is always right-side up
           const textPathD = isBottom
             ? getArcPath(cx, cy, textR, midAngle + textSpan, midAngle - textSpan, true)
             : getArcPath(cx, cy, textR, midAngle - textSpan, midAngle + textSpan, false);
@@ -784,69 +1086,57 @@
             </text>
           `;
 
-          const iconR = (R1 + R2) / 2 - 20;
-          const iconPos = polarToCartesian(cx, cy, iconR, midAngle);
-          const iconRot = isBottom ? midAngle - 90 : midAngle + 90;
-          svgContent += `
-            <g transform="translate(${iconPos.x}, ${iconPos.y}) rotate(${iconRot})">
-              ${category.icon}
-            </g>
-          `;
-
-          // --- 2. SUB-SECTORS (OUTER RING) ---
+          // --- 2. SUB-SECTORS (OUTER DESCRIPTOR RING) ---
           category.subsectors.forEach((sub, subIdx) => {
             const subPath = getSectorPath(cx, cy, R2, R3, sub.startAngle, sub.endAngle);
             svgContent += `
               <path class="wheel-sector wheel-sub-sector" 
                     d="${subPath}" 
-                    fill="${category.color}" 
-                    stroke="rgba(212, 175, 55, 0.25)"
-                    stroke-width="1"
+                    fill="${sub.color}" 
+                    stroke="rgba(212, 175, 55, 0.35)"
+                    stroke-width="1.2"
                     data-category="${category.id}"
-                    style="opacity: ${0.75 + (subIdx * 0.05)}; color: ${category.accentColor};"
+                    data-label="${sub.label}"
+                    style="color: ${category.accentColor};"
               />
             `;
 
             const subMidAngle = (sub.startAngle + sub.endAngle) / 2;
             const normSubAngle = ((subMidAngle % 360) + 360) % 360;
             const isSubBottom = (normSubAngle > 0 && normSubAngle < 180);
-            const subTextR = (R2 + R3) / 2 + 2;
-            const subTextSpan = 18;
+            const subTextR = (R2 + R3) / 2;
+            const subSpan = (sub.endAngle - sub.startAngle) * 0.43;
 
             const subTextPathD = isSubBottom
-              ? getArcPath(cx, cy, subTextR, subMidAngle + subTextSpan, subMidAngle - subTextSpan, true)
-              : getArcPath(cx, cy, subTextR, subMidAngle - subTextSpan, subMidAngle + subTextSpan, false);
+              ? getArcPath(cx, cy, subTextR, subMidAngle + subSpan, subMidAngle - subSpan, true)
+              : getArcPath(cx, cy, subTextR, subMidAngle - subSpan, subMidAngle + subSpan, false);
             
             const subTextPathId = `textpath-sub-${category.id}-${subIdx}`;
 
             svgContent += `
               <path id="${subTextPathId}" d="${subTextPathD}" fill="none" stroke="none" />
-              <text class="wheel-sublabel-text" fill="#ffffff">
+              <text class="wheel-sublabel-text" fill="#ffffff" data-label="${sub.label}">
                 <textPath href="#${subTextPathId}" startOffset="50%" text-anchor="middle">
                   ${sub.label}
                 </textPath>
               </text>
-            `;
-
-            const subIconR = R2 + 18;
-            const subIconPos = polarToCartesian(cx, cy, subIconR, subMidAngle);
-            const subIconRot = isSubBottom ? subMidAngle - 90 : subMidAngle + 90;
-            svgContent += `
-              <g transform="translate(${subIconPos.x}, ${subIconPos.y}) rotate(${subIconRot})">
-                ${sub.icon}
-              </g>
             `;
           });
         });
 
         svgContent += `</g>`; // End rotating-group
 
-        // --- 3. CENTER HUB (STATIONARY) ---
+        // --- 3. LUXURY MEDALLION CENTER HUB (STATIONARY) ---
         svgContent += `
-          <g id="center-hub-group">
-            <circle class="wheel-center-hub" cx="${cx}" cy="${cy}" r="${R0}" />
-            <text x="${cx}" y="${cy - 4}" text-anchor="middle" fill="#d4af37" font-family="'Playfair Display', serif" font-size="14" font-weight="700" letter-spacing="1">CACAO</text>
-            <text x="${cx}" y="${cy + 12}" text-anchor="middle" fill="#e8d8c8" font-family="'Inter', sans-serif" font-size="9" font-weight="600" letter-spacing="2">WHEEL</text>
+          <g id="center-hub-group" filter="url(#hubShadow)" style="cursor: pointer;">
+            <!-- Outer gold bezel -->
+            <circle class="wheel-center-hub" cx="${cx}" cy="${cy}" r="${R0}" fill="url(#hubBgGrad)" stroke="#d4af37" stroke-width="2.5" />
+            <!-- Concentric inner dashed gold accent -->
+            <circle cx="${cx}" cy="${cy}" r="${R0 - 8}" fill="none" stroke="rgba(212, 175, 55, 0.4)" stroke-width="1" stroke-dasharray="2, 4" />
+            <!-- Center Typography -->
+            <text x="${cx}" y="${cy - 7}" text-anchor="middle" fill="#d4af37" font-family="'Playfair Display', serif" font-size="14" font-weight="700" letter-spacing="2">CACAO</text>
+            <text x="${cx}" y="${cy + 8}" text-anchor="middle" fill="#fbf7ee" font-family="'Inter', sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5">SENSORY LAB</text>
+            <text x="${cx}" y="${cy + 22}" text-anchor="middle" fill="#8eba9f" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="1">✦ TAP ✦</text>
           </g>
         `;
 
@@ -856,6 +1146,9 @@
         const centerHub = document.getElementById("center-hub-group");
         const sectors = document.querySelectorAll(".wheel-sector");
         const cards = document.querySelectorAll(".wheel-detail-card");
+        const descriptorPills = document.querySelectorAll(".descriptor-pill");
+        const telemetryName = document.getElementById("telemetry-note-name");
+        const telemetryDesc = document.getElementById("telemetry-note-desc");
 
         const rotationMap = {
           "flavor": 30,
@@ -863,9 +1156,14 @@
           "taste": 150
         };
 
+        function updateTelemetry(name, desc) {
+          if (!telemetryName || !telemetryDesc) return;
+          telemetryName.textContent = name.toUpperCase();
+          telemetryDesc.textContent = desc;
+        }
+
         function setFocus(sectorId) {
           if (activeSectorId === sectorId) return;
-          
           activeSectorId = sectorId;
 
           if (sectorId) {
@@ -884,6 +1182,7 @@
             gRotation = 0;
             rotatingGroup.style.transform = `rotate(0deg)`;
             svg.classList.remove("has-focus");
+            updateTelemetry("SELECT ANY SLICE OR DESCRIPTOR", "Click any wheel sector or tasting chip to inspect its origin chemistry and molecular flavor precursors.");
           }
 
           sectors.forEach(sec => {
@@ -899,23 +1198,38 @@
           cards.forEach(card => {
             const cardSector = card.getAttribute("data-sector");
             card.classList.remove("active-flavor", "active-process", "active-taste");
-            
             if (cardSector === sectorId) {
               card.classList.add(`active-${cardSector}`);
             }
           });
         }
 
+        // Wheel Sector Clicks & Hovers
         sectors.forEach(sec => {
           sec.addEventListener("click", function(e) {
             e.stopPropagation();
             const category = this.getAttribute("data-category");
+            const label = this.getAttribute("data-label");
             setFocus(category);
+
+            if (label && MOLECULAR_DATA[label]) {
+              updateTelemetry(label, MOLECULAR_DATA[label]);
+              highlightPill(label);
+            }
+          });
+
+          sec.addEventListener("mouseenter", function() {
+            const label = this.getAttribute("data-label");
+            if (label && MOLECULAR_DATA[label]) {
+              updateTelemetry(label, MOLECULAR_DATA[label]);
+            }
           });
         });
 
+        // Detail Cards Interaction
         cards.forEach(card => {
-          card.addEventListener("click", function() {
+          card.addEventListener("click", function(e) {
+            if (e.target.classList.contains("descriptor-pill")) return;
             const sectorId = this.getAttribute("data-sector");
             if (activeSectorId === sectorId) {
               setFocus(null);
@@ -925,53 +1239,147 @@
           });
         });
 
+        // Descriptor Pills Interaction
+        function highlightPill(label) {
+          descriptorPills.forEach(p => {
+            if (p.getAttribute("data-desc") === label) {
+              p.classList.add("active-pill");
+            } else {
+              p.classList.remove("active-pill");
+            }
+          });
+        }
+
+        descriptorPills.forEach(pill => {
+          pill.addEventListener("click", function(e) {
+            e.stopPropagation();
+            const desc = this.getAttribute("data-desc");
+            const parent = this.closest(".wheel-detail-card");
+            if (parent) {
+              const sec = parent.getAttribute("data-sector");
+              setFocus(sec);
+            }
+            if (desc && MOLECULAR_DATA[desc]) {
+              updateTelemetry(desc, MOLECULAR_DATA[desc]);
+              highlightPill(desc);
+            }
+          });
+
+          pill.addEventListener("mouseenter", function() {
+            const desc = this.getAttribute("data-desc");
+            if (desc && MOLECULAR_DATA[desc]) {
+              updateTelemetry(desc, MOLECULAR_DATA[desc]);
+            }
+          });
+        });
+
+        // Center Hub Reset
         centerHub.addEventListener("click", function(e) {
           e.stopPropagation();
           setFocus(null);
+          highlightPill(null);
         });
 
         document.addEventListener("click", function(e) {
           const wheelSection = document.getElementById("flavor-wheel-sec");
           if (wheelSection && !wheelSection.contains(e.target)) {
             setFocus(null);
+            highlightPill(null);
           }
         });
       });
     </script>
   </section>
 
-  <!-- Section 03: Journal & Technical Deep Dives -->
-  <section style="background:var(--ivory); padding: 80px 24px;">
-    <div class="section" style="max-width:1140px; margin:0 auto; text-align:center;">
+  <!-- Section 03: Journal & Technical Deep Dives (Editorial Luxury) -->
+  <section id="home-journal-sec" class="home-journal-sec">
+    <div class="section" style="max-width:1160px; margin:0 auto; text-align:center;">
       <div class="section-label">03 / JOURNAL</div>
       <h2 class="section-title">Latest Cocoa Science Insights</h2>
       <div class="divider" style="margin:16px auto 32px;"></div>
-      <p class="section-subtitle" style="max-width:540px; margin:0 auto 48px; color:var(--brown-light);">Deep-dives into cocoa powder pH, tempering crystal diagnostics, lecithin emulsion science, and bean-to-bar formulation.</p>
+      <p class="section-subtitle" style="max-width:560px; margin:0 auto 48px; color:var(--brown-light);">Deep-dives into cocoa powder pH, tempering crystal diagnostics, lecithin emulsion science, and bean-to-bar formulation.</p>
       
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:28px; text-align:left;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:30px; text-align:left;">
         <?php
-          require_once 'includes/blog-data.php';
-          $recentBlogs = array_slice($BLOGS, 0, 3, true);
-          foreach ($recentBlogs as $slug => $b):
-            $bImg = $b['thumbnail'] ?? $b['image'] ?? 'assets/logo.png';
+          require_once __DIR__ . '/includes/db.php';
+          require_once __DIR__ . '/includes/blog-cache.php';
+          require_once __DIR__ . '/includes/blog-data.php';
+
+          $latestBlogs = get_cached_blog_list(1800);
+          if ($latestBlogs === null || empty($latestBlogs)) {
+              try {
+                  $pdo = get_db();
+                  $stmt = $pdo->query("SELECT id, slug, title, category, created_at, excerpt, image_path, thumbnail_path, youtube_url, body_class, read_time FROM blogs WHERE is_published = 1 ORDER BY created_at DESC");
+                  $dbBlogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                  $latestBlogs = [];
+                  foreach ($dbBlogs as $blog) {
+                      $latestBlogs[] = [
+                          'id' => (int)$blog['id'],
+                          'slug' => $blog['slug'],
+                          'title' => $blog['title'],
+                          'category' => $blog['category'],
+                          'date' => date('M Y', strtotime($blog['created_at'])),
+                          'read_time' => $blog['read_time'] ?: '5 min',
+                          'excerpt' => $blog['excerpt'],
+                          'image' => $blog['image_path'],
+                          'thumbnail' => $blog['thumbnail_path'] ?: $blog['image_path'],
+                          'youtube_url' => $blog['youtube_url'],
+                          'body_class' => $blog['body_class'] ?: ''
+                      ];
+                  }
+                  cache_blog_list($latestBlogs);
+              } catch (Exception $e) {
+                  $cached = get_cached_blog_list();
+                  if ($cached) {
+                      $latestBlogs = $cached;
+                  } else {
+                      $latestBlogs = [];
+                      foreach ($BLOGS as $slug => $meta) {
+                          $latestBlogs[] = [
+                              'slug' => $slug,
+                              'title' => $meta['title'],
+                              'category' => $meta['category'],
+                              'date' => $meta['date'],
+                              'read_time' => $meta['read'] ?? '5 min',
+                              'excerpt' => $meta['excerpt'],
+                              'image' => $meta['image'],
+                              'thumbnail' => $meta['thumbnail'] ?? $meta['image']
+                          ];
+                      }
+                  }
+              }
+          }
+          $recentBlogs = array_slice($latestBlogs, 0, 3);
+          foreach ($recentBlogs as $b):
+            $bSlug = $b['slug'] ?? '';
+            $bThumb = !empty($b['thumbnail']) ? $b['thumbnail'] : (!empty($b['image']) ? $b['image'] : 'assets/logo.png');
+            $bFallback = !empty($b['image']) ? $b['image'] : 'assets/logo.png';
+            $bRead = !empty($b['read_time']) ? $b['read_time'] : (!empty($b['read']) ? $b['read'] : '5 min');
+            $bDate = !empty($b['date']) ? $b['date'] : 'Recent';
         ?>
-          <a href="blog/<?php echo htmlspecialchars($slug); ?>" style="text-decoration:none; color:inherit; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.04); display:flex; flex-direction:column; transition:transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0,0,0,0.05)';">
-            <div style="height:190px; overflow:hidden; background:var(--cream-dark); position:relative;">
-              <img src="<?php echo htmlspecialchars($bImg); ?>" alt="<?php echo htmlspecialchars($b['title']); ?>" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
-              <span style="position:absolute; top:12px; left:12px; background:var(--brown); color:var(--ivory); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:4px 10px; border-radius:30px;"><?php echo htmlspecialchars($b['category']); ?></span>
+          <a href="<?php echo $pathPrefix; ?>blog/<?php echo htmlspecialchars($bSlug); ?>" class="home-journal-card">
+            <div class="home-journal-img-wrap">
+              <img src="<?php echo htmlspecialchars($pathPrefix . $bThumb); ?>" alt="<?php echo htmlspecialchars($b['title']); ?>" loading="lazy" onerror="this.onerror=null; this.src='<?php echo htmlspecialchars($pathPrefix . $bFallback); ?>';">
+              <span class="home-journal-cat"><?php echo htmlspecialchars($b['category']); ?></span>
             </div>
-            <div style="padding:24px; display:flex; flex-direction:column; flex-grow:1;">
-              <span style="font-size:12px; color:var(--gold); font-weight:600; margin-bottom:8px; display:block;"><?php echo htmlspecialchars($b['date']); ?> • <?php echo htmlspecialchars($b['read']); ?> read</span>
-              <h4 style="font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; color:var(--brown); margin-bottom:10px; line-height:1.35;"><?php echo htmlspecialchars($b['title']); ?></h4>
+            <div style="padding:26px 24px 22px; display:flex; flex-direction:column; flex-grow:1;">
+              <span style="font-size:12px; color:var(--gold); font-weight:600; margin-bottom:8px; display:block; letter-spacing:0.4px;"><?php echo htmlspecialchars($bDate); ?> • <?php echo htmlspecialchars($bRead); ?> read</span>
+              <h4 style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--brown); margin-bottom:10px; line-height:1.35;"><?php echo htmlspecialchars($b['title']); ?></h4>
               <p style="font-family:var(--font-sans); font-size:13.5px; line-height:1.6; color:var(--brown-light); font-weight:300; margin-bottom:16px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;"><?php echo htmlspecialchars($b['excerpt']); ?></p>
-              <span style="margin-top:auto; font-size:13px; font-weight:600; color:var(--brown); display:inline-flex; align-items:center; gap:6px;">Read Full Article &rarr;</span>
+              <span style="margin-top:auto; font-size:13px; font-weight:600; color:var(--brown); display:inline-flex; align-items:center; gap:6px;">
+                <span>Read Full Article</span>
+                <span class="journal-arrow-icon">&rarr;</span>
+              </span>
             </div>
           </a>
         <?php endforeach; ?>
       </div>
       
-      <div style="margin-top:40px;">
-        <a href="blog" class="btn-outline-dark" style="text-decoration:none;">Browse All Journal Articles &rarr;</a>
+      <div style="margin-top:44px;">
+        <a href="blog" class="btn-hero-outline" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px; padding:14px 28px; border-radius:30px; font-weight:600;">
+          <span>Browse All Journal Articles</span>
+          <span>&rarr;</span>
+        </a>
       </div>
     </div>
   </section>
@@ -998,6 +1406,9 @@
 
 
 </div><!-- end home -->
+
+<!-- Landing Page Luxury Orchestrator Script -->
+<script src="<?php echo $pathPrefix; ?>js/landing-luxury.js?v=<?php echo file_exists(__DIR__ . '/js/landing-luxury.js') ? filemtime(__DIR__ . '/js/landing-luxury.js') : time(); ?>"></script>
 
 <!-- --- ABOUT PAGE --- -->
 

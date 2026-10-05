@@ -3010,7 +3010,7 @@ section:nth-of-type(even) {
 /* Hotspot Pins */
 .table-hotspot {
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) translateZ(35px);
   z-index: 10;
   cursor: pointer;
 }
@@ -3034,7 +3034,14 @@ section:nth-of-type(even) {
   box-shadow:
     0 6px 20px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(212, 175, 55, 0.15);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hotspot-pin * {
+  pointer-events: none !important;
+  cursor: pointer !important;
 }
 
 .hotspot-dot {
@@ -3045,6 +3052,8 @@ section:nth-of-type(even) {
   position: relative;
   flex-shrink: 0;
   box-shadow: 0 0 8px rgba(212, 175, 55, 0.7);
+  pointer-events: none !important;
+  cursor: pointer !important;
 }
 
 .hotspot-dot::after {
@@ -3054,6 +3063,8 @@ section:nth-of-type(even) {
   border: 1.5px solid rgba(212, 175, 55, 0.6);
   border-radius: 50%;
   animation: pulseDotRing 2s infinite ease-out;
+  pointer-events: none !important;
+  cursor: pointer !important;
 }
 
 @keyframes pulseDotRing {
@@ -3069,7 +3080,7 @@ section:nth-of-type(even) {
 }
 
 .table-hotspot:hover .hotspot-pin {
-  transform: scale(1.06) translateY(-2px);
+  transform: none !important;
   background: rgba(18, 50, 30, 0.98);
   border-color: #d4af37;
   box-shadow:

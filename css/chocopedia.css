@@ -3441,7 +3441,7 @@
 
 /* === FLAVOR WHEEL LIGHT STYLING OVERRIDES === */
 .wheel-title-col h2 {
-  color: var(--brown) !important;
+  color: #ffffff !important;
 }
 
 .wheel-title-col p {
