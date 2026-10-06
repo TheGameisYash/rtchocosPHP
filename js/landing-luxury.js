@@ -400,7 +400,7 @@
           meltLabel: 'MELT OUT 50°C',
           seedLabel: 'SEED 28°C',
           workLabel: 'WORK 31.5°C',
-          desc: 'Pure cocoa butter triglycerides without milk fat interference. Higher melting point and broader working window. Requires reaching 50°C to completely destroy all unstable Form I–IV crystal memories before seed induction.'
+          desc: 'Dark carries no milk fat, so the cocoa butter crystallises cleanly and tolerates the highest working temperature. Hold above 32.5 °C and Form V starts melting out – the bar will set dull and soft.'
         },
         white: {
           melt: 45,
@@ -423,8 +423,8 @@
       };
 
       function tempToY(t) {
-        // SVG coordinate system: y ranges from 20 (55°C) to 155 (20°C) -> range 135px for 35°C
-        return 20 + ((55 - t) / 35) * 135;
+        // SVG coordinate system: y ranges from 24 (55°C) to 164 (20°C) -> 4px per 1°C
+        return 24 + (55 - t) * 4;
       }
 
       function updateTemperingView(type) {
@@ -435,24 +435,20 @@
         const ySeed = tempToY(d.seed);
         const yWork = tempToY(d.work);
 
-        // Smooth SVG Curve Paths calibrated for 520x180 viewBox
-        const pathD = `M 48 142 C 80 138, 110 ${(yMelt + 12).toFixed(1)}, 148 ${yMelt.toFixed(1)} L 182 ${yMelt.toFixed(1)} C 225 ${yMelt.toFixed(1)}, 268 ${(ySeed - 10).toFixed(1)}, 310 ${ySeed.toFixed(1)} C 355 ${(ySeed + 4).toFixed(1)}, 398 ${(yWork + 8).toFixed(1)}, 442 ${yWork.toFixed(1)} L 498 ${yWork.toFixed(1)}`;
-        const areaD = `${pathD} L 498 155 L 48 155 Z`;
+        // Crisp plateau-trough-work polyline matching reference design exactly
+        const pathD = `M 46 156 L 90 ${yMelt.toFixed(1)} L 140 ${yMelt.toFixed(1)} L 215 ${ySeed.toFixed(1)} L 260 ${ySeed.toFixed(1)} L 325 ${yWork.toFixed(1)} L 485 ${yWork.toFixed(1)}`;
 
         const linePath = document.getElementById('curveLinePath');
-        const areaPath = document.getElementById('curveAreaPath');
-
         if (linePath) linePath.setAttribute('d', pathD);
-        if (areaPath) areaPath.setAttribute('d', areaD);
 
         // Position nodes
         const nodeMelt = document.getElementById('node-melt');
         const nodeSeed = document.getElementById('node-seed');
         const nodeWork = document.getElementById('node-work');
 
-        if (nodeMelt) nodeMelt.setAttribute('transform', `translate(165, ${yMelt.toFixed(1)})`);
-        if (nodeSeed) nodeSeed.setAttribute('transform', `translate(310, ${ySeed.toFixed(1)})`);
-        if (nodeWork) nodeWork.setAttribute('transform', `translate(442, ${yWork.toFixed(1)})`);
+        if (nodeMelt) nodeMelt.setAttribute('transform', `translate(115, ${yMelt.toFixed(1)})`);
+        if (nodeSeed) nodeSeed.setAttribute('transform', `translate(238, ${ySeed.toFixed(1)})`);
+        if (nodeWork) nodeWork.setAttribute('transform', `translate(405, ${yWork.toFixed(1)})`);
 
         // Node labels
         const labelMelt = document.getElementById('label-melt');
@@ -498,8 +494,8 @@
         });
       });
 
-      // Initialize default (milk 38% matching user photo)
-      updateTemperingView('milk');
+      // Initialize default (Dark 70% matching user reference photo)
+      updateTemperingView('dark');
     }
   }
 })();

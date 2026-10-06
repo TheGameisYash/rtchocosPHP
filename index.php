@@ -551,21 +551,17 @@
       <!-- Main Interactive Laboratory Console -->
       <div class="tempering-lab-card">
         
-        <!-- Upper Deck: Controls & Thermal Curve Graph -->
         <div class="tempering-lab-main-grid">
           
           <!-- Left Column: Controls, Metrics & Science Callout -->
           <div class="tempering-control-col">
-            <div class="tempering-col-header">
-              <span class="tempering-type-label">CHOCOLATE PROFILE</span>
-              <span class="tempering-status-tag">✦ Target: Form V (&beta;<sub>2</sub>)</span>
-            </div>
+            <div class="tempering-type-label">SELECT CHOCOLATE TYPE</div>
             
             <div class="chocolate-type-pills" role="tablist" aria-label="Chocolate Types">
-              <button class="choco-pill-btn" data-type="dark" role="tab" aria-selected="false">
+              <button class="choco-pill-btn active" data-type="dark" role="tab" aria-selected="true">
                 <span>DARK 70%</span>
               </button>
-              <button class="choco-pill-btn active" data-type="milk" role="tab" aria-selected="true">
+              <button class="choco-pill-btn" data-type="milk" role="tab" aria-selected="false">
                 <span>MILK 38%</span>
               </button>
               <button class="choco-pill-btn" data-type="white" role="tab" aria-selected="false">
@@ -579,160 +575,89 @@
             <!-- 3 Stat Metric Displays -->
             <div class="tempering-metrics-row">
               <div class="tempering-metric-box">
-                <span class="metric-deg-val" id="metric-melt">45°</span>
+                <span class="metric-deg-val" id="metric-melt">50°</span>
                 <span class="metric-deg-sub">MELT OUT</span>
               </div>
               <div class="tempering-metric-box">
-                <span class="metric-deg-val" id="metric-seed">27°</span>
-                <span class="metric-deg-sub">SEED / COOL</span>
+                <span class="metric-deg-val" id="metric-seed">28°</span>
+                <span class="metric-deg-sub">SEED / COOL TO</span>
               </div>
-              <div class="tempering-metric-box active-metric">
-                <span class="metric-deg-val" id="metric-work">29.5°</span>
+              <div class="tempering-metric-box">
+                <span class="metric-deg-val" id="metric-work">31.5°</span>
                 <span class="metric-deg-sub">WORKING TEMP</span>
               </div>
             </div>
 
             <!-- Science Callout Explanation -->
             <div class="tempering-science-callout">
-              <div class="science-callout-icon">💡</div>
-              <div class="science-callout-body">
-                <div class="science-callout-heading">CRYSTAL DYNAMICS</div>
-                <p class="science-callout-text" id="tempering-science-text">
-                  Milk fat is soft and disruptive: it slots between cocoa butter triglycerides and lowers the whole melting range. Everything drops roughly 2 °C, and the temper is less forgiving of overheating.
-                </p>
-              </div>
+              <p class="science-callout-text" id="tempering-science-text">
+                Dark carries no milk fat, so the cocoa butter crystallises cleanly and tolerates the highest working temperature. Hold above 32.5 °C and Form V starts melting out – the bar will set dull and soft.
+              </p>
             </div>
           </div>
 
           <!-- Right Column: Interactive Temperature Curve SVG Chart -->
           <div class="tempering-chart-col">
-            <div class="tempering-chart-header">
-              <span class="chart-header-title">THERMAL TRANSITION PROFILE</span>
-              <span class="chart-header-sub">CALIBRATED SVG TELEMETRY</span>
-            </div>
             <div class="tempering-chart-wrapper">
-              <svg class="tempering-svg-chart" viewBox="0 0 520 180" preserveAspectRatio="xMidYMid meet">
-                <defs>
-                  <!-- Glowing gradient for temperature curve line -->
-                  <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#d4af37" stop-opacity="0.85" />
-                    <stop offset="50%" stop-color="#ffd859" stop-opacity="1" />
-                    <stop offset="100%" stop-color="#d4af37" stop-opacity="0.9" />
-                  </linearGradient>
-                  <!-- Area glow gradient under curve -->
-                  <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="#d4af37" stop-opacity="0.2" />
-                    <stop offset="100%" stop-color="#d4af37" stop-opacity="0.0" />
-                  </linearGradient>
-                  <!-- Drop shadow filter for glow -->
-                  <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
-                    <feMerge>
-                      <feMergeNode in="coloredBlur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
-                </defs>
-
-                <!-- Gridlines & Y-Axis Labels (20° to 55°) -->
+              <svg class="tempering-svg-chart" viewBox="0 0 520 200" preserveAspectRatio="xMidYMid meet">
+                <!-- 8 Gridlines & Y-Axis Labels (20° to 55°) -->
                 <g class="chart-gridlines">
-                  <text x="34" y="23" class="y-label">55°</text>
-                  <line x1="44" y1="20" x2="498" y2="20" class="grid-line" />
+                  <text x="32" y="27" class="y-label">55°</text>
+                  <line x1="42" y1="24" x2="490" y2="24" class="grid-line" />
 
-                  <text x="34" y="42.3" class="y-label">50°</text>
-                  <line x1="44" y1="39.3" x2="498" y2="39.3" class="grid-line" />
+                  <text x="32" y="47" class="y-label">50°</text>
+                  <line x1="42" y1="44" x2="490" y2="44" class="grid-line" />
 
-                  <text x="34" y="61.6" class="y-label">45°</text>
-                  <line x1="44" y1="58.6" x2="498" y2="58.6" class="grid-line" />
+                  <text x="32" y="67" class="y-label">45°</text>
+                  <line x1="42" y1="64" x2="490" y2="64" class="grid-line" />
 
-                  <text x="34" y="80.9" class="y-label">40°</text>
-                  <line x1="44" y1="77.9" x2="498" y2="77.9" class="grid-line" />
+                  <text x="32" y="87" class="y-label">40°</text>
+                  <line x1="42" y1="84" x2="490" y2="84" class="grid-line" />
 
-                  <text x="34" y="100.1" class="y-label">35°</text>
-                  <line x1="44" y1="97.1" x2="498" y2="97.1" class="grid-line" />
+                  <text x="32" y="107" class="y-label">35°</text>
+                  <line x1="42" y1="104" x2="490" y2="104" class="grid-line" />
 
-                  <text x="34" y="119.4" class="y-label">30°</text>
-                  <line x1="44" y1="116.4" x2="498" y2="116.4" class="grid-line" />
+                  <text x="32" y="127" class="y-label">30°</text>
+                  <line x1="42" y1="124" x2="490" y2="124" class="grid-line" />
 
-                  <text x="34" y="138.7" class="y-label">25°</text>
-                  <line x1="44" y1="135.7" x2="498" y2="135.7" class="grid-line" />
+                  <text x="32" y="147" class="y-label">25°</text>
+                  <line x1="42" y1="144" x2="490" y2="144" class="grid-line" />
 
-                  <text x="34" y="158" class="y-label">20°</text>
-                  <line x1="44" y1="155" x2="498" y2="155" class="grid-line baseline-grid" />
+                  <text x="32" y="167" class="y-label">20°</text>
+                  <line x1="42" y1="164" x2="490" y2="164" class="grid-line baseline-grid" />
                 </g>
 
-                <!-- Area Fill under curve -->
-                <path id="curveAreaPath" class="curve-area" fill="url(#areaGrad)" d="M 48 142 C 80 138, 110 70.6, 148 58.6 L 182 58.6 C 225 58.6, 268 118.0, 310 128.0 C 355 132.0, 398 126.4, 442 118.4 L 498 118.4 L 498 155 L 48 155 Z" />
-
                 <!-- Main Tempering Curve Path -->
-                <path id="curveLinePath" class="curve-line" stroke="url(#curveGrad)" filter="url(#glowFilter)" d="M 48 142 C 80 138, 110 70.6, 148 58.6 L 182 58.6 C 225 58.6, 268 118.0, 310 128.0 C 355 132.0, 398 126.4, 442 118.4 L 498 118.4" />
+                <path id="curveLinePath" class="curve-line" d="M 46 156 L 90 44 L 140 44 L 215 132 L 260 132 L 325 118 L 485 118" />
 
                 <!-- X-Axis Labels (MELT, COOL, WORK) -->
                 <g class="chart-x-labels">
-                  <text x="165" y="172" class="x-label">MELT OUT</text>
-                  <text x="310" y="172" class="x-label">SEED / COOL</text>
-                  <text x="442" y="172" class="x-label">WORKING</text>
+                  <text x="115" y="190" class="x-label">MELT</text>
+                  <text x="238" y="190" class="x-label">COOL</text>
+                  <text x="405" y="190" class="x-label">WORK</text>
                 </g>
 
                 <!-- Node 1: Melt Out -->
-                <g id="node-melt" class="curve-node" transform="translate(165, 58.6)">
-                  <circle cx="0" cy="0" r="8" class="node-halo" />
-                  <circle cx="0" cy="0" r="3.5" class="node-dot" />
-                  <text x="0" y="-10" class="node-label" id="label-melt">MELT OUT 45°C</text>
+                <g id="node-melt" class="curve-node" transform="translate(115, 44)">
+                  <circle cx="0" cy="0" r="4.5" class="node-dot" />
+                  <text x="0" y="-12" class="node-label" id="label-melt">MELT OUT 50°C</text>
                 </g>
 
                 <!-- Node 2: Seed / Cool -->
-                <g id="node-seed" class="curve-node" transform="translate(310, 128.0)">
-                  <circle cx="0" cy="0" r="8" class="node-halo" />
-                  <circle cx="0" cy="0" r="3.5" class="node-dot" />
-                  <text x="0" y="-10" class="node-label" id="label-seed">SEED 27°C</text>
+                <g id="node-seed" class="curve-node" transform="translate(238, 132)">
+                  <circle cx="0" cy="0" r="4.5" class="node-dot" />
+                  <text x="0" y="-12" class="node-label" id="label-seed">SEED 28°C</text>
                 </g>
 
                 <!-- Node 3: Working Temp -->
-                <g id="node-work" class="curve-node" transform="translate(442, 118.4)">
-                  <circle cx="0" cy="0" r="8" class="node-halo" />
-                  <circle cx="0" cy="0" r="3.5" class="node-dot" />
-                  <text x="0" y="-10" class="node-label" id="label-work">WORK 29.5°C</text>
+                <g id="node-work" class="curve-node" transform="translate(405, 118)">
+                  <circle cx="0" cy="0" r="4.5" class="node-dot" />
+                  <text x="0" y="-12" class="node-label" id="label-work">WORK 31.5°C</text>
                 </g>
               </svg>
             </div>
           </div>
 
-        </div>
-
-        <!-- Integrated Lower Deck: 6-Crystal Polymorphic Spectrum Ribbon -->
-        <div class="tempering-spectrum-ribbon">
-          <div class="spectrum-ribbon-label">
-            <span>POLYMORPHIC SPECTRUM &bull; SIX CRYSTAL STRUCTURES</span>
-            <span class="spectrum-sublabel">Why Form V is the Chocolatier's Holy Grail</span>
-          </div>
-          <div class="spectrum-ribbon-track">
-            <div class="spectrum-chip">
-              <div class="chip-head"><span class="chip-name">FORM I</span><span class="chip-temp">17°C</span></div>
-              <div class="chip-sub">Loose sub-&alpha; &bull; Melts on touch</div>
-            </div>
-            <div class="spectrum-chip">
-              <div class="chip-head"><span class="chip-name">FORM II</span><span class="chip-temp">21°C</span></div>
-              <div class="chip-sub">&alpha; phase &bull; Crumbly, no snap</div>
-            </div>
-            <div class="spectrum-chip">
-              <div class="chip-head"><span class="chip-name">FORM III</span><span class="chip-temp">26°C</span></div>
-              <div class="chip-sub">&beta;&prime;<sub>1</sub> phase &bull; Weak lattice</div>
-            </div>
-            <div class="spectrum-chip">
-              <div class="chip-head"><span class="chip-name">FORM IV</span><span class="chip-temp">28°C</span></div>
-              <div class="chip-sub">&beta;&prime;<sub>2</sub> phase &bull; Greasy palate</div>
-            </div>
-            <div class="spectrum-chip target-form-v">
-              <div class="chip-badge">IDEAL</div>
-              <div class="chip-head"><span class="chip-name">FORM V</span><span class="chip-temp">34°C</span></div>
-              <div class="chip-sub">&beta;<sub>2</sub> &bull; Gloss, snap &amp; release</div>
-            </div>
-            <div class="spectrum-chip">
-              <div class="chip-head"><span class="chip-name">FORM VI</span><span class="chip-temp">36°C</span></div>
-              <div class="chip-sub">&beta;<sub>1</sub> &bull; Over-aged bloom</div>
-            </div>
-          </div>
         </div>
 
       </div>
