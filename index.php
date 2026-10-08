@@ -336,7 +336,7 @@
         <div class="table-hotspot" style="top: 82%; left: 78%;" onclick="openTableModal('workshops-academy')">
           <div class="hotspot-pin">
             <span class="hotspot-dot" style="pointer-events: none;"></span>
-            <span style="pointer-events: none;">Workshops &amp; Academy</span>
+            <span style="pointer-events: none;">Innovation &amp; Wall</span>
           </div>
         </div>
       </div>
@@ -370,6 +370,45 @@
     </div>
   </div>
 
+  <!-- Dedicated Bean-to-Bar 9-Stage Guide Modal -->
+  <div id="modal-beantobar-viewer" class="modal-beantobar-backdrop" onclick="if(event.target === this) closeBeanToBarGuideModal()">
+    <div class="modal-beantobar-box" role="dialog" aria-modal="true" aria-labelledby="modal-b2b-title">
+      <button type="button" class="modal-beantobar-close" onclick="closeBeanToBarGuideModal()" title="Close Guide" aria-label="Close Guide">&times;</button>
+      
+      <div class="modal-beantobar-header">
+        <div class="modal-beantobar-badge">🌿 THE SPINE · NINE STAGES</div>
+        <h3 class="modal-beantobar-title" id="modal-b2b-title">Bean to bar, <span class="ital">in full</span></h3>
+        <p class="modal-beantobar-lede">
+          Every stage below carries the variables that actually move flavour. Open any stage to inspect the technical parameters, temperatures, and durations.
+        </p>
+        <div class="modal-beantobar-meta-strip">
+          <span class="meta-item"><span class="meta-dot"></span> 9 Sequential Stages</span>
+          <span class="meta-item"><span class="meta-dot"></span> Single-Origin Standards</span>
+          <span class="meta-item"><span class="meta-dot"></span> Real Working Parameters</span>
+        </div>
+      </div>
+
+      <div class="modal-beantobar-scroll-body" id="modalB2bScrollBody">
+        <div class="modal-spine-wrap">
+          <div class="modal-spine">
+            <div class="modal-spine-line"></div>
+            <div class="modal-spine-fill" id="modalSpineFill"></div>
+          </div>
+          <div class="modal-stages" id="modalStages"></div>
+        </div>
+      </div>
+
+      <div class="modal-beantobar-footer">
+        <button type="button" class="modal-b2b-btn-back" onclick="closeBeanToBarGuideModal(); openTableModal('bean-to-bar');">
+          &larr; Back to Chocolate Table
+        </button>
+        <a href="workshops.php" class="modal-b2b-btn-workshop">
+          Book Workshop &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+
   <script>
     const TABLE_MODAL_DATA = {
       'ingredient-spotlight': {
@@ -396,7 +435,13 @@
           '72-Hour Stone Grinding & Micro-Particle Size Reduction (<20 Microns)'
         ],
         btn1Text: 'Explore Bean-to-Bar Guide →',
-        btn1Href: 'chocopedia.php',
+        btn1Href: 'javascript:void(0)',
+        btn1Action: () => {
+          closeTableModal();
+          if (typeof openBeanToBarGuideModal === 'function') {
+            openBeanToBarGuideModal();
+          }
+        },
         btn2Text: 'Book Workshop',
         btn2Href: 'workshops.php'
       },
@@ -423,9 +468,8 @@
           'Water Activity & Emulsion Stability Matrix',
           'Custom Inclusions & Fat-to-Sugar Crystallization Ratios'
         ],
-        btn1Text: 'Launch AI Chocolab →',
-        btn1Href: '#ai-chocolab-sec',
-        btn1Action: () => { closeTableModal(); document.querySelector('.ai-chocolab-sec')?.scrollIntoView({behavior:'smooth'}); },
+        btn1Text: 'Launch Chocolab →',
+        btn1Href: 'workshops.php',
         btn2Text: 'Ask CocoaGenius AI',
         btn2Href: 'javascript:toggleAiDrawer()'
       },
@@ -439,9 +483,9 @@
           'Roasted Almond & Sea Salt Caramel Slab'
         ],
         btn1Text: 'Explore All Recipes →',
-        btn1Href: 'chocopedia.php',
+        btn1Href: 'gallery.php',
         btn2Text: 'Formulate Custom Bar',
-        btn2Href: '#ai-chocolab-sec'
+        btn2Href: 'gallery.php'
       },
       'techniques': {
         badge: '👩‍🍳 MASTER SKILLS',
@@ -510,6 +554,11 @@
       const btn2 = document.getElementById('modal-table-btn-secondary');
       btn2.innerText = data.btn2Text;
       btn2.href = data.btn2Href;
+      if (data.btn2Action) {
+        btn2.onclick = (e) => { e.preventDefault(); data.btn2Action(); };
+      } else {
+        btn2.onclick = null;
+      }
 
       const modal = document.getElementById('table-interactive-modal');
       const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
@@ -1334,6 +1383,8 @@
 
 <!-- Landing Page Luxury Orchestrator Script -->
 <script src="<?php echo $pathPrefix; ?>js/landing-luxury.js?v=<?php echo file_exists(__DIR__ . '/js/landing-luxury.js') ? filemtime(__DIR__ . '/js/landing-luxury.js') : time(); ?>"></script>
+<!-- Bean to Bar Master Timeline & Guide Script -->
+<script src="<?php echo $pathPrefix; ?>js/bean-to-bar.js?v=<?php echo file_exists(__DIR__ . '/js/bean-to-bar.js') ? filemtime(__DIR__ . '/js/bean-to-bar.js') : time(); ?>"></script>
 
 <!-- --- ABOUT PAGE --- -->
 

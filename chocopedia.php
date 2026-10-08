@@ -122,6 +122,7 @@ include 'includes/header.php';
               <span class="chocopedia-term-tag tag-process">Process</span>
             </div>
             <p>A chocolate-making philosophy where the maker controls every step — from sourcing raw cacao beans to producing the finished bar. This approach prioritizes traceability, craftsmanship, and flavour transparency over industrial efficiency.</p>
+            <a href="index.php#chocolate-table" style="display:inline-flex; align-items:center; gap:6px; color:#C6A24C; font-size:12px; font-weight:600; margin-top:8px; text-decoration:none;">Explore Bean-to-Bar on Chocolate Table &rarr;</a>
           </div>
           <div class="chocopedia-term" data-term="bloom" data-category="Science">
             <div class="chocopedia-term-header">

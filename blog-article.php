@@ -80,7 +80,7 @@ if (isset($articleKey)) {
                     ]);
                 }
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             error_log("Database error fetching blog '$articleKey': " . $e->getMessage() . ". Checking cache fallback.");
             $cached = get_cached_blog_article($articleKey);
             if ($cached) {
@@ -98,7 +98,7 @@ if (isset($articleKey)) {
             $pdo = get_db();
             $upStmt = $pdo->prepare("UPDATE blogs SET views = views + 1 WHERE id = ?");
             $upStmt->execute([$post['id']]);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             // Non-blocking
         }
     }
@@ -400,18 +400,22 @@ if (!$isFromDb) {
 // Fetch related articles (limit 3)
 $relatedArticles = [];
 try {
-    $currentId = $isFromDb ? (int)$dbPost['id'] : 0;
-    $stmt = $pdo->prepare("SELECT id, title, slug, category, excerpt, thumbnail_path, created_at FROM blogs WHERE category = ? AND id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 3");
-    $stmt->execute([$post['category'], $currentId]);
-    $relatedArticles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Fallback: If less than 2 category-matched items, grab any recent ones
-    if (count($relatedArticles) < 2) {
-        $stmt = $pdo->prepare("SELECT id, title, slug, category, excerpt, thumbnail_path, created_at FROM blogs WHERE id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 3");
-        $stmt->execute([$currentId]);
+    $pdo = get_db();
+    if ($pdo instanceof PDO) {
+        $currentId = !empty($post['id']) ? (int)$post['id'] : 0;
+        $category = $post['category'] ?? '';
+        $stmt = $pdo->prepare("SELECT id, title, slug, category, excerpt, thumbnail_path, created_at FROM blogs WHERE category = ? AND id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 3");
+        $stmt->execute([$category, $currentId]);
         $relatedArticles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Fallback: If less than 2 category-matched items, grab any recent ones
+        if (count($relatedArticles) < 2) {
+            $stmt = $pdo->prepare("SELECT id, title, slug, category, excerpt, thumbnail_path, created_at FROM blogs WHERE id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 3");
+            $stmt->execute([$currentId]);
+            $relatedArticles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
-} catch (Exception $e) {
+} catch (Throwable $e) {
     // Non-blocking
 }
 
