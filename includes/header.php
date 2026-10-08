@@ -310,6 +310,7 @@ if (!empty(trim($customHeadScripts))) {
   elseif (strpos($currentURI, 'shop') !== false || strpos($currentURI, 'product') !== false || strpos($currentURI, 'cart') !== false || strpos($currentURI, 'checkout') !== false) $activeNav = 'shop';
   elseif (strpos($currentURI, 'workshops') !== false) $activeNav = 'workshops';
   elseif (strpos($currentURI, 'blog') !== false) $activeNav = 'blog';
+  elseif (strpos($currentURI, 'innovation-lab') !== false) $activeNav = 'innovation-lab';
   elseif (strpos($currentURI, 'chocopedia') !== false) $activeNav = 'chocopedia';
   elseif (strpos($currentURI, 'gallery') !== false) $activeNav = 'gallery';
   elseif (strpos($currentURI, 'contact') !== false) $activeNav = 'contact';
@@ -433,13 +434,25 @@ if (!empty(trim($customHeadScripts))) {
       </a>
 
       <!-- 5. INNOVATION LAB -->
-      <a class="nav-item-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Innovation Lab & Encyclopedia">
+      <a class="nav-item-link <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" data-page="innovation-lab" href="<?php echo $pathPrefix; ?>innovation-lab.php" title="Chocolate Innovation Lab">
         <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/>
           <line x1="8.5" y1="2" x2="15.5" y2="2"/>
           <line x1="7" y1="14.5" x2="17" y2="14.5"/>
         </svg>
         <span class="nav-label">INNOVATION LAB</span>
+      </a>
+
+      <!-- 6. CHOCOPEDIA -->
+      <a class="nav-item-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Encyclopedia">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2a4 4 0 0 0-4 4c0 1.5.8 2.8 2 3.5"/>
+          <path d="M12 22a4 4 0 0 0 4-4c0-1.5-.8-2.8-2-3.5"/>
+          <path d="M22 12a4 4 0 0 0-4-4c-1.5 0-2.8.8-3.5 2"/>
+          <path d="M2 12a4 4 0 0 0 4 4c1.5 0 2.8-.8 3.5-2"/>
+        </svg>
+        <span class="nav-label">CHOCOPEDIA</span>
       </a>
 
       <!-- 6. CHOCOLATE AI -->
@@ -533,9 +546,14 @@ if (!empty(trim($customHeadScripts))) {
       <span>THE CACAO JOURNAL</span>
     </a>
 
-    <a class="mobile-nav-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">
+    <a class="mobile-nav-link <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" data-page="innovation-lab" href="<?php echo $pathPrefix; ?>innovation-lab.php">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="7" y1="14.5" x2="17" y2="14.5"/></svg>
       <span>INNOVATION LAB</span>
+    </a>
+
+    <a class="mobile-nav-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 2a4 4 0 0 0-4 4c0 1.5.8 2.8 2 3.5"/><path d="M12 22a4 4 0 0 0 4-4c0-1.5-.8-2.8-2-3.5"/><path d="M22 12a4 4 0 0 0-4-4c-1.5 0-2.8.8-3.5 2"/><path d="M2 12a4 4 0 0 0 4 4c1.5 0 2.8-.8 3.5-2"/></svg>
+      <span>CHOCOPEDIA</span>
     </a>
 
     <button class="mobile-nav-link mobile-nav-ai-btn" onclick="toggleAiDrawer(); toggleMobileMenu();">

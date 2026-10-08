@@ -23,6 +23,7 @@
     <div>
       <div class="footer-heading">Explore</div>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php" title="Chocolate Blog India">Chocolate Blog India</a>
+      <a class="footer-link" href="<?php echo $pathPrefix; ?>innovation-lab.php" title="Chocolate Innovation Lab">Innovation Lab</a>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>indian-chocolate-brands.php" title="Indian Chocolate Brands Directory">Indian Chocolate Brands</a>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
       <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes & Formulations</a>

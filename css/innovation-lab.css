@@ -1,0 +1,1111 @@
+/* ==========================================================================
+   RT CHOCOS — INNOVATION LAB STYLESHEET
+   Luxury Editorial Aesthetic matching official Lab Design
+   ========================================================================== */
+
+.lab-page-wrapper {
+  background-color: #F6F1EA;
+  color: #1F2E25;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  padding-top: 88px;
+  overflow-x: hidden;
+}
+
+/* ==========================================
+   1. HERO SECTION
+   ========================================== */
+.lab-hero {
+  position: relative;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 48px 32px 56px;
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.lab-hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 2;
+}
+
+.lab-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #5A6D60;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lab-hero-title {
+  font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(52px, 5.5vw, 76px);
+  font-weight: 600;
+  line-height: 1.04;
+  color: #122217;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+
+.lab-hero-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #384A3F;
+  max-width: 460px;
+  margin-bottom: 36px;
+  font-weight: 400;
+}
+
+.lab-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #14251B;
+  color: #FAF6EF;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 16px 28px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(20, 37, 27, 0.15);
+  width: fit-content;
+}
+
+.lab-hero-cta:hover {
+  background-color: #235436;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(35, 84, 54, 0.25);
+  color: #FFFFFF;
+}
+
+.lab-hero-cta svg {
+  transition: transform 0.2s ease;
+}
+
+.lab-hero-cta:hover svg {
+  transform: translateX(4px);
+}
+
+/* Hero Right: Image with Sticky Note */
+.lab-hero-right {
+  position: relative;
+}
+
+.lab-hero-media-card {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px -10px rgba(18, 34, 23, 0.14);
+}
+
+.lab-hero-img {
+  width: 100%;
+  height: 480px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.lab-hero-media-card:hover .lab-hero-img {
+  transform: scale(1.02);
+}
+
+/* Sticky Note Aesthetic */
+.lab-sticky-note {
+  position: absolute;
+  top: 18px;
+  right: 28px;
+  background: #FFFCE0;
+  color: #4A3E2D;
+  padding: 22px 24px;
+  border-radius: 2px;
+  box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0,0,0,0.08);
+  transform: rotate(2deg);
+  z-index: 10;
+  max-width: 220px;
+  border-left: 3px solid rgba(220, 195, 120, 0.4);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: transform 0.3s ease;
+}
+
+.lab-sticky-note:hover {
+  transform: rotate(0deg) scale(1.03);
+}
+
+.lab-sticky-note-pin {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: #B45309;
+  border-radius: 50%;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ==========================================
+   2. EXPLORE THE LAB (SUB-NAV STRIP)
+   ========================================== */
+.lab-subnav-strip {
+  border-top: 1px solid #E2D9CC;
+  border-bottom: 1px solid #E2D9CC;
+  background: #FAF7F2;
+  position: sticky;
+  top: 80px;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.lab-subnav-inner {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.lab-subnav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.lab-subnav-header {
+  padding: 20px 28px 20px 0;
+  border-right: 1px solid #E5DDCF;
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #122217;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.lab-subnav-list {
+  display: flex;
+  align-items: stretch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lab-subnav-item {
+  border-right: 1px solid #ECE4D7;
+  display: flex;
+}
+
+.lab-subnav-item:last-child {
+  border-right: none;
+}
+
+.lab-subnav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: #3C4E42;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  text-align: center;
+  position: relative;
+}
+
+.lab-subnav-link svg {
+  color: #5A6D60;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.lab-subnav-link .arrow-icon {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 2px;
+  transition: transform 0.2s ease;
+}
+
+.lab-subnav-link:hover,
+.lab-subnav-link.active {
+  background: #F1ECE2;
+  color: #122217;
+}
+
+.lab-subnav-link:hover svg,
+.lab-subnav-link.active svg {
+  color: #235436;
+  transform: translateY(-1px);
+}
+
+.lab-subnav-link:hover .arrow-icon,
+.lab-subnav-link.active .arrow-icon {
+  transform: translateX(2px);
+  opacity: 1;
+  color: #235436;
+}
+
+.lab-subnav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #235436;
+}
+
+/* ==========================================
+   3. CURRENTLY IN THE LAB SECTION
+   ========================================== */
+.lab-section {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 64px 32px;
+}
+
+.lab-section-header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E2D9CC;
+}
+
+.lab-section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.lab-section-title {
+  font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(32px, 3.5vw, 44px);
+  font-weight: 600;
+  color: #122217;
+  letter-spacing: -0.01em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.lab-section-rule {
+  height: 1px;
+  background-color: #D8CEBE;
+  flex: 1;
+  margin-right: 24px;
+}
+
+.lab-section-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #3C4E42;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.lab-section-link:hover {
+  color: #235436;
+  transform: translateX(3px);
+}
+
+/* Experiments 4-Column Grid */
+.lab-experiments-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.lab-exp-card {
+  background: #FFFFFF;
+  border: 1px solid #E6DED2;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+  position: relative;
+}
+
+.lab-exp-card:hover {
+  transform: translateY(-6px);
+  border-color: #CFBEA5;
+  box-shadow: 0 16px 32px rgba(18, 34, 23, 0.10);
+}
+
+.lab-exp-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #ECE4D7;
+}
+
+.lab-exp-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  display: block;
+}
+
+.lab-exp-card:hover .lab-exp-media img {
+  transform: scale(1.05);
+}
+
+/* Status Pill Badge */
+.lab-status-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(246, 241, 234, 0.92);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1F2E25;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.status-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.green { background: #16A34A; box-shadow: 0 0 6px rgba(22, 163, 74, 0.6); }
+.status-dot.amber { background: #D97706; box-shadow: 0 0 6px rgba(217, 119, 6, 0.6); }
+.status-dot.purple { background: #9333EA; box-shadow: 0 0 6px rgba(147, 51, 234, 0.6); }
+.status-dot.blue { background: #2563EB; box-shadow: 0 0 6px rgba(37, 99, 235, 0.6); }
+
+.lab-exp-content {
+  padding: 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.lab-exp-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #122217;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+
+.lab-exp-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #495B4E;
+  margin-bottom: 18px;
+  flex: 1;
+}
+
+.lab-exp-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid #F0EAE1;
+  margin-top: auto;
+}
+
+.lab-exp-tags {
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6C7E72;
+}
+
+.lab-circle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #D8CFC1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #122217;
+  background: transparent;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.lab-exp-card:hover .lab-circle-btn {
+  background: #14251B;
+  color: #FFFFFF;
+  border-color: #14251B;
+  transform: translateX(2px);
+}
+
+/* ==========================================
+   4. TWO-COLUMN SPLIT: WHAT IF? & FAILED BATCH
+   ========================================== */
+.lab-split-section {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 32px 32px 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+}
+
+/* Left: What If? Column */
+.lab-whatif-card {
+  background: #FAF7F2;
+  border: 1px solid #E6DED2;
+  border-radius: 4px;
+  padding: 36px 36px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.lab-whatif-header {
+  margin-bottom: 24px;
+}
+
+.lab-whatif-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 38px;
+  font-weight: 600;
+  color: #122217;
+  line-height: 1.1;
+  margin-top: 4px;
+}
+
+.lab-whatif-body-split {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 24px;
+  align-items: center;
+  flex: 1;
+}
+
+.lab-whatif-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid #E5DCCE;
+}
+
+.lab-whatif-item {
+  border-bottom: 1px solid #E5DCCE;
+  transition: background-color 0.2s ease;
+}
+
+.lab-whatif-item a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 4px;
+  text-decoration: none;
+  color: #1F2E25;
+  transition: all 0.2s ease;
+  gap: 12px;
+}
+
+.lab-whatif-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 600;
+  color: #9E8E7A;
+  min-width: 24px;
+}
+
+.lab-whatif-question {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 500;
+  color: #2A3C30;
+  flex: 1;
+}
+
+.lab-whatif-arrow {
+  color: #8C7B68;
+  font-size: 14px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.lab-whatif-item a:hover {
+  color: #235436;
+}
+
+.lab-whatif-item a:hover .lab-whatif-num {
+  color: #235436;
+}
+
+.lab-whatif-item a:hover .lab-whatif-arrow {
+  transform: translateX(4px);
+  color: #235436;
+}
+
+.lab-whatif-visual {
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.lab-whatif-visual img {
+  width: 100%;
+  height: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Right: Failed Batch Card */
+.lab-failed-card {
+  background: #FAF7F2;
+  border: 1px solid #E6DED2;
+  border-radius: 4px;
+  padding: 36px 36px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.lab-failed-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 34px;
+  font-weight: 600;
+  color: #122217;
+  line-height: 1.15;
+  margin-top: 4px;
+}
+
+.lab-failed-inner-box {
+  background: #FFFFFF;
+  border: 1px solid #EAE2D5;
+  border-radius: 4px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  margin-top: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+  flex: 1;
+}
+
+.lab-failed-img-wrap {
+  position: relative;
+  height: 100%;
+  min-height: 260px;
+}
+
+.lab-failed-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lab-failed-content {
+  padding: 24px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lab-failed-case-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #14251B;
+  margin-bottom: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1.5px solid #14251B;
+  display: inline-block;
+  width: fit-content;
+}
+
+.lab-failed-data-row {
+  margin-bottom: 10px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.lab-failed-data-row .label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: #122217;
+  display: block;
+  font-size: 11.5px;
+}
+
+.lab-failed-data-row .text {
+  font-family: 'Inter', sans-serif;
+  color: #495B4E;
+}
+
+.lab-failed-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #14251B;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.lab-failed-btn:hover {
+  color: #235436;
+  transform: translateX(4px);
+}
+
+/* ==========================================
+   5. INGREDIENT INNOVATION SECTION
+   ========================================== */
+.lab-ingredient-section {
+  background: #15261C;
+  color: #FAF6EF;
+  padding: 64px 32px 72px;
+  margin: 32px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.lab-ingredient-inner {
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+.lab-ingredient-section .lab-eyebrow {
+  color: #A3B8AA;
+}
+
+.lab-ingredient-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(34px, 4vw, 48px);
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+  margin-bottom: 40px;
+}
+
+.lab-ingredients-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.lab-ing-card {
+  text-decoration: none;
+  color: #FAF6EF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  group: pointer;
+  transition: transform 0.3s ease;
+}
+
+.lab-ing-card:hover {
+  transform: translateY(-6px);
+}
+
+.lab-ing-photo-wrap {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  background: #0E1A13;
+}
+
+.lab-ing-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.lab-ing-card:hover .lab-ing-photo-wrap img {
+  transform: scale(1.08);
+}
+
+.lab-ing-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #E2DDD5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.lab-ing-card:hover .lab-ing-label {
+  color: #FBBF24;
+}
+
+/* ==========================================
+   6. FUTURE OF CHOCOLATE SECTION
+   ========================================== */
+.lab-future-section {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 48px 32px 88px;
+}
+
+.lab-future-grid {
+  background: #FAF7F2;
+  border: 1px solid #E6DED2;
+  border-radius: 4px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1.35fr 1fr;
+  align-items: stretch;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.03);
+}
+
+.lab-future-left {
+  padding: 44px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lab-future-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: #122217;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.lab-future-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #495B4E;
+  margin-bottom: 32px;
+}
+
+.lab-future-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #14251B;
+  color: #14251B;
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 13px 22px;
+  border-radius: 999px;
+  text-decoration: none;
+  width: fit-content;
+  transition: all 0.2s ease;
+}
+
+.lab-future-cta:hover {
+  background: #14251B;
+  color: #FFFFFF;
+}
+
+.lab-future-mid {
+  position: relative;
+  overflow: hidden;
+  min-height: 320px;
+}
+
+.lab-future-mid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lab-future-right {
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 1px solid #EAE2D5;
+}
+
+.lab-pillars-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lab-pillar-item a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 8px;
+  border-bottom: 1px solid #EAE2D5;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #243529;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.lab-pillar-item:last-child a {
+  border-bottom: none;
+}
+
+.lab-pillar-item a:hover {
+  color: #235436;
+  padding-left: 14px;
+}
+
+.lab-pillar-item a span.arrow {
+  color: #8C7B68;
+  transition: transform 0.2s ease;
+}
+
+.lab-pillar-item a:hover span.arrow {
+  transform: translateX(4px);
+  color: #235436;
+}
+
+/* ==========================================
+   7. INTERACTIVE DOSSIER MODAL
+   ========================================== */
+.lab-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 14, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.lab-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lab-modal-container {
+  background: #FAF7F2;
+  border-radius: 8px;
+  max-width: 840px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid #DFD5C6;
+}
+
+.lab-modal-overlay.active .lab-modal-container {
+  transform: translateY(0) scale(1);
+}
+
+.lab-modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #D5C9B7;
+  background: #FAF7F2;
+  color: #122217;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  z-index: 20;
+  transition: all 0.2s ease;
+}
+
+.lab-modal-close-btn:hover {
+  background: #14251B;
+  color: #FFFFFF;
+}
+
+.lab-modal-header {
+  padding: 32px 36px 20px;
+  border-bottom: 1px solid #E5DCCE;
+}
+
+.lab-modal-body {
+  padding: 32px 36px 40px;
+}
+
+/* Dossier Grid styling inside modal */
+.lab-dossier-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 24px 0;
+}
+
+.lab-dossier-card {
+  background: #FFFFFF;
+  border: 1px solid #E6DED2;
+  border-radius: 6px;
+  padding: 18px;
+}
+
+.lab-dossier-card h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #14251B;
+  margin-bottom: 8px;
+}
+
+.lab-dossier-card p {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #384A3F;
+  margin: 0;
+}
+
+/* ==========================================
+   RESPONSIVE BREAKPOINTS
+   ========================================== */
+@media (max-width: 1120px) {
+  .lab-experiments-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lab-ingredients-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .lab-future-grid {
+    grid-template-columns: 1fr;
+  }
+  .lab-future-mid {
+    height: 280px;
+  }
+  .lab-future-right {
+    border-left: none;
+    border-top: 1px solid #EAE2D5;
+  }
+}
+
+@media (max-width: 860px) {
+  .lab-hero {
+    grid-template-columns: 1fr;
+    padding: 36px 20px;
+  }
+  .lab-hero-img {
+    height: 360px;
+  }
+  .lab-split-section {
+    grid-template-columns: 1fr;
+    padding: 24px 20px;
+  }
+  .lab-whatif-body-split {
+    grid-template-columns: 1fr;
+  }
+  .lab-failed-inner-box {
+    grid-template-columns: 1fr;
+  }
+  .lab-failed-img-wrap {
+    height: 220px;
+  }
+  .lab-ingredients-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .lab-experiments-grid {
+    grid-template-columns: 1fr;
+  }
+  .lab-ingredients-grid {
+    grid-template-columns: 1fr;
+  }
+  .lab-hero-title {
+    font-size: 40px;
+  }
+  .lab-sticky-note {
+    right: 12px;
+    top: 12px;
+    font-size: 16px;
+    padding: 14px 16px;
+    max-width: 170px;
+  }
+}
