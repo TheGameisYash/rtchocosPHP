@@ -246,6 +246,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $title = trim($_POST['title'] ?? '');
                 $description = trim($_POST['description'] ?? '');
                 $linkUrl = trim($_POST['link_url'] ?? '');
+                $keyVarietals = trim($_POST['key_varietals'] ?? '');
+                $scienceBehavior = trim($_POST['science_behavior'] ?? '');
+                $applications = trim($_POST['applications'] ?? '');
+                $labNotes = trim($_POST['lab_notes'] ?? '');
                 $sortOrder = (int)($_POST['sort_order'] ?? 0);
                 $isActive = isset($_POST['is_active']) ? 1 : 0;
 
@@ -258,12 +262,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                     $error = 'Ingredient title cannot be empty.';
                 } else {
                     if ($id > 0) {
-                        $stmt = $pdo->prepare("UPDATE lab_ingredient_categories SET title = ?, slug = ?, image_path = ?, description = ?, link_url = ?, sort_order = ?, is_active = ? WHERE id = ?");
-                        $stmt->execute([$title, $slug, $imagePath, $description, $linkUrl, $sortOrder, $isActive, $id]);
+                        $stmt = $pdo->prepare("UPDATE lab_ingredient_categories SET title = ?, slug = ?, image_path = ?, description = ?, link_url = ?, key_varietals = ?, science_behavior = ?, applications = ?, lab_notes = ?, sort_order = ?, is_active = ? WHERE id = ?");
+                        $stmt->execute([$title, $slug, $imagePath, $description, $linkUrl, $keyVarietals, $scienceBehavior, $applications, $labNotes, $sortOrder, $isActive, $id]);
                         $success = "Ingredient category '{$title}' updated!";
                     } else {
-                        $stmt = $pdo->prepare("INSERT INTO lab_ingredient_categories (title, slug, image_path, description, link_url, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                        $stmt->execute([$title, $slug, $imagePath, $description, $linkUrl, $sortOrder, $isActive]);
+                        $stmt = $pdo->prepare("INSERT INTO lab_ingredient_categories (title, slug, image_path, description, link_url, key_varietals, science_behavior, applications, lab_notes, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        $stmt->execute([$title, $slug, $imagePath, $description, $linkUrl, $keyVarietals, $scienceBehavior, $applications, $labNotes, $sortOrder, $isActive]);
                         $success = "New ingredient category '{$title}' added!";
                     }
                 }
@@ -862,6 +866,46 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                     </div>
                 </div>
 
+                <!-- Ingredient Innovation Card -->
+                <div class="card" style="padding: 24px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-card);">
+                    <h3 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0 0 16px;">3. Ingredient Innovation Section</h3>
+
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Eyebrow</label>
+                        <input type="text" name="lab_ingredient_eyebrow" value="<?php echo htmlspecialchars($settings['lab_ingredient_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                    </div>
+
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Section Heading</label>
+                        <input type="text" name="lab_ingredient_heading" value="<?php echo htmlspecialchars($settings['lab_ingredient_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                    </div>
+                </div>
+
+                <!-- What If? & Failed Batches Card -->
+                <div class="card" style="padding: 24px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-card);">
+                    <h3 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0 0 16px;">4. What If? &amp; Failed Batches Headers</h3>
+
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">What If? Eyebrow</label>
+                        <input type="text" name="lab_what_if_eyebrow" value="<?php echo htmlspecialchars($settings['lab_what_if_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                    </div>
+
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">What If? Section Heading</label>
+                        <input type="text" name="lab_what_if_heading" value="<?php echo htmlspecialchars($settings['lab_what_if_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                    </div>
+
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Failed Batch Eyebrow</label>
+                        <input type="text" name="lab_failed_batch_eyebrow" value="<?php echo htmlspecialchars($settings['lab_failed_batch_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                    </div>
+
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Failed Batch Section Heading</label>
+                        <input type="text" name="lab_failed_batch_heading" value="<?php echo htmlspecialchars($settings['lab_failed_batch_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                    </div>
+                </div>
+
             </div>
 
             <div style="text-align: right; margin-bottom: 40px;">
@@ -1187,6 +1231,26 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 <textarea name="description" id="ing_desc" rows="2" placeholder="e.g. Alphonso mango powders, Kokum..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Key Varietals &amp; Sourcing (Shown in popup window)</label>
+                <textarea name="key_varietals" id="ing_key_varietals" rows="2" placeholder="e.g. Ratnagiri Alphonso, Sindhudurg Kokum..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Food Science &amp; Polymorphic Behavior</label>
+                <textarea name="science_behavior" id="ing_science_behavior" rows="2" placeholder="e.g. Moisture activity, tempering curve behavior..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Formulation Applications</label>
+                <textarea name="applications" id="ing_applications" rows="2" placeholder="e.g. Inclusions, melanger conching, dusting..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Live Lab Benchmark Notes</label>
+                <textarea name="lab_notes" id="ing_lab_notes" rows="2" placeholder="e.g. Batch observations, crystal stability..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+            </div>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
                 <div>
                     <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Sort Order</label>
@@ -1358,6 +1422,10 @@ function openNewIngredientModal() {
     document.getElementById('ing_id').value = '0';
     document.getElementById('ing_title').value = '';
     document.getElementById('ing_desc').value = '';
+    document.getElementById('ing_key_varietals').value = '';
+    document.getElementById('ing_science_behavior').value = '';
+    document.getElementById('ing_applications').value = '';
+    document.getElementById('ing_lab_notes').value = '';
     document.getElementById('ing_existing_image').value = 'assets/images/placeholder.jpg';
     document.getElementById('ing_img_text').value = '';
     document.getElementById('ing_order').value = (<?php echo count($ingredientsList); ?> + 1);
@@ -1370,6 +1438,10 @@ function editIngredient(ing) {
     document.getElementById('ing_id').value = ing.id;
     document.getElementById('ing_title').value = ing.title || '';
     document.getElementById('ing_desc').value = ing.description || '';
+    document.getElementById('ing_key_varietals').value = ing.key_varietals || '';
+    document.getElementById('ing_science_behavior').value = ing.science_behavior || '';
+    document.getElementById('ing_applications').value = ing.applications || '';
+    document.getElementById('ing_lab_notes').value = ing.lab_notes || '';
     document.getElementById('ing_existing_image').value = ing.image_path || '';
     document.getElementById('ing_img_text').value = ing.image_path || '';
     document.getElementById('ing_order').value = ing.sort_order || 0;

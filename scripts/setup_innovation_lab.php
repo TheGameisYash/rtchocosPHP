@@ -78,11 +78,24 @@ try {
         image_path VARCHAR(255) NULL,
         description TEXT NULL,
         link_url VARCHAR(255) NULL,
+        key_varietals TEXT NULL,
+        science_behavior TEXT NULL,
+        applications TEXT NULL,
+        lab_notes TEXT NULL,
         sort_order INT NOT NULL DEFAULT 0,
         is_active TINYINT(1) NOT NULL DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         INDEX idx_ing_active (is_active, sort_order)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // Ensure dossier columns exist if table was already created
+    foreach (['key_varietals', 'science_behavior', 'applications', 'lab_notes'] as $col) {
+        try {
+            $pdo->exec("ALTER TABLE lab_ingredient_categories ADD COLUMN $col TEXT NULL");
+        } catch (Exception $e) {
+            // Column already exists
+        }
+    }
 
     // 5. lab_future_pillars table
     echo "Creating 'lab_future_pillars' table...\n";

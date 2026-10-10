@@ -385,13 +385,26 @@ if (!empty(trim($customHeadScripts))) {
 
     <nav class="header-nav" aria-label="Primary navigation">
       <!-- 1. EXPLORE -->
-      <a class="nav-item-link <?php echo ($activeNav === 'home' || $activeNav === 'about') ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>" title="Explore RT Chocos">
-        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9"/>
-          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
-        </svg>
-        <span class="nav-label">EXPLORE</span>
-      </a>
+      <div class="nav-item-dropdown">
+        <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'home' || $activeNav === 'about' || $activeNav === 'chocopedia') ? 'active' : ''; ?>" data-page="explore" href="<?php echo $pathPrefix ?: 'index.php'; ?>" title="Explore RT Chocos">
+          <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+          </svg>
+          <span class="nav-label">EXPLORE</span>
+        </a>
+        <div class="nav-dropdown-menu">
+          <a class="dropdown-item <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>" title="Explore RT Chocos">
+            🧭 Explore Overview
+          </a>
+          <a class="dropdown-item <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Encyclopedia">
+            📖 Chocopedia
+          </a>
+          <a class="dropdown-item <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php" title="About RT Chocos & Aarti Saluja">
+            🍫 About RT Chocos
+          </a>
+        </div>
+      </div>
 
       <!-- 2. PRODUCTS / BOUTIQUE -->
       <a class="nav-item-link <?php echo ($activeNav === 'shop') ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php" title="Artisanal Chocolate Boutique & Shop">
@@ -443,17 +456,6 @@ if (!empty(trim($customHeadScripts))) {
         <span class="nav-label">INNOVATION LAB</span>
       </a>
 
-      <!-- 6. CHOCOPEDIA -->
-      <a class="nav-item-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Encyclopedia">
-        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 2a4 4 0 0 0-4 4c0 1.5.8 2.8 2 3.5"/>
-          <path d="M12 22a4 4 0 0 0 4-4c0-1.5-.8-2.8-2-3.5"/>
-          <path d="M22 12a4 4 0 0 0-4-4c-1.5 0-2.8.8-3.5 2"/>
-          <path d="M2 12a4 4 0 0 0 4 4c1.5 0 2.8-.8 3.5-2"/>
-        </svg>
-        <span class="nav-label">CHOCOPEDIA</span>
-      </a>
 
       <!-- 6. CHOCOLATE AI -->
       <button class="nav-item-link nav-ai-trigger" aria-label="Ask CocoaGenius AI" onclick="toggleAiDrawer()">
@@ -512,10 +514,16 @@ if (!empty(trim($customHeadScripts))) {
   </div>
 
   <nav id="mobile-menu" aria-label="Mobile navigation">
-    <a class="mobile-nav-link <?php echo ($activeNav === 'home' || $activeNav === 'about') ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-      <span>EXPLORE</span>
-    </a>
+    <!-- Mobile Explore Group -->
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span>EXPLORE</span>
+      </div>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>">🧭 Explore Overview</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">📖 Chocopedia</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php">🍫 About RT Chocos</a>
+    </div>
 
     <!-- Mobile Products Group -->
     <div class="mobile-nav-group">
@@ -551,10 +559,6 @@ if (!empty(trim($customHeadScripts))) {
       <span>INNOVATION LAB</span>
     </a>
 
-    <a class="mobile-nav-link <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 2a4 4 0 0 0-4 4c0 1.5.8 2.8 2 3.5"/><path d="M12 22a4 4 0 0 0 4-4c0-1.5-.8-2.8-2-3.5"/><path d="M22 12a4 4 0 0 0-4-4c-1.5 0-2.8.8-3.5 2"/><path d="M2 12a4 4 0 0 0 4 4c1.5 0 2.8-.8 3.5-2"/></svg>
-      <span>CHOCOPEDIA</span>
-    </a>
 
     <button class="mobile-nav-link mobile-nav-ai-btn" onclick="toggleAiDrawer(); toggleMobileMenu();">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11a2 2 0 0 1-2 2h-1"/><path d="M9.5 4.5A3.5 3.5 0 0 0 6 8c0 1.4.8 2.6 2 3.1V12a2 2 0 0 0 2 2h1"/><circle cx="12" cy="6" r="1"/><path d="M12 13v8"/><path d="M8 17h8"/><circle cx="6" cy="8" r="1"/><circle cx="18" cy="8" r="1"/><circle cx="8" cy="17" r="1"/><circle cx="16" cy="17" r="1"/><circle cx="12" cy="21" r="1"/></svg>

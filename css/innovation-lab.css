@@ -717,9 +717,12 @@
 /* ==========================================
    5. INGREDIENT INNOVATION SECTION
    ========================================== */
-.lab-ingredient-section {
-  background: #15261C;
-  color: #FAF6EF;
+.lab-ingredient-section,
+section.lab-ingredient-section,
+section.lab-ingredient-section:nth-of-type(even) {
+  background: #15261C !important;
+  background-color: #15261C !important;
+  color: #FAF6EF !important;
   padding: 64px 32px 72px;
   margin: 32px 0;
   position: relative;
@@ -731,15 +734,16 @@
   margin: 0 auto;
 }
 
-.lab-ingredient-section .lab-eyebrow {
-  color: #A3B8AA;
+.lab-ingredient-section .lab-eyebrow,
+.lab-ingredient-section .lab-eyebrow span {
+  color: #A3B8AA !important;
 }
 
 .lab-ingredient-title {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: clamp(34px, 4vw, 48px);
   font-weight: 600;
-  color: #FFFFFF;
+  color: #FFFFFF !important;
   letter-spacing: -0.01em;
   margin-bottom: 40px;
 }
@@ -752,12 +756,12 @@
 
 .lab-ing-card {
   text-decoration: none;
-  color: #FAF6EF;
+  color: #FAF6EF !important;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  group: pointer;
+  cursor: pointer;
   transition: transform 0.3s ease;
 }
 
@@ -794,7 +798,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #E2DDD5;
+  color: #FAF6EF !important;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -802,7 +806,7 @@
 }
 
 .lab-ing-card:hover .lab-ing-label {
-  color: #FBBF24;
+  color: #FBBF24 !important;
 }
 
 /* ==========================================

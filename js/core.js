@@ -151,6 +151,7 @@ const PAGE_FILE_MAP = {
   checkout: 'checkout.php',
   workshops: 'workshops.php',
   blog: 'blog.php',
+  'innovation-lab': 'innovation-lab.php',
   chocopedia: 'chocopedia.php',
   gallery: 'gallery.php',
   contact: 'contact.php'
@@ -217,10 +218,15 @@ function updateActiveNavLinks() {
   document.querySelectorAll('.nav-link, .nav-item-link, .mobile-nav-link, .dropdown-item, .mobile-nav-sublink').forEach(link => {
     link.classList.toggle('active', link.dataset.page === navPage);
   });
-  const academyToggle = document.querySelector('.nav-item-dropdown .dropdown-toggle');
+  const academyToggle = document.querySelector('.dropdown-toggle[data-page="academy"]');
   if (academyToggle) {
     const isAcademyActive = (navPage === 'workshops' || navPage === 'gallery' || navPage === 'academy');
     academyToggle.classList.toggle('active', isAcademyActive);
+  }
+  const exploreToggle = document.querySelector('.dropdown-toggle[data-page="explore"], .dropdown-toggle[data-page="home"]');
+  if (exploreToggle) {
+    const isExploreActive = (navPage === 'home' || navPage === 'about' || navPage === 'chocopedia' || navPage === 'explore');
+    exploreToggle.classList.toggle('active', isExploreActive);
   }
   const productsLink = document.querySelector('.nav-item-link[data-page="shop"]');
   if (productsLink) {

@@ -1916,12 +1916,12 @@ html.theme-midnight-gold .stage-chip,
 }
 
 /* Other light sections styling */
-section {
-  background-color: var(--bg-primary) !important;
+section:not(.lab-ingredient-section):not([class*="dark"]) {
+  background-color: var(--bg-primary);
 }
 
-section:nth-of-type(even) {
-  background-color: var(--bg-primary) !important;
+section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
+  background-color: var(--bg-primary);
 }
 
 .section-title {

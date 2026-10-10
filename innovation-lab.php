@@ -17,30 +17,30 @@ try {
     $pdo = get_db();
 
     // 1. Dynamic Site & Section Settings
-    $heroEyebrow = get_site_setting('lab_hero_eyebrow', 'IDEAS × EXPERIMENTS × EVIDENCE');
-    $heroTitle = get_site_setting('lab_hero_title', 'Innovation Lab');
-    $heroSubtitle = get_site_setting('lab_hero_subtitle', 'A working space where curious minds come together to explore new ingredients, techniques and ideas to shape a more thoughtful chocolate future.');
-    $heroCtaText = get_site_setting('lab_hero_cta_text', 'STEP INTO THE LAB →');
-    $heroCtaLink = get_site_setting('lab_hero_cta_link', '#currently-in-lab');
-    $stickyNoteText = get_site_setting('lab_sticky_note', "Better Ingredients\nBigger Questions\nBrighter Chocolate");
-    $heroImage = get_site_setting('lab_hero_image', 'assets/images/lab-hero.jpg');
+    $heroEyebrow = trim((string)get_site_setting('lab_hero_eyebrow', '')) ?: 'IDEAS × EXPERIMENTS × EVIDENCE';
+    $heroTitle = trim((string)get_site_setting('lab_hero_title', '')) ?: 'Innovation Lab';
+    $heroSubtitle = trim((string)get_site_setting('lab_hero_subtitle', '')) ?: 'A working space where curious minds come together to explore new ingredients, techniques and ideas to shape a more thoughtful chocolate future.';
+    $heroCtaText = trim((string)get_site_setting('lab_hero_cta_text', '')) ?: 'STEP INTO THE LAB →';
+    $heroCtaLink = trim((string)get_site_setting('lab_hero_cta_link', '')) ?: '#currently-in-lab';
+    $stickyNoteText = trim((string)get_site_setting('lab_sticky_note', '')) ?: "Better Ingredients\nBigger Questions\nBrighter Chocolate";
+    $heroImage = trim((string)get_site_setting('lab_hero_image', '')) ?: 'assets/images/lab-hero.jpg';
 
-    $whatIfEyebrow = get_site_setting('lab_what_if_eyebrow', 'IDEAS WE ARE EXPLORING NEXT.');
-    $whatIfHeading = get_site_setting('lab_what_if_heading', 'What if?');
-    $whatIfImage = get_site_setting('lab_what_if_image', 'assets/images/lab-what-if.jpg');
+    $whatIfEyebrow = trim((string)get_site_setting('lab_what_if_eyebrow', '')) ?: 'IDEAS WE ARE EXPLORING NEXT.';
+    $whatIfHeading = trim((string)get_site_setting('lab_what_if_heading', '')) ?: 'What if?';
+    $whatIfImage = trim((string)get_site_setting('lab_what_if_image', '')) ?: 'assets/images/lab-what-if.jpg';
 
-    $failedEyebrow = get_site_setting('lab_failed_batch_eyebrow', 'BECAUSE FAILURE IS DATA.');
-    $failedHeading = get_site_setting('lab_failed_batch_heading', 'From a Failed Batch to a New Insight');
+    $failedEyebrow = trim((string)get_site_setting('lab_failed_batch_eyebrow', '')) ?: 'BECAUSE FAILURE IS DATA.';
+    $failedHeading = trim((string)get_site_setting('lab_failed_batch_heading', '')) ?: 'From a Failed Batch to a New Insight';
 
-    $ingredientEyebrow = get_site_setting('lab_ingredient_eyebrow', 'NEW INGREDIENTS. NEW BEHAVIOURS. NEW POSSIBILITIES.');
-    $ingredientHeading = get_site_setting('lab_ingredient_heading', 'Ingredient Innovation');
+    $ingredientEyebrow = trim((string)get_site_setting('lab_ingredient_eyebrow', '')) ?: 'NEW INGREDIENTS. NEW BEHAVIOURS. NEW POSSIBILITIES.';
+    $ingredientHeading = trim((string)get_site_setting('lab_ingredient_heading', '')) ?: 'Ingredient Innovation';
 
-    $futureEyebrow = get_site_setting('lab_future_eyebrow', 'BOLDER QUESTIONS. BIGGER IMPACT.');
-    $futureHeading = get_site_setting('lab_future_heading', 'Future of Chocolate');
-    $futureText = get_site_setting('lab_future_text', 'Exploring ideas and technologies that can make chocolate more inclusive, resilient and regenerative — for people, communities and the planet.');
-    $futureCtaText = get_site_setting('lab_future_cta_text', 'EXPLORE FUTURE IDEAS →');
-    $futureCtaLink = get_site_setting('lab_future_cta_link', '#future-ideas');
-    $futureImage = get_site_setting('lab_future_image', 'assets/images/lab-future.jpg');
+    $futureEyebrow = trim((string)get_site_setting('lab_future_eyebrow', '')) ?: 'BOLDER QUESTIONS. BIGGER IMPACT.';
+    $futureHeading = trim((string)get_site_setting('lab_future_heading', '')) ?: 'Future of Chocolate';
+    $futureText = trim((string)get_site_setting('lab_future_text', '')) ?: 'Exploring ideas and technologies that can make chocolate more inclusive, resilient and regenerative — for people, communities and the planet.';
+    $futureCtaText = trim((string)get_site_setting('lab_future_cta_text', '')) ?: 'EXPLORE FUTURE IDEAS →';
+    $futureCtaLink = trim((string)get_site_setting('lab_future_cta_link', '')) ?: '#future-ideas';
+    $futureImage = trim((string)get_site_setting('lab_future_image', '')) ?: 'assets/images/lab-future.jpg';
 
     // 2. Query Experiments
     $experimentsStmt = $pdo->query("SELECT * FROM lab_experiments WHERE is_active = 1 ORDER BY sort_order ASC, id ASC");
@@ -360,15 +360,15 @@ include 'includes/header.php';
        ================================================================= -->
   <section class="lab-ingredient-section" id="ingredient-innovation">
     <div class="lab-ingredient-inner">
-      <h2 class="lab-ingredient-title"><?php echo htmlspecialchars($ingredientHeading); ?></h2>
-      <div class="lab-eyebrow" style="margin-top: -24px; margin-bottom: 32px;">
+      <div class="lab-eyebrow" style="margin-bottom: 16px;">
         <span><?php echo htmlspecialchars($ingredientEyebrow); ?></span>
       </div>
+      <h2 class="lab-ingredient-title"><?php echo htmlspecialchars($ingredientHeading); ?></h2>
 
       <div class="lab-ingredients-grid">
         <?php if (!empty($ingredientCategories)): ?>
           <?php foreach ($ingredientCategories as $cat): ?>
-            <a href="<?php echo htmlspecialchars($cat['link_url'] ?: '#currently-in-lab'); ?>" class="lab-ing-card" onclick="filterByIngredient('<?php echo htmlspecialchars($cat['title']); ?>', event)">
+            <a href="javascript:void(0)" class="lab-ing-card" onclick="openIngredientModal(<?php echo (int)$cat['id']; ?>, event)" role="button" aria-haspopup="dialog" aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> dossier">
               <div class="lab-ing-photo-wrap">
                 <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" />
               </div>
@@ -458,10 +458,26 @@ include 'includes/header.php';
   </div>
 </div>
 
+<!-- =================================================================
+     MODAL: INGREDIENT INNOVATION DOSSIER MODAL
+     ================================================================= -->
+<div id="ingredientModal" class="lab-modal-overlay" onclick="closeModalOnOverlay(event, this)">
+  <div class="lab-modal-container" role="dialog" aria-modal="true" style="max-width: 800px;">
+    <button type="button" class="lab-modal-close-btn" onclick="closeLabModal('ingredientModal')" aria-label="Close Ingredient Dossier">✕</button>
+    <div class="lab-modal-header" id="modalIngHeader">
+      <!-- Injected dynamically -->
+    </div>
+    <div class="lab-modal-body" id="modalIngBody">
+      <!-- Injected dynamically -->
+    </div>
+  </div>
+</div>
+
 <!-- Raw Client-Side Data Store for Instant Modal Rendering -->
 <script>
 window.LAB_EXPERIMENTS = <?php echo json_encode($experiments, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 window.LAB_FAILED_BATCHES = <?php echo json_encode($failedBatches, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+window.LAB_INGREDIENTS = <?php echo json_encode($ingredientCategories, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
 function filterLabExperiments(category, el, e) {
   if (e) e.preventDefault();
@@ -654,6 +670,96 @@ function openFailedBatchModal(id) {
   document.body.style.overflow = 'hidden';
 }
 
+function openIngredientModal(id, e) {
+  if (e) e.preventDefault();
+  const ing = (window.LAB_INGREDIENTS || []).find(item => Number(item.id) === Number(id));
+  if (!ing) return;
+
+  const header = document.getElementById('modalIngHeader');
+  const body = document.getElementById('modalIngBody');
+
+  header.innerHTML = `
+    <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase; color: #166534; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px;">
+      <span>🌿</span>
+      <span>INGREDIENT INNOVATION DOSSIER</span>
+    </div>
+    <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 30px; font-weight: 600; color: #122217; margin: 0 0 6px;">${escapeHtml(ing.title)}</h2>
+    <div style="font-size: 11.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6C7E72;">
+      NATIVE INDIAN TERROIR &amp; FUNCTIONAL BOTANICALS
+    </div>
+  `;
+
+  let innerHTML = '';
+  if (ing.image_path) {
+    innerHTML += `
+      <div style="border-radius: 6px; overflow: hidden; max-height: 290px; margin-bottom: 22px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); position: relative;">
+        <img src="${escapeHtml(ing.image_path)}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="${escapeHtml(ing.title)}">
+      </div>
+    `;
+  }
+
+  if (ing.description) {
+    innerHTML += `
+      <div style="font-size: 15px; line-height: 1.65; color: #2A3C30; margin-bottom: 24px; font-style: italic; background: #FAF5EB; padding: 16px 20px; border-left: 3.5px solid #14251B; border-radius: 3px;">
+        "${escapeHtml(ing.description)}"
+      </div>
+    `;
+  }
+
+  innerHTML += `
+    <div class="lab-dossier-grid">
+      ${ing.key_varietals ? `
+      <div class="lab-dossier-card" style="border-left: 3.5px solid #16A34A;">
+        <h4 style="display: flex; align-items: center; gap: 7px; color: #14251B; margin-bottom: 8px;">
+          <span>🌱</span>
+          <span>1. Key Varietals &amp; Sourcing</span>
+        </h4>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #384A3F;">${escapeHtml(ing.key_varietals)}</p>
+      </div>` : ''}
+
+      ${ing.science_behavior ? `
+      <div class="lab-dossier-card" style="border-left: 3.5px solid #2563EB;">
+        <h4 style="display: flex; align-items: center; gap: 7px; color: #14251B; margin-bottom: 8px;">
+          <span>🔬</span>
+          <span>2. Food Science &amp; Polymorphism</span>
+        </h4>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #384A3F;">${escapeHtml(ing.science_behavior)}</p>
+      </div>` : ''}
+
+      ${ing.applications ? `
+      <div class="lab-dossier-card" style="border-left: 3.5px solid #D97706;">
+        <h4 style="display: flex; align-items: center; gap: 7px; color: #14251B; margin-bottom: 8px;">
+          <span>🍫</span>
+          <span>3. Formulation &amp; Conching</span>
+        </h4>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #384A3F;">${escapeHtml(ing.applications)}</p>
+      </div>` : ''}
+
+      ${ing.lab_notes ? `
+      <div class="lab-dossier-card" style="border-left: 3.5px solid #9333EA;">
+        <h4 style="display: flex; align-items: center; gap: 7px; color: #14251B; margin-bottom: 8px;">
+          <span>📝</span>
+          <span>4. Live Lab Benchmark Notes</span>
+        </h4>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #384A3F;">${escapeHtml(ing.lab_notes)}</p>
+      </div>` : ''}
+    </div>
+
+    <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #E5DCCE; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <button type="button" onclick="closeLabModal('ingredientModal'); filterByIngredient('${escapeHtml(ing.title)}')" class="lab-hero-cta" style="padding: 10px 22px; font-size: 11px;">
+        <span>Filter Live Experiments (${escapeHtml(ing.title)}) →</span>
+      </button>
+      <button type="button" onclick="closeLabModal('ingredientModal')" style="background: none; border: 1px solid #C8BCAC; padding: 10px 20px; border-radius: 999px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: #495B4E; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s ease;">
+        Close Dossier
+      </button>
+    </div>
+  `;
+
+  body.innerHTML = innerHTML;
+  document.getElementById('ingredientModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
 function closeLabModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) {
@@ -673,6 +779,7 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeLabModal('experimentModal');
     closeLabModal('failedBatchModal');
+    closeLabModal('ingredientModal');
   }
 });
 
