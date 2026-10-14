@@ -1099,22 +1099,22 @@ render_admin_header('Innovation Lab', 'innovation-lab');
             </div>
 
             <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Hypothesis * (What did you set out to test?)</label>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">1. The Hypothesis * (What did you set out to test?)</label>
                 <textarea name="hypothesis" id="failed_hypothesis" rows="2" required placeholder="e.g. Freeze-dried guava will create an intense natural fruit note." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
             <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: #DC2626; margin-bottom: 4px;">What Happened? * (The Failure)</label>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: #DC2626; margin-bottom: 4px;">2. What Happened? * (The Failure)</label>
                 <textarea name="what_happened" id="failed_what_happened" rows="2" required placeholder="e.g. Flavour disappeared after incorporation." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
             <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: #D97706; margin-bottom: 4px;">Why? * (Scientific root cause)</label>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: #D97706; margin-bottom: 4px;">3. Understanding The Science * (Scientific root cause)</label>
                 <textarea name="why_it_happened" id="failed_why" rows="2" required placeholder="e.g. Possible volatile loss and fat interaction." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
             <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: #16A34A; margin-bottom: 4px;">What Next? * (Breakthrough / Remediation)</label>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: #16A34A; margin-bottom: 4px;">4. The Learning * (Breakthrough / Remediation)</label>
                 <textarea name="what_next" id="failed_what_next" rows="2" required placeholder="e.g. Test cocoa butter pre-coating." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
@@ -1125,7 +1125,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
             </div>
 
             <div style="margin-bottom: 18px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Full Story &amp; Science (Detailed write-up shown in modal)</label>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">The Experiment, Explained (Detailed write-up shown in modal)</label>
                 <textarea name="full_story" id="failed_full_story" rows="4" placeholder="Complete article explaining the trial, chromatography checks, lessons learned..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 

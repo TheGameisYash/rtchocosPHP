@@ -321,22 +321,22 @@ include 'includes/header.php';
           <div class="lab-failed-case-tag"><?php echo htmlspecialchars($primaryFailed['title']); ?></div>
           
           <div class="lab-failed-data-row">
-            <span class="label">Hypothesis</span>
+            <span class="label">1. The Hypothesis</span>
             <span class="text"><?php echo htmlspecialchars($primaryFailed['hypothesis']); ?></span>
           </div>
 
           <div class="lab-failed-data-row">
-            <span class="label">What happened?</span>
+            <span class="label">2. What Happened?</span>
             <span class="text"><?php echo htmlspecialchars($primaryFailed['what_happened']); ?></span>
           </div>
 
           <div class="lab-failed-data-row">
-            <span class="label">Why?</span>
+            <span class="label">3. Understanding The Science</span>
             <span class="text"><?php echo htmlspecialchars($primaryFailed['why_it_happened']); ?></span>
           </div>
 
           <div class="lab-failed-data-row">
-            <span class="label">What next?</span>
+            <span class="label">4. The Learning</span>
             <span class="text"><?php echo htmlspecialchars($primaryFailed['what_next']); ?></span>
           </div>
 
@@ -636,19 +636,19 @@ function openFailedBatchModal(id) {
   innerHTML += `
     <div class="lab-dossier-grid">
       <div class="lab-dossier-card">
-        <h4>1. Initial Hypothesis</h4>
+        <h4>1. The Hypothesis</h4>
         <p>${escapeHtml(fail.hypothesis)}</p>
       </div>
       <div class="lab-dossier-card" style="border-left: 3px solid #DC2626;">
-        <h4>2. What Happened? (The Failure)</h4>
+        <h4>2. What Happened?</h4>
         <p>${escapeHtml(fail.what_happened)}</p>
       </div>
       <div class="lab-dossier-card" style="border-left: 3px solid #D97706;">
-        <h4>3. Root Cause Analysis (Why?)</h4>
+        <h4>3. Understanding The Science</h4>
         <p>${escapeHtml(fail.why_it_happened)}</p>
       </div>
       <div class="lab-dossier-card" style="border-left: 3px solid #16A34A;">
-        <h4>4. The Breakthrough (What Next?)</h4>
+        <h4>4. The Learning</h4>
         <p>${escapeHtml(fail.what_next)}</p>
       </div>
     </div>
@@ -657,7 +657,7 @@ function openFailedBatchModal(id) {
   if (fail.full_story) {
     innerHTML += `
       <div style="background: #FFFFFF; border: 1px solid #E6DED2; border-radius: 6px; padding: 24px; margin-top: 18px;">
-        <h4 style="font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #14251B; margin-bottom: 12px;">Full Post-Mortem Story &amp; Science</h4>
+        <h4 style="font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #14251B; margin-bottom: 12px;">The Experiment, Explained</h4>
         <div style="font-size: 14px; line-height: 1.7; color: #384A3F;">
           ${fail.full_story}
         </div>

@@ -395,13 +395,13 @@ if (!empty(trim($customHeadScripts))) {
         </a>
         <div class="nav-dropdown-menu">
           <a class="dropdown-item <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>" title="Explore RT Chocos">
-            🧭 Explore Overview
+            Explore Overview
           </a>
           <a class="dropdown-item <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Encyclopedia">
-            📖 Chocopedia
+            Chocopedia
           </a>
           <a class="dropdown-item <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php" title="About RT Chocos & Aarti Saluja">
-            🍫 About RT Chocos
+            About RT Chocos
           </a>
         </div>
       </div>
@@ -429,10 +429,10 @@ if (!empty(trim($customHeadScripts))) {
         </a>
         <div class="nav-dropdown-menu">
           <a class="dropdown-item <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy & Masterclasses">
-            🎓 Workshops &amp; Masterclasses
+            Workshops &amp; Masterclasses
           </a>
           <a class="dropdown-item <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php" title="Tested Recipes & Formulations">
-            🍫 Recipes &amp; Formulations
+            Recipes &amp; Formulations
           </a>
         </div>
       </div>
@@ -520,9 +520,9 @@ if (!empty(trim($customHeadScripts))) {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         <span>EXPLORE</span>
       </div>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>">🧭 Explore Overview</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">📖 Chocopedia</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php">🍫 About RT Chocos</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>">Explore Overview</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About RT Chocos</a>
     </div>
 
     <!-- Mobile Products Group -->
@@ -531,12 +531,12 @@ if (!empty(trim($customHeadScripts))) {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
         <span>BOUTIQUE &amp; PRODUCTS</span>
       </div>
-      <a class="mobile-nav-sublink <?php echo ($activeNav === 'shop' && empty($_GET['category'])) ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php">🍫 All Products &amp; Boutique</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Chocolates">🏷️ Bean-to-Bar Chocolate Bars</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Kits">🎁 Starter &amp; Tempering Kits</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Cacao">🌱 Single-Origin Cacao Nibs &amp; Butter</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Bonbons">🍬 Hand-Painted Bonbons &amp; Truffles</a>
-      <a class="mobile-nav-sublink <?php echo $currentURI === '/cart.php' ? 'active' : ''; ?>" href="<?php echo $pathPrefix; ?>cart.php">🛒 Shopping Cart (<?php echo $cartCount; ?>)</a>
+      <a class="mobile-nav-sublink <?php echo ($activeNav === 'shop' && empty($_GET['category'])) ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php">All Products &amp; Boutique</a>
+      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Chocolates">Bean-to-Bar Chocolate Bars</a>
+      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Kits">Starter &amp; Tempering Kits</a>
+      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Cacao">Single-Origin Cacao Nibs &amp; Butter</a>
+      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Bonbons">Hand-Painted Bonbons &amp; Truffles</a>
+      <a class="mobile-nav-sublink <?php echo $currentURI === '/cart.php' ? 'active' : ''; ?>" href="<?php echo $pathPrefix; ?>cart.php">Shopping Cart (<?php echo $cartCount; ?>)</a>
     </div>
 
     <!-- Mobile Academy Group -->
@@ -545,8 +545,8 @@ if (!empty(trim($customHeadScripts))) {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"/></svg>
         <span>ACADEMY</span>
       </div>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">🎓 Workshops &amp; Masterclasses</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">🍫 Recipes &amp; Formulations</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">Workshops &amp; Masterclasses</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes &amp; Formulations</a>
     </div>
 
     <a class="mobile-nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">
