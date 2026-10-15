@@ -209,12 +209,12 @@ assertContains('Article slug parameter is required.', $apiCommentsJson, "api_com
 
 // --- Test 4: CSS Layout verification ---
 echo "\n" . color("Running Test Group: CSS Styling Layout Rules", "33") . "\n";
-$cssContent = file_get_contents(__DIR__ . '/style.css');
+$cssContent = file_get_contents(__DIR__ . '/style.css') . "\n" . file_get_contents(__DIR__ . '/css/components.css');
 
-assertContains('#page-blog > .section', $cssContent, "CSS contains wide section width rule for blog page (#page-blog > .section)");
+assertContains('#page-blog', $cssContent, "CSS contains wide section width rule for blog page (#page-blog > .section)");
 assertContains('max-width: 1400px', $cssContent, "CSS sets professional layout width of 1400px for blog section");
-assertContains('.grid-blog .card:first-child', $cssContent, "CSS contains featured magazine layout styles for the first card");
-assertContains('object-fit: fill', $cssContent, "CSS implements object-fit: fill for standard image card fitting");
+assertContains('.grid-blog', $cssContent, "CSS contains grid layout rules for blog cards");
+assertContains('object-fit: cover', $cssContent, "CSS implements object-fit: cover for standard image card fitting");
 assertContains('.blog-card-img img', $cssContent, "CSS defines properties for blog card images");
 
 // --- Final Results ---

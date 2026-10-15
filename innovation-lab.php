@@ -462,7 +462,7 @@ include 'includes/header.php';
      MODAL: INGREDIENT INNOVATION DOSSIER MODAL
      ================================================================= -->
 <div id="ingredientModal" class="lab-modal-overlay" onclick="closeModalOnOverlay(event, this)">
-  <div class="lab-modal-container" role="dialog" aria-modal="true" style="max-width: 800px;">
+  <div class="lab-modal-container" role="dialog" aria-modal="true">
     <button type="button" class="lab-modal-close-btn" onclick="closeLabModal('ingredientModal')" aria-label="Close Ingredient Dossier">✕</button>
     <div class="lab-modal-header" id="modalIngHeader">
       <!-- Injected dynamically -->
@@ -547,25 +547,27 @@ function openExperimentModal(id) {
   const body = document.getElementById('modalExpBody');
 
   header.innerHTML = `
-    <div class="lab-status-badge" style="position: static; margin-bottom: 12px; display: inline-flex;">
-      <span class="status-dot ${exp.status_color || 'green'}"></span>
-      <span>${exp.status_badge || 'IN PROGRESS'}</span>
-    </div>
-    <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; color: #122217; margin: 0 0 8px;">${escapeHtml(exp.title)}</h2>
-    <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6C7E72;">
-      ${escapeHtml(exp.tags || 'LABORATORY DOSSIER')}
+    <div class="lab-modal-header-inner">
+      <div class="lab-status-badge" style="position: static; margin-bottom: 12px; display: inline-flex;">
+        <span class="status-dot ${exp.status_color || 'green'}"></span>
+        <span>${exp.status_badge || 'IN PROGRESS'}</span>
+      </div>
+      <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 32px; color: #122217; margin: 0 0 8px;">${escapeHtml(exp.title)}</h2>
+      <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6C7E72;">
+        ${escapeHtml(exp.tags || 'LABORATORY DOSSIER')}
+      </div>
     </div>
   `;
 
   let innerHTML = '';
   if (exp.image_path) {
-    innerHTML += `<div style="border-radius: 6px; overflow: hidden; max-height: 280px; margin-bottom: 24px;">
+    innerHTML += `<div style="border-radius: 8px; overflow: hidden; height: 380px; max-height: 440px; margin-bottom: 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative;">
       <img src="${escapeHtml(exp.image_path)}" style="width: 100%; height: 100%; object-fit: cover;" alt="${escapeHtml(exp.title)}">
     </div>`;
   }
 
   innerHTML += `
-    <div style="font-size: 15px; line-height: 1.6; color: #2A3C30; margin-bottom: 24px; font-style: italic; background: #FAF5EB; padding: 14px 18px; border-left: 3px solid #14251B; border-radius: 2px;">
+    <div style="font-size: 16px; line-height: 1.7; color: #2A3C30; margin-bottom: 28px; font-style: italic; background: #FAF5EB; padding: 18px 24px; border-left: 3.5px solid #14251B; border-radius: 4px;">
       "${escapeHtml(exp.description)}"
     </div>
 
@@ -598,14 +600,22 @@ function openExperimentModal(id) {
 
   if (exp.full_content) {
     innerHTML += `
-      <div style="border-top: 1px solid #E5DCCE; padding-top: 24px; margin-top: 20px;">
+      <div style="border-top: 1px solid #E5DCCE; padding-top: 24px; margin-top: 24px;">
         <h4 style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #14251B; margin-bottom: 14px;">Detailed Lab Notes</h4>
-        <div style="font-size: 14px; line-height: 1.7; color: #384A3F;">
+        <div style="font-size: 14.5px; line-height: 1.75; color: #384A3F;">
           ${exp.full_content}
         </div>
       </div>
     `;
   }
+
+  innerHTML += `
+    <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #E5DCCE; display: flex; justify-content: flex-end;">
+      <button type="button" onclick="closeLabModal('experimentModal')" style="background: none; border: 1px solid #C8BCAC; padding: 10px 22px; border-radius: 999px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: #495B4E; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s ease;">
+        Close Dossier
+      </button>
+    </div>
+  `;
 
   body.innerHTML = innerHTML;
   document.getElementById('experimentModal').classList.add('active');
@@ -620,15 +630,17 @@ function openFailedBatchModal(id) {
   const body = document.getElementById('modalFailBody');
 
   header.innerHTML = `
-    <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #B45309; margin-bottom: 8px;">
-      ${escapeHtml(fail.badge_label || 'BECAUSE FAILURE IS DATA.')}
+    <div class="lab-modal-header-inner">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #B45309; margin-bottom: 8px;">
+        ${escapeHtml(fail.badge_label || 'BECAUSE FAILURE IS DATA.')}
+      </div>
+      <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 32px; color: #122217; margin: 0;">${escapeHtml(fail.title)}</h2>
     </div>
-    <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; color: #122217; margin: 0;">${escapeHtml(fail.title)}</h2>
   `;
 
   let innerHTML = '';
   if (fail.image_path) {
-    innerHTML += `<div style="border-radius: 6px; overflow: hidden; max-height: 260px; margin-bottom: 24px;">
+    innerHTML += `<div style="border-radius: 8px; overflow: hidden; height: 380px; max-height: 440px; margin-bottom: 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative;">
       <img src="${escapeHtml(fail.image_path)}" style="width: 100%; height: 100%; object-fit: cover;" alt="${escapeHtml(fail.title)}">
     </div>`;
   }
@@ -656,14 +668,22 @@ function openFailedBatchModal(id) {
 
   if (fail.full_story) {
     innerHTML += `
-      <div style="background: #FFFFFF; border: 1px solid #E6DED2; border-radius: 6px; padding: 24px; margin-top: 18px;">
+      <div style="background: #FFFFFF; border: 1px solid #E6DED2; border-radius: 8px; padding: 26px; margin-top: 22px;">
         <h4 style="font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #14251B; margin-bottom: 12px;">The Experiment, Explained</h4>
-        <div style="font-size: 14px; line-height: 1.7; color: #384A3F;">
+        <div style="font-size: 14.5px; line-height: 1.75; color: #384A3F;">
           ${fail.full_story}
         </div>
       </div>
     `;
   }
+
+  innerHTML += `
+    <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #E5DCCE; display: flex; justify-content: flex-end;">
+      <button type="button" onclick="closeLabModal('failedBatchModal')" style="background: none; border: 1px solid #C8BCAC; padding: 10px 22px; border-radius: 999px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: #495B4E; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s ease;">
+        Close Dossier
+      </button>
+    </div>
+  `;
 
   body.innerHTML = innerHTML;
   document.getElementById('failedBatchModal').classList.add('active');
@@ -679,20 +699,22 @@ function openIngredientModal(id, e) {
   const body = document.getElementById('modalIngBody');
 
   header.innerHTML = `
-    <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase; color: #166534; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px;">
-      <span>🌿</span>
-      <span>INGREDIENT INNOVATION DOSSIER</span>
-    </div>
-    <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 30px; font-weight: 600; color: #122217; margin: 0 0 6px;">${escapeHtml(ing.title)}</h2>
-    <div style="font-size: 11.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6C7E72;">
-      NATIVE INDIAN TERROIR &amp; FUNCTIONAL BOTANICALS
+    <div class="lab-modal-header-inner">
+      <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase; color: #166534; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px;">
+        <span>🌿</span>
+        <span>INGREDIENT INNOVATION DOSSIER</span>
+      </div>
+      <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 32px; font-weight: 600; color: #122217; margin: 0 0 6px;">${escapeHtml(ing.title)}</h2>
+      <div style="font-size: 11.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6C7E72;">
+        NATIVE INDIAN TERROIR &amp; FUNCTIONAL BOTANICALS
+      </div>
     </div>
   `;
 
   let innerHTML = '';
   if (ing.image_path) {
     innerHTML += `
-      <div style="border-radius: 6px; overflow: hidden; max-height: 290px; margin-bottom: 22px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); position: relative;">
+      <div style="border-radius: 8px; overflow: hidden; height: 380px; max-height: 440px; margin-bottom: 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative;">
         <img src="${escapeHtml(ing.image_path)}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="${escapeHtml(ing.title)}">
       </div>
     `;
@@ -700,7 +722,7 @@ function openIngredientModal(id, e) {
 
   if (ing.description) {
     innerHTML += `
-      <div style="font-size: 15px; line-height: 1.65; color: #2A3C30; margin-bottom: 24px; font-style: italic; background: #FAF5EB; padding: 16px 20px; border-left: 3.5px solid #14251B; border-radius: 3px;">
+      <div style="font-size: 16px; line-height: 1.7; color: #2A3C30; margin-bottom: 28px; font-style: italic; background: #FAF5EB; padding: 18px 24px; border-left: 3.5px solid #14251B; border-radius: 4px;">
         "${escapeHtml(ing.description)}"
       </div>
     `;
@@ -714,7 +736,7 @@ function openIngredientModal(id, e) {
           <span>🌱</span>
           <span>1. Key Varietals &amp; Sourcing</span>
         </h4>
-        <p style="font-size: 13.5px; line-height: 1.6; color: #384A3F;">${escapeHtml(ing.key_varietals)}</p>
+        <p style="font-size: 14px; line-height: 1.65; color: #384A3F;">${escapeHtml(ing.key_varietals)}</p>
       </div>` : ''}
 
       ${ing.science_behavior ? `
@@ -723,7 +745,7 @@ function openIngredientModal(id, e) {
           <span>🔬</span>
           <span>2. Food Science &amp; Polymorphism</span>
         </h4>
-        <p style="font-size: 13.5px; line-height: 1.6; color: #384A3F;">${escapeHtml(ing.science_behavior)}</p>
+        <p style="font-size: 14px; line-height: 1.65; color: #384A3F;">${escapeHtml(ing.science_behavior)}</p>
       </div>` : ''}
 
       ${ing.applications ? `
@@ -732,7 +754,7 @@ function openIngredientModal(id, e) {
           <span>🍫</span>
           <span>3. Formulation &amp; Conching</span>
         </h4>
-        <p style="font-size: 13.5px; line-height: 1.6; color: #384A3F;">${escapeHtml(ing.applications)}</p>
+        <p style="font-size: 14px; line-height: 1.65; color: #384A3F;">${escapeHtml(ing.applications)}</p>
       </div>` : ''}
 
       ${ing.lab_notes ? `
@@ -741,15 +763,15 @@ function openIngredientModal(id, e) {
           <span>📝</span>
           <span>4. Live Lab Benchmark Notes</span>
         </h4>
-        <p style="font-size: 13.5px; line-height: 1.6; color: #384A3F;">${escapeHtml(ing.lab_notes)}</p>
+        <p style="font-size: 14px; line-height: 1.65; color: #384A3F;">${escapeHtml(ing.lab_notes)}</p>
       </div>` : ''}
     </div>
 
-    <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #E5DCCE; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-      <button type="button" onclick="closeLabModal('ingredientModal'); filterByIngredient('${escapeHtml(ing.title)}')" class="lab-hero-cta" style="padding: 10px 22px; font-size: 11px;">
+    <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #E5DCCE; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+      <button type="button" onclick="closeLabModal('ingredientModal'); filterByIngredient('${escapeHtml(ing.title)}')" class="lab-hero-cta" style="padding: 12px 24px; font-size: 11px;">
         <span>Filter Live Experiments (${escapeHtml(ing.title)}) →</span>
       </button>
-      <button type="button" onclick="closeLabModal('ingredientModal')" style="background: none; border: 1px solid #C8BCAC; padding: 10px 20px; border-radius: 999px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: #495B4E; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s ease;">
+      <button type="button" onclick="closeLabModal('ingredientModal')" style="background: none; border: 1px solid #C8BCAC; padding: 10px 22px; border-radius: 999px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: #495B4E; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s ease;">
         Close Dossier
       </button>
     </div>

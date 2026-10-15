@@ -104,7 +104,7 @@
         </div>
 
         <!-- Ingredient Spotlight Feature Card (Precision Formulation Intelligence) -->
-        <div class="hero-ingredient-spotlight-card fade-up-d3" onclick="openTableModal('ingredient-spotlight')" title="Click to view full scientific profile">
+        <div class="hero-ingredient-spotlight-card fade-up-d3" id="heroIngredientSpotlightCard" onclick="openTableModal('ingredient-spotlight')" title="Click to view full scientific profile">
           <div class="spotlight-header-row">
             <div class="spotlight-tag-group">
               <span class="spotlight-pod-icon">
@@ -113,33 +113,38 @@
                   <path d="M10 2.2v16.3M7.2 7.2c0 2.2 1.3 4 2.8 4s2.8-1.8 2.8-4" stroke="currentColor" stroke-width="1.1"/>
                 </svg>
               </span>
-              <span class="spotlight-tag"><?= htmlspecialchars($activeSpotlight['clean_tag'] ?? 'INGREDIENT SPOTLIGHT') ?></span>
+              <span class="spotlight-tag" id="homeSpotlightTag"><?= htmlspecialchars($activeSpotlight['clean_tag'] ?? 'INGREDIENT SPOTLIGHT') ?></span>
             </div>
-            <span class="spotlight-ai-badge" title="AI Rotates Every 6 Hours via OpenRouter">
-              <span class="spotlight-pulse"></span>
-              <span>AI Live 6h</span>
-            </span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button type="button" class="spotlight-rotate-btn" onclick="rotateSpotlightCard(event)" title="Rotate to next ingredient spotlight" aria-label="Rotate ingredient spotlight">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+              </button>
+              <span class="spotlight-ai-badge" onclick="rotateSpotlightCard(event)" style="cursor: pointer;" title="Rotates automatically every 6 hours · Click to rotate now">
+                <span class="spotlight-pulse"></span>
+                <span id="spotlightBadgeText">AI Live 6h</span>
+              </span>
+            </div>
           </div>
 
           <div class="spotlight-title-wrap">
-            <h3 class="spotlight-title"><?= htmlspecialchars($activeSpotlight['ingredient_name'] ?? 'Cocoa Butter') ?></h3>
-            <?php if (!empty($activeSpotlight['level_number'])): ?>
-              <span class="spotlight-level-tag">L<?= (int)$activeSpotlight['level_number'] ?></span>
-            <?php endif; ?>
+            <h3 class="spotlight-title" id="homeSpotlightTitle"><?= htmlspecialchars($activeSpotlight['ingredient_name'] ?? 'Cocoa Butter') ?></h3>
+            <span class="spotlight-level-tag" id="homeSpotlightLevel"><?= !empty($activeSpotlight['level_number']) ? 'L' . (int)$activeSpotlight['level_number'] : 'L1' ?></span>
           </div>
 
-          <p class="spotlight-desc"><?= htmlspecialchars($activeSpotlight['short_desc'] ?? 'The golden fat that gives chocolate its smoothness and soul.') ?></p>
+          <p class="spotlight-desc" id="homeSpotlightDesc"><?= htmlspecialchars($activeSpotlight['short_desc'] ?? 'The golden fat that gives chocolate its smoothness and soul.') ?></p>
 
-          <?php if (!empty($activeSpotlight['flavor_notes_list']) && is_array($activeSpotlight['flavor_notes_list'])): ?>
-            <div class="spotlight-notes-row">
+          <div class="spotlight-notes-row" id="homeSpotlightNotes">
+            <?php if (!empty($activeSpotlight['flavor_notes_list']) && is_array($activeSpotlight['flavor_notes_list'])): ?>
               <?php foreach (array_slice($activeSpotlight['flavor_notes_list'], 0, 3) as $note): ?>
                 <span class="spotlight-note-chip">
                   <span class="chip-pip"></span>
                   <?= htmlspecialchars($note) ?>
                 </span>
               <?php endforeach; ?>
-            </div>
-          <?php endif; ?>
+            <?php endif; ?>
+          </div>
 
           <div class="spotlight-footer-row">
             <a href="javascript:void(0)" class="spotlight-link" onclick="openTableModal('ingredient-spotlight'); event.stopPropagation();">
@@ -574,6 +579,80 @@
       modal.classList.remove('active');
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
+    }
+
+    function rotateSpotlightCard(e) {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      const btnSvg = document.querySelector('.spotlight-rotate-btn svg');
+      if (btnSvg) {
+        btnSvg.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        btnSvg.style.transform = 'rotate(360deg)';
+      }
+
+      const card = document.getElementById('heroIngredientSpotlightCard');
+      if (card) {
+        card.style.transition = 'opacity 0.2s ease';
+        card.style.opacity = '0.45';
+      }
+
+      fetch('api_generate_spotlight.php?action=rotate')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.success && data.spotlight) {
+            const s = data.spotlight;
+            const titleEl = document.getElementById('homeSpotlightTitle');
+            const descEl = document.getElementById('homeSpotlightDesc');
+            const levelEl = document.getElementById('homeSpotlightLevel');
+            const notesEl = document.getElementById('homeSpotlightNotes');
+            const badgeText = document.getElementById('spotlightBadgeText');
+
+            setTimeout(() => {
+              if (titleEl) titleEl.textContent = s.ingredient_name;
+              if (descEl) descEl.textContent = s.short_desc;
+              if (levelEl) levelEl.textContent = s.level_number ? 'L' + s.level_number : 'L1';
+              if (notesEl && Array.isArray(s.flavor_notes_list)) {
+                notesEl.innerHTML = s.flavor_notes_list.slice(0, 3).map(n => `
+                  <span class="spotlight-note-chip">
+                    <span class="chip-pip"></span>
+                    ${n}
+                  </span>
+                `).join('');
+              }
+              if (badgeText) {
+                badgeText.textContent = 'Rotated!';
+                setTimeout(() => { badgeText.textContent = 'AI Live 6h'; }, 1600);
+              }
+
+              // Keep modal synced with rotated ingredient
+              if (typeof TABLE_MODAL_DATA !== 'undefined' && TABLE_MODAL_DATA['ingredient-spotlight']) {
+                TABLE_MODAL_DATA['ingredient-spotlight'].title = s.ingredient_name;
+                TABLE_MODAL_DATA['ingredient-spotlight'].desc = s.short_desc;
+                TABLE_MODAL_DATA['ingredient-spotlight'].highlights = s.modal_highlights || [
+                  'Level: ' + (s.origin_region || s.level || 'Chocolate Science'),
+                  'Sensory Triad: ' + (s.triplet || s.flavor_notes || ''),
+                  'Refreshed automatically every 6 hours'
+                ];
+              }
+
+              if (card) card.style.opacity = '1';
+              if (btnSvg) {
+                setTimeout(() => {
+                  btnSvg.style.transition = 'none';
+                  btnSvg.style.transform = 'none';
+                }, 500);
+              }
+            }, 120);
+          } else {
+            if (card) card.style.opacity = '1';
+          }
+        })
+        .catch(err => {
+          console.error('Error rotating spotlight:', err);
+          if (card) card.style.opacity = '1';
+        });
     }
 
     document.addEventListener('keydown', function(e) {

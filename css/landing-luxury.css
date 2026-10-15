@@ -347,6 +347,35 @@
   border-radius: 20px !important;
   font-size: 11px !important;
   font-weight: 700 !important;
+  transition: all 0.2s ease;
+}
+
+#page-home .spotlight-ai-badge:hover {
+  background: rgba(27, 77, 46, 0.18) !important;
+  border-color: rgba(27, 77, 46, 0.45) !important;
+}
+
+#page-home .spotlight-rotate-btn {
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #173d24;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  padding: 0;
+  vertical-align: middle;
+}
+
+#page-home .spotlight-rotate-btn:hover {
+  background: #14251B;
+  color: #FFFFFF;
+  border-color: #14251B;
+  transform: rotate(180deg) scale(1.08);
 }
 
 #page-home .spotlight-pulse {

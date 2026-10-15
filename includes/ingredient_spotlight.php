@@ -461,7 +461,7 @@ function get_current_ingredient_spotlight($forceRefresh = false) {
         // Continue with library fallback
     }
 
-    // 2. If force refresh requested, try AI generation with strict rules
+    // 2. If force refresh requested, try AI generation or rotation
     if ($forceRefresh && $pdo) {
         $generated = generate_spotlight_from_ai();
         if ($generated && !empty($generated['ingredient_name']) && !empty($generated['short_desc'])) {
@@ -497,18 +497,18 @@ function get_current_ingredient_spotlight($forceRefresh = false) {
         }
     }
 
-    // 3. Check latest spotlight from database
+    // 3. Check latest spotlight from database (ONLY if within 6 hours!)
     if ($pdo && !$forceRefresh) {
         try {
             $stmt = $pdo->query("SELECT * FROM ai_ingredient_spotlights ORDER BY id DESC LIMIT 1");
             $latest = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($latest && !empty($latest['ingredient_name'])) {
-                // Verify if it conforms to our curated library
-                $curatedMatch = find_in_curated_library($latest['ingredient_name']);
-                if ($curatedMatch) {
-                    $age = !empty($latest['created_at']) ? (time() - strtotime($latest['created_at'])) : 0;
-                    $merged = array_merge($curatedMatch, $latest);
-                    $output = format_spotlight_output($merged, max(0, $cacheSeconds - $age), true);
+                $age = !empty($latest['created_at']) ? (time() - strtotime($latest['created_at'])) : 0;
+                // CRITICAL FIX: Only return the DB record if it was generated less than 6 hours ago!
+                if ($age < $cacheSeconds) {
+                    $curatedMatch = find_in_curated_library($latest['ingredient_name']);
+                    $merged = array_merge($curatedMatch ?: [], $latest);
+                    $output = format_spotlight_output($merged, $cacheSeconds - $age, true);
                     save_spotlight_cache($cacheFile, $output);
                     return $output;
                 }
@@ -518,9 +518,105 @@ function get_current_ingredient_spotlight($forceRefresh = false) {
         }
     }
 
-    // 4. Default: Deterministically rotate across the 18 curated items every 6 hours
-    $curated = get_curated_spotlight_fallback();
-    $output = format_spotlight_output($curated, $cacheSeconds, true);
+    // 4. Record is expired (> 6h old) or cache was missed: Generate fresh spotlight
+    $generated = null;
+    try {
+        $generated = generate_spotlight_from_ai();
+    } catch (Exception $e) {
+        $generated = null;
+    }
+
+    if (!$generated || empty($generated['ingredient_name']) || empty($generated['short_desc'])) {
+        $generated = get_curated_spotlight_fallback();
+    }
+
+    if ($pdo && !empty($generated['ingredient_name'])) {
+        try {
+            $ins = $pdo->prepare("INSERT INTO ai_ingredient_spotlights 
+                (ingredient_name, tag, short_desc, detailed_notes, flavor_notes, origin_region, modal_key, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+            $ins->execute([
+                $generated['ingredient_name'],
+                $generated['tag'] ?? '🌱 INGREDIENT SPOTLIGHT',
+                $generated['short_desc'],
+                $generated['detailed_notes'] ?? '',
+                $generated['flavor_notes'] ?? '',
+                $generated['origin_region'] ?? ($generated['level'] ?? 'Level 1 — Chocolate Fundamentals'),
+                $generated['modal_key'] ?? 'ingredient-spotlight'
+            ]);
+
+            $pdo->exec("DELETE FROM ai_ingredient_spotlights WHERE id NOT IN (
+                SELECT id FROM (
+                    SELECT id FROM ai_ingredient_spotlights ORDER BY id DESC LIMIT 25
+                ) as temp
+            )");
+        } catch (Exception $e) {
+            // DB error non-fatal
+        }
+    }
+
+    $output = format_spotlight_output($generated, $cacheSeconds, false);
+    save_spotlight_cache($cacheFile, $output);
+    return $output;
+}
+
+/**
+ * Rotate to the next ingredient in the curated library on-demand
+ */
+function rotate_to_next_ingredient_spotlight(): array {
+    $library = get_ingredient_spotlight_library();
+    $cacheFile = __DIR__ . '/../data/cache/ingredient_spotlight.json';
+    $cacheSeconds = 6 * 3600;
+
+    $currentName = '';
+    if (file_exists($cacheFile)) {
+        $cachedRaw = @file_get_contents($cacheFile);
+        if ($cachedRaw !== false) {
+            $cached = json_decode($cachedRaw, true);
+            $currentName = $cached['ingredient_name'] ?? '';
+        }
+    }
+
+    $currentIndex = 0;
+    foreach ($library as $idx => $item) {
+        if (strcasecmp($item['ingredient_name'], $currentName) === 0) {
+            $currentIndex = $idx;
+            break;
+        }
+    }
+
+    $nextIndex = ($currentIndex + 1) % count($library);
+    $nextItem = $library[$nextIndex];
+
+    $pdo = null;
+    try {
+        $pdo = get_db();
+    } catch (Exception $e) {}
+
+    if ($pdo) {
+        try {
+            $ins = $pdo->prepare("INSERT INTO ai_ingredient_spotlights 
+                (ingredient_name, tag, short_desc, detailed_notes, flavor_notes, origin_region, modal_key, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+            $ins->execute([
+                $nextItem['ingredient_name'],
+                $nextItem['tag'] ?? '🌱 INGREDIENT SPOTLIGHT',
+                $nextItem['short_desc'],
+                $nextItem['detailed_notes'] ?? '',
+                $nextItem['flavor_notes'] ?? '',
+                $nextItem['origin_region'] ?? ($nextItem['level'] ?? 'Level 1 — Chocolate Fundamentals'),
+                $nextItem['modal_key'] ?? 'ingredient-spotlight'
+            ]);
+
+            $pdo->exec("DELETE FROM ai_ingredient_spotlights WHERE id NOT IN (
+                SELECT id FROM (
+                    SELECT id FROM ai_ingredient_spotlights ORDER BY id DESC LIMIT 25
+                ) as temp
+            )");
+        } catch (Exception $e) {}
+    }
+
+    $output = format_spotlight_output($nextItem, $cacheSeconds, false);
     save_spotlight_cache($cacheFile, $output);
     return $output;
 }
