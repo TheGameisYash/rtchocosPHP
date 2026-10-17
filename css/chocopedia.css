@@ -414,6 +414,40 @@
   border: 1px solid rgba(168, 82, 29, 0.28);
 }
 
+.tag-sensory {
+  background: rgba(102, 58, 117, 0.12);
+  color: #663a75;
+  border: 1px solid rgba(102, 58, 117, 0.28);
+}
+
+[data-theme="dark"] .tag-sensory {
+  color: #c084fc;
+  border-color: rgba(192, 132, 252, 0.3);
+}
+
+/* Why It Matters Callout Box */
+.chocopedia-term-matter {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: rgba(35, 84, 54, 0.05);
+  border-left: 3px solid #235436;
+  border-radius: 4px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .chocopedia-term-matter {
+  background: rgba(35, 84, 54, 0.18);
+  border-left-color: #4ade80;
+}
+
+.chocopedia-term-matter strong {
+  color: var(--text-heading);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
 /* Empty State */
 .chocopedia-empty-state {
   text-align: center;

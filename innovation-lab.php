@@ -114,8 +114,8 @@ include 'includes/header.php';
         
         <?php if (!empty(trim($stickyNoteText))): ?>
         <div class="lab-sticky-note" title="Laboratory Working Mantra">
-          <div class="lab-mantra-tag">LABORATORY MANTRA</div>
-          <div class="lab-mantra-text"><?php echo nl2br(htmlspecialchars($stickyNoteText)); ?></div>
+          <div class="lab-sticky-note-pin"></div>
+          <div><?php echo nl2br(htmlspecialchars($stickyNoteText)); ?></div>
         </div>
         <?php endif; ?>
       </div>
@@ -347,29 +347,141 @@ include 'includes/header.php';
        ================================================================= -->
   <section class="lab-ingredient-section" id="ingredient-innovation">
     <div class="lab-ingredient-inner">
-      <div class="lab-eyebrow" style="margin-bottom: 10px;">
-        <span><?php echo htmlspecialchars($ingredientEyebrow); ?></span>
-      </div>
-      <div class="lab-ingredient-heading-row">
-        <h2 class="lab-ingredient-title"><?php echo htmlspecialchars($ingredientHeading); ?></h2>
-        <p class="lab-ingredient-subtext">Exploring native botanical behaviours, regional harvest dynamics, and sensory possibilities with Indian terroir cacao.</p>
+      
+      <!-- Header Top Row: Left (Eyebrow + Title + Category Pills + Subtext) and Right (Search Bar) -->
+      <div class="lab-ingredient-header-top">
+        <div class="lab-ingredient-header-left">
+          <div class="lab-eyebrow" style="margin-bottom: 8px;">
+            <span><?php echo htmlspecialchars($ingredientEyebrow); ?></span>
+          </div>
+          
+          <div class="lab-ingredient-title-row">
+            <h2 class="lab-ingredient-title"><?php echo htmlspecialchars($ingredientHeading); ?></h2>
+            
+            <!-- Category Filter Pills (circled next to title) -->
+            <div class="lab-ingredient-pills-wrap" role="tablist" aria-label="Ingredient categories">
+              <button type="button" class="lab-ing-pill active" data-filter="all" onclick="filterIngredientCategory('all', this)">All</button>
+              <button type="button" class="lab-ing-pill" data-filter="indian-fruits" onclick="filterIngredientCategory('indian-fruits', this)">Fruits</button>
+              <button type="button" class="lab-ing-pill" data-filter="nuts-seeds" onclick="filterIngredientCategory('nuts-seeds', this)">Nuts & Seeds</button>
+              <button type="button" class="lab-ing-pill" data-filter="alternative-sugars" onclick="filterIngredientCategory('alternative-sugars', this)">Sugars</button>
+              <button type="button" class="lab-ing-pill" data-filter="dairy-plant-based" onclick="filterIngredientCategory('dairy-plant-based', this)">Dairy & Vegan</button>
+              <button type="button" class="lab-ing-pill" data-filter="botanicals-spices" onclick="filterIngredientCategory('botanicals-spices', this)">Spices</button>
+            </div>
+          </div>
+
+          <p class="lab-ingredient-subtext">Exploring native botanical behaviours, regional harvest dynamics, and sensory possibilities with Indian terroir cacao.</p>
+        </div>
+
+        <!-- Search Bar on Top Right (circled in blue oblong) -->
+        <div class="lab-ingredient-search-wrap">
+          <div class="lab-ingredient-search-inner">
+            <svg class="lab-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              id="labIngredientSearch" 
+              class="lab-search-input" 
+              placeholder="Search ingredients, sugars, spices..." 
+              autocomplete="off" 
+              oninput="handleIngredientSearch(this.value)"
+              aria-label="Search laboratory ingredients"
+            />
+            <button type="button" id="labSearchClearBtn" class="lab-search-clear-btn" onclick="clearIngredientSearch()" title="Clear search" style="display: none;">✕</button>
+          </div>
+          <div class="lab-search-status-bar">
+            <span id="labSearchCount" class="lab-search-counter"><?php echo count($ingredientCategories); ?> categories</span>
+            <span class="lab-floating-indicator" id="labFloatingStatus">
+              <span class="lab-pulse-dot"></span>
+              <span id="labFloatingStatusText">AUTO-FLOATING</span>
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div class="lab-ingredients-grid">
-        <?php if (!empty($ingredientCategories)): ?>
-          <?php foreach ($ingredientCategories as $cat): ?>
-            <a href="javascript:void(0)" class="lab-ing-card" onclick="openIngredientModal(<?php echo (int)$cat['id']; ?>, event)" role="button" aria-haspopup="dialog" aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> dossier">
-              <div class="lab-ing-photo-wrap">
-                <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" />
-              </div>
-              <span class="lab-ing-label">
-                <span><?php echo htmlspecialchars($cat['title']); ?></span>
-                <span>→</span>
-              </span>
-            </a>
-          <?php endforeach; ?>
-        <?php endif; ?>
+      <!-- Auto-Floating Carousel with Prev/Next Navigation Arrows -->
+      <div class="lab-carousel-wrapper" id="ingredientCarouselWrapper">
+        <!-- Navigation Prev Button (drawn on left side) -->
+        <button type="button" class="lab-carousel-arrow lab-carousel-prev" onclick="scrollIngredientCarousel(-1)" aria-label="Previous ingredients">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- Viewport Container -->
+        <div class="lab-carousel-viewport" id="ingredientCarouselViewport">
+          <div class="lab-carousel-track" id="ingredientCarouselTrack">
+            <?php if (!empty($ingredientCategories)): ?>
+              <!-- Primary Cards Set -->
+              <?php foreach ($ingredientCategories as $cat): ?>
+                <a href="javascript:void(0)" 
+                   class="lab-ing-card" 
+                   data-id="<?php echo (int)$cat['id']; ?>"
+                   data-slug="<?php echo htmlspecialchars($cat['slug']); ?>"
+                   data-title="<?php echo htmlspecialchars(strtolower($cat['title'])); ?>"
+                   data-desc="<?php echo htmlspecialchars(strtolower($cat['description'] ?? '')); ?>"
+                   data-varietals="<?php echo htmlspecialchars(strtolower($cat['key_varietals'] ?? '')); ?>"
+                   data-science="<?php echo htmlspecialchars(strtolower($cat['science_behavior'] ?? '')); ?>"
+                   data-apps="<?php echo htmlspecialchars(strtolower($cat['applications'] ?? '')); ?>"
+                   onclick="handleCardClick(<?php echo (int)$cat['id']; ?>, event)" 
+                   role="button" 
+                   aria-haspopup="dialog" 
+                   aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> dossier">
+                  <div class="lab-ing-photo-wrap">
+                    <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" />
+                  </div>
+                  <span class="lab-ing-label">
+                    <span><?php echo htmlspecialchars($cat['title']); ?></span>
+                    <span>→</span>
+                  </span>
+                </a>
+              <?php endforeach; ?>
+
+              <!-- Cloned Cards Set for Seamless Infinite Floating Loop -->
+              <?php foreach ($ingredientCategories as $cat): ?>
+                <a href="javascript:void(0)" 
+                   class="lab-ing-card is-clone" 
+                   data-id="<?php echo (int)$cat['id']; ?>"
+                   data-slug="<?php echo htmlspecialchars($cat['slug']); ?>"
+                   data-title="<?php echo htmlspecialchars(strtolower($cat['title'])); ?>"
+                   data-desc="<?php echo htmlspecialchars(strtolower($cat['description'] ?? '')); ?>"
+                   data-varietals="<?php echo htmlspecialchars(strtolower($cat['key_varietals'] ?? '')); ?>"
+                   data-science="<?php echo htmlspecialchars(strtolower($cat['science_behavior'] ?? '')); ?>"
+                   data-apps="<?php echo htmlspecialchars(strtolower($cat['applications'] ?? '')); ?>"
+                   onclick="handleCardClick(<?php echo (int)$cat['id']; ?>, event)" 
+                   role="button" 
+                   aria-haspopup="dialog" 
+                   aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> dossier">
+                  <div class="lab-ing-photo-wrap">
+                    <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" />
+                  </div>
+                  <span class="lab-ing-label">
+                    <span><?php echo htmlspecialchars($cat['title']); ?></span>
+                    <span>→</span>
+                  </span>
+                </a>
+              <?php endforeach; ?>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <!-- Navigation Next Button (drawn on right side) -->
+        <button type="button" class="lab-carousel-arrow lab-carousel-next" onclick="scrollIngredientCarousel(1)" aria-label="Next ingredients">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
       </div>
+
+      <!-- No Results Feedback State -->
+      <div id="ingredientNoResults" class="lab-ingredient-no-results" style="display: none;">
+        <span class="no-results-icon">🔍</span>
+        <h4>No matching ingredients found</h4>
+        <p>No native ingredients matched "<span id="noResultsQuery"></span>". Try searching for "mango", "jaggery", "cashew", "kokum", or "cardamom".</p>
+        <button type="button" onclick="clearIngredientSearch()" class="lab-reset-search-btn">Reset Filter</button>
+      </div>
+
     </div>
   </section>
 
@@ -1479,6 +1591,261 @@ function escapeHtml(text) {
   };
   return text.toString().replace(/[&<>"']/g, function(m) { return map[m]; });
 }
+
+// ===================================================================
+// INGREDIENT INNOVATION: AUTO-FLOATING CAROUSEL & SEARCH CONTROLLER
+// ===================================================================
+let isIngDragging = false;
+let ingDragDistance = 0;
+let ingLastX = 0;
+let isIngPaused = false;
+let isIngHovered = false;
+let ingActiveCategory = 'all';
+let ingResumeTimer = null;
+
+function handleCardClick(id, e) {
+  if (ingDragDistance > 7) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    return;
+  }
+  openIngredientModal(id, e);
+}
+
+function updateFloatingStatus(text, isLive) {
+  const statusEl = document.getElementById('labFloatingStatusText');
+  const dotEl = document.querySelector('.lab-pulse-dot');
+  if (statusEl) statusEl.textContent = text;
+  if (dotEl) {
+    dotEl.style.background = isLive ? '#22C55E' : '#EAB308';
+    dotEl.style.boxShadow = isLive ? '0 0 8px #22C55E' : '0 0 8px #EAB308';
+  }
+}
+
+function scrollIngredientCarousel(direction) {
+  const viewport = document.getElementById('ingredientCarouselViewport');
+  if (!viewport) return;
+  isIngPaused = true;
+  updateFloatingStatus('MANUAL NAV', false);
+  clearTimeout(ingResumeTimer);
+
+  const scrollDistance = (viewport.clientWidth > 600 ? 280 : 200) * direction;
+  viewport.scrollBy({ left: scrollDistance, behavior: 'smooth' });
+
+  ingResumeTimer = setTimeout(() => {
+    isIngPaused = false;
+    updateFloatingStatus('AUTO-FLOATING', true);
+  }, 2500);
+}
+
+function filterIngredientCategory(catSlug, btnEl) {
+  ingActiveCategory = catSlug;
+  document.querySelectorAll('.lab-ing-pill').forEach(pill => pill.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+
+  const searchInput = document.getElementById('labIngredientSearch');
+  const clearBtn = document.getElementById('labSearchClearBtn');
+  if (searchInput) {
+    searchInput.value = '';
+    if (clearBtn) clearBtn.style.display = 'none';
+  }
+
+  applyIngredientFilters();
+}
+
+function handleIngredientSearch(query) {
+  const clearBtn = document.getElementById('labSearchClearBtn');
+  if (clearBtn) {
+    clearBtn.style.display = (query && query.trim().length > 0) ? 'block' : 'none';
+  }
+  applyIngredientFilters();
+}
+
+function clearIngredientSearch() {
+  const searchInput = document.getElementById('labIngredientSearch');
+  const clearBtn = document.getElementById('labSearchClearBtn');
+  if (searchInput) searchInput.value = '';
+  if (clearBtn) clearBtn.style.display = 'none';
+
+  ingActiveCategory = 'all';
+  document.querySelectorAll('.lab-ing-pill').forEach(pill => {
+    pill.classList.toggle('active', pill.getAttribute('data-filter') === 'all');
+  });
+
+  applyIngredientFilters();
+  if (searchInput) searchInput.focus();
+}
+
+function applyIngredientFilters() {
+  const searchInput = document.getElementById('labIngredientSearch');
+  const countEl = document.getElementById('labSearchCount');
+  const noResultsEl = document.getElementById('ingredientNoResults');
+  const noResultsQuery = document.getElementById('noResultsQuery');
+  const track = document.getElementById('ingredientCarouselTrack');
+  const viewport = document.getElementById('ingredientCarouselViewport');
+  if (!track || !viewport) return;
+
+  const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+  const isFiltered = (ingActiveCategory !== 'all') || (query.length > 0);
+  const clones = track.querySelectorAll('.lab-ing-card.is-clone');
+  const primaryCards = track.querySelectorAll('.lab-ing-card:not(.is-clone)');
+
+  if (isFiltered) {
+    isIngPaused = true;
+    updateFloatingStatus('FILTERED', false);
+    // Hide clones while searching/filtering to avoid duplicate matches
+    clones.forEach(c => c.style.display = 'none');
+
+    let matchCount = 0;
+    primaryCards.forEach(card => {
+      const cardSlug = card.getAttribute('data-slug') || '';
+      const cardTitle = card.getAttribute('data-title') || '';
+      const cardDesc = card.getAttribute('data-desc') || '';
+      const cardVarietals = card.getAttribute('data-varietals') || '';
+      const cardScience = card.getAttribute('data-science') || '';
+      const cardApps = card.getAttribute('data-apps') || '';
+
+      let catMatch = true;
+      if (ingActiveCategory !== 'all') {
+        catMatch = (cardSlug === ingActiveCategory);
+      }
+
+      let textMatch = true;
+      if (query.length > 0) {
+        const fullSearchContent = `${cardTitle} ${cardDesc} ${cardVarietals} ${cardScience} ${cardApps}`.toLowerCase();
+        textMatch = fullSearchContent.includes(query);
+      }
+
+      if (catMatch && textMatch) {
+        card.style.display = 'flex';
+        card.classList.add('matched-filter');
+        matchCount++;
+      } else {
+        card.style.display = 'none';
+        card.classList.remove('matched-filter');
+      }
+    });
+
+    if (countEl) {
+      countEl.textContent = `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}`;
+    }
+
+    if (matchCount === 0) {
+      if (noResultsEl) {
+        noResultsEl.style.display = 'block';
+        if (noResultsQuery) noResultsQuery.textContent = query || ingActiveCategory;
+      }
+    } else {
+      if (noResultsEl) noResultsEl.style.display = 'none';
+      viewport.scrollLeft = 0;
+    }
+  } else {
+    // Restore all items and resume auto-float
+    isIngPaused = false;
+    updateFloatingStatus('AUTO-FLOATING', true);
+    clones.forEach(c => c.style.display = 'flex');
+    primaryCards.forEach(card => {
+      card.style.display = 'flex';
+      card.classList.remove('matched-filter');
+    });
+    if (noResultsEl) noResultsEl.style.display = 'none';
+    if (countEl) countEl.textContent = `${primaryCards.length} categories`;
+  }
+}
+
+// Initialize floating carousel loop on DOM ready
+window.addEventListener('DOMContentLoaded', function() {
+  const wrapper = document.getElementById('ingredientCarouselWrapper');
+  const viewport = document.getElementById('ingredientCarouselViewport');
+  const track = document.getElementById('ingredientCarouselTrack');
+  if (!wrapper || !viewport || !track) return;
+
+  function getSingleSetWidth() {
+    const cards = Array.from(track.querySelectorAll('.lab-ing-card:not(.is-clone)'));
+    if (!cards.length) return 0;
+    const first = cards[0];
+    const last = cards[cards.length - 1];
+    return (last.offsetLeft + last.offsetWidth) - first.offsetLeft + 22;
+  }
+
+  // Auto-float animation loop
+  const speed = 0.65; // gentle continuous gliding speed
+  function autoFloatStep() {
+    const searchInput = document.getElementById('labIngredientSearch');
+    const isSearching = searchInput && searchInput.value.trim().length > 0;
+
+    if (!isIngPaused && !isIngHovered && !isIngDragging && ingActiveCategory === 'all' && !isSearching) {
+      const singleSetWidth = getSingleSetWidth();
+      if (singleSetWidth > 0) {
+        viewport.scrollLeft += speed;
+        if (viewport.scrollLeft >= singleSetWidth) {
+          viewport.scrollLeft -= singleSetWidth;
+        }
+      }
+    }
+    requestAnimationFrame(autoFloatStep);
+  }
+  requestAnimationFrame(autoFloatStep);
+
+  // Pause on hover over wrapper or buttons
+  wrapper.addEventListener('mouseenter', function() {
+    isIngHovered = true;
+    updateFloatingStatus('PAUSED (HOVER)', false);
+  });
+  wrapper.addEventListener('mouseleave', function() {
+    isIngHovered = false;
+    if (!isIngPaused && ingActiveCategory === 'all') {
+      updateFloatingStatus('AUTO-FLOATING', true);
+    }
+  });
+
+  // Drag-to-scroll / swipe support
+  let dragStartX = 0;
+  let dragScrollStart = 0;
+
+  viewport.addEventListener('mousedown', function(e) {
+    isIngDragging = true;
+    ingDragDistance = 0;
+    dragStartX = e.pageX - viewport.offsetLeft;
+    ingLastX = e.pageX;
+    dragScrollStart = viewport.scrollLeft;
+    viewport.classList.add('is-dragging');
+  });
+
+  window.addEventListener('mousemove', function(e) {
+    if (!isIngDragging) return;
+    ingDragDistance += Math.abs(e.pageX - ingLastX);
+    ingLastX = e.pageX;
+    const currentX = e.pageX - viewport.offsetLeft;
+    const walk = (currentX - dragStartX) * 1.4;
+    viewport.scrollLeft = dragScrollStart - walk;
+  });
+
+  window.addEventListener('mouseup', function() {
+    if (isIngDragging) {
+      isIngDragging = false;
+      viewport.classList.remove('is-dragging');
+      clearTimeout(ingResumeTimer);
+      ingResumeTimer = setTimeout(() => {
+        ingDragDistance = 0;
+      }, 150);
+    }
+  });
+
+  // Touch handling
+  viewport.addEventListener('touchstart', function() {
+    isIngPaused = true;
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', function() {
+    clearTimeout(ingResumeTimer);
+    ingResumeTimer = setTimeout(function() {
+      isIngPaused = false;
+    }, 2000);
+  }, { passive: true });
+});
 
 // Active section scroll spy for the 5 Explore the Lab tabs
 window.addEventListener('DOMContentLoaded', function() {
