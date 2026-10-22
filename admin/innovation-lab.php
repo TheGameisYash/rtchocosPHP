@@ -1033,24 +1033,24 @@ render_admin_header('Innovation Lab', 'innovation-lab');
             </div>
 
             <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Hypothesis</label>
-                <textarea name="hypothesis" id="exp_hypothesis" rows="2" placeholder="What core theory is being tested?" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Methodology &amp; Parameters</label>
-                <textarea name="methodology" id="exp_methodology" rows="2" placeholder="Melanging hours, temper curve, temperatures, ratios..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">01. Research Question (What are we exploring or trying to understand?)</label>
+                <textarea name="hypothesis" id="exp_hypothesis" rows="2" placeholder="What core theory or premise is being tested?" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
                 <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Key Findings &amp; Observations</label>
-                    <textarea name="findings" id="exp_findings" rows="2" placeholder="What did the sensory panel / instruments show?" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">02. Observations &amp; Findings (What did we observe, measure or learn?)</label>
+                    <textarea name="findings" id="exp_findings" rows="2" placeholder="Lab observations, melting data, temper curves..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
                 </div>
                 <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Next Iteration Steps</label>
-                    <textarea name="next_steps" id="exp_next_steps" rows="2" placeholder="Next phase of tests..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">03. Why It Matters (The practical relevance for chocolate makers)</label>
+                    <textarea name="methodology" id="exp_methodology" rows="2" placeholder="Process, equipment, formulation setup..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
                 </div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">04. Key Takeaway (The single most important lesson from this experiment)</label>
+                <textarea name="next_steps" id="exp_next_steps" rows="2" placeholder="Conclusions, next scaling iteration..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
             <div style="margin-bottom: 18px;">
@@ -1227,28 +1227,28 @@ render_admin_header('Innovation Lab', 'innovation-lab');
             </div>
 
             <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Description / Research Focus</label>
-                <textarea name="description" id="ing_desc" rows="2" placeholder="e.g. Alphonso mango powders, Kokum..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">01. Ingredient Profile (What makes this ingredient distinctive?)</label>
+                <textarea name="description" id="ing_desc" rows="2" placeholder="e.g. Exploring sub-tropical Indian fruits — Alphonso mango..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
             <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Key Varietals &amp; Sourcing (Shown in popup window)</label>
-                <textarea name="key_varietals" id="ing_key_varietals" rows="2" placeholder="e.g. Ratnagiri Alphonso, Sindhudurg Kokum..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Key Heritage Varietals / Cultivars (Appended to Profile)</label>
+                <textarea name="key_varietals" id="ing_key_varietals" rows="2" placeholder="e.g. Ratnagiri Alphonso Mango, Sindhudurg Sun-Dried Kokum..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
             <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Food Science &amp; Polymorphic Behavior</label>
-                <textarea name="science_behavior" id="ing_science_behavior" rows="2" placeholder="e.g. Moisture activity, tempering curve behavior..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">02. Potential in Chocolate (Where and how could it be used in chocolate?)</label>
+                <textarea name="applications" id="ing_applications" rows="2" placeholder="e.g. Direct melanger infusions for vibrant fruit-noted bars..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
             <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Formulation Applications</label>
-                <textarea name="applications" id="ing_applications" rows="2" placeholder="e.g. Inclusions, melanger conching, dusting..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">03. The Technical Challenge (What challenges could arise?)</label>
+                <textarea name="science_behavior" id="ing_science_behavior" rows="2" placeholder="e.g. Water Activity (aw < 0.3) is strictly controlled..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
             <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Live Lab Benchmark Notes</label>
-                <textarea name="lab_notes" id="ing_lab_notes" rows="2" placeholder="e.g. Batch observations, crystal stability..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">04. Key Takeaway (One memorable insight for chocolate makers)</label>
+                <textarea name="lab_notes" id="ing_lab_notes" rows="2" placeholder="e.g. Batch #089 confirmed that vacuum-dehydrated Kokum preserves..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">

@@ -898,7 +898,6 @@ function openExperimentModal(id) {
   const exp = window.LAB_EXPERIMENTS.find(item => Number(item.id) === Number(id));
   if (!exp) return;
 
-  const specs = getExpSpecs(exp);
   const header = document.getElementById('modalExpHeader');
   const body = document.getElementById('modalExpBody');
 
@@ -910,258 +909,215 @@ function openExperimentModal(id) {
             <span class="status-dot ${exp.status_color || 'green'}"></span>
             <span>${exp.status_badge || 'IN PROGRESS'}</span>
           </div>
-          <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #166534; background: #EBF7EE; padding: 4px 10px; border-radius: 4px;">
-            ${escapeHtml(specs.batchRef)}
-          </span>
           <span class="lab-modal-category-tag">${escapeHtml(exp.tags || 'LABORATORY DOSSIER')}</span>
+          <span class="lab-modal-id-badge">BATCH #${exp.id}</span>
         </div>
         <h2 class="lab-modal-title">${escapeHtml(exp.title)}</h2>
       </div>
       <div class="lab-modal-header-right">
-        <div class="lab-modal-header-actions">
-          <button type="button" class="lab-modal-tool-btn" onclick="copyLabDossier('${escapeHtml(exp.slug || 'exp-' + exp.id)}', '${escapeHtml(exp.title)}')" title="Copy Dossier Link">
-            <span>📋</span>
-            <span>SHARE</span>
-          </button>
-          <button type="button" class="lab-modal-tool-btn" onclick="printLabDossier()" title="Print / Export Dossier">
-            <span>🖨️</span>
-            <span>PRINT</span>
-          </button>
-          <button type="button" class="lab-modal-close-btn" onclick="closeLabModal('experimentModal')" aria-label="Close Experiment Dossier">
-            <span>CLOSE</span>
-            <span class="close-btn-x">✕</span>
-          </button>
-        </div>
+        <span class="lab-modal-esc-hint">Press <kbd>ESC</kbd> to exit</span>
+        <button type="button" class="lab-modal-close-btn" onclick="closeLabModal('experimentModal')" aria-label="Close Experiment Dossier">
+          <span>CLOSE</span>
+          <span class="close-btn-x">✕</span>
+        </button>
       </div>
     </div>
   `;
 
-  let innerHTML = '';
+  const specs = getExpSpecs(exp);
+  let innerHTML = '<div class="lab-fullscreen-dossier">';
+
   if (exp.image_path) {
     innerHTML += `
-      <div class="lab-modal-hero-frame">
-        <img src="${escapeHtml(exp.image_path)}" alt="${escapeHtml(exp.title)}">
-        <div class="lab-modal-hero-badge">
-          <span>🔬 RT CHOCOS R&amp;D KITCHEN · WESTERN GHATS BATCH LAB #${exp.id}</span>
-        </div>
-      </div>
-    `;
-  }
-
-  if (exp.description) {
-    innerHTML += `
-      <div class="lab-inquiry-callout">
-        <div class="lab-inquiry-tag">
-          <span>💡</span>
-          <span>THE HYPOTHESIS &amp; RESEARCH INQUIRY</span>
-        </div>
-        <blockquote class="lab-inquiry-quote">
-          “${escapeHtml(exp.description)}”
-        </blockquote>
-      </div>
-    `;
-  }
-
-  // 1. Scientific Telemetry & Specs Dashboard (6 Cells)
-  innerHTML += `
-    <div class="lab-specs-grid">
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>🌱</span>
-          <span>CACAO ORIGIN &amp; TERROIR</span>
-        </div>
-        <div class="lab-spec-value">${escapeHtml(specs.origin)}</div>
-        <div class="lab-spec-sub">Single Estate Cultivar</div>
-      </div>
-
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>🧬</span>
-          <span>CRYSTAL POLYMORPHISM</span>
-        </div>
-        <div class="lab-spec-value">${escapeHtml(specs.polymorph)}</div>
-        <div class="lab-spec-sub">High-Melting Stability Matrix</div>
-      </div>
-
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>🔬</span>
-          <span>PARTICLE FINENESS (D90)</span>
-        </div>
-        <div class="lab-spec-value">${escapeHtml(specs.particleSize)}</div>
-        <div class="lab-spec-sub">Sub-palatal tongue detection</div>
-      </div>
-
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>⚙️</span>
-          <span>CONCHING REGIMEN</span>
-        </div>
-        <div class="lab-spec-value">${escapeHtml(specs.conching)}</div>
-        <div class="lab-spec-sub">Longitudinal dry-shear aeration</div>
-      </div>
-
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>💧</span>
-          <span>WATER ACTIVITY (Aw)</span>
-        </div>
-        <div class="lab-spec-value">${escapeHtml(specs.waterActivity)}</div>
-        <div class="lab-spec-sub">Hygroscopic fat bloom shield</div>
-      </div>
-
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>🏷️</span>
-          <span>BATCH VERIFICATION</span>
-        </div>
-        <div class="lab-spec-value">${escapeHtml(specs.batchRef)}</div>
-        <div class="lab-spec-sub">Active pilot batch log</div>
-      </div>
-    </div>
-  `;
-
-  // 2. Sensory & Empirical Performance Panel
-  innerHTML += `
-    <div class="lab-sensory-panel">
-      <div class="lab-sensory-header">
-        <h3 class="lab-sensory-title">
-          <span>📊</span>
-          <span>SENSORY AUDIT &amp; PHYSICAL EMPIRICAL DATA</span>
-        </h3>
-        <span class="lab-sensory-subtitle">LAB BENCHMARK TRIAL</span>
-      </div>
-      <div class="lab-sensory-grid">
-        ${specs.sensory.map(s => `
-          <div class="lab-sensory-item">
-            <div class="lab-sensory-label-row">
-              <span class="lab-sensory-name">${escapeHtml(s.name)}</span>
-              <span class="lab-sensory-score">${escapeHtml(s.score)}</span>
-            </div>
-            <div class="lab-sensory-bar">
-              <div class="lab-sensory-fill" style="width: ${s.fill};"></div>
-            </div>
-            <div class="lab-sensory-desc">${escapeHtml(s.desc)}</div>
+      <!-- LEFT: Laboratory Specimen Visual (True Photographic Frame - NOT a banner!) -->
+      <div class="lab-dossier-visual-pane">
+        <div class="lab-visual-frame">
+          <img src="${escapeHtml(exp.image_path)}" alt="${escapeHtml(exp.title)}">
+          <div class="lab-visual-tag">
+            <span>🔬 SPECIMEN #${exp.id}</span>
           </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-
-  // 3. 4-Pillar Scientific Dossier Grid
-  innerHTML += `
-    <div class="lab-dossier-grid">
-      ${exp.hypothesis ? `
-      <div class="lab-dossier-card card-accent-green">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">01</span>
-          <span class="lab-dossier-step-tag">HYPOTHESIS</span>
+          <div class="lab-visual-caption-bar">
+            <span>${escapeHtml(exp.title)}</span>
+          </div>
         </div>
-        <h4>Initial Target &amp; Premise</h4>
-        <p>${escapeHtml(exp.hypothesis)}</p>
-      </div>` : ''}
 
-      ${exp.methodology ? `
-      <div class="lab-dossier-card card-accent-blue">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">02</span>
-          <span class="lab-dossier-step-tag">METHODOLOGY &amp; SETUP</span>
-        </div>
-        <h4>Process &amp; Equipment</h4>
-        <p>${escapeHtml(exp.methodology)}</p>
-      </div>` : ''}
-
-      ${exp.findings ? `
-      <div class="lab-dossier-card card-accent-amber">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">03</span>
-          <span class="lab-dossier-step-tag">OBSERVATIONS &amp; FINDINGS</span>
-        </div>
-        <h4>Lab Data &amp; Texture</h4>
-        <p>${escapeHtml(exp.findings)}</p>
-      </div>` : ''}
-
-      ${exp.next_steps ? `
-      <div class="lab-dossier-card card-accent-purple">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">04</span>
-          <span class="lab-dossier-step-tag">NEXT ITERATION STEPS</span>
-        </div>
-        <h4>Scaling &amp; Refinement</h4>
-        <p>${escapeHtml(exp.next_steps)}</p>
-      </div>` : ''}
-    </div>
-  `;
-
-  // 4. Laboratory Apparatus & Instrumentation Used
-  if (specs.apparatus && specs.apparatus.length > 0) {
-    innerHTML += `
-      <div class="lab-apparatus-strip">
-        <span class="lab-apparatus-label">
-          <span>⚙️</span>
-          <span>APPARATUS &amp; INSTRUMENTATION:</span>
-        </span>
-        ${specs.apparatus.map(app => `
-          <span class="lab-apparatus-tag">${escapeHtml(app)}</span>
-        `).join('')}
-      </div>
-    `;
-  }
-
-  // 5. Detailed Lab Logs & Scientific Notes
-  if (exp.full_content) {
-    innerHTML += `
-      <div class="lab-full-notes-card">
-        <div class="lab-full-notes-header">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-          </svg>
-          <h4>DETAILED LAB LOGS &amp; SCIENTIFIC NOTES</h4>
-        </div>
-        <div class="lab-full-notes-body">
-          ${exp.full_content}
+        <div class="lab-specimen-passport">
+          <div class="lab-passport-top">
+            <span class="lab-passport-heading">SPECIMEN TELEMETRY</span>
+            <span class="lab-passport-batch">${escapeHtml(specs.batchRef || 'RT-EXP-0' + exp.id)}</span>
+          </div>
+          <div class="lab-passport-grid">
+            <div class="lab-passport-cell">
+              <span class="cell-label">Terroir Origin</span>
+              <span class="cell-value" title="${escapeHtml(specs.origin || '')}">${escapeHtml(specs.origin ? specs.origin.split('(')[0].trim() : 'Western Ghats Cacao')}</span>
+            </div>
+            <div class="lab-passport-cell">
+              <span class="cell-label">Crystal Polymorph</span>
+              <span class="cell-value" title="${escapeHtml(specs.polymorph || '')}">${escapeHtml(specs.polymorph ? specs.polymorph.split('(')[0].trim() : 'Beta-V Stabilized')}</span>
+            </div>
+            <div class="lab-passport-cell">
+              <span class="cell-label">Particle Micron</span>
+              <span class="cell-value">${escapeHtml(specs.particleSize ? specs.particleSize.split('(')[0].trim() : '< 18.5 µm')}</span>
+            </div>
+            <div class="lab-passport-cell">
+              <span class="cell-label">Water Activity</span>
+              <span class="cell-value">${escapeHtml(specs.waterActivity ? specs.waterActivity.split('(')[0].trim() : '0.31 Aw')}</span>
+            </div>
+          </div>
+          <div class="lab-passport-seal">
+            <span class="seal-icon">🧪</span>
+            <span class="seal-text">Western Ghats R&amp;D Protocol · Batch Certified</span>
+          </div>
         </div>
       </div>
     `;
   }
 
-  // 6. Collaborative R&D & Tasting Request Card
   innerHTML += `
-    <div class="lab-collab-card">
-      <div class="lab-collab-text">
-        <h4>EVALUATE TRIAL SAMPLES OR COLLABORATE</h4>
-        <p>Are you a pastry chef, food scientist, or artisan chocolatier interested in sampling this batch or co-developing chocolate formulations with the RT Chocos Innovation Lab?</p>
-      </div>
-      <a href="contact.php?subject=${encodeURIComponent('Inquiry regarding Innovation Lab Experiment: ' + exp.title)}" class="lab-collab-btn">
-        <span>REQUEST SAMPLE BATCH</span>
-        <span>→</span>
-      </a>
-    </div>
-  `;
+      <!-- RIGHT: 4 Core Research Pillars (2x2 Aligned Quad Grid) -->
+      <div class="lab-dossier-pillars-pane">
+        <div class="lab-four-pillars-quad">
 
-  // 7. Footer Bar with Next/Prev Experiment Navigation
-  innerHTML += `
-    <div class="lab-modal-footer-bar">
-      <div class="lab-modal-footer-nav">
-        <button type="button" onclick="navigateExperiment(${exp.id}, -1)" class="lab-modal-nav-btn" title="Previous Experiment">
-          <span>← PREV EXP</span>
-        </button>
-        <button type="button" onclick="navigateExperiment(${exp.id}, 1)" class="lab-modal-nav-btn" title="Next Experiment">
-          <span>NEXT EXP →</span>
-        </button>
+          <!-- 01. Research Question -->
+          <div class="lab-quad-card card-accent-green">
+            <div class="lab-quad-header">
+              <div class="lab-quad-num-title-wrap">
+                <div class="lab-quad-num-wrap">
+                  <span class="lab-quad-num num-green">01</span>
+                  <span class="lab-quad-dash dash-green"></span>
+                </div>
+                <div class="lab-quad-title-group">
+                  <h3 class="lab-quad-heading heading-green">Research Question</h3>
+                  <p class="lab-quad-prompt">What are we exploring or trying to understand?</p>
+                </div>
+              </div>
+              <div class="lab-quad-blob blob-sage" title="Research Question">
+                <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#166534" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 7h8M22 7v7l-9.5 18a3 3 0 0 0 2.6 4.5h17.8a3 3 0 0 0 2.6-4.5L26 14V7" />
+                  <path d="M24 23c2.5-3.5 6-3.5 9-1.5-1 3-3.5 4.5-6.5 4-1.5-.2-2-.8-2.5-2.5z" fill="#166534" fill-opacity="0.12" />
+                  <path d="M24 23c3.5 0 6.5 1.5 7.5 4" />
+                </svg>
+              </div>
+            </div>
+            <div class="lab-quad-divider"></div>
+            <div class="lab-quad-body">
+              <div class="lab-quad-badge-row">
+                <span class="lab-quad-badge badge-green">🔬 CORE HYPOTHESIS</span>
+              </div>
+              <p class="lab-quad-text">${escapeHtml(exp.hypothesis || '')}</p>
+            </div>
+          </div>
+
+          <!-- 02. Observations & Findings -->
+          <div class="lab-quad-card card-accent-bronze">
+            <div class="lab-quad-header">
+              <div class="lab-quad-num-title-wrap">
+                <div class="lab-quad-num-wrap">
+                  <span class="lab-quad-num num-bronze">02</span>
+                  <span class="lab-quad-dash dash-bronze"></span>
+                </div>
+                <div class="lab-quad-title-group">
+                  <h3 class="lab-quad-heading heading-bronze">Observations &amp; Findings</h3>
+                  <p class="lab-quad-prompt">What did we observe, measure or learn?</p>
+                </div>
+              </div>
+              <div class="lab-quad-blob blob-sand" title="Observations & Findings">
+                <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#9A6A38" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="21" cy="20" r="11" />
+                  <line x1="29" y1="28" x2="39" y2="38" stroke-width="2.8" />
+                  <line x1="16" y1="23" x2="16" y2="19" stroke-width="2.2" />
+                  <line x1="21" y1="23" x2="21" y2="15" stroke-width="2.2" />
+                  <line x1="26" y1="23" x2="26" y2="12" stroke-width="2.2" />
+                </svg>
+              </div>
+            </div>
+            <div class="lab-quad-divider"></div>
+            <div class="lab-quad-body">
+              <div class="lab-quad-badge-row">
+                <span class="lab-quad-badge badge-bronze">📊 OBSERVED METRICS</span>
+              </div>
+              <p class="lab-quad-text">${escapeHtml(exp.findings || exp.methodology || '')}</p>
+            </div>
+          </div>
+
+          <!-- 03. Why It Matters -->
+          <div class="lab-quad-card card-accent-green">
+            <div class="lab-quad-header">
+              <div class="lab-quad-num-title-wrap">
+                <div class="lab-quad-num-wrap">
+                  <span class="lab-quad-num num-green">03</span>
+                  <span class="lab-quad-dash dash-green"></span>
+                </div>
+                <div class="lab-quad-title-group">
+                  <h3 class="lab-quad-heading heading-green">Why It Matters</h3>
+                  <p class="lab-quad-prompt">The practical relevance for chocolate makers and product developers.</p>
+                </div>
+              </div>
+              <div class="lab-quad-blob blob-sage" title="Why It Matters">
+                <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#166534" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 22a9 9 0 1 1 16 0c-1.5 2-2.5 3.5-2.5 6h-11c0-2.5-1-4-2.5-6z" />
+                  <line x1="18.5" y1="32" x2="29.5" y2="32" />
+                  <line x1="20.5" y1="36" x2="27.5" y2="36" />
+                  <line x1="24" y1="6" x2="24" y2="9.5" />
+                  <line x1="12" y1="11" x2="14.5" y2="13.5" />
+                  <line x1="36" y1="11" x2="33.5" y2="13.5" />
+                  <line x1="8" y1="22" x2="11.5" y2="22" />
+                  <line x1="40" y1="22" x2="36.5" y2="22" />
+                </svg>
+              </div>
+            </div>
+            <div class="lab-quad-divider"></div>
+            <div class="lab-quad-body">
+              <div class="lab-quad-badge-row">
+                <span class="lab-quad-badge badge-green">💡 INDUSTRY RELEVANCE</span>
+              </div>
+              <p class="lab-quad-text">${escapeHtml(exp.methodology || '')}</p>
+            </div>
+          </div>
+
+          <!-- 04. Key Takeaway -->
+          <div class="lab-quad-card card-accent-bronze">
+            <div class="lab-quad-header">
+              <div class="lab-quad-num-title-wrap">
+                <div class="lab-quad-num-wrap">
+                  <span class="lab-quad-num num-bronze">04</span>
+                  <span class="lab-quad-dash dash-bronze"></span>
+                </div>
+                <div class="lab-quad-title-group">
+                  <h3 class="lab-quad-heading heading-bronze">Key Takeaway</h3>
+                  <p class="lab-quad-prompt">The single most important lesson from this experiment.</p>
+                </div>
+              </div>
+              <div class="lab-quad-blob blob-sand" title="Key Takeaway">
+                <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#9A6A38" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M24 20c-4-2.5-8-2.5-13.5 0v15c5.5-2.5 9.5-2.5 13.5 0 4-2.5 8-2.5 13.5 0V20c-5.5-2.5-9.5-2.5-13.5 0z" />
+                  <line x1="24" y1="20" x2="24" y2="35" stroke-width="2" />
+                  <line x1="14" y1="25" x2="20" y2="25" stroke-width="1.8" />
+                  <line x1="14" y1="29" x2="20" y2="29" stroke-width="1.8" />
+                  <line x1="28" y1="25" x2="34" y2="25" stroke-width="1.8" />
+                  <line x1="28" y1="29" x2="34" y2="29" stroke-width="1.8" />
+                  <line x1="24" y1="11" x2="24" y2="15" />
+                  <line x1="18" y1="12" x2="19.5" y2="15" />
+                  <line x1="30" y1="12" x2="28.5" y2="15" />
+                </svg>
+              </div>
+            </div>
+            <div class="lab-quad-divider"></div>
+            <div class="lab-quad-body takeaway-highlight">
+              <div class="lab-quad-badge-row">
+                <span class="lab-quad-badge badge-bronze">🎯 EXECUTIVE DIRECTIVE</span>
+              </div>
+              <p class="lab-quad-text takeaway-text">${escapeHtml(exp.next_steps || '')}</p>
+              <div class="lab-takeaway-meta">
+                <span class="meta-dot"></span>
+                <span class="meta-label">Action Target: Validated for Batch Production &amp; Scale</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-        <button type="button" onclick="closeLabModal('experimentModal')" class="lab-modal-return-btn">
-          <span class="arrow">←</span>
-          <span>RETURN TO LAB WORKBENCH</span>
-        </button>
-        <button type="button" onclick="closeLabModal('experimentModal')" class="lab-modal-return-ghost">
-          <span>CLOSE DOSSIER (ESC)</span>
-        </button>
-      </div>
+
     </div>
   `;
 
@@ -1382,173 +1338,218 @@ function openIngredientModal(id, e) {
     <div class="lab-modal-header-inner">
       <div class="lab-modal-header-left">
         <div class="lab-modal-meta-row">
-          <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #166534; background: #EBF7EE; padding: 4px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 5px;">
-            <span>🌿</span>
-            <span>INGREDIENT INNOVATION DOSSIER</span>
-          </span>
+          <div class="lab-status-badge" style="position: static; margin-bottom: 0; display: inline-flex;">
+            <span class="status-dot green"></span>
+            <span>INGREDIENT INNOVATION</span>
+          </div>
           <span class="lab-modal-category-tag">NATIVE INDIAN TERROIR</span>
+          <span class="lab-modal-id-badge">CATEGORY #${ing.id}</span>
         </div>
         <h2 class="lab-modal-title">${escapeHtml(ing.title)}</h2>
       </div>
       <div class="lab-modal-header-right">
-        <div class="lab-modal-header-actions">
-          <button type="button" class="lab-modal-tool-btn" onclick="copyLabDossier('${escapeHtml(ing.slug || 'ing-' + ing.id)}', '${escapeHtml(ing.title)}')" title="Copy Dossier Link">
-            <span>📋</span>
-            <span>SHARE</span>
-          </button>
-          <button type="button" class="lab-modal-tool-btn" onclick="printLabDossier()" title="Print / Export Dossier">
-            <span>🖨️</span>
-            <span>PRINT</span>
-          </button>
-          <button type="button" class="lab-modal-close-btn" onclick="closeLabModal('ingredientModal')" aria-label="Close Ingredient Dossier">
-            <span>CLOSE</span>
-            <span class="close-btn-x">✕</span>
-          </button>
-        </div>
+        <span class="lab-modal-esc-hint">Press <kbd>ESC</kbd> to exit</span>
+        <button type="button" class="lab-modal-close-btn" onclick="closeLabModal('ingredientModal')" aria-label="Close Ingredient Dossier">
+          <span>CLOSE</span>
+          <span class="close-btn-x">✕</span>
+        </button>
       </div>
     </div>
   `;
 
-  let innerHTML = '';
+  let innerHTML = '<div class="lab-fullscreen-dossier">';
+
   if (ing.image_path) {
     innerHTML += `
-      <div class="lab-modal-hero-frame">
-        <img src="${escapeHtml(ing.image_path)}" alt="${escapeHtml(ing.title)}">
-        <div class="lab-modal-hero-badge">
-          <span>BOTANICAL INGREDIENT DOSSIER · ${escapeHtml(ing.title).toUpperCase()}</span>
+      <!-- LEFT: Botanical Specimen Visual (True Photographic Specimen Frame) -->
+      <div class="lab-dossier-visual-pane">
+        <div class="lab-visual-frame">
+          <img src="${escapeHtml(ing.image_path)}" alt="${escapeHtml(ing.title)}">
+          <div class="lab-visual-tag">
+            <span>🌿 BOTANICAL SPECIMEN #${ing.id}</span>
+          </div>
+          <div class="lab-visual-caption-bar">
+            <span>${escapeHtml(ing.title)}</span>
+          </div>
+        </div>
+
+        <div class="lab-specimen-passport">
+          <div class="lab-passport-top">
+            <span class="lab-passport-heading">BOTANICAL TELEMETRY</span>
+            <span class="lab-passport-batch">CAT #${ing.id}</span>
+          </div>
+          <div class="lab-passport-grid">
+            <div class="lab-passport-cell">
+              <span class="cell-label">Taxonomy Species</span>
+              <span class="cell-value" title="${escapeHtml(specs.taxonomy || '')}">${escapeHtml(specs.taxonomy ? specs.taxonomy.split('/')[0].trim() : 'Indigenous Cultivar')}</span>
+            </div>
+            <div class="lab-passport-cell">
+              <span class="cell-label">Terroir Origin</span>
+              <span class="cell-value" title="${escapeHtml(specs.origin || '')}">${escapeHtml(specs.origin ? specs.origin.split(',')[0].trim() : 'Native Indian Terroir')}</span>
+            </div>
+            <div class="lab-passport-cell">
+              <span class="cell-label">Active Chemistry</span>
+              <span class="cell-value" title="${escapeHtml(specs.chemistry || '')}">${escapeHtml(specs.chemistry ? specs.chemistry.split(',')[0].trim() : 'Natural Bio-actives')}</span>
+            </div>
+            <div class="lab-passport-cell">
+              <span class="cell-label">Tempering Offset</span>
+              <span class="cell-value">${escapeHtml(specs.temperDelta || 'Standard Form V')}</span>
+            </div>
+          </div>
+          <div class="lab-passport-seal">
+            <span class="seal-icon">🧪</span>
+            <span class="seal-text">Native Indian Terroir · Certified Lab Research</span>
+          </div>
         </div>
       </div>
     `;
   }
 
-  if (ing.description) {
-    innerHTML += `
-      <div class="lab-inquiry-callout">
-        <div class="lab-inquiry-tag">
-          <span>🌿</span>
-          <span>BOTANICAL ORIGIN &amp; CHARACTERISTICS</span>
-        </div>
-        <blockquote class="lab-inquiry-quote">
-          “${escapeHtml(ing.description)}”
-        </blockquote>
-      </div>
-    `;
-  }
-
-  // Botanical Taxonomy & Food Chemistry Matrix (4 Cells)
   innerHTML += `
-    <div class="lab-specs-grid" style="grid-template-columns: repeat(2, 1fr);">
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>🌿</span>
-          <span>BOTANICAL TAXONOMY / SPECIES</span>
+      <!-- RIGHT: 4 Core Innovation Pillars (2x2 Aligned Quad Grid) -->
+      <div class="lab-dossier-pillars-pane">
+        <div class="lab-four-pillars-quad">
+
+          <!-- 01. Ingredient Profile -->
+          <div class="lab-quad-card card-accent-green">
+            <div class="lab-quad-header">
+              <div class="lab-quad-num-title-wrap">
+                <div class="lab-quad-num-wrap">
+                  <span class="lab-quad-circle-badge badge-circle-green">01</span>
+                  <span class="lab-quad-dash dash-green"></span>
+                </div>
+                <div class="lab-quad-title-group">
+                  <h3 class="lab-quad-heading heading-green">Ingredient Profile</h3>
+                  <p class="lab-quad-prompt">What makes this ingredient distinctive?</p>
+                </div>
+              </div>
+              <div class="lab-quad-blob blob-sage" title="Ingredient Profile">
+                <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#166534" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 6h14l10 10v24a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
+                  <polyline points="28 6 28 16 38 16" />
+                  <line x1="18" y1="23" x2="30" y2="23" />
+                  <line x1="18" y1="29" x2="30" y2="29" />
+                  <line x1="18" y1="35" x2="26" y2="35" />
+                </svg>
+              </div>
+            </div>
+            <div class="lab-quad-divider"></div>
+            <div class="lab-quad-body">
+              <div class="lab-quad-badge-row">
+                <span class="lab-quad-badge badge-green">🌿 INGREDIENT PROFILE</span>
+              </div>
+              <p class="lab-quad-text">${escapeHtml(ing.description || ing.key_varietals || '')}</p>
+              ${ing.key_varietals ? `
+              <div class="lab-takeaway-meta" style="border-top: 1px dashed #D2E3D5; margin-top: 10px; padding-top: 8px;">
+                <span class="meta-dot" style="background: #166534;"></span>
+                <span class="meta-label" style="color: #2F593A;"><strong>Key Varietals:</strong> ${escapeHtml(ing.key_varietals)}</span>
+              </div>
+              ` : ''}
+            </div>
+          </div>
+
+          <!-- 02. Potential in Chocolate -->
+          <div class="lab-quad-card card-accent-bronze">
+            <div class="lab-quad-header">
+              <div class="lab-quad-num-title-wrap">
+                <div class="lab-quad-num-wrap">
+                  <span class="lab-quad-circle-badge badge-circle-ochre">02</span>
+                  <span class="lab-quad-dash dash-bronze"></span>
+                </div>
+                <div class="lab-quad-title-group">
+                  <h3 class="lab-quad-heading heading-bronze">Potential in Chocolate</h3>
+                  <p class="lab-quad-prompt">Where and how could it be used in chocolate or chocolate-based products?</p>
+                </div>
+              </div>
+              <div class="lab-quad-blob blob-sand" title="Potential in Chocolate">
+                <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#9A6A38" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 22a9 9 0 1 1 16 0c-1.5 2-2.5 3.5-2.5 6h-11c0-2.5-1-4-2.5-6z" />
+                  <line x1="18.5" y1="32" x2="29.5" y2="32" />
+                  <line x1="20.5" y1="36" x2="27.5" y2="36" />
+                  <line x1="24" y1="6" x2="24" y2="9.5" />
+                  <line x1="12" y1="11" x2="14.5" y2="13.5" />
+                  <line x1="36" y1="11" x2="33.5" y2="13.5" />
+                </svg>
+              </div>
+            </div>
+            <div class="lab-quad-divider"></div>
+            <div class="lab-quad-body">
+              <div class="lab-quad-badge-row">
+                <span class="lab-quad-badge badge-bronze">🍫 POTENTIAL IN CHOCOLATE</span>
+              </div>
+              <p class="lab-quad-text">${escapeHtml(ing.applications || '')}</p>
+            </div>
+          </div>
+
+          <!-- 03. The Technical Challenge -->
+          <div class="lab-quad-card card-accent-terracotta">
+            <div class="lab-quad-header">
+              <div class="lab-quad-num-title-wrap">
+                <div class="lab-quad-num-wrap">
+                  <span class="lab-quad-circle-badge badge-circle-terracotta">03</span>
+                  <span class="lab-quad-dash dash-terracotta"></span>
+                </div>
+                <div class="lab-quad-title-group">
+                  <h3 class="lab-quad-heading heading-terracotta">The Technical Challenge</h3>
+                  <p class="lab-quad-prompt">What challenges could arise when using this ingredient in chocolate?</p>
+                </div>
+              </div>
+              <div class="lab-quad-blob blob-blush" title="The Technical Challenge">
+                <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#9C382A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="24" cy="24" r="6" />
+                  <path d="M38.8 21.2l-2.4-.7c-.3-1-.7-1.9-1.3-2.8l1.4-2.1c.5-.8.4-1.8-.2-2.4l-2.8-2.8c-.6-.6-1.6-.7-2.4-.2l-2.1 1.4c-.9-.6-1.8-1-2.8-1.3l-.7-2.4C25.6 7.2 24.8 6.6 24 6.6s-1.6.6-1.9 1.4l-.7 2.4c-1 .3-1.9.7-2.8 1.3l-2.1-1.4c-.8-.5-1.8-.4-2.4.2l-2.8 2.8c-.6.6-.7 1.6-.2 2.4l1.4 2.1c-.6.9-1 1.8-1.3 2.8l-2.4.7c-.8.2-1.4 1-1.4 1.9s.6 1.7 1.4 1.9l2.4.7c.3 1 .7 1.9 1.3 2.8l-1.4 2.1c-.5.8-.4 1.8.2 2.4l2.8 2.8c.6.6 1.6.7 2.4.2l2.1-1.4c.9.6 1.8 1 2.8 1.3l.7 2.4c.3.8 1.1 1.4 1.9 1.4s1.6-.6 1.9-1.4l.7-2.4c1-.3 1.9-.7 2.8-1.3l2.1 1.4c.8.5 1.8.4 2.4-.2l2.8-2.8c.6-.6.7-1.6.2-2.4l-1.4-2.1c.6-.9 1-1.8 1.3-2.8l2.4-.7c.8-.2 1.4-1 1.4-1.9s-.6-1.7-1.4-1.9z" />
+                </svg>
+              </div>
+            </div>
+            <div class="lab-quad-divider"></div>
+            <div class="lab-quad-body">
+              <div class="lab-quad-badge-row">
+                <span class="lab-quad-badge badge-terracotta">⚙️ THE TECHNICAL CHALLENGE</span>
+              </div>
+              <p class="lab-quad-text">${escapeHtml(ing.science_behavior || '')}</p>
+            </div>
+          </div>
+
+          <!-- 04. Key Takeaway -->
+          <div class="lab-quad-card card-accent-green">
+            <div class="lab-quad-header">
+              <div class="lab-quad-num-title-wrap">
+                <div class="lab-quad-num-wrap">
+                  <span class="lab-quad-circle-badge badge-circle-green">04</span>
+                  <span class="lab-quad-dash dash-green"></span>
+                </div>
+                <div class="lab-quad-title-group">
+                  <h3 class="lab-quad-heading heading-green">Key Takeaway</h3>
+                  <p class="lab-quad-prompt">One memorable insight for chocolate makers and product developers.</p>
+                </div>
+              </div>
+              <div class="lab-quad-blob blob-sage" title="Key Takeaway">
+                <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#166534" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="23" cy="25" r="13" />
+                  <circle cx="23" cy="25" r="7" />
+                  <circle cx="23" cy="25" r="2" fill="#166534" />
+                  <line x1="23" y1="25" x2="38" y2="10" stroke-width="2.6" />
+                  <polyline points="33 10 38 10 38 15" stroke-width="2.4" />
+                  <line x1="31" y1="17" x2="35" y2="13" />
+                </svg>
+              </div>
+            </div>
+            <div class="lab-quad-divider"></div>
+            <div class="lab-quad-body takeaway-highlight">
+              <div class="lab-quad-badge-row">
+                <span class="lab-quad-badge badge-green">🎯 KEY TAKEAWAY</span>
+              </div>
+              <p class="lab-quad-text takeaway-text" style="color: #14251B;">${escapeHtml(ing.lab_notes || '')}</p>
+              <div class="lab-takeaway-meta" style="border-top: 1px dashed #C2D9C5;">
+                <span class="meta-dot" style="background: #166534;"></span>
+                <span class="meta-label" style="color: #2D5838;">Action Target: Validated for Sensory Balance &amp; Shelf-Life Scale</span>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div class="lab-spec-value" style="font-style: italic;">${escapeHtml(specs.taxonomy)}</div>
-        <div class="lab-spec-sub">Native heritage cultivars</div>
       </div>
 
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>📍</span>
-          <span>TERROIR &amp; HARVEST ORIGIN</span>
-        </div>
-        <div class="lab-spec-value">${escapeHtml(specs.origin)}</div>
-        <div class="lab-spec-sub">Direct ethical farmer sourcing</div>
-      </div>
-
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>🧪</span>
-          <span>LIPID &amp; SACCHARIDE CHEMISTRY</span>
-        </div>
-        <div class="lab-spec-value">${escapeHtml(specs.chemistry)}</div>
-        <div class="lab-spec-sub">Food matrix functional behavior</div>
-      </div>
-
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>🌡️</span>
-          <span>TEMPERING OFFSET DELTA</span>
-        </div>
-        <div class="lab-spec-value">${escapeHtml(specs.temperDelta)}</div>
-        <div class="lab-spec-sub">Polymorphic crystal calibration</div>
-      </div>
-    </div>
-  `;
-
-  // 4-Step Innovation Cards
-  innerHTML += `
-    <div class="lab-dossier-grid">
-      ${ing.key_varietals ? `
-      <div class="lab-dossier-card card-accent-green">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">01</span>
-          <span class="lab-dossier-step-tag">SOURCING &amp; TERROIR</span>
-        </div>
-        <h4>Key Varietals &amp; Harvesting</h4>
-        <p>${escapeHtml(ing.key_varietals)}</p>
-      </div>` : ''}
-
-      ${ing.science_behavior ? `
-      <div class="lab-dossier-card card-accent-blue">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">02</span>
-          <span class="lab-dossier-step-tag">FOOD SCIENCE</span>
-        </div>
-        <h4>Polymorphism &amp; Melting Dynamics</h4>
-        <p>${escapeHtml(ing.science_behavior)}</p>
-      </div>` : ''}
-
-      ${ing.applications ? `
-      <div class="lab-dossier-card card-accent-amber">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">03</span>
-          <span class="lab-dossier-step-tag">FORMULATION</span>
-        </div>
-        <h4>Conching &amp; Viscosity</h4>
-        <p>${escapeHtml(ing.applications)}</p>
-      </div>` : ''}
-
-      ${ing.lab_notes ? `
-      <div class="lab-dossier-card card-accent-purple">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">04</span>
-          <span class="lab-dossier-step-tag">LAB NOTES</span>
-        </div>
-        <h4>Live Benchmarks &amp; Shelf Life</h4>
-        <p>${escapeHtml(ing.lab_notes)}</p>
-      </div>` : ''}
-    </div>
-  `;
-
-  // Formulation Pairing Suite
-  if (specs.pairings && specs.pairings.length > 0) {
-    innerHTML += `
-      <div class="lab-apparatus-strip">
-        <span class="lab-apparatus-label">
-          <span>🍫</span>
-          <span>RECOMMENDED PAIRING FORMULATIONS:</span>
-        </span>
-        ${specs.pairings.map(pair => `
-          <span class="lab-apparatus-tag" style="background: #EBF7EE; border-color: #A3D9B1; color: #166534;">${escapeHtml(pair)}</span>
-        `).join('')}
-      </div>
-    `;
-  }
-
-  innerHTML += `
-    <div class="lab-modal-footer-bar">
-      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-        <button type="button" onclick="closeLabModal('ingredientModal'); filterByIngredient('${escapeHtml(ing.title)}')" class="lab-modal-return-btn">
-          <span>Filter Live Experiments (${escapeHtml(ing.title)}) →</span>
-        </button>
-        <button type="button" onclick="closeLabModal('ingredientModal')" class="lab-modal-return-ghost">
-          <span>← RETURN TO LAB</span>
-        </button>
-      </div>
-      <button type="button" onclick="closeLabModal('ingredientModal')" class="lab-modal-return-ghost">
-        <span>CLOSE DOSSIER (ESC)</span>
-      </button>
     </div>
   `;
 

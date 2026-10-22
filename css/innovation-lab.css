@@ -1642,6 +1642,684 @@ section.lab-ingredient-section:nth-of-type(even) {
   margin: 0;
 }
 
+/* =================================================================
+   EXPERIMENT & INGREDIENT FULLSCREEN WORKSPACE (Edge-to-Edge Professional UI)
+   ================================================================= */
+#experimentModal,
+#ingredientModal {
+  padding: 0 !important;
+  background: rgba(10, 20, 14, 0.8) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  align-items: stretch !important;
+  justify-content: stretch !important;
+}
+
+#experimentModal .lab-modal-container,
+#ingredientModal .lab-modal-container {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background: #F8F5EE;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+  overflow: hidden;
+  transform: none !important;
+  transition: opacity 0.25s ease;
+}
+
+#experimentModal .lab-modal-container::-webkit-scrollbar,
+#ingredientModal .lab-modal-container::-webkit-scrollbar {
+  width: 6px;
+}
+#experimentModal .lab-modal-container::-webkit-scrollbar-track,
+#ingredientModal .lab-modal-container::-webkit-scrollbar-track {
+  background: #FAF7F2;
+}
+#experimentModal .lab-modal-container::-webkit-scrollbar-thumb,
+#ingredientModal .lab-modal-container::-webkit-scrollbar-thumb {
+  background: #D8CFBE;
+  border-radius: 3px;
+}
+
+#experimentModal .lab-modal-header,
+#ingredientModal .lab-modal-header {
+  flex-shrink: 0;
+  height: 68px;
+  border-radius: 0;
+  padding: 0 clamp(20px, 3vw, 44px);
+  background: #FFFFFF;
+  border-bottom: 1px solid #E6DED2;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(18, 34, 23, 0.03);
+  z-index: 10;
+}
+
+#experimentModal .lab-modal-header-inner,
+#ingredientModal .lab-modal-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.lab-modal-id-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #14251B;
+  color: #FAF7F2;
+}
+
+.lab-modal-esc-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  color: #7A8B7F;
+  margin-right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lab-modal-esc-hint kbd {
+  background: #EDE6D9;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: inherit;
+  font-weight: 700;
+  color: #122217;
+  border: 1px solid #D5C9B7;
+}
+
+#experimentModal .lab-modal-body,
+#ingredientModal .lab-modal-body {
+  flex: 1;
+  height: calc(100vh - 68px);
+  padding: clamp(14px, 1.8vw, 24px) clamp(20px, 3vw, 44px);
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+}
+
+/* =================================================================
+   SPLIT FULLSCREEN DOSSIER WORKSPACE
+   (Left: Photographic Specimen Panel · Right: 2x2 Aligned Quad Grid)
+   ================================================================= */
+.lab-fullscreen-dossier {
+  display: flex;
+  gap: clamp(16px, 1.8vw, 24px);
+  width: 100%;
+  height: 100%;
+  align-items: stretch;
+  min-height: 0;
+}
+
+/* Left Specimen Panel (Natural Photographic Specimen Card) */
+.lab-dossier-visual-pane {
+  width: clamp(340px, 24vw, 420px);
+  flex-shrink: 0;
+  background: #FFFFFF;
+  border: 1px solid #E6DED2;
+  border-radius: 18px;
+  padding: clamp(14px, 1.2vw, 18px);
+  box-shadow: 0 10px 32px rgba(18, 34, 23, 0.04);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  position: relative;
+  height: 100%;
+  gap: 14px;
+}
+
+.lab-visual-frame {
+  width: 100%;
+  flex: 1;
+  min-height: 250px;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 6px 20px rgba(18, 34, 23, 0.08);
+  background: #14251B;
+}
+
+.lab-visual-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lab-dossier-visual-pane:hover .lab-visual-frame img {
+  transform: scale(1.04);
+}
+
+.lab-visual-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  background: rgba(14, 28, 19, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #FAF7F2;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lab-visual-caption-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(14, 28, 19, 0) 0%, rgba(14, 28, 19, 0.85) 100%);
+  padding: 24px 14px 12px;
+  color: #FAF7F2;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Specimen Technical Passport */
+.lab-specimen-passport {
+  background: #FAF8F5;
+  border: 1px solid #EAE3D6;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.lab-passport-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ECE4D6;
+}
+
+.lab-passport-heading {
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #6C7E72;
+  text-transform: uppercase;
+}
+
+.lab-passport-batch {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #166534;
+  background: #EAF4EC;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.lab-passport-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 12px;
+}
+
+.lab-passport-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cell-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: #7A8B7F;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.cell-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #14251B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lab-passport-seal {
+  margin-top: 2px;
+  padding-top: 8px;
+  border-top: 1px dashed #E5DBCB;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.seal-icon {
+  font-size: 14px;
+}
+
+.seal-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #384A3F;
+}
+
+/* =================================================================
+   RIGHT: 2x2 SYSTEMATIC QUAD GRID
+   (Mathematically Aligned Baselines, Landscape Proportions, Zero Void)
+   ================================================================= */
+.lab-dossier-pillars-pane {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.lab-four-pillars-quad {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: clamp(14px, 1.4vw, 20px);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.lab-quad-card {
+  background: #FFFFFF;
+  border: 1px solid #E6DED2;
+  border-radius: 16px;
+  padding: clamp(16px, 1.6vw, 22px) clamp(18px, 1.8vw, 26px);
+  box-shadow: 0 8px 24px rgba(18, 34, 23, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.lab-quad-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(18, 34, 23, 0.08);
+}
+
+.lab-quad-card.card-accent-green:hover {
+  border-color: #166534;
+}
+
+.lab-quad-card.card-accent-bronze:hover {
+  border-color: #9A6A38;
+}
+
+/* Header Row inside Quad Card */
+.lab-quad-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+  min-height: 54px;
+}
+
+.lab-quad-num-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+.lab-quad-num-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Circular Pill Badges (Matching User Reference Diagram) */
+.lab-quad-circle-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #FFFFFF;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+
+.badge-circle-green {
+  background: #166534;
+}
+
+.badge-circle-ochre {
+  background: #9A6A38;
+}
+
+.badge-circle-terracotta {
+  background: #9C382A;
+}
+
+.lab-quad-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(28px, 2vw, 36px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.lab-quad-num.num-green {
+  color: #166534;
+}
+
+.lab-quad-num.num-bronze {
+  color: #9A6A38;
+}
+
+.lab-quad-num.num-terracotta {
+  color: #9C382A;
+}
+
+.lab-quad-dash {
+  width: 24px;
+  height: 2.5px;
+  margin-top: 5px;
+  border-radius: 2px;
+}
+
+.lab-quad-dash.dash-green {
+  background: #166534;
+}
+
+.lab-quad-dash.dash-bronze {
+  background: #9A6A38;
+}
+
+.lab-quad-dash.dash-terracotta {
+  background: #9C382A;
+}
+
+.lab-quad-title-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.lab-quad-heading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(18px, 1.3vw, 21px);
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 3px;
+  letter-spacing: -0.01em;
+}
+
+.lab-quad-heading.heading-green {
+  color: #122217;
+}
+
+.lab-quad-heading.heading-bronze {
+  color: #8C5D30;
+}
+
+.lab-quad-heading.heading-terracotta {
+  color: #8E3725;
+}
+
+.lab-quad-prompt {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(12px, 0.85vw, 13px);
+  line-height: 1.4;
+  color: #55685B;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Pebble Icon Blob */
+.lab-quad-blob {
+  width: 62px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lab-quad-card:hover .lab-quad-blob {
+  transform: scale(1.08) rotate(2deg);
+}
+
+.lab-quad-blob.blob-sage {
+  background: #EAF3EB;
+  border-radius: 46% 54% 50% 50% / 55% 45% 55% 45%;
+}
+
+.lab-quad-blob.blob-sand {
+  background: #F7EFE3;
+  border-radius: 52% 48% 55% 45% / 46% 54% 46% 54%;
+}
+
+.lab-quad-blob.blob-blush {
+  background: #FBECE6;
+  border-radius: 48% 52% 47% 53% / 54% 46% 54% 46%;
+}
+
+/* Precision Divider */
+.lab-quad-divider {
+  width: 100%;
+  height: 1px;
+  background: #F0ECE4;
+  margin: 12px 0 14px;
+  flex-shrink: 0;
+}
+
+/* Editorial Answer Block */
+.lab-quad-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: #FAF8F5;
+  border: 1px solid #EBE3D3;
+  border-radius: 12px;
+  padding: clamp(14px, 1.2vw, 18px) clamp(16px, 1.4vw, 22px);
+  box-sizing: border-box;
+  text-align: left;
+  transition: all 0.25s ease;
+  overflow-y: auto;
+}
+
+.lab-quad-card.card-accent-green .lab-quad-body {
+  border-left: 4px solid #166534;
+}
+
+.lab-quad-card.card-accent-bronze .lab-quad-body {
+  border-left: 4px solid #9A6A38;
+}
+
+.lab-quad-card.card-accent-terracotta .lab-quad-body {
+  border-left: 4px solid #9C382A;
+}
+
+.lab-quad-card:hover .lab-quad-body {
+  background: #FFFFFF;
+  border-color: #D2C4B1;
+  box-shadow: 0 4px 14px rgba(18, 34, 23, 0.05);
+}
+
+.lab-quad-card.card-accent-terracotta:hover {
+  border-color: #9C382A;
+}
+
+.lab-quad-badge-row {
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.lab-quad-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.lab-quad-badge.badge-green {
+  background: #EAF3EB;
+  color: #166534;
+}
+
+.lab-quad-badge.badge-bronze {
+  background: #F7EFE3;
+  color: #8C5D30;
+}
+
+.lab-quad-badge.badge-terracotta {
+  background: #FBECE6;
+  color: #8E3725;
+}
+
+.lab-quad-text {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(13.5px, 0.98vw, 15px);
+  line-height: 1.7;
+  color: #1E2D22;
+  margin: 0;
+  font-weight: 450;
+  flex: 1;
+}
+
+/* Card 04: Takeaway highlight */
+.lab-quad-body.takeaway-highlight {
+  background: #FDFBF7;
+  border-color: #E6D8C5;
+  border-left-color: #9A6A38;
+}
+
+.lab-quad-text.takeaway-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(14.5px, 1.05vw, 16px);
+  font-weight: 500;
+  line-height: 1.65;
+  color: #19251C;
+}
+
+.lab-takeaway-meta {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed #E5D7C3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.lab-takeaway-meta .meta-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9A6A38;
+  flex-shrink: 0;
+}
+
+.lab-takeaway-meta .meta-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: #7A6953;
+  font-weight: 500;
+}
+
+@media (max-width: 1280px) {
+  .lab-fullscreen-dossier {
+    flex-direction: column;
+    height: auto;
+    overflow-y: auto;
+  }
+  .lab-dossier-visual-pane {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    height: auto;
+  }
+  .lab-visual-frame {
+    width: 260px;
+    height: 190px;
+    flex-shrink: 0;
+  }
+  .lab-four-pillars-quad {
+    height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  #experimentModal .lab-modal-header {
+    padding: 0 16px;
+    height: 60px;
+  }
+  #experimentModal .lab-modal-body {
+    padding: 16px 14px 40px;
+    height: calc(100vh - 60px);
+  }
+  .lab-dossier-visual-pane {
+    flex-direction: column;
+  }
+  .lab-visual-frame {
+    width: 100%;
+    height: 220px;
+  }
+  .lab-four-pillars-quad {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+}
+
+
+
 /* Detailed Notes & Full Content Card */
 .lab-full-notes-card {
   background: #FFFFFF;
