@@ -85,7 +85,6 @@ try {
 include 'includes/header.php';
 ?>
 <link rel="stylesheet" href="css/innovation-lab.css?v=<?php echo filemtime(__DIR__ . '/css/innovation-lab.css'); ?>">
-<link rel="stylesheet" href="css/innovation-lab-enhancements.css?v=<?php echo filemtime(__DIR__ . '/css/innovation-lab-enhancements.css'); ?>">
 
 <!-- Master Innovation Lab Page Container -->
 <div class="lab-page-wrapper">
@@ -393,10 +392,6 @@ include 'includes/header.php';
           </div>
           <div class="lab-search-status-bar">
             <span id="labSearchCount" class="lab-search-counter"><?php echo count($ingredientCategories); ?> categories</span>
-            <span class="lab-floating-indicator" id="labFloatingStatus">
-              <span class="lab-pulse-dot"></span>
-              <span id="labFloatingStatusText">AUTO-FLOATING</span>
-            </span>
           </div>
         </div>
       </div>
@@ -1617,13 +1612,7 @@ function handleCardClick(id, e) {
 }
 
 function updateFloatingStatus(text, isLive) {
-  const statusEl = document.getElementById('labFloatingStatusText');
-  const dotEl = document.querySelector('.lab-pulse-dot');
-  if (statusEl) statusEl.textContent = text;
-  if (dotEl) {
-    dotEl.style.background = isLive ? '#22C55E' : '#EAB308';
-    dotEl.style.boxShadow = isLive ? '0 0 8px #22C55E' : '0 0 8px #EAB308';
-  }
+  // Indicator removed
 }
 
 function scrollIngredientCarousel(direction) {
@@ -1888,7 +1877,5 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Innovation Lab Enhancements: Performance, Accessibility & Polish -->
-<script src="js/innovation-lab-enhancements.js?v=<?php echo filemtime(__DIR__ . '/js/innovation-lab-enhancements.js'); ?>"></script>
 
 <?php include 'includes/footer.php'; ?>
