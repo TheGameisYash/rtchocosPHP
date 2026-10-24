@@ -61,6 +61,7 @@
 
 <!-- Luxury Landing Page Scoped Stylesheet -->
 <link rel="stylesheet" href="<?php echo $pathPrefix; ?>css/landing-luxury.css?v=<?php echo file_exists(__DIR__ . '/css/landing-luxury.css') ? filemtime(__DIR__ . '/css/landing-luxury.css') : time(); ?>">
+<link rel="stylesheet" href="<?php echo $pathPrefix; ?>css/landing-sections-upgrade.css?v=<?php echo file_exists(__DIR__ . '/css/landing-sections-upgrade.css') ? filemtime(__DIR__ . '/css/landing-sections-upgrade.css') : time(); ?>">
 
 <!-- --- HOME PAGE --- -->
 <div id="page-home" class="page active">
@@ -1464,6 +1465,8 @@
 <script src="<?php echo $pathPrefix; ?>js/landing-luxury.js?v=<?php echo file_exists(__DIR__ . '/js/landing-luxury.js') ? filemtime(__DIR__ . '/js/landing-luxury.js') : time(); ?>"></script>
 <!-- Bean to Bar Master Timeline & Guide Script -->
 <script src="<?php echo $pathPrefix; ?>js/bean-to-bar.js?v=<?php echo file_exists(__DIR__ . '/js/bean-to-bar.js') ? filemtime(__DIR__ . '/js/bean-to-bar.js') : time(); ?>"></script>
+<!-- Landing Sections Upgrade: Trust Strip, Table, Workshops Enhancement -->
+<script src="<?php echo $pathPrefix; ?>js/landing-sections-upgrade.js?v=<?php echo file_exists(__DIR__ . '/js/landing-sections-upgrade.js') ? filemtime(__DIR__ . '/js/landing-sections-upgrade.js') : time(); ?>"></script>
 
 <!-- --- ABOUT PAGE --- -->
 

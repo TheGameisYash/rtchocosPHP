@@ -1,0 +1,525 @@
+/* ==========================================================================
+   RT CHOCOS — LANDING PAGE SECTION ENHANCEMENTS
+   Upgrades for Trust Strip, Chocolate Table, Workshops, and other sections
+   (Hero section remains untouched)
+   ========================================================================== */
+
+/* ==========================================
+   TRUST STRIP SECTION ENHANCEMENTS
+   ========================================== */
+
+.home-trust-strip-sec {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Subtle background depth */
+.home-trust-strip-sec::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 25% 40%, rgba(184, 134, 11, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 75% 60%, rgba(35, 84, 54, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.home-trust-strip-sec.is-visible::before {
+  opacity: 1;
+}
+
+/* Enhanced trust columns */
+.trust-col {
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: default;
+}
+
+.trust-col:hover {
+  transform: translateY(-6px);
+}
+
+.trust-icon-badge {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.trust-col:hover .trust-icon-badge {
+  transform: scale(1.08) rotate(3deg);
+  filter: drop-shadow(0 6px 16px rgba(184, 134, 11, 0.15));
+}
+
+.trust-stat-title,
+.trust-stat-subtitle {
+  transition: color 0.3s ease;
+}
+
+.trust-col:hover .trust-stat-title {
+  color: #b8860b;
+}
+
+/* Scroll reveal for trust columns */
+.trust-col {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.trust-col.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  animation: trust-fade-up 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.trust-col:nth-child(1) { transition-delay: 0.1s; }
+.trust-col:nth-child(2) { transition-delay: 0.2s; }
+.trust-col:nth-child(3) { transition-delay: 0.3s; }
+.trust-col:nth-child(4) { transition-delay: 0.4s; }
+.trust-col:nth-child(5) { transition-delay: 0.5s; }
+
+@keyframes trust-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pod badge subtle float */
+.trust-pod-badge {
+  animation: gentle-float 4s ease-in-out infinite;
+}
+
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* ==========================================
+   CHOCOLATE TABLE SECTION ENHANCEMENTS
+   ========================================== */
+
+.chocolate-table-sec {
+  transition: all 0.3s ease;
+}
+
+/* Scroll reveal */
+.chocolate-table-sec {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.chocolate-table-sec.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  animation: section-reveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes section-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chocolate-table-wrapper {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.chocolate-table-bg-img {
+  transition: transform 0.4s ease, filter 0.3s ease;
+}
+
+.chocolate-table-wrapper:hover .chocolate-table-bg-img {
+  transform: scale(1.01);
+  filter: brightness(1.03) saturate(1.05);
+}
+
+/* Enhanced hotspot interactions */
+.table-hotspot {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.hotspot-pin {
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.table-hotspot:hover .hotspot-pin {
+  transform: translateY(-8px) scale(1.08);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.table-hotspot:active .hotspot-pin {
+  transform: translateY(-4px) scale(1.04);
+  transition-duration: 0.1s;
+}
+
+/* Hotspot dot pulse */
+.hotspot-dot {
+  animation: dot-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.7);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 6px rgba(184, 134, 11, 0);
+  }
+}
+
+/* Sequential reveal for hotspots */
+.table-hotspot {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.chocolate-table-sec.is-visible .table-hotspot {
+  animation: hotspot-reveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.chocolate-table-sec.is-visible .table-hotspot:nth-child(1) { animation-delay: 0.2s; }
+.chocolate-table-sec.is-visible .table-hotspot:nth-child(2) { animation-delay: 0.3s; }
+.chocolate-table-sec.is-visible .table-hotspot:nth-child(3) { animation-delay: 0.4s; }
+.chocolate-table-sec.is-visible .table-hotspot:nth-child(4) { animation-delay: 0.5s; }
+.chocolate-table-sec.is-visible .table-hotspot:nth-child(5) { animation-delay: 0.6s; }
+.chocolate-table-sec.is-visible .table-hotspot:nth-child(6) { animation-delay: 0.7s; }
+
+@keyframes hotspot-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ==========================================
+   WORKSHOPS SECTION ENHANCEMENTS
+   ========================================== */
+
+#featured-workshops {
+  transition: all 0.3s ease;
+}
+
+#featured-workshops {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+#featured-workshops.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* Workshop cards enhancement */
+.workshop-card {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.workshop-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+}
+
+.workshop-card:active {
+  transform: translateY(-4px) scale(1.01);
+  transition-duration: 0.15s;
+}
+
+/* Card images */
+.workshop-card img {
+  transition: transform 0.5s ease, filter 0.3s ease;
+}
+
+.workshop-card:hover img {
+  transform: scale(1.06);
+  filter: brightness(1.05);
+}
+
+/* Staggered reveal for workshop cards */
+.workshop-card {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+#featured-workshops.is-visible .workshop-card {
+  animation: card-reveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+#featured-workshops.is-visible .workshop-card:nth-child(1) { animation-delay: 0.1s; }
+#featured-workshops.is-visible .workshop-card:nth-child(2) { animation-delay: 0.2s; }
+#featured-workshops.is-visible .workshop-card:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes card-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   FLAVOR WHEEL SECTION ENHANCEMENTS
+   ========================================== */
+
+.luxury-flavor-wheel-sec {
+  transition: all 0.3s ease;
+}
+
+.luxury-flavor-wheel-sec {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.luxury-flavor-wheel-sec.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* Wheel ambient glow enhancement */
+.wheel-ambient-aura {
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.luxury-flavor-wheel-sec.is-visible .wheel-ambient-aura {
+  animation: aura-pulse 4s ease-in-out infinite;
+}
+
+@keyframes aura-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+/* Wheel interactive hints */
+.wheel-interactive-hint {
+  transition: all 0.3s ease;
+}
+
+.hint-pulse {
+  animation: hint-sparkle 2s ease-in-out infinite;
+}
+
+@keyframes hint-sparkle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15) rotate(15deg);
+    opacity: 0.8;
+  }
+}
+
+/* Descriptor pills hover */
+.descriptor-pill {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.descriptor-pill:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   BLOG/JOURNAL SECTION ENHANCEMENTS
+   ========================================== */
+
+.blog-journal-sec {
+  transition: all 0.3s ease;
+}
+
+.blog-journal-sec {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.blog-journal-sec.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* Journal cards enhancement */
+.journal-card {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.journal-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+}
+
+.journal-card img {
+  transition: transform 0.5s ease, filter 0.3s ease;
+}
+
+.journal-card:hover img {
+  transform: scale(1.05);
+  filter: brightness(1.03);
+}
+
+/* ==========================================
+   TICKER SECTION ENHANCEMENT
+   ========================================== */
+
+.ticker-strip {
+  transition: all 0.3s ease;
+}
+
+.ticker-item {
+  transition: color 0.3s ease;
+}
+
+.ticker-strip:hover .ticker-item {
+  color: #b8860b;
+}
+
+/* ==========================================
+   SECTION HEADERS ENHANCEMENT
+   ========================================== */
+
+.section-label {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.section-label::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #b8860b, #235436);
+  transition: width 0.4s ease;
+}
+
+.section:hover .section-label::after {
+  width: 100%;
+}
+
+.section-title {
+  transition: all 0.3s ease;
+}
+
+.divider {
+  transition: all 0.4s ease;
+}
+
+/* ==========================================
+   SMOOTH SCROLL BEHAVIOR
+   ========================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================
+   PERFORMANCE OPTIMIZATIONS
+   ========================================== */
+
+.trust-col,
+.table-hotspot,
+.workshop-card,
+.journal-card,
+.chocolate-table-bg-img {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* ==========================================
+   ACCESSIBILITY FOCUS STATES
+   ========================================== */
+
+.table-hotspot:focus-visible,
+.workshop-card:focus-visible,
+.journal-card:focus-visible,
+.descriptor-pill:focus-visible {
+  outline: 3px solid #235436;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* ==========================================
+   RESPONSIVE MOBILE ENHANCEMENTS
+   ========================================== */
+
+@media (max-width: 768px) {
+  /* Simplified hover effects for mobile */
+  @media (hover: none) and (pointer: coarse) {
+    .trust-col:hover,
+    .workshop-card:hover,
+    .table-hotspot:hover .hotspot-pin {
+      transform: none;
+    }
+
+    .chocolate-table-wrapper:hover .chocolate-table-bg-img {
+      transform: none;
+    }
+
+    /* Keep active states for tap feedback */
+    .workshop-card:active {
+      transform: scale(0.98);
+    }
+
+    .table-hotspot:active .hotspot-pin {
+      transform: scale(0.95);
+    }
+  }
+}
+
+/* ==========================================
+   PRINT STYLES
+   ========================================== */
+
+@media print {
+  .table-hotspot,
+  .ticker-strip {
+    display: none !important;
+  }
+
+  .workshop-card,
+  .journal-card {
+    page-break-inside: avoid;
+    box-shadow: none !important;
+  }
+}

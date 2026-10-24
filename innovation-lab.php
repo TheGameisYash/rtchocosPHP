@@ -85,6 +85,7 @@ try {
 include 'includes/header.php';
 ?>
 <link rel="stylesheet" href="css/innovation-lab.css?v=<?php echo filemtime(__DIR__ . '/css/innovation-lab.css'); ?>">
+<link rel="stylesheet" href="css/innovation-lab-enhancements.css?v=<?php echo filemtime(__DIR__ . '/css/innovation-lab-enhancements.css'); ?>">
 
 <!-- Master Innovation Lab Page Container -->
 <div class="lab-page-wrapper">
@@ -1886,5 +1887,8 @@ window.addEventListener('DOMContentLoaded', function() {
   }, { passive: true });
 });
 </script>
+
+<!-- Innovation Lab Enhancements: Performance, Accessibility & Polish -->
+<script src="js/innovation-lab-enhancements.js?v=<?php echo filemtime(__DIR__ . '/js/innovation-lab-enhancements.js'); ?>"></script>
 
 <?php include 'includes/footer.php'; ?>
