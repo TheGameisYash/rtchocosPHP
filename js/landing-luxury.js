@@ -248,14 +248,14 @@
         desc: 'Single-origin estate sourcing, fermentation thermodynamics & 72-hour stone conching.'
       },
       'knowledge-hub': {
-        badge: '📚 Science Journal',
-        title: 'Knowledge Hub',
-        desc: 'Crystal polymorphism, Form V nucleation curves & bloom diagnostics.'
+        badge: '📖 The Cacao Journal',
+        title: 'Cacao Journal',
+        desc: 'A deeper understanding of chocolate, from its science and ingredients to the processes that shape its character.'
       },
       'chocolate-lab': {
         badge: '🧪 R&D Lab',
-        title: 'Chocolate Lab',
-        desc: 'AI formulation algorithms, water activity metrics & emulsion physics.'
+        title: 'Cacao Lab',
+        desc: 'Explore chocolate through hands-on masterclasses, recipe development and applied chocolate science.'
       },
       'recipes-formulations': {
         badge: '🍫 Formulations',
@@ -268,14 +268,14 @@
         desc: 'Precision marble slab tabling, airbrushing cocoa butter & glossy moulding.'
       },
       'origins-atlas': {
-        badge: '🗺️ Terroir Atlas',
-        title: 'Origins & Estates',
-        desc: 'Explore Indian cacao estate terroirs across Kerala, Karnataka & Tamil Nadu.'
+        badge: '🤝 Collaboration',
+        title: 'Work With Us',
+        desc: 'From product innovation to technical problem-solving, we collaborate to turn ideas into better chocolate.'
       },
       'workshops-academy': {
-        badge: '🎓 Certification',
-        title: 'Masterclasses',
-        desc: 'Hands-on & online chocolate academy certification by Aarti Saluja Sahni.'
+        badge: '💡 Innovation Wall',
+        title: 'Innovation Lab',
+        desc: 'Explore the ideas, experiments and discoveries shaping the future of chocolate.'
       }
     };
 

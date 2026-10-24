@@ -287,11 +287,11 @@
           </div>
         </div>
 
-        <!-- 2. Knowledge Hub → Open leather recipe journal (center of table) -->
+        <!-- 2. Cacao Journal → Open leather recipe journal (center of table) -->
         <div class="table-hotspot" style="top: 52%; left: 48%;" onclick="openTableModal('knowledge-hub')">
           <div class="hotspot-pin">
             <span class="hotspot-dot" style="pointer-events: none;"></span>
-            <span style="pointer-events: none;">Knowledge Hub</span>
+            <span style="pointer-events: none;">Cacao Journal</span>
           </div>
         </div>
 
@@ -299,7 +299,7 @@
         <div class="table-hotspot" style="top: 14%; left: 80%;" onclick="openTableModal('chocolate-lab')">
           <div class="hotspot-pin">
             <span class="hotspot-dot" style="pointer-events: none;"></span>
-            <span style="pointer-events: none;">Chocolate Lab</span>
+            <span style="pointer-events: none;">Cacao Lab</span>
           </div>
         </div>
 
@@ -319,11 +319,11 @@
           </div>
         </div>
 
-        <!-- 6. Origins & Atlas → Cacao pod split open + vintage map (far left) -->
+        <!-- 6. Work With Us → Collaboration & Consulting (far left) -->
         <div class="table-hotspot" style="top: 58%; left: 10%;" onclick="openTableModal('origins-atlas')">
           <div class="hotspot-pin">
             <span class="hotspot-dot" style="pointer-events: none;"></span>
-            <span style="pointer-events: none;">Origins &amp; Atlas</span>
+            <span style="pointer-events: none;">Work With Us</span>
           </div>
         </div>
 
@@ -331,7 +331,7 @@
         <div class="table-hotspot" style="top: 82%; left: 78%;" onclick="openTableModal('workshops-academy')">
           <div class="hotspot-pin">
             <span class="hotspot-dot" style="pointer-events: none;"></span>
-            <span style="pointer-events: none;">Innovation &amp; Wall</span>
+            <span style="pointer-events: none;">Innovation Lab</span>
           </div>
         </div>
       </div>
@@ -350,13 +350,15 @@
       </p>
 
       <div class="table-modal-highlights">
-        <h5>✨ KEY INSIGHTS &amp; TAKEAWAYS</h5>
+        <h5 id="modal-table-highlights-title">✨ KEY INSIGHTS &amp; TAKEAWAYS</h5>
         <ul id="modal-table-list">
           <li>Single-Origin Bean Sourcing from Kerala &amp; Karnataka</li>
           <li>Fermentation &amp; Drying Thermodynamics</li>
           <li>72-Hour Stone Grinding (Conching) for Silky Smooth Melt</li>
         </ul>
       </div>
+
+      <p id="modal-table-prompt" class="table-modal-prompt" style="display: none;"></p>
 
       <div class="table-modal-actions" id="modal-table-actions">
         <a href="chocopedia.php" id="modal-table-btn-primary" class="table-modal-btn-primary">Explore Bean-to-Bar Guide &rarr;</a>
@@ -423,11 +425,12 @@
       'bean-to-bar': {
         badge: '🌿 CRAFT PROCESS',
         title: 'Bean to Bar Cacao Craft',
-        desc: 'From estate cacao bean selection and post-harvest fermentation chemistry to roasting thermodynamics, winnowing, and stone grinding (conching). Learn how raw beans transform into fine chocolate.',
+        desc: 'Explore the complete bean-to-bar journey and understand how each stage transforms simple beans into extraordinary chocolate.',
         highlights: [
-          'Direct Single-Origin Procurement from Estates in Kerala & Karnataka',
-          'Fermentation & Drying Thermodynamics for Flavor Precursor Development',
-          '72-Hour Stone Grinding & Micro-Particle Size Reduction (<20 Microns)'
+          'Trace cacao’s transformation from bean to bar.',
+          'Explore how processing shapes flavour, aroma and texture.',
+          'Uncover the science behind chocolate quality.',
+          'Understand what defines the character of a finished bar.'
         ],
         btn1Text: 'Explore Bean-to-Bar Guide →',
         btn1Href: 'javascript:void(0)',
@@ -441,27 +444,29 @@
         btn2Href: 'workshops.php'
       },
       'knowledge-hub': {
-        badge: '📚 ENCYCLOPEDIA & JOURNAL',
-        title: 'RT Chocos Knowledge Hub',
-        desc: 'Our comprehensive digital repository of cocoa science articles, troubleshooting manuals, research papers, and technical crystallization guides.',
+        badge: '📖 RT CHOCOS · THE CACAO JOURNAL',
+        title: 'The Cacao Journal',
+        desc: 'A deeper understanding of chocolate, from its science and ingredients to the processes that shape its character.',
+        highlightsTitle: '📖 EXPLORE THE JOURNAL',
         highlights: [
-          'Fat Bloom vs Sugar Bloom Defect Diagnostics',
-          'Cocoa Butter Polymorphism & Form V Crystal Nucleation Curves',
-          'pH Balance & Alkalization in Natural vs Dutch-Processed Cocoa Powder'
+          '⚗ Chocolate science, explained clearly',
+          '🌿 Ingredients, functionality & flavour',
+          '⚙ Processing, techniques & troubleshooting',
+          '♧ Ideas and insights shaping the chocolate industry'
         ],
-        btn1Text: 'Browse Science Journal →',
+        btn1Text: 'Explore Articles →',
         btn1Href: 'blog.php',
         btn2Text: 'Search Chocopedia',
         btn2Href: 'chocopedia.php'
       },
       'chocolate-lab': {
         badge: '🧪 AI FORMULATION & R&D',
-        title: 'Chocolate Science Lab',
-        desc: 'Our advanced R&D laboratory playground for precision ingredient analysis, crystal structure testing, and AI-powered chocolate bar formulation.',
+        title: 'The Cacao Lab',
+        desc: 'Explore chocolate through hands-on masterclasses, recipe development and applied chocolate science.',
         highlights: [
-          'CocoaGenius AI Alchemist Recipe Engine',
-          'Water Activity & Emulsion Stability Matrix',
-          'Custom Inclusions & Fat-to-Sugar Crystallization Ratios'
+          'Build practical skills, from chocolate-making fundamentals to specialised techniques.',
+          'Understand ingredients, processing and the science behind chocolate’s behaviour.',
+          'Develop, test and refine recipes into distinctive chocolate products.'
         ],
         btn1Text: 'Launch Chocolab →',
         btn1Href: 'workshops.php',
@@ -471,11 +476,12 @@
       'recipes-formulations': {
         badge: '🍫 PRO FORMULATIONS',
         title: 'Recipes & Formulations',
-        desc: 'Craft precision blueprints for single-origin dark slabs, glossy hand-painted bonbons, ganache emulsions, and artisan truffles.',
+        desc: 'Explore chocolate recipes, understand ingredient behaviour and discover the techniques behind better results.',
         highlights: [
-          '72% Single Origin Aztec Dark Formula',
-          'Passionfruit & Cardamom Ganache Bonbon Emulsion',
-          'Roasted Almond & Sea Salt Caramel Slab'
+          'Recipes worth exploring',
+          'Ingredients that make a difference',
+          'Techniques that shape the result',
+          'The science behind every formulation'
         ],
         btn1Text: 'Explore All Recipes →',
         btn1Href: 'gallery.php',
@@ -497,32 +503,37 @@
         btn2Href: 'blog.php'
       },
       'origins-atlas': {
-        badge: '🗺️ TERROIR & SOURCING',
-        title: 'Origins & Cacao Atlas',
-        desc: 'Trace the roots of global cacao genetics—Criollo, Trinitario, and Forastero—and explore Indian estate micro-climates and terroir profiling.',
+        badge: '🤝 RT CHOCOS · COLLABORATION & CONSULTING',
+        title: 'Work With Us',
+        desc: 'From product innovation to technical problem-solving, we collaborate with businesses and chocolate professionals to turn ideas into better chocolate.',
+        highlightsTitle: 'WHAT WE CAN WORK ON',
         highlights: [
-          'Idukki, Kerala Single Estate Terroir & Flavor Profiles',
-          'Puttur, Karnataka Cacao Fermentation Protocols',
-          'Soil Chemistry, Altitude & Solar Drying Flavor Impact'
+          '◇ Product development & formulation',
+          '🍃 Ingredient innovation & application',
+          '⚙ Process optimisation & troubleshooting',
+          '♧ Research, training & technical consulting'
         ],
-        btn1Text: 'Discover Cacao Sourcing →',
-        btn1Href: 'about.php',
-        btn2Text: 'Read Origin Articles',
-        btn2Href: 'blog.php'
+        promptText: 'Have a chocolate challenge or an idea to explore?',
+        btn1Text: 'Start a Conversation →',
+        btn1Href: 'work-with-us.php#inquiry-form',
+        btn2Text: 'Consulting Services',
+        btn2Href: 'work-with-us.php'
       },
       'workshops-academy': {
-        badge: '🎓 PROFESSIONAL ACADEMY',
-        title: 'Workshops & Academy',
-        desc: 'Hands-on and online certification masterclasses led by expert Aarti Saluja Sahni for home bakers, pastry chefs, and craft chocolate entrepreneurs.',
+        badge: '💡 RT CHOCOS · THE INNOVATION WALL',
+        title: 'Innovation Wall',
+        desc: 'Explore the ideas, experiments and discoveries shaping the future of chocolate.',
+        highlightsTitle: '🔬 INSIDE THE INNOVATION LAB',
         highlights: [
-          'Professional Bean-to-Bar Certification (Mumbai & Online)',
-          'Bonbon Spraying, Moulding & Ganache Emulsion Science',
-          'Commercial Chocolatier Setup & Scaling Blueprint'
+          'Ingredient innovations worth exploring',
+          'What if? New possibilities in chocolate',
+          'Experiments, results & unexpected insights',
+          'Ideas shaping the future of chocolate'
         ],
-        btn1Text: 'View Workshop Schedule →',
-        btn1Href: 'workshops.php',
-        btn2Text: 'Contact Aarti',
-        btn2Href: 'contact.php'
+        btn1Text: 'Explore the Innovation Lab →',
+        btn1Href: 'innovation-lab.php',
+        btn2Text: 'View Experiments',
+        btn2Href: 'innovation-lab.php#currently-in-lab'
       }
     };
 
@@ -534,8 +545,23 @@
       document.getElementById('modal-table-title').innerText = data.title;
       document.getElementById('modal-table-desc').innerText = data.desc;
 
+      const highlightsHeading = document.getElementById('modal-table-highlights-title');
+      if (highlightsHeading) {
+        highlightsHeading.innerText = data.highlightsTitle || '✨ KEY INSIGHTS & TAKEAWAYS';
+      }
+
       const listContainer = document.getElementById('modal-table-list');
       listContainer.innerHTML = data.highlights.map(item => `<li>${item}</li>`).join('');
+
+      const promptEl = document.getElementById('modal-table-prompt');
+      if (promptEl) {
+        if (data.promptText) {
+          promptEl.innerText = data.promptText;
+          promptEl.style.display = 'block';
+        } else {
+          promptEl.style.display = 'none';
+        }
+      }
 
       const btn1 = document.getElementById('modal-table-btn-primary');
       btn1.innerText = data.btn1Text;
@@ -547,12 +573,17 @@
       }
 
       const btn2 = document.getElementById('modal-table-btn-secondary');
-      btn2.innerText = data.btn2Text;
-      btn2.href = data.btn2Href;
-      if (data.btn2Action) {
-        btn2.onclick = (e) => { e.preventDefault(); data.btn2Action(); };
+      if (data.btn2Text) {
+        btn2.innerText = data.btn2Text;
+        btn2.href = data.btn2Href || '#';
+        btn2.style.display = '';
+        if (data.btn2Action) {
+          btn2.onclick = (e) => { e.preventDefault(); data.btn2Action(); };
+        } else {
+          btn2.onclick = null;
+        }
       } else {
-        btn2.onclick = null;
+        btn2.style.display = 'none';
       }
 
       const modal = document.getElementById('table-interactive-modal');

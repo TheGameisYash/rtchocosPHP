@@ -3490,6 +3490,16 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
   margin-bottom: 0;
 }
 
+.table-modal-prompt {
+  font-family: 'Newsreader', 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  color: #e6c44a;
+  margin: 0 0 16px 0;
+  line-height: 1.45;
+  letter-spacing: 0.2px;
+}
+
 .table-modal-actions {
   display: flex;
   gap: 14px;
