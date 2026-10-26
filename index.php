@@ -857,511 +857,285 @@
 
 
   <!-- Section 02: Interactive Flavor Wheel Section (Haute Cacao Sensory Lab) -->
-  <section id="flavor-wheel-sec" class="luxury-flavor-wheel-sec">
-    <div class="wheel-layout">
-      <!-- Title Column -->
-      <div class="wheel-title-col">
-        <div class="wheel-section-badge">
-          <span class="badge-pulse-dot"></span>
-          <span>02 / SENSORY LAB</span>
+  <section id="flavor-wheel-sec" class="luxury-flavor-wheel-sec" aria-label="Interactive Flavor Wheel">
+    <div class="wheel-shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">02 / SENSORY LAB</div>
+          <h2>The Flavor <em>Wheel</em></h2>
         </div>
-        <h2 class="wheel-main-heading">
-          <span class="wheel-sub-prefix">CACAO MOLECULAR TERROIR</span>
-          The Flavor <em>Wheel</em>
-        </h2>
-        <div class="wheel-gold-bar"></div>
-        <p class="wheel-desc">
-          Explore the multi-dimensional flavor taxonomy of bean-to-bar craft chocolate. Click any sector on the wheel or select a category card to unpack how terroir, roast profiling, and palate kinetics shape the bar's sensory fingerprint.
-        </p>
-
-        <!-- Interactive Helper Pill -->
-        <div class="wheel-interactive-hint">
-          <span class="hint-pulse">✦</span>
-          <span>Click any wheel sector or tasting note to inspect chemistry</span>
-        </div>
-
-        <!-- Terroir Quick Stats -->
-        <div class="wheel-stat-pills">
-          <span class="stat-pill">16 DESCRIPTORS</span>
-          <span class="stat-pill">3 CORE PILLARS</span>
-          <span class="stat-pill">SINGLE-ORIGIN</span>
-        </div>
+        <p>Start with what you notice, then select any descriptor to explore its meaning, practical tasting cue, and the science behind it.</p>
       </div>
 
-      <!-- Wheel Column -->
-      <div class="wheel-svg-col">
-        <div class="wheel-ambient-aura"></div>
-        <div class="wheel-svg-wrapper">
-          <svg class="wheel-svg" viewBox="0 0 540 540" id="interactive-wheel">
-            <!-- Dynamic SVG content will be injected here by JS -->
-          </svg>
-        </div>
-      </div>
+      <div class="workspace">
+        <!-- Interactive Flavor Wheel Panel -->
+        <section class="panel wheel-panel" aria-label="Interactive flavor wheel">
+          <div class="wheel-toolbar">
+            <span class="micro">Explore a sensory note</span>
+            <button class="subtle-btn" id="resetWheel" type="button">Show all</button>
+          </div>
+          <div class="wheel-wrap">
+            <svg id="wheel" viewBox="0 0 500 500" role="group" aria-label="Chocolate sensory wheel"></svg>
+          </div>
+          <div class="wheel-hint">Choose the word that comes closest to what you notice. You can return to the guide at any time.</div>
+          <div class="legend">
+            <span><i class="swatch" style="background:#B96870"></i>Flavor notes</span>
+            <span><i class="swatch" style="background:#C58B55"></i>Taste &amp; mouthfeel</span>
+            <span><i class="swatch" style="background:#7D9C72"></i>Process context</span>
+          </div>
+        </section>
 
-      <!-- Details Column -->
-      <div class="wheel-details-col">
-        <!-- Flavor Notes Card -->
-        <div class="wheel-detail-card" data-sector="flavor" id="card-flavor">
-          <div class="card-header-row">
-            <div class="card-icon-container icon-flavor">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2">
-                <path d="M12 2C6.5 2 2 6.5 2 12c0 3.5 1.8 6.6 4.6 8.4l1.4-1.4C5.7 17.5 4.3 14.9 4.3 12c0-4.2 3.5-7.7 7.7-7.7s7.7 3.5 7.7 7.7c0 2.9-1.4 5.5-3.7 7l1.4 1.4C20.2 18.6 22 15.5 22 12c0-5.5-4.5-10-10-10z"/>
-                <path d="M12 6a6 6 0 0 0-6 6c0 2.1.8 4 2.2 5.3l1.4-1.4A4 4 0 0 1 8 12a4 4 0 1 1 8 0c0 1.5-.7 2.8-1.6 3.9l1.4 1.4C19.2 16 20 14.1 20 12a6 6 0 0 0-6-6z"/>
-                <circle cx="12" cy="12" r="2" fill="#d4af37"/>
-              </svg>
-            </div>
-            <div class="card-title-group">
-              <span class="card-cat-badge badge-flavor">TERROIR &amp; BOTANY</span>
-              <span class="card-title-text">1. Flavor Notes</span>
-            </div>
+        <!-- Dynamic Sensory Detail Notebook Panel -->
+        <section class="panel detail-panel" id="detailPanel" aria-live="polite" aria-atomic="true">
+          <div class="detail-top">
+            <span class="tag" id="detailGroup">START HERE</span>
+            <span class="micro">Your tasting notebook</span>
           </div>
-          <p>Aromas driven by volcanic soil chemistry, heirloom genetics (Criollo, Trinitario, Nacional), and post-harvest anaerobic pulp breakdown.</p>
-          <div class="descriptor-pills-row" data-parent="flavor">
-            <span class="descriptor-pill" data-desc="Earthy">Earthy</span>
-            <span class="descriptor-pill" data-desc="Spicy">Spicy</span>
-            <span class="descriptor-pill" data-desc="Sweet">Sweet</span>
-            <span class="descriptor-pill" data-desc="Nutty">Nutty</span>
-            <span class="descriptor-pill" data-desc="Floral">Floral</span>
-            <span class="descriptor-pill" data-desc="Fruity">Fruity</span>
+          <div id="detailContent" class="fade-in">
+            <h3>Begin with what you notice.</h3>
+            <p class="detail-lead">Choose any descriptor on the wheel. You can explore the science, try a small exercise, or simply continue tasting.</p>
+            <div class="callout"><b>Try this</b>Smell your chocolate gently. Pause, then smell again. What comes to mind first?</div>
+            <p>Your first impression is worth recording, even if it is “nothing distinctive yet.”</p>
           </div>
-        </div>
-
-        <!-- Process Card -->
-        <div class="wheel-detail-card" data-sector="process" id="card-process">
-          <div class="card-header-row">
-            <div class="card-icon-container icon-process">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7acb92" stroke-width="2">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-            </div>
-            <div class="card-title-group">
-              <span class="card-cat-badge badge-process">CRAFT &amp; ROAST</span>
-              <span class="card-title-text">2. Process</span>
-            </div>
-          </div>
-          <p>Artisan transformation stages—box fermentation, solar drying, aerodynamic roasting, micro-shear conching, and crystal tempering.</p>
-          <div class="descriptor-pills-row" data-parent="process">
-            <span class="descriptor-pill" data-desc="Roasted">Roasted</span>
-            <span class="descriptor-pill" data-desc="Fermented">Fermented</span>
-            <span class="descriptor-pill" data-desc="Dried">Dried</span>
-            <span class="descriptor-pill" data-desc="Conched">Conched</span>
-            <span class="descriptor-pill" data-desc="Tempered">Tempered</span>
-          </div>
-        </div>
-
-        <!-- Taste Profile Card -->
-        <div class="wheel-detail-card" data-sector="taste" id="card-taste">
-          <div class="card-header-row">
-            <div class="card-icon-container icon-taste">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e5c453" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 10h20" />
-                <path d="M21.5 10c-.5 5-4.5 9-9.5 9s-9-4-9-9" />
-                <path d="M12 10v9" />
-                <path d="M12 14c1.5 0 2.5.5 2.5 1" />
-              </svg>
-            </div>
-            <div class="card-title-group">
-              <span class="card-cat-badge badge-taste">PALATE SENSORY</span>
-              <span class="card-title-text">3. Taste Profile</span>
-            </div>
-          </div>
-          <p>Direct palate sensations—tactile mouthfeel, melt velocity, acidity snap, astringency balance, and lingering velvety finish.</p>
-          <div class="descriptor-pills-row" data-parent="taste">
-            <span class="descriptor-pill" data-desc="Smooth">Smooth</span>
-            <span class="descriptor-pill" data-desc="Creamy">Creamy</span>
-            <span class="descriptor-pill" data-desc="Salty">Salty</span>
-            <span class="descriptor-pill" data-desc="Sour">Sour / Tart</span>
-            <span class="descriptor-pill" data-desc="Bittersweet">Bittersweet</span>
-          </div>
-        </div>
+          <div class="reference">Your senses are the starting point. The descriptor is a tool, not a verdict.</div>
+        </section>
       </div>
     </div>
 
-    <!-- Live Molecular Sensory Telemetry Bar -->
-    <div class="wheel-telemetry-container">
-      <div class="wheel-telemetry-inner">
-        <div class="telemetry-pill">
-          <span class="telemetry-dot"></span>
-          <span class="telemetry-label">MOLECULAR SENSORY DRIVER</span>
-        </div>
-        <div class="telemetry-content">
-          <strong id="telemetry-note-name">SELECT ANY SLICE OR DESCRIPTOR</strong>
-          <span class="telemetry-divider">&bull;</span>
-          <span id="telemetry-note-desc">Click any wheel sector or tasting chip to inspect its origin chemistry and molecular flavor precursors.</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Enhanced Interactive Wheel Script -->
+    <!-- Flavor Wheel Interactive Script -->
     <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        const cx = 270;
-        const cy = 270;
-        const R0 = 68;  // Center hub radius
-        const R1 = 70;  // Main sector inner radius
-        const R2 = 150; // Main sector outer radius
-        const R3 = 246; // Subsector outer radius
-
-        const MOLECULAR_DATA = {
-          "Earthy": "Volatile pyrazines and geosmin from volcanic terroir and biodynamic equatorial soil microbes.",
-          "Spicy": "Warm eugenol and phenylpropanoid fractions that develop in Criollo genetics under moderate fermentation.",
-          "Sweet": "Naturally occurring fructose and sucrose caramelized during thermal conching below 75°C, yielding maltol.",
-          "Nutty": "2,3,5-trimethylpyrazine produced via gentle convective roasting of raw cocoa nibs at 115°C–125°C.",
-          "Floral": "Volatile linalool and beta-damascenone monoterpenes characteristic of fine Nacional and Porcelana heirlooms.",
-          "Fruity": "Ethyl 2-methylbutyrate and isoamyl acetate esters synthesized during anaerobic cacao pulp fermentation.",
-          "Roasted": "Maillard reaction pyrazines formed when amino acids react with reducing sugars at peak roast crack.",
-          "Fermented": "Acetic and lactic organic acids produced during 5-to-7 day hardwood cascade box fermentation.",
-          "Dried": "Solar drying on elevated cedar beds reduces bean moisture to 7%, locking in vital flavor precursors.",
-          "Conched": "Multi-axis mechanical shear reducing particle size below 20 microns while evaporating volatile harsh acids.",
-          "Tempered": "Controlled heating cycle establishing stable Form V (β2) crystal network for clean snap and 34°C palate melt.",
-          "Smooth": "Sub-20 micron cocoa solids suspended homogeneously in a continuous cocoa butter triglyceride matrix.",
-          "Creamy": "High natural cocoa butter ratio (36%–42%) coating taste buds for slow, luxurious flavor release.",
-          "Salty": "Natural oceanic mineral trace elements enhancing sweetness perception and elevating cocoa depth.",
-          "Sour": "Natural citric and malic fruit acids providing a bright, wine-like, vibrant acidity on the palate edges.",
-          "Bittersweet": "Purine alkaloids (theobromine, caffeine) paired with antioxidant flavan-3-ols for authentic dark structure."
+      (function() {
+        const data = {
+          "Floral":{group:"AROMA",color:"#28664e",meaning:"A floral note is an aroma that brings flowers or blossoms to mind. It may feel delicate, perfumed or fresh.",cue:"Smell gently. Pause. Try again. Does anything remind you of jasmine, rose or orange blossom?",try:"Smell the chocolate before tasting. Record the first association that comes to mind without searching for a particular answer.",refs:"Jasmine · Rose · Orange blossom",dist:"Floral is an aroma association, not a basic taste. A fragrant chocolate need not taste sweet.",science:"Floral impressions can arise from mixtures of volatile compounds, including some terpenoids and other aroma-active compounds. Linalool is associated with floral and citrus-like aromas in many foods, but its presence alone cannot establish that a chocolate will smell floral. Genetics, fermentation, roasting and formulation all influence aroma.",insight:"A recognised aroma is the brain's interpretation of a mixture—not proof of a single ingredient or molecule."},
+          "Fruity":{group:"AROMA",color:"#28664e",meaning:"Fruity describes an aroma that reminds you of fruit: perhaps berries, citrus, ripe tropical fruit or dried fruit.",cue:"Look for the closest memory: fresh and juicy, citrus-like, berry-like, tropical or raisin-like.",try:"Smell before tasting, then notice whether the same fruit-like association returns as the chocolate melts.",refs:"Berries · Citrus peel · Ripe fruit · Raisins",dist:"Fruity is an aroma association. Sourness is a taste-related sensation. Chocolate can smell fruity without tasting sour.",science:"Fruit-like aromas can involve esters, aldehydes, alcohols and other volatile compounds. Fermentation, drying, roasting, genetics and storage can change the mixture. A fruity impression cannot be attributed to fermentation alone.",insight:"Fruit-like aroma, acidity and fermentation-related aroma can coexist, but each describes a different aspect of tasting."},
+          "Nutty":{group:"AROMA",color:"#28664e",meaning:"A nutty note is an aroma reminiscent of nuts, from fresh and mild to toasted and rich.",cue:"Ask whether the impression is closer to a raw almond or a roasted hazelnut.",try:"Smell the chocolate, then let it melt. Check whether the nut-like association becomes stronger or fades.",refs:"Almond · Hazelnut · Peanut · Toasted nuts",dist:"Nutty is an aroma family. It does not prove that nuts are ingredients or that a product is allergen-free.",science:"Nut-like and toasted aromas can involve several volatile compounds formed or transformed during processing. Roasting can promote Maillard chemistry, but nutty aroma cannot be assigned to roasting alone.",insight:"Always check the ingredient and allergen declaration; sensory resemblance is not evidence of ingredient presence."},
+          "Spicy":{group:"AROMA & SENSATION",color:"#28664e",meaning:"A spicy note may evoke cinnamon or clove. A prickling or warming sensation is a different experience.",cue:"Ask whether you are smelling a spice-like aroma or physically feeling heat, tingling or irritation.",try:"Smell first, then taste. Identify a spice-like association before deciding whether you feel a physical sensation.",refs:"Cinnamon · Clove · Black pepper",dist:"A cinnamon-like aroma does not mean the chocolate contains cinnamon. Trigeminal heat is not simply an aroma.",science:"Different spice-associated aromas arise from different mixtures. Eugenol contributes clove-like aroma in many foods. Capsaicin can activate TRPV1 receptors and create burning; not every spicy impression in chocolate shares that mechanism.",insight:"One word can describe two different experiences: what a spice smells like and what a pungent ingredient physically feels like."},
+          "Smoky":{group:"AROMA",color:"#28664e",meaning:"Smoky describes an aroma reminiscent of smoke, charred wood or a fire. It differs from the warmer smell of toasted foods.",cue:"Ask: does this remind me of a campfire, or more of toasted coffee and nuts?",try:"Compare the aroma before and after breaking the chocolate. Notice whether the smoke-like impression is distinct from roasted notes.",refs:"Wood smoke · Campfire · Charred wood",dist:"Roasted notes suggest heating or toasting; smoky notes suggest smoke or char. They can overlap.",science:"Volatile phenols such as guaiacol can contribute smoky impressions in foods. In cacao, drying conditions and smoke exposure can be relevant, but a smoky impression alone cannot identify its source or establish a defect.",insight:"A smoky note is an observation, not proof of poor processing. Its significance depends on intensity, balance and intended profile."},
+          "Earthy":{group:"AROMA",color:"#28664e",meaning:"Earthy describes an aroma reminiscent of soil, forest floor or damp roots. It may be subtle or pronounced.",cue:"Look for a soil-like association and notice whether it feels clean and gentle or musty and stale.",try:"Take one gentle smell, pause and smell again. Distinguish earthy from woody or roasted.",refs:"Forest floor · Damp soil · Roots",dist:"Earthy is not automatically mouldy. Signs of spoilage should not be dismissed as a desirable flavour note.",science:"Geosmin and other volatile compounds can create earthy impressions in foods, but their presence in a particular chocolate must not be assumed without evidence. Handling and storage may affect unwanted aromas.",insight:"The same broad descriptor can feel pleasant or undesirable; context and intensity matter."},
+          "Roasted":{group:"AROMA",color:"#28664e",meaning:"Roasted notes resemble foods that have been heated or toasted, such as coffee, toasted nuts or baked crust.",cue:"Look for warm, toasted, coffee-like or browned aromas rather than a fresh fruit or floral impression.",try:"Smell first, then taste. Notice whether the roasted impression becomes clearer as the chocolate melts.",refs:"Coffee · Toasted nuts · Baked crust",dist:"Roasted describes a sensory impression, not a direct measurement of roast temperature. Smoky suggests smoke or char.",science:"Roasting changes the volatile profile through reactions including Maillard chemistry and transformation of aroma precursors. Pyrazines and other compound families can contribute, depending on the specific compounds and concentrations.",insight:"Roasting can develop desirable aromas while transforming others. More roasting does not automatically mean better flavour."},
+          "Sweet":{group:"BASIC TASTE",color:"#476d72",meaning:"Sweetness is a basic taste often associated with sugars. A honey-like or caramel-like aroma is related, but not the same thing.",cue:"Notice the taste itself. Then ask whether a honey-like or caramel-like aroma adds to the overall impression.",try:"Let the chocolate melt and focus on sweetness separately from bitterness and aroma.",refs:"Sugar · Honey-like aroma · Ripe fruit",dist:"A sweet aroma is not proof of sugar content, and perceived sweetness does not reveal the precise amount of sugar.",science:"Sweet taste is mediated primarily by the T1R2/T1R3 receptor. Aroma, texture, bitterness and expectation can influence how sweet the whole experience seems.",insight:"Two chocolates with similar sugar levels may not seem equally sweet because their bitterness, aroma and formulation differ."},
+          "Bittersweet":{group:"BOTH TASTE",color:"#476d72",meaning:"Bittersweet describes a combined impression of sweetness and bitterness. Their balance may shift as the chocolate melts.",cue:"Notice whether sweetness appears first and bitterness follows, or whether both are present together.",try:"Taste slowly and name sweetness and bitterness separately before describing their balance.",refs:"Dark cocoa · Sweetened espresso · Dark caramel",dist:"Bittersweet is a combined description, not a separate basic taste.",science:"Sweet and bitter sensations arise through different taste mechanisms. Cocoa solids, sugar, formulation and sensory context affect their perceived balance.",insight:"Separating the two sensations first makes a more useful note than simply calling chocolate 'strong'."},
+          "Sour / Tart":{group:"TASTE",color:"#476d72",meaning:"Sourness is a taste associated with acids. Tartness is a broader everyday description of a bright, sharp or mouth-watering impression.",cue:"Notice whether the sensation resembles citrus-like sharpness, and whether it is a taste or a fruit-like aroma.",try:"Taste, then pause. Describe sourness separately from fruity aroma or drying sensation.",refs:"Lemon-like sharpness · Tart berries · Plain yoghurt",dist:"Fruity does not mean sour. A fruit-like aroma can occur without strong acidity.",science:"Acids influence sour taste through specialised taste-cell mechanisms. pH and titratable acidity are different chemical measurements and neither captures the entire sensory experience.",insight:"Perceived sourness cannot tell you the chocolate's pH."},
+          "Salty":{group:"BASIC TASTE",color:"#476d72",meaning:"Salty is a basic taste associated with salts. In chocolate it may be subtle or more obvious in some formulations.",cue:"Focus on a salt-like taste rather than sharpness, bitterness or a mineral-like aroma.",try:"Taste a small piece and identify saltiness independently of sweetness and bitterness.",refs:"A tiny pinch of salt · Salted nuts",dist:"Salty is a taste. Mineral-like is an aroma or flavour association and does not prove a specific mineral is present.",science:"Salty taste involves ion-sensitive pathways, especially for sodium salts. Other ingredients and formulation influence how noticeable it is.",insight:"A chocolate may contain salt without tasting strongly salty; perception depends on concentration and context."},
+          "Creamy":{group:"MOUTHFEEL",color:"#476d72",meaning:"Creamy describes a rich, coating or soft sensation. It may occur in milk or dark chocolate and does not necessarily mean dairy is present.",cue:"Notice how the chocolate coats your mouth, how it melts, and whether it feels rich, smooth or waxy.",try:"Let a small piece melt naturally. Focus on the physical sensation rather than the flavour you smell.",refs:"Cream · Soft butter · Rich custard",dist:"Creamy is mouthfeel; milky is a flavour association; smooth describes the absence of noticeable graininess.",science:"Fat composition, particle size and distribution, moisture, emulsifiers and structure can influence mouthfeel. Cocoa butter matters, but creaminess is shaped by several interacting factors.",insight:"Dark chocolate can feel creamy without tasting milky."},
+          "Astringent":{group:"MOUTHFEEL",color:"#476d72",meaning:"Astringency is a drying, rough or puckering sensation that may develop during tasting or linger afterwards.",cue:"Notice whether your tongue, gums or inner cheeks feel less lubricated, almost as if moisture has been drawn away.",try:"After the chocolate melts, pause. Distinguish drying or roughness from the bitter taste that may accompany it.",refs:"Strong black tea · Unripe banana · Dry red wine",dist:"Bitterness is a taste; astringency is mainly a tactile mouthfeel. You may experience either without the other.",science:"Cacao polyphenols, including flavan-3-ols and procyanidins, can interact with salivary proteins and contribute to reduced lubrication. Astringency is complex and cannot be predicted from one compound or bitterness alone.",insight:"A chocolate may seem less bitter without losing every drying sensation."},
+          "Fermented":{group:"PROCESS CONTEXT",color:"#927747",meaning:"Fermentation is a cacao-processing stage, not a single flavour. Its effects may be perceived as fruity, acidic, floral or wine-like, depending on the process.",cue:"Look for a specific sensory observation first. Treat the process as a hypothesis only when supporting information exists.",try:"Describe the actual aroma before exploring how fermentation might have contributed.",refs:"Fruit-like aroma · Wine-like impression · Tangy notes",dist:"A fermented impression is not proof of a particular fermentation method, duration or quality.",science:"Microbial activity changes sugars, acids and precursors that later influence aroma development. Drying and roasting further transform this chemistry; the final flavour reflects the whole process chain.",insight:"Ask what you perceive first, and what process information supports your interpretation."},
+          "Caramelized":{group:"AROMA",color:"#28664e",meaning:"Caramelized describes an aroma or flavour reminiscent of heated sugar, toffee or browned sweet foods.",cue:"Look for a warm, browned-sugar impression rather than straightforward sweetness alone.",try:"Notice whether the association is mainly aromatic, mainly sweet, or a combination.",refs:"Toffee · Caramel · Browned sugar",dist:"Caramel-like aroma does not prove that caramel is an ingredient or that caramelization alone produced the note.",science:"Caramelization and Maillard reactions are distinct pathways, though both can contribute to complex browned aromas. The profile depends on ingredients and processing.",insight:"A caramel-like impression can occur without added caramel."},
+          "Woody":{group:"AROMA",color:"#28664e",meaning:"Woody describes an aroma reminiscent of dry wood, cedar or pencil shavings.",cue:"Look for a dry, wood-like association distinct from earthy soil or smoky char.",try:"Smell again and choose the closest association: woody, earthy, smoky or roasted.",refs:"Cedar · Dry wood · Pencil shavings",dist:"Woody does not establish the use of wood in processing or prove a particular cacao origin.",science:"Woody aroma is a perceptual category that can reflect different volatile mixtures. Assigning it to a single compound or processing stage requires specific evidence.",insight:"Sensory categories describe what an aroma resembles; they do not automatically reveal its chemical source."},
+          "Malty":{group:"AROMA",color:"#28664e",meaning:"Malty describes an aroma reminiscent of cereal, malted grain or warm grain-based foods.",cue:"Look for a grain-like, warm, sometimes bread-like association rather than a straightforward roasted-nut note.",try:"Smell, then taste, and note whether the malty impression grows as the chocolate melts.",refs:"Malted cereal · Toasted grain · Bread crust",dist:"Malty is not identical to roasted, caramelized or sweet. These can overlap but describe different impressions.",science:"Malt-like aromas can involve multiple volatile compounds and processing reactions. Their specific origin in a chocolate cannot be established from the descriptor alone.",insight:"Several aroma families can coexist in one chocolate; the goal is to describe the dominant impression accurately."},
+          "Cocoa / Chocolate":{group:"AROMA",color:"#28664e",meaning:"This descriptor captures recognisable cocoa-like or chocolate-like aromas, from mild and rounded to intense and deep.",cue:"Notice whether the impression resembles cocoa powder, cocoa nibs or a deeper roasted cocoa aroma.",try:"Smell before tasting, then check whether the cocoa impression changes during melting or remains in the finish.",refs:"Cocoa powder · Cocoa nibs · Brownie-like cocoa",dist:"Cocoa intensity is not the same as bitterness, cocoa percentage or overall quality.",science:"Chocolate aroma comes from a complex mixture of volatile compounds shaped by cacao material, processing and formulation. No single compound explains the complete cocoa character.",insight:"A higher cocoa percentage does not guarantee a more intense or more pleasant cocoa aroma."}
         };
 
-        const WHEEL_DATA = [
-          {
-            id: "flavor",
-            label: "1. FLAVOR NOTES",
-            color: "#46141c",
-            accentColor: "#d4af37",
-            textLight: "#ffffff",
-            startAngle: 180,
-            endAngle: 300,
-            subsectors: [
-              { label: "Earthy", startAngle: 180, endAngle: 200, color: "#3f1c22" },
-              { label: "Spicy", startAngle: 200, endAngle: 220, color: "#501e27" },
-              { label: "Sweet", startAngle: 220, endAngle: 240, color: "#61202c" },
-              { label: "Nutty", startAngle: 240, endAngle: 260, color: "#732332" },
-              { label: "Floral", startAngle: 260, endAngle: 280, color: "#852639" },
-              { label: "Fruity", startAngle: 280, endAngle: 300, color: "#992940" }
-            ]
-          },
-          {
-            id: "process",
-            label: "2. PROCESS",
-            color: "#0c2c1a",
-            accentColor: "#7acb92",
-            textLight: "#ffffff",
-            startAngle: 300,
-            endAngle: 420,
-            subsectors: [
-              { label: "Roasted", startAngle: 300, endAngle: 324, color: "#143622" },
-              { label: "Fermented", startAngle: 324, endAngle: 348, color: "#18422a" },
-              { label: "Dried", startAngle: 348, endAngle: 372, color: "#1d4e32" },
-              { label: "Conched", startAngle: 372, endAngle: 396, color: "#225a3a" },
-              { label: "Tempered", startAngle: 396, endAngle: 420, color: "#286843" }
-            ]
-          },
-          {
-            id: "taste",
-            label: "3. TASTE PROFILE",
-            color: "#3a230e",
-            accentColor: "#e5c453",
-            textLight: "#ffffff",
-            startAngle: 60,
-            endAngle: 180,
-            subsectors: [
-              { label: "Smooth", startAngle: 60, endAngle: 84, color: "#472c14" },
-              { label: "Creamy", startAngle: 84, endAngle: 108, color: "#543419" },
-              { label: "Salty", startAngle: 108, endAngle: 132, color: "#633d1e" },
-              { label: "Sour", startAngle: 132, endAngle: 156, color: "#724723" },
-              { label: "Bittersweet", startAngle: 156, endAngle: 180, color: "#825029" }
-            ]
-          }
+        const categories = [
+          {name:"Floral",group:"Flavor notes"},{name:"Fruity",group:"Flavor notes"},{name:"Nutty",group:"Flavor notes"},{name:"Spicy",group:"Flavor notes"},{name:"Smoky",group:"Flavor notes"},{name:"Earthy",group:"Flavor notes"},{name:"Roasted",group:"Flavor notes"},{name:"Caramelized",group:"Flavor notes"},{name:"Woody",group:"Flavor notes"},{name:"Malty",group:"Flavor notes"},{name:"Cocoa / Chocolate",group:"Flavor notes"},
+          {name:"Sweet",group:"Taste profile"},{name:"Bittersweet",group:"Taste profile"},{name:"Sour / Tart",group:"Taste profile"},{name:"Salty",group:"Taste profile"},{name:"Creamy",group:"Taste profile"},{name:"Astringent",group:"Taste profile"},{name:"Fermented",group:"Process"}
         ];
 
-        const svg = document.getElementById("interactive-wheel");
+        const svgNS = "http://www.w3.org/2000/svg";
+        const svg = document.getElementById("wheel");
         if (!svg) return;
 
-        let activeSectorId = null;
-        let gRotation = 0;
+        function polar(cx, cy, r, a) {
+          const rad = (a - 90) * Math.PI / 180;
+          return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+        }
 
-        function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-          const radians = (angleInDegrees * Math.PI) / 180.0;
-          return {
-            x: centerX + radius * Math.cos(radians),
-            y: centerY + radius * Math.sin(radians)
+        function sectorPath(cx, cy, r1, r2, start, end) {
+          const p1 = polar(cx, cy, r2, start);
+          const p2 = polar(cx, cy, r2, end);
+          const p3 = polar(cx, cy, r1, end);
+          const p4 = polar(cx, cy, r1, start);
+          const large = (end - start) > 180 ? 1 : 0;
+          return `M ${p1[0]} ${p1[1]} A ${r2} ${r2} 0 ${large} 1 ${p2[0]} ${p2[1]} L ${p3[0]} ${p3[1]} A ${r1} ${r1} 0 ${large} 0 ${p4[0]} ${p4[1]} Z`;
+        }
+
+        function el(name, attrs = {}) {
+          const n = document.createElementNS(svgNS, name);
+          Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, v));
+          return n;
+        }
+
+        function buildWheel() {
+          svg.innerHTML = "";
+          const palettes = {
+            "Flavor notes": ["#9B5D75","#B96870","#C67E70","#C38D58","#B8A05D","#81976C","#5F9A8B","#4F8C91","#6F83A8","#8B79A8","#A4779B"],
+            "Taste profile": ["#D0A35E","#C58B55","#B87955","#A96C5B","#8C8B65","#729A8B"],
+            "Process": ["#7D9C72"]
           };
-        }
 
-        function getSectorPath(x, y, r1, r2, startAngle, endAngle) {
-          const start = polarToCartesian(x, y, r2, startAngle);
-          const end = polarToCartesian(x, y, r2, endAngle);
-          const startInner = polarToCartesian(x, y, r1, endAngle);
-          const endInner = polarToCartesian(x, y, r1, startAngle);
-          const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
-          return `M ${start.x} ${start.y} A ${r2} ${r2} 0 ${largeArc} 1 ${end.x} ${end.y} L ${startInner.x} ${startInner.y} A ${r1} ${r1} 0 ${largeArc} 0 ${endInner.x} ${endInner.y} Z`;
-        }
+          const bg = el("circle", { cx: 250, cy: 250, r: 244, fill: "#06251F", stroke: "#D6B56F", "stroke-opacity": ".8", "stroke-width": "1.3" });
+          svg.appendChild(bg);
 
-        function getArcPath(x, y, r, startAngle, endAngle, isCounterClockwise) {
-          const start = polarToCartesian(x, y, r, startAngle);
-          const end = polarToCartesian(x, y, r, endAngle);
-          const sweep = isCounterClockwise ? 0 : 1;
-          return `M ${start.x} ${start.y} A ${r} ${r} 0 0 ${sweep} ${end.x} ${end.y}`;
-        }
+          const start = -90, step = 360 / categories.length;
+          const counters = { "Flavor notes": 0, "Taste profile": 0, "Process": 0 };
 
-        // Generate SVG content with luxury gradients and filter definitions
-        let svgContent = `
-          <defs>
-            <radialGradient id="hubBgGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#0e2617" />
-              <stop offset="70%" stop-color="#07160d" />
-              <stop offset="100%" stop-color="#030b06" />
-            </radialGradient>
-            <filter id="wheelSliceGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="4" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="hubShadow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000000" flood-opacity="0.7"/>
-            </filter>
-          </defs>
-          <g id="rotating-group">
-        `;
+          categories.forEach((item, i) => {
+            const a = start + i * step;
+            const b = a + step - 0.8;
+            const palette = palettes[item.group];
+            const color = palette[counters[item.group]++ % palette.length];
+            const g = el("g", { "data-name": item.name, tabindex: "0", role: "button", "aria-label": item.name + " descriptor" });
+            const path = el("path", { d: sectorPath(250, 250, 112, 235, a, b), fill: color, "fill-opacity": ".94", stroke: "#F3E7D0", "stroke-opacity": ".65", "stroke-width": "1.1", class: "wedge" });
+            g.appendChild(path);
 
-        WHEEL_DATA.forEach((category) => {
-          // --- 1. MAIN SECTOR (INNER PILLAR RING) ---
-          const mainPath = getSectorPath(cx, cy, R1, R2, category.startAngle, category.endAngle);
-          svgContent += `
-            <path class="wheel-sector wheel-main-sector" 
-                  d="${mainPath}" 
-                  fill="${category.color}" 
-                  stroke="rgba(212, 175, 55, 0.45)"
-                  stroke-width="1.5"
-                  data-category="${category.id}"
-                  style="color: ${category.accentColor};"
-            />
-          `;
+            const mid = (a + b) / 2, radius = 177, [x, y] = polar(250, 250, radius, mid);
+            let rot = mid + 90;
+            if (mid > 90 && mid < 270) rot += 180;
+            const text = el("text", { x, y, class: "wheel-label", transform: `rotate(${rot} ${x} ${y})`, "font-size": item.name.length > 13 ? "10.2" : "11.5" });
+            
+            let label = item.name.replace(" / ", " / ");
+            if (label === "Cocoa / Chocolate") label = "Cocoa / Chocolate";
+            if (label.length > 14) {
+              let words = label.split(" ");
+              let cut = Math.ceil(words.length / 2);
+              const t1 = el("tspan", { x, y: y - 5 });
+              t1.textContent = words.slice(0, cut).join(" ");
+              const t2 = el("tspan", { x, y: y + 7 });
+              t2.textContent = words.slice(cut).join(" ");
+              text.append(t1, t2);
+            } else {
+              text.textContent = label;
+            }
+            g.appendChild(text);
 
-          const midAngle = (category.startAngle + category.endAngle) / 2;
-          const normAngle = ((midAngle % 360) + 360) % 360;
-          const isBottom = (normAngle > 0 && normAngle < 180);
-          const textR = (R1 + R2) / 2;
-          const textSpan = (category.endAngle - category.startAngle) * 0.44;
+            g.addEventListener("click", () => selectDescriptor(item.name));
+            g.addEventListener("keydown", e => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                selectDescriptor(item.name);
+              }
+            });
+            svg.appendChild(g);
+          });
+
+          // Center Hub
+          const hubGroup = el("g", { id: "wheelCenterHub", style: "cursor: pointer;", role: "button", tabindex: "0", "aria-label": "Reset wheel view" });
+          const outer = el("circle", { cx: 250, cy: 250, r: 108, fill: "#07382D", stroke: "#D8B96F", "stroke-width": "2" });
+          const inner = el("circle", { cx: 250, cy: 250, r: 99, fill: "none", stroke: "#D8B96F", "stroke-opacity": ".35", "stroke-dasharray": "2 5", "stroke-width": "1" });
+          const c1 = el("text", { x: 250, y: 230, class: "wheel-center", "font-size": "17", "letter-spacing": "2", fill: "#f5f0e7" });
+          c1.textContent = "RT CHOCOS";
+          const c2 = el("text", { x: 250, y: 254, class: "wheel-center", "font-size": "12", "letter-spacing": "1.2", fill: "#f5f0e7" });
+          c2.textContent = "FLAVOR WHEEL";
+          const c3 = el("text", { x: 250, y: 275, class: "wheel-center", "font-size": "9", fill: "#E2C88B", "letter-spacing": "1" });
+          c3.textContent = "SMELL · TASTE · NOTICE";
           
-          const textPathD = isBottom
-            ? getArcPath(cx, cy, textR, midAngle + textSpan, midAngle - textSpan, true)
-            : getArcPath(cx, cy, textR, midAngle - textSpan, midAngle + textSpan, false);
+          hubGroup.append(outer, inner, c1, c2, c3);
+          hubGroup.addEventListener("click", resetWheel);
+          hubGroup.addEventListener("keydown", e => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              resetWheel();
+            }
+          });
+          svg.appendChild(hubGroup);
+        }
 
-          const textPathId = `textpath-${category.id}`;
-          svgContent += `
-            <path id="${textPathId}" d="${textPathD}" fill="none" stroke="none" />
-            <text class="wheel-label-text" fill="${category.textLight}">
-              <textPath href="#${textPathId}" startOffset="50%" text-anchor="middle">
-                ${category.label}
-              </textPath>
-            </text>
+        function escapeHtml(s) {
+          return String(s).replace(/[&<>"']/g, c => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          }[c]));
+        }
+
+        function selectDescriptor(name) {
+          const d = data[name];
+          if (!d) return;
+
+          document.querySelectorAll(".wedge").forEach(p => {
+            p.classList.remove("selected");
+            p.style.opacity = ".42";
+          });
+
+          const group = [...svg.querySelectorAll("g")].find(g => g.dataset.name === name);
+          if (group) {
+            const wedge = group.querySelector(".wedge");
+            if (wedge) {
+              wedge.classList.add("selected");
+              wedge.style.opacity = "1";
+            }
+            group.focus({ preventScroll: true });
+          }
+
+          const groupEl = document.getElementById("detailGroup");
+          if (groupEl) groupEl.textContent = d.group;
+
+          const content = document.getElementById("detailContent");
+          if (!content) return;
+
+          content.innerHTML = `
+            <h3>${escapeHtml(name)}</h3>
+            <p class="detail-lead">${escapeHtml(d.meaning)}</p>
+            <div class="callout"><b>What to notice</b>${escapeHtml(d.cue)}</div>
+            <p><span class="mini-label">Try this now</span>${escapeHtml(d.try)}</p>
+            <p><span class="mini-label">Familiar reference points</span>${escapeHtml(d.refs)}</p>
+            <p><span class="mini-label">Don't confuse it with…</span>${escapeHtml(d.dist)}</p>
+            <details>
+              <summary>Explore the science</summary>
+              <div class="science">
+                <p>${escapeHtml(d.science)}</p>
+                <div class="callout"><b>A useful insight</b>${escapeHtml(d.insight)}</div>
+                <p class="motion-reduced">These are general mechanisms and plausible contributors, not a chemical diagnosis of a specific chocolate.</p>
+              </div>
+            </details>
+            <div class="mini-label" style="margin-top:18px">What did you notice?</div>
+            <div class="observations" role="group" aria-label="Record sensory observation">
+              <button type="button" data-observation="I can smell it">◌ &nbsp; I can smell it</button>
+              <button type="button" data-observation="I can taste it">◉ &nbsp; I can taste it</button>
+              <button type="button" data-observation="I notice the texture">⌁ &nbsp; I notice the texture</button>
+              <button type="button" data-observation="I'm not sure yet">? &nbsp; I'm not sure yet</button>
+            </div>
+            <div class="note-status" id="noteStatus" aria-live="polite"></div>
           `;
 
-          // --- 2. SUB-SECTORS (OUTER DESCRIPTOR RING) ---
-          category.subsectors.forEach((sub, subIdx) => {
-            const subPath = getSectorPath(cx, cy, R2, R3, sub.startAngle, sub.endAngle);
-            svgContent += `
-              <path class="wheel-sector wheel-sub-sector" 
-                    d="${subPath}" 
-                    fill="${sub.color}" 
-                    stroke="rgba(212, 175, 55, 0.35)"
-                    stroke-width="1.2"
-                    data-category="${category.id}"
-                    data-label="${sub.label}"
-                    style="color: ${category.accentColor};"
-              />
-            `;
+          content.classList.remove("fade-in");
+          void content.offsetWidth;
+          content.classList.add("fade-in");
 
-            const subMidAngle = (sub.startAngle + sub.endAngle) / 2;
-            const normSubAngle = ((subMidAngle % 360) + 360) % 360;
-            const isSubBottom = (normSubAngle > 0 && normSubAngle < 180);
-            const subTextR = (R2 + R3) / 2;
-            const subSpan = (sub.endAngle - sub.startAngle) * 0.43;
-
-            const subTextPathD = isSubBottom
-              ? getArcPath(cx, cy, subTextR, subMidAngle + subSpan, subMidAngle - subSpan, true)
-              : getArcPath(cx, cy, subTextR, subMidAngle - subSpan, subMidAngle + subSpan, false);
-            
-            const subTextPathId = `textpath-sub-${category.id}-${subIdx}`;
-
-            svgContent += `
-              <path id="${subTextPathId}" d="${subTextPathD}" fill="none" stroke="none" />
-              <text class="wheel-sublabel-text" fill="#ffffff" data-label="${sub.label}">
-                <textPath href="#${subTextPathId}" startOffset="50%" text-anchor="middle">
-                  ${sub.label}
-                </textPath>
-              </text>
-            `;
-          });
-        });
-
-        svgContent += `</g>`; // End rotating-group
-
-        // --- 3. LUXURY MEDALLION CENTER HUB (STATIONARY) ---
-        svgContent += `
-          <g id="center-hub-group" filter="url(#hubShadow)" style="cursor: pointer;">
-            <!-- Outer gold bezel -->
-            <circle class="wheel-center-hub" cx="${cx}" cy="${cy}" r="${R0}" fill="url(#hubBgGrad)" stroke="#d4af37" stroke-width="2.5" />
-            <!-- Concentric inner dashed gold accent -->
-            <circle cx="${cx}" cy="${cy}" r="${R0 - 8}" fill="none" stroke="rgba(212, 175, 55, 0.4)" stroke-width="1" stroke-dasharray="2, 4" />
-            <!-- Center Typography -->
-            <text x="${cx}" y="${cy - 7}" text-anchor="middle" fill="#d4af37" font-family="'Playfair Display', serif" font-size="14" font-weight="700" letter-spacing="2">CACAO</text>
-            <text x="${cx}" y="${cy + 8}" text-anchor="middle" fill="#fbf7ee" font-family="'Inter', sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5">SENSORY LAB</text>
-            <text x="${cx}" y="${cy + 22}" text-anchor="middle" fill="#8eba9f" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="1">✦ TAP ✦</text>
-          </g>
-        `;
-
-        svg.innerHTML = svgContent;
-
-        const rotatingGroup = document.getElementById("rotating-group");
-        const centerHub = document.getElementById("center-hub-group");
-        const sectors = document.querySelectorAll(".wheel-sector");
-        const cards = document.querySelectorAll(".wheel-detail-card");
-        const descriptorPills = document.querySelectorAll(".descriptor-pill");
-        const telemetryName = document.getElementById("telemetry-note-name");
-        const telemetryDesc = document.getElementById("telemetry-note-desc");
-
-        const rotationMap = {
-          "flavor": 30,
-          "process": -90,
-          "taste": 150
-        };
-
-        function updateTelemetry(name, desc) {
-          if (!telemetryName || !telemetryDesc) return;
-          telemetryName.textContent = name.toUpperCase();
-          telemetryDesc.textContent = desc;
-        }
-
-        function setFocus(sectorId) {
-          if (activeSectorId === sectorId) return;
-          activeSectorId = sectorId;
-
-          if (sectorId) {
-            const targetRotation = rotationMap[sectorId];
-            const currentNorm = ((gRotation % 360) + 360) % 360;
-            const targetNorm = ((targetRotation % 360) + 360) % 360;
-            
-            let diff = targetNorm - currentNorm;
-            if (diff > 180) diff -= 360;
-            if (diff < -180) diff += 360;
-            
-            gRotation += diff;
-            rotatingGroup.style.transform = `rotate(${gRotation}deg)`;
-            svg.classList.add("has-focus");
-          } else {
-            gRotation = 0;
-            rotatingGroup.style.transform = `rotate(0deg)`;
-            svg.classList.remove("has-focus");
-            updateTelemetry("SELECT ANY SLICE OR DESCRIPTOR", "Click any wheel sector or tasting chip to inspect its origin chemistry and molecular flavor precursors.");
-          }
-
-          sectors.forEach(sec => {
-            if (!sectorId) {
-              sec.classList.remove("focused");
-            } else if (sec.getAttribute("data-category") === sectorId) {
-              sec.classList.add("focused");
-            } else {
-              sec.classList.remove("focused");
-            }
-          });
-
-          cards.forEach(card => {
-            const cardSector = card.getAttribute("data-sector");
-            card.classList.remove("active-flavor", "active-process", "active-taste");
-            if (cardSector === sectorId) {
-              card.classList.add(`active-${cardSector}`);
-            }
+          content.querySelectorAll("[data-observation]").forEach(btn => {
+            btn.addEventListener("click", () => {
+              content.querySelectorAll("[data-observation]").forEach(b => b.classList.remove("chosen"));
+              btn.classList.add("chosen");
+              const status = document.getElementById("noteStatus");
+              if (status) {
+                status.textContent = "Noted: " + btn.dataset.observation + ". Keep tasting at your own pace.";
+              }
+            });
           });
         }
 
-        // Wheel Sector Clicks & Hovers
-        sectors.forEach(sec => {
-          sec.addEventListener("click", function(e) {
-            e.stopPropagation();
-            const category = this.getAttribute("data-category");
-            const label = this.getAttribute("data-label");
-            setFocus(category);
-
-            if (label && MOLECULAR_DATA[label]) {
-              updateTelemetry(label, MOLECULAR_DATA[label]);
-              highlightPill(label);
-            }
+        function resetWheel() {
+          document.querySelectorAll(".wedge").forEach(p => {
+            p.classList.remove("selected");
+            p.style.opacity = "1";
           });
 
-          sec.addEventListener("mouseenter", function() {
-            const label = this.getAttribute("data-label");
-            if (label && MOLECULAR_DATA[label]) {
-              updateTelemetry(label, MOLECULAR_DATA[label]);
-            }
-          });
-        });
+          const groupEl = document.getElementById("detailGroup");
+          if (groupEl) groupEl.textContent = "START HERE";
 
-        // Detail Cards Interaction
-        cards.forEach(card => {
-          card.addEventListener("click", function(e) {
-            if (e.target.classList.contains("descriptor-pill")) return;
-            const sectorId = this.getAttribute("data-sector");
-            if (activeSectorId === sectorId) {
-              setFocus(null);
-            } else {
-              setFocus(sectorId);
-            }
-          });
-        });
+          const content = document.getElementById("detailContent");
+          if (!content) return;
 
-        // Descriptor Pills Interaction
-        function highlightPill(label) {
-          descriptorPills.forEach(p => {
-            if (p.getAttribute("data-desc") === label) {
-              p.classList.add("active-pill");
-            } else {
-              p.classList.remove("active-pill");
-            }
-          });
+          content.innerHTML = `
+            <h3>Begin with what you notice.</h3>
+            <p class="detail-lead">Choose any descriptor on the wheel. You can explore the science, try a small exercise, or simply continue tasting.</p>
+            <div class="callout"><b>Try this</b>Smell your chocolate gently. Pause, then smell again. What comes to mind first?</div>
+            <p>Your first impression is worth recording, even if it is “nothing distinctive yet.”</p>
+          `;
+          content.classList.remove("fade-in");
+          void content.offsetWidth;
+          content.classList.add("fade-in");
         }
 
-        descriptorPills.forEach(pill => {
-          pill.addEventListener("click", function(e) {
-            e.stopPropagation();
-            const desc = this.getAttribute("data-desc");
-            const parent = this.closest(".wheel-detail-card");
-            if (parent) {
-              const sec = parent.getAttribute("data-sector");
-              setFocus(sec);
-            }
-            if (desc && MOLECULAR_DATA[desc]) {
-              updateTelemetry(desc, MOLECULAR_DATA[desc]);
-              highlightPill(desc);
-            }
-          });
+        const resetBtn = document.getElementById("resetWheel");
+        if (resetBtn) {
+          resetBtn.addEventListener("click", resetWheel);
+        }
 
-          pill.addEventListener("mouseenter", function() {
-            const desc = this.getAttribute("data-desc");
-            if (desc && MOLECULAR_DATA[desc]) {
-              updateTelemetry(desc, MOLECULAR_DATA[desc]);
-            }
-          });
-        });
-
-        // Center Hub Reset
-        centerHub.addEventListener("click", function(e) {
-          e.stopPropagation();
-          setFocus(null);
-          highlightPill(null);
-        });
-
-        document.addEventListener("click", function(e) {
-          const wheelSection = document.getElementById("flavor-wheel-sec");
-          if (wheelSection && !wheelSection.contains(e.target)) {
-            setFocus(null);
-            highlightPill(null);
-          }
-        });
-      });
+        buildWheel();
+      })();
     </script>
   </section>
 
