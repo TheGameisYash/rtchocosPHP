@@ -1197,6 +1197,7 @@ function openFailedBatchModal(id) {
           <span class="lab-badge-motto">${escapeHtml(fail.badge_label || 'BECAUSE FAILURE IS DATA.')}</span>
         </div>
         <div class="lab-failed-actions">
+          <span class="lab-modal-esc-hint">Press <kbd>ESC</kbd> to exit</span>
           <button type="button" class="lab-action-btn" onclick="copyLabDossier('${escapeHtml(fail.slug || 'failed-' + fail.id)}', '${escapeHtml(fail.title)}')" title="Share Dossier Link">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
             <span>SHARE</span>
@@ -1239,7 +1240,7 @@ function openFailedBatchModal(id) {
     `;
   }
 
-  // 4-Phase Chronological Forensic Investigation Grid (Replaces old stark boxes)
+  // 4-Phase Chronological Forensic Investigation Grid (Full-Width Viewport Sequence)
   innerHTML += `
     <div class="lab-failed-postmortem-grid">
       <!-- 01: The Intended Goal -->
@@ -1336,66 +1337,78 @@ function openFailedBatchModal(id) {
     </div>
   `;
 
-  // Full Story Dossier Card
-  if (fail.full_story) {
-    innerHTML += `
-      <div class="lab-failed-story-card">
-        <div class="lab-story-header">
-          <div class="lab-story-header-left">
-            <div class="lab-story-icon-medallion">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                <line x1="9" y1="7" x2="15" y2="7"></line>
-                <line x1="9" y1="11" x2="15" y2="11"></line>
-              </svg>
+  // Story & Preventative Protocols Section (Balanced Edge-to-Edge Split)
+  const hasStory = !!fail.full_story;
+  const hasProtocols = specs.correctiveChecklist && specs.correctiveChecklist.length > 0;
+
+  if (hasStory || hasProtocols) {
+    if (hasStory && hasProtocols) {
+      innerHTML += '<div class="lab-failed-details-split">';
+    }
+
+    if (hasStory) {
+      innerHTML += `
+        <div class="lab-failed-story-card">
+          <div class="lab-story-header">
+            <div class="lab-story-header-left">
+              <div class="lab-story-icon-medallion">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  <line x1="9" y1="7" x2="15" y2="7"></line>
+                  <line x1="9" y1="11" x2="15" y2="11"></line>
+                </svg>
+              </div>
+              <div>
+                <div class="lab-story-eyebrow">CHRONOLOGICAL FIELD LOGS &amp; POST-MORTEM DOSSIER</div>
+                <h4 class="lab-story-heading">The Full Experiment Story &amp; Post-Mortem Science</h4>
+              </div>
+            </div>
+            <div class="lab-story-badge">
+              <span>🔬 COMPREHENSIVE R&amp;D ARCHIVE</span>
+            </div>
+          </div>
+          <div class="lab-story-body">
+            ${renderLabContent(fail.full_story)}
+          </div>
+          <div class="lab-story-footer">
+            <div class="lab-story-stamp">
+              <span class="stamp-dot"></span>
+              <span>AUDITED &amp; SIGNED OFF BY RT CHOCOS R&amp;D FORMULATION TEAM · TRIAL REF #${fail.id}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (hasProtocols) {
+      innerHTML += `
+        <div class="lab-failed-protocols-card">
+          <div class="lab-protocols-header">
+            <div class="lab-protocols-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             </div>
             <div>
-              <div class="lab-story-eyebrow">CHRONOLOGICAL FIELD LOGS &amp; POST-MORTEM DOSSIER</div>
-              <h4 class="lab-story-heading">The Full Experiment Story &amp; Post-Mortem Science</h4>
+              <div class="lab-protocols-eyebrow">PREVENTATIVE MANUFACTURING PROTOCOLS</div>
+              <h4 class="lab-protocols-heading">Validated Corrective Protocols Adopted</h4>
             </div>
           </div>
-          <div class="lab-story-badge">
-            <span>🔬 COMPREHENSIVE R&amp;D ARCHIVE</span>
+          <div class="lab-protocols-list">
+            ${specs.correctiveChecklist.map((item, idx) => `
+              <div class="lab-protocol-item">
+                <span class="lab-protocol-num">${String(idx + 1).padStart(2, '0')}</span>
+                <span class="lab-protocol-check">✓</span>
+                <span class="lab-protocol-text">${escapeHtml(item)}</span>
+              </div>
+            `).join('')}
           </div>
         </div>
-        <div class="lab-story-body">
-          ${renderLabContent(fail.full_story)}
-        </div>
-        <div class="lab-story-footer">
-          <div class="lab-story-stamp">
-            <span class="stamp-dot"></span>
-            <span>AUDITED &amp; SIGNED OFF BY RT CHOCOS R&amp;D FORMULATION TEAM · TRIAL REF #${fail.id}</span>
-          </div>
-        </div>
-      </div>
-    `;
-  }
+      `;
+    }
 
-  // Validated Corrective Protocols Checklist Card
-  if (specs.correctiveChecklist && specs.correctiveChecklist.length > 0) {
-    innerHTML += `
-      <div class="lab-failed-protocols-card">
-        <div class="lab-protocols-header">
-          <div class="lab-protocols-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          </div>
-          <div>
-            <div class="lab-protocols-eyebrow">PREVENTATIVE MANUFACTURING PROTOCOLS</div>
-            <h4 class="lab-protocols-heading">Validated Corrective Protocols Adopted</h4>
-          </div>
-        </div>
-        <div class="lab-protocols-list">
-          ${specs.correctiveChecklist.map((item, idx) => `
-            <div class="lab-protocol-item">
-              <span class="lab-protocol-num">${String(idx + 1).padStart(2, '0')}</span>
-              <span class="lab-protocol-check">✓</span>
-              <span class="lab-protocol-text">${escapeHtml(item)}</span>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
+    if (hasStory && hasProtocols) {
+      innerHTML += '</div>';
+    }
   }
 
   innerHTML += `

@@ -1646,7 +1646,8 @@ section.lab-ingredient-section:nth-of-type(even) {
    EXPERIMENT & INGREDIENT FULLSCREEN WORKSPACE (Edge-to-Edge Professional UI)
    ================================================================= */
 #experimentModal,
-#ingredientModal {
+#ingredientModal,
+#failedBatchModal {
   padding: 0 !important;
   background: rgba(10, 20, 14, 0.8) !important;
   backdrop-filter: blur(12px);
@@ -1656,7 +1657,8 @@ section.lab-ingredient-section:nth-of-type(even) {
 }
 
 #experimentModal .lab-modal-container,
-#ingredientModal .lab-modal-container {
+#ingredientModal .lab-modal-container,
+#failedBatchModal .lab-modal-container {
   width: 100vw !important;
   max-width: 100vw !important;
   height: 100vh !important;
@@ -1673,15 +1675,18 @@ section.lab-ingredient-section:nth-of-type(even) {
 }
 
 #experimentModal .lab-modal-container::-webkit-scrollbar,
-#ingredientModal .lab-modal-container::-webkit-scrollbar {
+#ingredientModal .lab-modal-container::-webkit-scrollbar,
+#failedBatchModal .lab-modal-container::-webkit-scrollbar {
   width: 6px;
 }
 #experimentModal .lab-modal-container::-webkit-scrollbar-track,
-#ingredientModal .lab-modal-container::-webkit-scrollbar-track {
+#ingredientModal .lab-modal-container::-webkit-scrollbar-track,
+#failedBatchModal .lab-modal-container::-webkit-scrollbar-track {
   background: #FAF7F2;
 }
 #experimentModal .lab-modal-container::-webkit-scrollbar-thumb,
-#ingredientModal .lab-modal-container::-webkit-scrollbar-thumb {
+#ingredientModal .lab-modal-container::-webkit-scrollbar-thumb,
+#failedBatchModal .lab-modal-container::-webkit-scrollbar-thumb {
   background: #D8CFBE;
   border-radius: 3px;
 }
@@ -3113,14 +3118,34 @@ section.lab-ingredient-section:nth-of-type(even) {
    (Editorial Forensic Architecture, Zero Void, Anti-Slop Visual Hierarchy)
    ================================================================= */
 #failedBatchModal .lab-modal-container {
-  background: #FAF7F2;
+  background: #F8F5EE;
+}
+
+#failedBatchModal .lab-modal-header {
+  flex-shrink: 0;
+  height: auto;
+  min-height: 68px;
+  border-radius: 0;
+  padding: 12px clamp(20px, 3vw, 48px);
+  background: #FFFFFF;
+  border-bottom: 1px solid #E6DED2;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(18, 34, 23, 0.03);
+  z-index: 10;
+  width: 100vw;
+  box-sizing: border-box;
 }
 
 #failedBatchModal .lab-modal-body {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 28px clamp(16px, 3.5vw, 36px) 64px;
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: clamp(16px, 2vw, 28px) clamp(20px, 3vw, 48px) 60px !important;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 
 /* Modal Sticky Header */
@@ -3296,16 +3321,18 @@ section.lab-ingredient-section:nth-of-type(even) {
   font-weight: 500;
 }
 
-/* Hero Frame */
+/* Hero Frame - Edge-to-Edge Cinematic Canvas */
 .lab-failed-hero-frame {
   position: relative;
   border-radius: 14px;
   overflow: hidden;
-  height: clamp(220px, 26vw, 340px);
-  margin-bottom: 24px;
+  width: 100% !important;
+  height: clamp(240px, 22vw, 360px);
+  margin-bottom: 0;
   border: 1px solid #E6DED2;
   box-shadow: 0 8px 24px rgba(18, 34, 23, 0.06);
   background: #18281E;
+  flex-shrink: 0;
 }
 
 .lab-failed-hero-frame img {
@@ -3378,12 +3405,44 @@ section.lab-ingredient-section:nth-of-type(even) {
   letter-spacing: 0.1em;
 }
 
-/* 4-Phase Chronological Forensic Investigation Grid */
+/* 4-Phase Chronological Forensic Investigation Grid (Full-Width Viewport Sequence) */
 .lab-failed-postmortem-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(14px, 1.4vw, 20px);
+  width: 100%;
+  margin-bottom: 0;
+}
+
+@media (max-width: 1180px) {
+  .lab-failed-postmortem-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .lab-failed-postmortem-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Fullscreen Details Split (Story on Left, Protocols on Right) */
+.lab-failed-details-split {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: clamp(14px, 1.6vw, 22px);
+  width: 100%;
+  align-items: stretch;
+  margin-bottom: 0;
+}
+
+@media (max-width: 1040px) {
+  .lab-failed-details-split {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
 }
 
 .lab-pm-card {
@@ -3557,8 +3616,12 @@ section.lab-ingredient-section:nth-of-type(even) {
   border: 1px solid #E6DED2;
   border-radius: 14px;
   padding: 30px clamp(20px, 3vw, 36px);
-  margin-bottom: 24px;
+  margin-bottom: 0;
   box-shadow: 0 4px 18px rgba(18, 34, 23, 0.04);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .lab-story-header {
@@ -3680,7 +3743,10 @@ section.lab-ingredient-section:nth-of-type(even) {
   border: 1px solid #D1EAD7;
   border-radius: 14px;
   padding: 24px 28px;
-  margin-bottom: 24px;
+  margin-bottom: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .lab-protocols-header {
