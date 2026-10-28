@@ -293,95 +293,48 @@ include 'includes/header.php';
     <!-- RIGHT: FROM A FAILED BATCH TO A NEW INSIGHT CARD -->
     <div class="lab-failed-card" id="failed-experiments">
       <div class="lab-failed-header">
-        <div class="lab-failed-eyebrow-row">
-          <span class="lab-failed-badge-pill">
-            <span class="pulse-dot">●</span>
-            <span><?php echo htmlspecialchars($failedEyebrow); ?></span>
-          </span>
-          <span class="lab-failed-meta-label">FORENSIC R&amp;D ARCHIVE</span>
-        </div>
         <h2 class="lab-failed-title"><?php echo htmlspecialchars($failedHeading); ?></h2>
-        <p class="lab-failed-subtitle">
-          Every formulation failure yields irreplaceable data. Here is what seized, why the matrix collapsed, and the permanent scientific rules established.
-        </p>
-
-        <?php if (count($failedBatches) > 1): ?>
-        <div class="lab-failed-switcher" role="tablist">
-          <?php foreach ($failedBatches as $idx => $fb): ?>
-            <button type="button" 
-                    class="lab-failed-pill-btn <?php echo $idx === 0 ? 'active' : ''; ?>" 
-                    onclick="switchFailedBatchDisplay(<?php echo (int)$fb['id']; ?>, this)"
-                    data-id="<?php echo (int)$fb['id']; ?>">
-              <span>Case #<?php echo str_pad($fb['id'], 2, '0', STR_PAD_LEFT); ?>: <?php echo htmlspecialchars($fb['title']); ?></span>
-            </button>
-          <?php endforeach; ?>
+        <div class="lab-eyebrow" style="margin-top: 6px; margin-bottom: 0;">
+          <span><?php echo htmlspecialchars($failedEyebrow); ?></span>
         </div>
-        <?php endif; ?>
       </div>
 
       <?php if ($primaryFailed): ?>
       <div class="lab-failed-inner-box">
-        <!-- Visual Specimen Frame -->
         <div class="lab-failed-img-wrap">
-          <img id="failedMainImg" src="<?php echo htmlspecialchars($primaryFailed['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" alt="<?php echo htmlspecialchars($primaryFailed['title']); ?>" loading="lazy" />
-          <div class="lab-failed-specimen-overlay">
-            <span class="lab-failed-specimen-tag">⚠️ DEFECT SPECIMEN · TRIAL AUDIT</span>
-            <span id="failedMainRef" class="lab-failed-ref-tag">REF #FAIL-0<?php echo (int)$primaryFailed['id']; ?></span>
-          </div>
+          <img src="<?php echo htmlspecialchars($primaryFailed['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" alt="<?php echo htmlspecialchars($primaryFailed['title']); ?>" loading="lazy" />
         </div>
-
-        <!-- 4-Phase Forensic Grid -->
         <div class="lab-failed-content">
-          <div class="lab-failed-case-header">
-            <div id="failedMainBadge" class="lab-failed-badge-text"><?php echo htmlspecialchars($primaryFailed['badge_label'] ?: 'BECAUSE FAILURE IS DATA.'); ?></div>
-            <h3 id="failedMainTitle" class="lab-failed-case-title"><?php echo htmlspecialchars($primaryFailed['title']); ?></h3>
+          <div class="lab-failed-case-tag"><?php echo htmlspecialchars($primaryFailed['title']); ?></div>
+          
+          <div class="lab-failed-data-row">
+            <span class="label">1. The Hypothesis</span>
+            <span class="text"><?php echo htmlspecialchars($primaryFailed['hypothesis']); ?></span>
           </div>
 
-          <div class="lab-failed-steps-grid">
-            <div class="lab-failed-step-item step-hypo">
-              <div class="lab-failed-step-head">
-                <span class="step-num">01</span>
-                <span class="step-lbl">HYPOTHESIS</span>
-              </div>
-              <div id="failedMainHypo" class="lab-failed-step-body"><?php echo htmlspecialchars($primaryFailed['hypothesis']); ?></div>
-            </div>
-
-            <div class="lab-failed-step-item step-defect">
-              <div class="lab-failed-step-head">
-                <span class="step-num">02</span>
-                <span class="step-lbl">THE ANOMALY</span>
-              </div>
-              <div id="failedMainWhat" class="lab-failed-step-body"><?php echo htmlspecialchars($primaryFailed['what_happened']); ?></div>
-            </div>
-
-            <div class="lab-failed-step-item step-cause">
-              <div class="lab-failed-step-head">
-                <span class="step-num">03</span>
-                <span class="step-lbl">ROOT CAUSE</span>
-              </div>
-              <div id="failedMainWhy" class="lab-failed-step-body"><?php echo htmlspecialchars($primaryFailed['why_it_happened']); ?></div>
-            </div>
-
-            <div class="lab-failed-step-item step-learning">
-              <div class="lab-failed-step-head">
-                <span class="step-num">04</span>
-                <span class="step-lbl">BREAKTHROUGH</span>
-              </div>
-              <div id="failedMainNext" class="lab-failed-step-body"><?php echo htmlspecialchars($primaryFailed['what_next']); ?></div>
-            </div>
+          <div class="lab-failed-data-row">
+            <span class="label">2. What Happened?</span>
+            <span class="text"><?php echo htmlspecialchars($primaryFailed['what_happened']); ?></span>
           </div>
 
-          <div class="lab-failed-footer-action">
-            <button type="button" id="failedMainCtaBtn" class="lab-failed-cta-btn" onclick="openFailedBatchModal(<?php echo (int)$primaryFailed['id']; ?>)">
-              <span>READ FULL POST-MORTEM DOSSIER</span>
-              <span class="cta-arrow">→</span>
-            </button>
-            <span class="lab-failed-footnote">Detailed micrographs, sensory analysis &amp; corrective lab rules</span>
+          <div class="lab-failed-data-row">
+            <span class="label">3. Understanding The Science</span>
+            <span class="text"><?php echo htmlspecialchars($primaryFailed['why_it_happened']); ?></span>
           </div>
+
+          <div class="lab-failed-data-row">
+            <span class="label">4. The Learning</span>
+            <span class="text"><?php echo htmlspecialchars($primaryFailed['what_next']); ?></span>
+          </div>
+
+          <button type="button" class="lab-failed-btn" onclick="openFailedBatchModal(<?php echo (int)$primaryFailed['id']; ?>)">
+            <span>READ FULL STORY</span>
+            <span>→</span>
+          </button>
         </div>
       </div>
       <?php else: ?>
-        <div class="lab-failed-inner-box" style="padding: 36px 24px; text-align: center; color: var(--text-muted, #666);">
+        <div class="lab-failed-inner-box" style="padding: 24px; text-align: center; color: #666;">
           No failed batch case studies documented yet. All experiments are running smoothly!
         </div>
       <?php endif; ?>
@@ -1212,38 +1165,6 @@ function openExperimentModal(id) {
   document.body.style.overflow = 'hidden';
 }
 
-
-// Client-side switcher for Failed Batch card on the main page
-function switchFailedBatchDisplay(id, btn) {
-  const item = window.LAB_FAILED_BATCHES.find(b => Number(b.id) === Number(id));
-  if (!item) return;
-
-  // Toggle active pill button
-  document.querySelectorAll('.lab-failed-pill-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-
-  // Update elements
-  const img = document.getElementById('failedMainImg');
-  const ref = document.getElementById('failedMainRef');
-  const badge = document.getElementById('failedMainBadge');
-  const title = document.getElementById('failedMainTitle');
-  const hypo = document.getElementById('failedMainHypo');
-  const what = document.getElementById('failedMainWhat');
-  const why = document.getElementById('failedMainWhy');
-  const next = document.getElementById('failedMainNext');
-  const cta = document.getElementById('failedMainCtaBtn');
-
-  if (img) img.src = item.image_path || 'assets/images/lab-failed-batch.jpg';
-  if (ref) ref.innerText = 'REF #FAIL-0' + item.id;
-  if (badge) badge.innerText = item.badge_label || 'BECAUSE FAILURE IS DATA.';
-  if (title) title.innerText = item.title;
-  if (hypo) hypo.innerText = item.hypothesis || '';
-  if (what) what.innerText = item.what_happened || '';
-  if (why) why.innerText = item.why_it_happened || '';
-  if (next) next.innerText = item.what_next || '';
-  if (cta) cta.setAttribute('onclick', 'openFailedBatchModal(' + item.id + ')');
-}
-
 function openFailedBatchModal(id) {
   const fail = window.LAB_FAILED_BATCHES.find(item => Number(item.id) === Number(id));
   if (!fail) return;
@@ -1300,37 +1221,43 @@ function openFailedBatchModal(id) {
   let innerHTML = '';
   if (fail.image_path) {
     innerHTML += `
-      <div class="lab-modal-hero-frame lab-failed-modal-hero">
+      <div class="lab-modal-hero-frame">
         <img src="${escapeHtml(fail.image_path)}" alt="${escapeHtml(fail.title)}">
-        <div class="lab-failed-hero-overlay">
-          <div class="lab-failed-hero-badge">
-            <span class="pulse-dot">●</span>
-            <span>POST-MORTEM FORENSIC AUDIT · TRIAL #${fail.id}</span>
-          </div>
-          <div class="lab-failed-hero-caption">
-            <span>ARCHIVED SPECIMEN DEFECT &amp; BREAKTHROUGH ANALYSIS</span>
-          </div>
+        <div class="lab-modal-hero-badge" style="background: rgba(185, 28, 28, 0.9);">
+          <span>⚠️ ANOMALY DETECTED IN TRIAL RUN #${fail.id} · FORENSIC AUDIT</span>
         </div>
       </div>
     `;
   }
 
-  // Refined Forensic Dossier Meta Ribbon (Replacing the old clunky 3-box spec cards)
+  // Failure Diagnostic Telemetry Dashboard
   innerHTML += `
-    <div class="lab-failed-audit-ribbon">
-      <div class="lab-audit-ribbon-item">
-        <span class="ribbon-lbl">CASE STUDY REF</span>
-        <span class="ribbon-val">${escapeHtml(specs.batchRef || 'FAIL-POSTMORTEM-0' + fail.id)}</span>
+    <div class="lab-specs-grid">
+      <div class="lab-spec-card">
+        <div class="lab-spec-label">
+          <span>⚠️</span>
+          <span>PRIMARY FAILURE MODE</span>
+        </div>
+        <div class="lab-spec-value" style="color: #DC2626;">${escapeHtml(specs.defectMode)}</div>
+        <div class="lab-spec-sub">Organoleptic &amp; Rheology Defect</div>
       </div>
-      <div class="lab-audit-ribbon-sep"></div>
-      <div class="lab-audit-ribbon-item">
-        <span class="ribbon-lbl">CLASSIFICATION</span>
-        <span class="ribbon-val" style="color: #B45309;">${escapeHtml(fail.badge_label || 'BECAUSE FAILURE IS DATA.')}</span>
+
+      <div class="lab-spec-card">
+        <div class="lab-spec-label">
+          <span>⚖️</span>
+          <span>PILOT SCALE / VOLUME</span>
+        </div>
+        <div class="lab-spec-value">${escapeHtml(specs.trialScale)}</div>
+        <div class="lab-spec-sub">Dedicated experimental pilot run</div>
       </div>
-      <div class="lab-audit-ribbon-sep"></div>
-      <div class="lab-audit-ribbon-item">
-        <span class="ribbon-lbl">R&amp;D DIRECTIVE</span>
-        <span class="ribbon-val" style="color: #166534;">CONVERTED TO PERMANENT LAB STANDARD</span>
+
+      <div class="lab-spec-card">
+        <div class="lab-spec-label">
+          <span>💧</span>
+          <span>CRITICAL MOISTURE ANOMALY</span>
+        </div>
+        <div class="lab-spec-value" style="color: #D97706;">${escapeHtml(specs.criticalMoisture)}</div>
+        <div class="lab-spec-sub">Free moisture pulled into fat matrix</div>
       </div>
     </div>
   `;
