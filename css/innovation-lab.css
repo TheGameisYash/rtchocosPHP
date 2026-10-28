@@ -1657,8 +1657,7 @@ section.lab-ingredient-section:nth-of-type(even) {
 }
 
 #experimentModal .lab-modal-container,
-#ingredientModal .lab-modal-container,
-#failedBatchModal .lab-modal-container {
+#ingredientModal .lab-modal-container {
   width: 100vw !important;
   max-width: 100vw !important;
   height: 100vh !important;
@@ -3118,22 +3117,41 @@ section.lab-ingredient-section:nth-of-type(even) {
    (Editorial Forensic Architecture, Zero Void, Anti-Slop Visual Hierarchy)
    ================================================================= */
 #failedBatchModal .lab-modal-container {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
   background: #F8F5EE;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none;
+  transform: none !important;
 }
 
 #failedBatchModal .lab-modal-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
   flex-shrink: 0;
   height: auto;
   min-height: 68px;
   border-radius: 0;
   padding: 12px clamp(20px, 3vw, 48px);
-  background: #FFFFFF;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid #E6DED2;
   display: flex;
   align-items: center;
   box-shadow: 0 2px 10px rgba(18, 34, 23, 0.03);
-  z-index: 10;
-  width: 100vw;
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -3141,11 +3159,12 @@ section.lab-ingredient-section:nth-of-type(even) {
   max-width: 100% !important;
   width: 100% !important;
   margin: 0 !important;
-  padding: clamp(16px, 2vw, 28px) clamp(20px, 3vw, 48px) 60px !important;
+  padding: clamp(16px, 2vw, 28px) clamp(20px, 3vw, 48px) 80px !important;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 22px;
+  flex: 1 0 auto;
 }
 
 /* Modal Sticky Header */
