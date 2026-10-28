@@ -26,6 +26,28 @@ try {
         return $fallback;
     }
 
+    // Helper to extract a short, clean description snippet for preview cards (strips HTML and lists)
+    function getLabCardSnippet($text, $maxLength = 110) {
+        if (empty($text)) return '';
+        $clean = trim(strip_tags(html_entity_decode((string)$text, ENT_QUOTES, 'UTF-8')));
+        $clean = preg_replace('/\s+/', ' ', $clean);
+        if (preg_match('/^([^.!?]+[.!?])/u', $clean, $m)) {
+            $sentence = trim($m[1]);
+            if (mb_strlen($sentence) >= 15 && mb_strlen($sentence) <= $maxLength) {
+                return htmlspecialchars($sentence, ENT_QUOTES, 'UTF-8');
+            }
+        }
+        if (mb_strlen($clean) > $maxLength) {
+            $truncated = mb_substr($clean, 0, $maxLength);
+            $lastSpace = mb_strrpos($truncated, ' ');
+            if ($lastSpace !== false && $lastSpace > 40) {
+                $truncated = mb_substr($truncated, 0, $lastSpace);
+            }
+            return htmlspecialchars(rtrim($truncated, ' .,;-') . '...', ENT_QUOTES, 'UTF-8');
+        }
+        return htmlspecialchars($clean, ENT_QUOTES, 'UTF-8');
+    }
+
     $heroEyebrow = trim((string)get_site_setting('lab_hero_eyebrow', '')) ?: 'IDEAS · EXPERIMENTS · REAL TASTE';
     $heroTitle = trim((string)get_site_setting('lab_hero_title', '')) ?: 'Innovation Lab';
     $heroSubtitle = trim((string)get_site_setting('lab_hero_subtitle', '')) ?: 'Our creative kitchen where we test fresh ideas, local ingredients, and better ways to make honest chocolate.';
@@ -293,46 +315,86 @@ include 'includes/header.php';
     <!-- RIGHT: FROM A FAILED BATCH TO A NEW INSIGHT CARD -->
     <div class="lab-failed-card" id="failed-experiments">
       <div class="lab-failed-header">
-        <h2 class="lab-failed-title"><?php echo htmlspecialchars($failedHeading); ?></h2>
-        <div class="lab-eyebrow" style="margin-top: 6px; margin-bottom: 0;">
-          <span><?php echo htmlspecialchars($failedEyebrow); ?></span>
+        <div class="lab-failed-header-row">
+          <div>
+            <h2 class="lab-failed-title"><?php echo htmlspecialchars($failedHeading); ?></h2>
+            <div class="lab-eyebrow" style="margin-top: 6px; margin-bottom: 0;">
+              <span><?php echo htmlspecialchars($failedEyebrow); ?></span>
+            </div>
+          </div>
+          <?php if (count($failedBatches) > 1): ?>
+          <div class="lab-failed-nav-controls">
+            <span class="lab-failed-counter" id="labFailedCounter">1 of <?php echo count($failedBatches); ?></span>
+            <button type="button" class="lab-failed-arrow-btn" onclick="prevFailedBatch()" title="Previous Case Study" aria-label="Previous Case Study">‹</button>
+            <button type="button" class="lab-failed-arrow-btn" onclick="nextFailedBatch()" title="Next Case Study" aria-label="Next Case Study">›</button>
+          </div>
+          <?php endif; ?>
         </div>
+
+        <?php if (count($failedBatches) > 1): ?>
+        <!-- Interactive Case Study Tabs -->
+        <div class="lab-failed-tabs" role="tablist">
+          <?php foreach ($failedBatches as $idx => $fb): ?>
+            <button type="button" 
+                    role="tab" 
+                    class="lab-failed-tab <?php echo $idx === 0 ? 'active' : ''; ?>" 
+                    id="lab-failed-tab-<?php echo (int)$fb['id']; ?>"
+                    onclick="switchFailedBatch(<?php echo (int)$fb['id']; ?>)">
+              <?php if (!empty($fb['is_featured'])): ?>
+                <span class="tab-star">★</span>
+              <?php endif; ?>
+              <span class="tab-num">0<?php echo $idx + 1; ?></span>
+              <span class="tab-name"><?php echo htmlspecialchars($fb['title']); ?></span>
+            </button>
+          <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
       </div>
 
-      <?php if ($primaryFailed): ?>
-      <div class="lab-failed-inner-box">
-        <div class="lab-failed-img-wrap">
-          <img src="<?php echo htmlspecialchars($primaryFailed['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" alt="<?php echo htmlspecialchars($primaryFailed['title']); ?>" loading="lazy" />
+      <?php if (!empty($failedBatches)): ?>
+        <div class="lab-failed-panels-container">
+          <?php foreach ($failedBatches as $idx => $fb): ?>
+            <div class="lab-failed-inner-box <?php echo $idx === 0 ? 'active' : 'is-hidden'; ?>" 
+                 id="failed-batch-panel-<?php echo (int)$fb['id']; ?>" 
+                 data-id="<?php echo (int)$fb['id']; ?>"
+                 data-idx="<?php echo $idx + 1; ?>">
+              <div class="lab-failed-img-wrap">
+                <img src="<?php echo htmlspecialchars($fb['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" alt="<?php echo htmlspecialchars($fb['title']); ?>" loading="lazy" />
+                <?php if (!empty($fb['is_featured'])): ?>
+                  <span class="lab-featured-ribbon">★ FEATURED CASE STUDY</span>
+                <?php endif; ?>
+              </div>
+              <div class="lab-failed-content">
+                <div class="lab-failed-case-tag"><?php echo htmlspecialchars($fb['title']); ?></div>
+                
+                <div class="lab-failed-data-row">
+                  <span class="label">1. What We Hoped For</span>
+                  <span class="text"><?php echo getLabCardSnippet($fb['hypothesis']); ?></span>
+                </div>
+
+                <div class="lab-failed-data-row">
+                  <span class="label">2. What Went Wrong</span>
+                  <span class="text"><?php echo getLabCardSnippet($fb['what_happened']); ?></span>
+                </div>
+
+                <div class="lab-failed-data-row">
+                  <span class="label">3. Why It Happened</span>
+                  <span class="text"><?php echo getLabCardSnippet($fb['why_it_happened']); ?></span>
+                </div>
+
+                <div class="lab-failed-data-row">
+                  <span class="label">4. What We Learned</span>
+                  <span class="text"><?php echo getLabCardSnippet($fb['what_next']); ?></span>
+                </div>
+
+                <button type="button" class="lab-failed-btn" onclick="openFailedBatchModal(<?php echo (int)$fb['id']; ?>)">
+                  <span>READ FULL STORY</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+          <?php endforeach; ?>
         </div>
-        <div class="lab-failed-content">
-          <div class="lab-failed-case-tag"><?php echo htmlspecialchars($primaryFailed['title']); ?></div>
-          
-          <div class="lab-failed-data-row">
-            <span class="label">1. What We Hoped For</span>
-            <span class="text"><?php echo htmlspecialchars($primaryFailed['hypothesis']); ?></span>
-          </div>
-
-          <div class="lab-failed-data-row">
-            <span class="label">2. What Went Wrong</span>
-            <span class="text"><?php echo htmlspecialchars($primaryFailed['what_happened']); ?></span>
-          </div>
-
-          <div class="lab-failed-data-row">
-            <span class="label">3. Why It Happened</span>
-            <span class="text"><?php echo htmlspecialchars($primaryFailed['why_it_happened']); ?></span>
-          </div>
-
-          <div class="lab-failed-data-row">
-            <span class="label">4. What We Learned</span>
-            <span class="text"><?php echo htmlspecialchars($primaryFailed['what_next']); ?></span>
-          </div>
-
-          <button type="button" class="lab-failed-btn" onclick="openFailedBatchModal(<?php echo (int)$primaryFailed['id']; ?>)">
-            <span>READ FULL STORY</span>
-            <span>→</span>
-          </button>
-        </div>
-      </div>
       <?php else: ?>
         <div class="lab-failed-inner-box" style="padding: 24px; text-align: center; color: #666;">
           No failed batch case studies documented yet. All experiments are running smoothly!
@@ -1165,6 +1227,53 @@ function openExperimentModal(id) {
   document.body.style.overflow = 'hidden';
 }
 
+let currentFailedBatchIndex = 0;
+
+function switchFailedBatch(id) {
+  const panels = document.querySelectorAll('.lab-failed-panels-container .lab-failed-inner-box');
+  const tabs = document.querySelectorAll('.lab-failed-tabs .lab-failed-tab');
+  const counter = document.getElementById('labFailedCounter');
+  
+  panels.forEach((p, idx) => {
+    if (Number(p.getAttribute('data-id')) === Number(id)) {
+      p.classList.remove('is-hidden');
+      p.classList.add('active');
+      currentFailedBatchIndex = idx;
+      if (counter) {
+        counter.textContent = `${idx + 1} of ${panels.length}`;
+      }
+    } else {
+      p.classList.add('is-hidden');
+      p.classList.remove('active');
+    }
+  });
+
+  tabs.forEach(t => {
+    if (t.id === `lab-failed-tab-${id}`) {
+      t.classList.add('active');
+      t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    } else {
+      t.classList.remove('active');
+    }
+  });
+}
+
+function nextFailedBatch() {
+  const panels = document.querySelectorAll('.lab-failed-panels-container .lab-failed-inner-box');
+  if (panels.length <= 1) return;
+  const nextIdx = (currentFailedBatchIndex + 1) % panels.length;
+  const targetId = panels[nextIdx].getAttribute('data-id');
+  switchFailedBatch(targetId);
+}
+
+function prevFailedBatch() {
+  const panels = document.querySelectorAll('.lab-failed-panels-container .lab-failed-inner-box');
+  if (panels.length <= 1) return;
+  const prevIdx = (currentFailedBatchIndex - 1 + panels.length) % panels.length;
+  const targetId = panels[prevIdx].getAttribute('data-id');
+  switchFailedBatch(targetId);
+}
+
 function openFailedBatchModal(id) {
   const fail = window.LAB_FAILED_BATCHES.find(item => Number(item.id) === Number(id));
   if (!fail) return;
@@ -1411,17 +1520,36 @@ function openFailedBatchModal(id) {
     }
   }
 
-  innerHTML += `
-    <div class="lab-modal-footer-bar">
-      <button type="button" onclick="closeLabModal('failedBatchModal')" class="lab-failed-modal-return-btn">
-        <span class="arrow">←</span>
-        <span>BACK TO INNOVATION LAB</span>
-      </button>
-      <button type="button" onclick="closeLabModal('failedBatchModal')" class="lab-failed-modal-close-ghost">
-        <span>CLOSE (ESC)</span>
-      </button>
-    </div>
-  `;
+    const allBatches = window.LAB_FAILED_BATCHES || [];
+    const currentIdx = allBatches.findIndex(item => Number(item.id) === Number(id));
+    const prevBatch = currentIdx > 0 ? allBatches[currentIdx - 1] : null;
+    const nextBatch = currentIdx < allBatches.length - 1 ? allBatches[currentIdx + 1] : null;
+
+    innerHTML += `
+      <div class="lab-modal-footer-bar">
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <button type="button" onclick="closeLabModal('failedBatchModal')" class="lab-failed-modal-return-btn">
+            <span class="arrow">←</span>
+            <span>BACK TO INNOVATION LAB</span>
+          </button>
+          ${prevBatch ? `
+            <button type="button" onclick="openFailedBatchModal(${prevBatch.id})" class="lab-failed-modal-switch-btn" title="Previous Failed Batch">
+              <span class="arrow">←</span>
+              <span>PREV: ${escapeHtml(prevBatch.title)}</span>
+            </button>
+          ` : ''}
+          ${nextBatch ? `
+            <button type="button" onclick="openFailedBatchModal(${nextBatch.id})" class="lab-failed-modal-switch-btn" title="Next Failed Batch">
+              <span>NEXT: ${escapeHtml(nextBatch.title)}</span>
+              <span class="arrow">→</span>
+            </button>
+          ` : ''}
+        </div>
+        <button type="button" onclick="closeLabModal('failedBatchModal')" class="lab-failed-modal-close-ghost">
+          <span>CLOSE (ESC)</span>
+        </button>
+      </div>
+    `;
 
   body.innerHTML = innerHTML;
   document.getElementById('failedBatchModal').classList.add('active');
