@@ -1707,7 +1707,17 @@ function renderLabContent(raw) {
       .replace(/javascript:/gi, '');
   }
 
-  // Plain text with newlines or bullet points (- or * or •) or numbered items (1., 2.)
+  // Helper for inline markdown formatting (bold, italic, code)
+  const formatInline = (str) => {
+    return escapeHtml(str)
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/__([^_]+)__/g, '<strong>$1</strong>')
+      .replace(/(^|[^*])\*([^*]+)\*([^*]|$)/g, '$1<em>$2</em>$3')
+      .replace(/(^|[^_])_([^_]+)_([^_]|$)/g, '$1<em>$2</em>$3')
+      .replace(/`([^`]+)`/g, '<code>$1</code>');
+  };
+
+  // Plain text with newlines or bullet points (- or * or •) or numbered items (1., 2., 1))
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   let html = '';
   let inUl = false;
@@ -1718,16 +1728,21 @@ function renderLabContent(raw) {
       if (inOl) { html += '</ol>'; inOl = false; }
       if (!inUl) { html += '<ul>'; inUl = true; }
       const itemContent = line.replace(/^[-*•]\s+/, '');
-      html += '<li>' + escapeHtml(itemContent) + '</li>';
-    } else if (/^\d+[\.\)]\s+/.test(line)) {
+      html += '<li>' + formatInline(itemContent) + '</li>';
+    } else if (/^\d+[\.\)\-:]\s+/.test(line)) {
       if (inUl) { html += '</ul>'; inUl = false; }
       if (!inOl) { html += '<ol>'; inOl = true; }
-      const itemContent = line.replace(/^\d+[\.\)]\s+/, '');
-      html += '<li>' + escapeHtml(itemContent) + '</li>';
-    } else {
+      const itemContent = line.replace(/^\d+[\.\)\-:]\s+/, '');
+      html += '<li>' + formatInline(itemContent) + '</li>';
+    } else if (/^>\s+/.test(line)) {
       if (inUl) { html += '</ul>'; inUl = false; }
       if (inOl) { html += '</ol>'; inOl = false; }
-      html += '<p>' + escapeHtml(line) + '</p>';
+      const quoteContent = line.replace(/^>\s+/, '');
+      html += '<blockquote>' + formatInline(quoteContent) + '</blockquote>';
+    } else {
+      if (inUl) { html += '</ul>'; inUl = false; }
+      if (!inOl) { html += '</ol>'; inOl = false; }
+      html += '<p>' + formatInline(line) + '</p>';
     }
   });
 
@@ -1735,6 +1750,7 @@ function renderLabContent(raw) {
   if (inOl) html += '</ol>';
   return html;
 }
+
 
 function escapeHtml(text) {
   if (!text) return '';
