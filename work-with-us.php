@@ -872,81 +872,69 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
   white-space: nowrap !important;
 }
 
-/* BOTTOM PART: 6 CAPABILITY CARDS - MODERN LUXURY 3x2 GRID */
+/* BOTTOM PART: 6 CAPABILITY CARDS WITH SLEEK VERTICAL DIVIDERS */
 #page-wwu .wwu-help-grid {
   display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 22px !important;
-  margin-top: 10px !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 0 !important;
 }
 
 #page-wwu .wwu-help-col {
-  padding: 26px 24px !important;
-  background: #ffffff !important;
-  border: 1px solid rgba(212, 175, 55, 0.25) !important;
-  border-radius: 14px !important;
+  padding: 4px 14px !important;
+  border-right: 1px solid rgba(184, 134, 11, 0.18) !important;
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;
-  text-align: left !important;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  box-shadow: 0 4px 18px rgba(139, 90, 43, 0.04) !important;
-  position: relative !important;
-  overflow: hidden !important;
+  align-items: center !important;
+  text-align: center !important;
+  transition: all 0.3s ease !important;
 }
 
-#page-wwu .wwu-help-col:hover {
-  border-color: #d4af37 !important;
-  transform: translateY(-4px) !important;
-  box-shadow: 0 12px 32px rgba(212, 175, 55, 0.18) !important;
+#page-wwu .wwu-help-col:last-child {
+  border-right: none !important;
 }
 
 #page-wwu .wwu-help-icon {
-  width: 48px !important;
-  height: 48px !important;
-  margin-bottom: 16px !important;
-  border-radius: 12px !important;
-  background: rgba(212, 175, 55, 0.1) !important;
-  border: 1px solid rgba(212, 175, 55, 0.28) !important;
+  width: 38px !important;
+  height: 38px !important;
+  margin-bottom: 10px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  color: #8b5a2b !important;
+  color: #5c5242 !important;
   transition: all 0.3s ease !important;
 }
 
 #page-wwu .wwu-help-icon svg {
-  width: 24px !important;
-  height: 24px !important;
-  stroke: #8b5a2b !important;
+  width: 30px !important;
+  height: 30px !important;
+  stroke: #5c5242 !important;
   transition: all 0.3s ease !important;
 }
 
-#page-wwu .wwu-help-col:hover .wwu-help-icon {
-  background: #0f2317 !important;
-  border-color: #0f2317 !important;
-}
-
 #page-wwu .wwu-help-col:hover .wwu-help-icon svg {
-  stroke: #d4af37 !important;
+  stroke: #b8860b !important;
+  transform: translateY(-2px) scale(1.05) !important;
 }
 
 #page-wwu .wwu-help-col h4 {
   font-family: 'Inter', sans-serif !important;
-  font-size: 13px !important;
+  font-size: 10.5px !important;
   font-weight: 800 !important;
-  letter-spacing: 1px !important;
+  letter-spacing: 0.8px !important;
   color: #1a1711 !important;
   text-transform: uppercase !important;
-  margin: 0 0 8px 0 !important;
-  line-height: 1.35 !important;
-  display: block !important;
+  margin: 0 0 6px 0 !important;
+  line-height: 1.3 !important;
+  min-height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 #page-wwu .wwu-help-col p {
   font-family: 'Inter', sans-serif !important;
-  font-size: 13px !important;
-  line-height: 1.55 !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
   color: #554f43 !important;
   margin: 0 !important;
   font-weight: 400 !important;
@@ -957,14 +945,14 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
    SECTION 3: WHERE SHOULD WE BEGIN (cream)
    ============================================================ */
 #page-wwu .wwu-begin {
-  padding: 85px 40px 95px !important;
+  padding: 80px 40px 100px !important;
   background: #f5f0e6 !important;
   border-top: 1px solid #e2d8c6 !important;
 }
 
 #page-wwu .wwu-begin-header {
   text-align: center !important;
-  margin-bottom: 50px !important;
+  margin-bottom: 56px !important;
 }
 
 /* Center rule title matching reference */
@@ -1002,127 +990,77 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
 }
 
 #page-wwu .wwu-begin-grid {
-  max-width: 1200px !important;
+  max-width: 1100px !important;
   margin: 0 auto !important;
   display: grid !important;
   grid-template-columns: repeat(4, 1fr) !important;
-  gap: 22px !important;
+  gap: 20px !important;
 }
 
 #page-wwu .wwu-card {
   background: #ffffff !important;
-  border: 1px solid rgba(212, 175, 55, 0.28) !important;
+  border: 1px solid #e0d6c4 !important;
   border-radius: 16px !important;
-  padding: 30px 22px 24px !important;
-  text-align: left !important;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  cursor: pointer !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-shadow: 0 4px 18px rgba(139, 90, 43, 0.04) !important;
-  position: relative !important;
+  padding: 36px 24px 30px !important;
+  text-align: center !important;
+  transition: all 0.35s cubic-bezier(0.16,1,0.3,1) !important;
+  cursor: default !important;
 }
-
 #page-wwu .wwu-card:hover {
   border-color: #d4af37 !important;
-  box-shadow: 0 16px 36px rgba(212, 175, 55, 0.18) !important;
+  box-shadow: 0 12px 40px rgba(139,90,43,0.1) !important;
   transform: translateY(-6px) !important;
 }
-
 #page-wwu .wwu-card .card-icon {
-  width: 50px !important;
-  height: 50px !important;
-  margin: 0 0 16px 0 !important;
-  border-radius: 12px !important;
-  background: rgba(212, 175, 55, 0.1) !important;
-  border: 1.5px solid rgba(212, 175, 55, 0.3) !important;
+  width: 56px !important;
+  height: 56px !important;
+  margin: 0 auto 20px !important;
+  border-radius: 50% !important;
+  background: rgba(212,175,55,0.08) !important;
+  border: 1.5px solid rgba(212,175,55,0.22) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  transition: all 0.3s ease !important;
 }
-
-#page-wwu .wwu-card:hover .card-icon {
-  background: #0f2317 !important;
-  border-color: #0f2317 !important;
-}
-
 #page-wwu .wwu-card .card-icon svg {
   width: 24px !important;
   height: 24px !important;
-  stroke: #8b5a2b !important;
+  stroke: #b8941e !important;
   fill: none !important;
   stroke-width: 1.6 !important;
   stroke-linecap: round !important;
   stroke-linejoin: round !important;
-  transition: stroke 0.3s ease !important;
 }
-
-#page-wwu .wwu-card:hover .card-icon svg {
-  stroke: #d4af37 !important;
-}
-
 #page-wwu .wwu-card h4 {
-  font-family: 'Playfair Display', serif !important;
-  font-size: 19px !important;
+  font-size: 17px !important;
   color: #1a1a14 !important;
-  margin-bottom: 6px !important;
+  margin-bottom: 8px !important;
   font-weight: 700 !important;
-  line-height: 1.3 !important;
+  letter-spacing: 0.2px !important;
 }
-
 #page-wwu .wwu-card .card-desc {
-  font-family: 'Newsreader', serif !important;
-  font-size: 14px !important;
+  font-size: 13.5px !important;
   color: #6b6559 !important;
+  font-weight: 400 !important;
   font-style: italic !important;
-  margin-bottom: 16px !important;
-  line-height: 1.45 !important;
+  margin-bottom: 18px !important;
+  line-height: 1.5 !important;
 }
-
 #page-wwu .wwu-card .card-tags {
   display: flex !important;
   flex-wrap: wrap !important;
-  gap: 6px !important;
-  margin-bottom: 20px !important;
+  gap: 5px !important;
+  justify-content: center !important;
 }
-
 #page-wwu .wwu-card .card-tags span {
-  font-family: 'Inter', sans-serif !important;
-  font-size: 10px !important;
-  font-weight: 600 !important;
-  color: #554e40 !important;
-  padding: 4px 9px !important;
+  font-size: 10.5px !important;
+  font-weight: 500 !important;
+  color: #5a5647 !important;
+  padding: 4px 10px !important;
   border-radius: 20px !important;
-  background: #f7f3ec !important;
-  border: 1px solid rgba(212, 175, 55, 0.22) !important;
+  background: #f0ebe0 !important;
+  border: 1px solid #e0d6c4 !important;
   line-height: 1.3 !important;
-  transition: all 0.2s ease !important;
-}
-
-#page-wwu .wwu-card:hover .card-tags span {
-  background: rgba(212, 175, 55, 0.12) !important;
-  border-color: rgba(212, 175, 55, 0.4) !important;
-  color: #1a1a14 !important;
-}
-
-#page-wwu .wwu-card .card-action-btn {
-  margin-top: auto !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 11px !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.8px !important;
-  color: #8b5a2b !important;
-  text-transform: uppercase !important;
-  transition: all 0.25s ease !important;
-}
-
-#page-wwu .wwu-card:hover .card-action-btn {
-  color: #d4af37 !important;
-  gap: 10px !important;
 }
 
 
@@ -1131,7 +1069,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
    ============================================================ */
 #page-wwu .wwu-areas {
   position: relative !important;
-  padding: 70px 36px 75px !important;
+  padding: 60px 36px 65px !important;
   background: radial-gradient(ellipse at 70% 50%, #fdfbf7 0%, #f7f2e8 50%, #ede4d2 100%) !important;
   border-top: 1px solid #dfd4bf !important;
   border-bottom: 1px solid #dfd4bf !important;
@@ -1171,7 +1109,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
   margin: 0 auto !important;
   display: grid !important;
   grid-template-columns: 360px 1fr !important;
-  gap: 40px !important;
+  gap: 46px !important;
   align-items: center !important;
 }
 
@@ -1300,8 +1238,8 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
 #page-wwu .wwu-diagram-stage {
   position: relative !important;
   width: 100% !important;
-  max-width: 740px !important;
-  height: 560px !important;
+  max-width: 680px !important;
+  height: 460px !important;
   margin: 0 auto !important;
   display: flex !important;
   align-items: center !important;
@@ -1322,7 +1260,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
 
 /* Rotating dashed orbit */
 #page-wwu .wwu-orbit-dash {
-  transform-origin: 370px 280px !important;
+  transform-origin: 340px 230px !important;
   animation: wwuRotateOrbit 110s linear infinite !important;
 }
 
@@ -1534,14 +1472,14 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
   gap: 6px !important;
 }
 
-/* --- PRECISE POSITIONS (5 Nodes on 740x560px canvas with center at 370, 280) --- */
+/* --- PRECISE POSITIONS (5 Nodes on 680x460px canvas with center at 340, 230) --- */
 /* 1. CREATE (Top Center) — FIXED CENTER HOVER */
 #page-wwu .card-create {
-  top: 18px !important;
+  top: 0px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   text-align: center !important;
-  width: 216px !important;
+  width: 204px !important;
 }
 #page-wwu .card-create .card-head {
   justify-content: center !important;
@@ -1557,33 +1495,33 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
 
 /* 2. SOLVE (Top Right) */
 #page-wwu .card-solve {
-  top: 95px !important;
-  right: 12px !important;
-  width: 204px !important;
+  top: 70px !important;
+  right: 0px !important;
+  width: 196px !important;
   text-align: left !important;
 }
 
 /* 3. EXPLORE (Bottom Right) */
 #page-wwu .card-explore {
-  bottom: 25px !important;
-  right: 20px !important;
-  width: 204px !important;
+  bottom: 0px !important;
+  right: 15px !important;
+  width: 196px !important;
   text-align: left !important;
 }
 
 /* 4. CONNECT (Bottom Left) */
 #page-wwu .card-connect {
-  bottom: 25px !important;
-  left: 20px !important;
-  width: 204px !important;
+  bottom: 0px !important;
+  left: 15px !important;
+  width: 196px !important;
   text-align: left !important;
 }
 
 /* 5. LEARN (Top Left) */
 #page-wwu .card-learn {
-  top: 95px !important;
-  left: 12px !important;
-  width: 204px !important;
+  top: 70px !important;
+  left: 0px !important;
+  width: 196px !important;
   text-align: left !important;
 }
 
@@ -1717,7 +1655,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
    ============================================================ */
 #page-wwu .wwu-ecosystem-section {
   position: relative !important;
-  padding: 56px 36px 60px !important;
+  padding: 44px 36px 46px !important;
   background: #faf6ee !important;
   border-top: 1px solid rgba(212, 175, 55, 0.22) !important;
   border-bottom: 1px solid rgba(212, 175, 55, 0.18) !important;
@@ -1731,27 +1669,28 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
   position: absolute !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  height: auto !important;
-  max-height: 180px !important;
-  max-width: 150px !important;
+  height: 100% !important;
+  max-height: 240px !important;
+  width: auto !important;
   object-fit: contain !important;
-  opacity: 0.12 !important;
+  opacity: 0.2 !important;
   mix-blend-mode: multiply !important;
   pointer-events: none !important;
   z-index: 1 !important;
+  filter: contrast(1.1) brightness(1.02) sepia(0.1) !important;
 }
 
 #page-wwu .wwu-eco-sketch-left {
-  left: 10px !important;
+  left: -20px !important;
 }
 
 #page-wwu .wwu-eco-sketch-right {
-  right: 10px !important;
+  right: -20px !important;
   transform: translateY(-50%) scaleX(-1) !important;
 }
 
 #page-wwu .wwu-ecosystem-inner {
-  max-width: 1280px !important;
+  max-width: 1200px !important;
   margin: 0 auto !important;
   position: relative !important;
   z-index: 2 !important;
@@ -1759,29 +1698,28 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
 
 #page-wwu .wwu-ecosystem-heading {
   font-family: 'Playfair Display', serif !important;
-  font-size: clamp(16px, 1.6vw, 20px) !important;
+  font-size: clamp(14px, 1.4vw, 17px) !important;
   font-weight: 700 !important;
-  letter-spacing: 2px !important;
+  letter-spacing: 2.2px !important;
   color: #1a1712 !important;
   text-transform: uppercase !important;
-  margin: 0 0 28px 0 !important;
+  margin: 0 0 24px 0 !important;
 }
 
-/* 7-Card Modern Luxury Responsive Grid */
+/* 7-Column Box Grid with outer border and inner dividers */
 #page-wwu .wwu-ecosystem-grid {
   display: grid !important;
   grid-template-columns: repeat(7, 1fr) !important;
-  gap: 14px !important;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
+  background: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(184, 134, 11, 0.28) !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 10px rgba(100, 70, 20, 0.03) !important;
 }
 
 #page-wwu .wwu-eco-card {
-  padding: 24px 12px 20px !important;
-  background: #ffffff !important;
-  border: 1px solid rgba(212, 175, 55, 0.28) !important;
-  border-radius: 12px !important;
+  padding: 22px 10px 18px !important;
+  border-right: 1px solid rgba(184, 134, 11, 0.28) !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
@@ -1789,50 +1727,45 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
   text-align: center !important;
   cursor: pointer !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  box-shadow: 0 4px 16px rgba(139, 90, 43, 0.04) !important;
+  background: transparent !important;
+}
+
+#page-wwu .wwu-eco-card:last-child {
+  border-right: none !important;
 }
 
 #page-wwu .wwu-eco-card:hover {
-  background: #ffffff !important;
-  transform: translateY(-4px) !important;
-  border-color: #d4af37 !important;
-  box-shadow: 0 10px 28px rgba(212, 175, 55, 0.22) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(139, 90, 43, 0.08) !important;
 }
 
 #page-wwu .wwu-eco-icon {
-  width: 46px !important;
-  height: 46px !important;
-  border-radius: 10px !important;
-  background: rgba(212, 175, 55, 0.1) !important;
-  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  width: 44px !important;
+  height: 44px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  margin-bottom: 14px !important;
-  color: #8b5a2b !important;
+  margin-bottom: 12px !important;
+  color: #3b352b !important;
   transition: all 0.3s ease !important;
 }
 
 #page-wwu .wwu-eco-icon svg {
-  width: 24px !important;
-  height: 24px !important;
-  stroke: #8b5a2b !important;
+  width: 32px !important;
+  height: 32px !important;
+  stroke: #3b352b !important;
   transition: all 0.3s ease !important;
 }
 
-#page-wwu .wwu-eco-card:hover .wwu-eco-icon {
-  background: #0f2317 !important;
-  border-color: #0f2317 !important;
-}
-
 #page-wwu .wwu-eco-card:hover .wwu-eco-icon svg {
-  stroke: #d4af37 !important;
-  transform: scale(1.1) !important;
+  stroke: #b8860b !important;
+  transform: scale(1.08) !important;
 }
 
 #page-wwu .wwu-eco-label {
   font-family: 'Inter', sans-serif !important;
-  font-size: 10.5px !important;
+  font-size: 10px !important;
   font-weight: 800 !important;
   letter-spacing: 0.8px !important;
   color: #1a1712 !important;
@@ -1847,278 +1780,12 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
 }
 
 #page-wwu .wwu-ecosystem-footer-note {
-  font-family: 'Newsreader', serif !important;
-  font-style: italic !important;
-  font-size: 15px !important;
-  color: #6b6352 !important;
-  margin: 24px 0 0 0 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12.5px !important;
+  color: #5a5244 !important;
+  margin: 18px 0 0 0 !important;
+  font-weight: 400 !important;
   letter-spacing: 0.2px !important;
-}
-
-/* ============================================================
-   SECTION 6: ON-PAGE CONSULTATION & INQUIRY SECTION
-   ============================================================ */
-#page-wwu .wwu-inquiry-section {
-  position: relative !important;
-  padding: 80px 36px 90px !important;
-  background: linear-gradient(180deg, #fbf7ee 0%, #f4eee2 100%) !important;
-  border-top: 1px solid rgba(212, 175, 55, 0.3) !important;
-}
-
-#page-wwu .wwu-inquiry-inner {
-  max-width: 1260px !important;
-  margin: 0 auto !important;
-  display: grid !important;
-  grid-template-columns: 460px 1fr !important;
-  gap: 56px !important;
-  align-items: start !important;
-}
-
-#page-wwu .wwu-inquiry-info {
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-#page-wwu .wwu-inquiry-pill {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 7px !important;
-  align-self: flex-start !important;
-  padding: 5px 14px !important;
-  background: rgba(139, 90, 43, 0.08) !important;
-  border: 1px solid rgba(212, 175, 55, 0.35) !important;
-  border-radius: 30px !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 10px !important;
-  font-weight: 800 !important;
-  letter-spacing: 2px !important;
-  text-transform: uppercase !important;
-  color: #8b5a2b !important;
-  margin-bottom: 16px !important;
-}
-
-#page-wwu .wwu-inquiry-pill .pill-dot {
-  width: 5px !important;
-  height: 5px !important;
-  border-radius: 50% !important;
-  background: #d4af37 !important;
-  box-shadow: 0 0 6px rgba(212, 175, 55, 0.8) !important;
-}
-
-#page-wwu .wwu-inquiry-info h2 {
-  font-family: 'Playfair Display', serif !important;
-  font-size: clamp(30px, 3vw, 42px) !important;
-  line-height: 1.15 !important;
-  color: #1a1a14 !important;
-  margin-bottom: 16px !important;
-  font-weight: 700 !important;
-}
-
-#page-wwu .wwu-inquiry-info h2 .hl-gold {
-  color: #8b5a2b !important;
-  background: linear-gradient(135deg, #8b5a2b 0%, #b8941e 50%, #d4af37 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  display: inline-block !important;
-}
-
-#page-wwu .wwu-inquiry-lead {
-  font-size: 14.5px !important;
-  line-height: 1.65 !important;
-  color: #555043 !important;
-  margin-bottom: 30px !important;
-}
-
-#page-wwu .wwu-inquiry-perks {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 16px !important;
-  margin-bottom: 36px !important;
-}
-
-#page-wwu .wwu-perk-item {
-  display: flex !important;
-  align-items: flex-start !important;
-  gap: 14px !important;
-}
-
-#page-wwu .wwu-perk-icon {
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 8px !important;
-  background: rgba(212, 175, 55, 0.12) !important;
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  flex-shrink: 0 !important;
-  color: #8b5a2b !important;
-}
-
-#page-wwu .wwu-perk-icon svg {
-  width: 16px !important;
-  height: 16px !important;
-  stroke: #8b5a2b !important;
-}
-
-#page-wwu .wwu-perk-text strong {
-  display: block !important;
-  font-family: 'Playfair Display', serif !important;
-  font-size: 15px !important;
-  color: #1a1a14 !important;
-  margin-bottom: 3px !important;
-}
-
-#page-wwu .wwu-perk-text p {
-  font-size: 12.5px !important;
-  color: #635d50 !important;
-  line-height: 1.45 !important;
-  margin: 0 !important;
-}
-
-#page-wwu .wwu-direct-contact-card {
-  background: #ffffff !important;
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
-  border-radius: 14px !important;
-  padding: 22px 24px !important;
-  box-shadow: 0 4px 18px rgba(139, 90, 43, 0.05) !important;
-}
-
-#page-wwu .wwu-direct-contact-card h5 {
-  font-family: 'Inter', sans-serif !important;
-  font-size: 10px !important;
-  font-weight: 800 !important;
-  letter-spacing: 1.8px !important;
-  color: #8b5a2b !important;
-  text-transform: uppercase !important;
-  margin: 0 0 12px 0 !important;
-}
-
-#page-wwu .wwu-contact-row {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  font-size: 13px !important;
-  color: #2c271e !important;
-  margin-bottom: 8px !important;
-}
-
-#page-wwu .wwu-contact-row:last-child {
-  margin-bottom: 0 !important;
-}
-
-#page-wwu .wwu-contact-row svg {
-  width: 16px !important;
-  height: 16px !important;
-  stroke: #d4af37 !important;
-  flex-shrink: 0 !important;
-}
-
-#page-wwu .wwu-contact-row a {
-  color: #1a1a14 !important;
-  font-weight: 600 !important;
-  text-decoration: none !important;
-  transition: color 0.2s ease !important;
-}
-
-#page-wwu .wwu-contact-row a:hover {
-  color: #d4af37 !important;
-}
-
-/* On-Page Form Box */
-#page-wwu .wwu-inquiry-form-box {
-  background: #ffffff !important;
-  border: 1.5px solid rgba(212, 175, 55, 0.35) !important;
-  border-radius: 18px !important;
-  padding: 38px 36px 36px !important;
-  box-shadow: 0 10px 40px rgba(139, 90, 43, 0.08) !important;
-  transition: all 0.35s ease !important;
-}
-
-#page-wwu .wwu-inquiry-form-box.is-highlighted {
-  border-color: #d4af37 !important;
-  box-shadow: 0 0 35px rgba(212, 175, 55, 0.35) !important;
-}
-
-#page-wwu .wwu-inquiry-form-box .form-box-head {
-  margin-bottom: 24px !important;
-}
-
-#page-wwu .wwu-inquiry-form-box .form-box-head h3 {
-  font-family: 'Playfair Display', serif !important;
-  font-size: 22px !important;
-  color: #1a1a14 !important;
-  margin: 0 0 6px 0 !important;
-  font-weight: 700 !important;
-}
-
-#page-wwu .wwu-inquiry-form-box .form-box-head p {
-  font-size: 13px !important;
-  color: #6d6657 !important;
-  margin: 0 !important;
-}
-
-#page-wwu .wwu-inquiry-form-box label {
-  display: block !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 10.5px !important;
-  font-weight: 700 !important;
-  letter-spacing: 1.2px !important;
-  text-transform: uppercase !important;
-  color: #7d5f1c !important;
-  margin-bottom: 6px !important;
-}
-
-#page-wwu .wwu-inquiry-form-box input,
-#page-wwu .wwu-inquiry-form-box select,
-#page-wwu .wwu-inquiry-form-box textarea {
-  width: 100% !important;
-  background: #fdfbf7 !important;
-  border: 1px solid rgba(212, 175, 55, 0.35) !important;
-  color: #1a1a14 !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 13.5px !important;
-  border-radius: 8px !important;
-  padding: 11px 14px !important;
-  outline: none !important;
-  transition: all 0.25s ease !important;
-}
-
-#page-wwu .wwu-inquiry-form-box input:focus,
-#page-wwu .wwu-inquiry-form-box select:focus,
-#page-wwu .wwu-inquiry-form-box textarea:focus {
-  border-color: #d4af37 !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.25) !important;
-}
-
-#page-wwu .onpage-submit-btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  width: 100% !important;
-  padding: 15px 36px !important;
-  background: #1a1a14 !important;
-  color: #f7f2e8 !important;
-  border: 1.5px solid #1a1a14 !important;
-  border-radius: 8px !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 12.5px !important;
-  font-weight: 700 !important;
-  letter-spacing: 1.2px !important;
-  text-transform: uppercase !important;
-  cursor: pointer !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  box-shadow: 0 4px 16px rgba(26, 26, 20, 0.15) !important;
-}
-
-#page-wwu .onpage-submit-btn:hover {
-  background: #d4af37 !important;
-  color: #1a1a14 !important;
-  border-color: #d4af37 !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35) !important;
 }
 
 
@@ -2398,9 +2065,8 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
   #page-wwu .wwu-ecosystem-grid {
     grid-template-columns: repeat(4, 1fr) !important;
   }
-  #page-wwu .wwu-inquiry-inner {
-    grid-template-columns: 1fr !important;
-    gap: 40px !important;
+  #page-wwu .wwu-eco-card {
+    border-bottom: 1px solid rgba(184, 134, 11, 0.28) !important;
   }
 }
 
@@ -2460,8 +2126,21 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
     gap: 18px 10px !important;
   }
   #page-wwu .wwu-help-grid {
-    grid-template-columns: 1fr !important;
-    gap: 14px !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px 0 !important;
+  }
+  #page-wwu .wwu-help-col {
+    padding: 6px 10px !important;
+  }
+  #page-wwu .wwu-help-col:nth-child(2n) {
+    border-right: none !important;
+  }
+  #page-wwu .wwu-help-col:nth-child(2n+1) {
+    border-right: 1px solid rgba(184, 134, 11, 0.18) !important;
+  }
+  #page-wwu .wwu-help-col:nth-child(-n+4) {
+    border-bottom: 1px solid rgba(184, 134, 11, 0.18) !important;
+    padding-bottom: 12px !important;
   }
   #page-wwu .wwu-heading-rule .rule-title {
     font-size: 18px !important;
@@ -2488,13 +2167,9 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
   }
   #page-wwu .wwu-ecosystem-grid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
   }
-  #page-wwu .wwu-inquiry-section {
-    padding: 45px 18px 55px !important;
-  }
-  #page-wwu .wwu-inquiry-form-box {
-    padding: 24px 18px !important;
+  #page-wwu .wwu-eco-card:nth-child(2n) {
+    border-right: none !important;
   }
   #page-wwu .wwu-heading-rule .rule-title {
     white-space: normal !important;
@@ -2509,103 +2184,6 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
   #page-wwu .wwu-form-sec {
     padding: 60px 20px !important;
   }
-}
-
-/* ============================================================
-   DARK MODE OVERRIDES: html.theme-midnight-gold
-   ============================================================ */
-html.theme-midnight-gold #page-wwu .wwu-areas {
-  background: radial-gradient(ellipse at 70% 50%, #0c1a11 0%, #08140d 50%, #050d08 100%) !important;
-  border-color: rgba(212, 175, 55, 0.25) !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-areas-left h2 {
-  color: #f7f2e8 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-areas-left .wwu-areas-desc {
-  color: #b3ab98 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-area-card {
-  background: rgba(14, 28, 20, 0.94) !important;
-  border-color: rgba(212, 175, 55, 0.28) !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-area-card h4 {
-  color: #f5f0e4 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-area-card p {
-  color: #a8a08f !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-diagram-center {
-  background: radial-gradient(circle at 40% 40%, #15261c 0%, #0d1a12 65%, #08110b 100%) !important;
-  border-color: #d4af37 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-diagram-center .dc-title {
-  color: #f5f0e4 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-ecosystem-section {
-  background: #09150e !important;
-  border-color: rgba(212, 175, 55, 0.2) !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-ecosystem-heading {
-  color: #f5f0e4 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-eco-card {
-  background: rgba(15, 30, 21, 0.85) !important;
-  border-color: rgba(212, 175, 55, 0.25) !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-eco-label {
-  color: #e8e2d5 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-ecosystem-footer-note {
-  color: #a39c8c !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-inquiry-section {
-  background: linear-gradient(180deg, #0a1710 0%, #06100a 100%) !important;
-  border-color: rgba(212, 175, 55, 0.25) !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-inquiry-info h2 {
-  color: #f5f0e4 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-inquiry-lead {
-  color: #aaa291 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-perk-text strong {
-  color: #f5f0e4 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-perk-text p {
-  color: #9e9787 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-direct-contact-card {
-  background: #0f2217 !important;
-  border-color: rgba(212, 175, 55, 0.25) !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-contact-row a {
-  color: #f5f0e4 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-inquiry-form-box {
-  background: #0d1e14 !important;
-  border-color: rgba(212, 175, 55, 0.3) !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-inquiry-form-box .form-box-head h3 {
-  color: #ffffff !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-inquiry-form-box .form-box-head p {
-  color: #a8a08f !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-inquiry-form-box input,
-html.theme-midnight-gold #page-wwu .wwu-inquiry-form-box select,
-html.theme-midnight-gold #page-wwu .wwu-inquiry-form-box textarea {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-color: rgba(212, 175, 55, 0.25) !important;
-  color: #f5efe1 !important;
-}
-html.theme-midnight-gold #page-wwu .wwu-inquiry-form-box select option {
-  background: #0d1e14 !important;
-  color: #f5efe1 !important;
-}
-html.theme-midnight-gold #page-wwu .onpage-submit-btn {
-  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%) !important;
-  color: #0c1a11 !important;
-  border: none !important;
 }
 </style>
 
@@ -3021,59 +2599,55 @@ html.theme-midnight-gold #page-wwu .onpage-submit-btn {
 
     <div class="wwu-begin-grid">
       <!-- Card 1 -->
-      <div class="wwu-card" onclick="selectCollabArea('Chocolate Problem Solving')">
+      <div class="wwu-card">
         <div class="card-icon">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         </div>
         <h4>I Have a Problem</h4>
-        <div class="card-desc">Something isn't working as intended.</div>
+        <div class="card-desc">Something isn't working.</div>
         <div class="card-tags">
           <span>Bloom</span><span>Viscosity</span><span>Texture</span>
           <span>Shelf life</span><span>Processing</span><span>Formulation</span>
         </div>
-        <span class="card-action-btn"><span>Diagnose &amp; Fix</span> &rarr;</span>
       </div>
 
       <!-- Card 2 -->
-      <div class="wwu-card" onclick="selectCollabArea('R&D & Product Innovation')">
+      <div class="wwu-card">
         <div class="card-icon">
           <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.5 6-.3.2-.5.5-.5.9V17H9v-1.1c0-.4-.2-.7-.5-.9C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
         </div>
         <h4>I Have an Idea</h4>
-        <div class="card-desc">Something that doesn't exist yet.</div>
+        <div class="card-desc">Something doesn't exist yet.</div>
         <div class="card-tags">
           <span>New product</span><span>New format</span>
           <span>Flavour</span><span>Concept</span><span>Experience</span>
         </div>
-        <span class="card-action-btn"><span>Co-Develop Concept</span> &rarr;</span>
       </div>
 
       <!-- Card 3 -->
-      <div class="wwu-card" onclick="selectCollabArea('Ingredients & Application Lab')">
+      <div class="wwu-card">
         <div class="card-icon">
           <svg viewBox="0 0 24 24"><path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/></svg>
         </div>
         <h4>I Have an Ingredient</h4>
-        <div class="card-desc">Something worth testing in matrices.</div>
+        <div class="card-desc">Something worth testing.</div>
         <div class="card-tags">
           <span>Ingredient</span><span>Inclusion</span><span>Cocoa component</span>
           <span>Functional ingredient</span><span>Raw material</span>
         </div>
-        <span class="card-action-btn"><span>Test In Application</span> &rarr;</span>
       </div>
 
       <!-- Card 4 -->
-      <div class="wwu-card" onclick="selectCollabArea('Knowledge & Industry Collaboration')">
+      <div class="wwu-card">
         <div class="card-icon">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
         </div>
         <h4>I Have a Question</h4>
-        <div class="card-desc">Something I want to understand deeply.</div>
+        <div class="card-desc">Something I want to understand.</div>
         <div class="card-tags">
           <span>Research</span><span>Education</span><span>Experimentation</span>
           <span>Industry knowledge</span><span>R&D thinking</span>
         </div>
-        <span class="card-action-btn"><span>Explore Together</span> &rarr;</span>
       </div>
     </div>
   </section>
@@ -3106,7 +2680,7 @@ html.theme-midnight-gold #page-wwu .onpage-submit-btn {
       <div class="wwu-diagram-stage">
         
         <!-- SVG Orbit Rings, Radial Glow Rays and Connection Lines -->
-        <svg class="wwu-orbital-svg" viewBox="0 0 740 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="wwu-orbital-svg" viewBox="0 0 680 460" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="spokeGradGold" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#d4af37" stop-opacity="0.9"/>
@@ -3119,41 +2693,41 @@ html.theme-midnight-gold #page-wwu .onpage-submit-btn {
           </defs>
 
           <!-- Outer faint guide ring -->
-          <circle cx="370" cy="280" r="235" stroke="#d4af37" stroke-width="0.8" stroke-opacity="0.16" stroke-dasharray="4 6"/>
+          <circle cx="340" cy="230" r="205" stroke="#d4af37" stroke-width="0.8" stroke-opacity="0.16" stroke-dasharray="4 6"/>
           
           <!-- Main Orbital Track (Rotating) -->
           <g class="wwu-orbit-dash">
-            <circle cx="370" cy="280" r="165" stroke="#8b5a2b" stroke-width="1.2" stroke-opacity="0.22" stroke-dasharray="5 5"/>
+            <circle cx="340" cy="230" r="148" stroke="#8b5a2b" stroke-width="1.2" stroke-opacity="0.22" stroke-dasharray="5 5"/>
           </g>
 
           <!-- Inner pulse halo ring -->
-          <circle cx="370" cy="280" r="70" stroke="#d4af37" stroke-width="1" stroke-opacity="0.35" stroke-dasharray="2 4"/>
+          <circle cx="340" cy="230" r="60" stroke="#d4af37" stroke-width="1" stroke-opacity="0.35" stroke-dasharray="2 4"/>
 
           <!-- 5 Radial Connector Spokes with Gold Gradients -->
           <!-- Top: to Card 1 (Create) -->
-          <line id="spoke-1" x1="370" y1="230" x2="370" y2="122" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <circle cx="370" cy="122" r="7" fill="url(#dockGlow)"/>
-          <circle cx="370" cy="122" r="3" fill="#d4af37"/>
+          <line id="spoke-1" x1="340" y1="181" x2="340" y2="98" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="340" cy="98" r="7" fill="url(#dockGlow)"/>
+          <circle cx="340" cy="98" r="3" fill="#d4af37"/>
 
           <!-- Top-Right: to Card 2 (Solve) -->
-          <line id="spoke-2" x1="405" y1="245" x2="514" y2="145" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <circle cx="514" cy="145" r="7" fill="url(#dockGlow)"/>
-          <circle cx="514" cy="145" r="3" fill="#d4af37"/>
+          <line id="spoke-2" x1="380" y1="201" x2="484" y2="117" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="484" cy="117" r="7" fill="url(#dockGlow)"/>
+          <circle cx="484" cy="117" r="3" fill="#d4af37"/>
 
           <!-- Bottom-Right: to Card 3 (Explore) -->
-          <line id="spoke-3" x1="405" y1="315" x2="506" y2="480" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <circle cx="506" cy="480" r="7" fill="url(#dockGlow)"/>
-          <circle cx="506" cy="480" r="3" fill="#d4af37"/>
+          <line id="spoke-3" x1="380" y1="259" x2="469" y2="365" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="469" cy="365" r="7" fill="url(#dockGlow)"/>
+          <circle cx="469" cy="365" r="3" fill="#d4af37"/>
 
           <!-- Bottom-Left: to Card 4 (Connect) -->
-          <line id="spoke-4" x1="335" y1="315" x2="234" y2="480" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <circle cx="234" cy="480" r="7" fill="url(#dockGlow)"/>
-          <circle cx="234" cy="480" r="3" fill="#d4af37"/>
+          <line id="spoke-4" x1="300" y1="259" x2="211" y2="365" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="211" cy="365" r="7" fill="url(#dockGlow)"/>
+          <circle cx="211" cy="365" r="3" fill="#d4af37"/>
 
           <!-- Top-Left: to Card 5 (Learn) -->
-          <line id="spoke-5" x1="335" y1="245" x2="226" y2="145" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <circle cx="226" cy="145" r="7" fill="url(#dockGlow)"/>
-          <circle cx="226" cy="145" r="3" fill="#d4af37"/>
+          <line id="spoke-5" x1="300" y1="201" x2="196" y2="117" stroke="url(#spokeGradGold)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="196" cy="117" r="7" fill="url(#dockGlow)"/>
+          <circle cx="196" cy="117" r="3" fill="#d4af37"/>
         </svg>
 
         <!-- Center Core: THE QUESTION (Interactive Reactive Nucleus) -->
@@ -3437,151 +3011,6 @@ html.theme-midnight-gold #page-wwu .onpage-submit-btn {
     </div>
   </section>
 
-  <!-- ====== 6. ON-PAGE CONSULTATION & INQUIRY SECTION ====== -->
-  <section class="wwu-inquiry-section" id="inquiry-form-section">
-    <div class="wwu-inquiry-inner">
-      
-      <!-- Left Column: Context, Trust Perks & Direct Info -->
-      <div class="wwu-inquiry-info">
-        <div class="wwu-inquiry-pill">
-          <span class="pill-dot"></span>
-          <span>DIRECT INQUIRY &amp; LAB COLLABORATION</span>
-        </div>
-
-        <h2>Start a Technical<br><span class="hl-gold">Collaboration.</span></h2>
-
-        <p class="wwu-inquiry-lead">
-          Whether you have a specific formulation challenge, want to develop a breakthrough chocolate product, or need ingredient application trials — our R&amp;D scientists are ready to partner with you.
-        </p>
-
-        <!-- Perks List -->
-        <div class="wwu-inquiry-perks">
-          <div class="wwu-perk-item">
-            <div class="wwu-perk-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              </svg>
-            </div>
-            <div class="wwu-perk-text">
-              <strong>Strict Confidentiality</strong>
-              <p>Mutual Non-Disclosure Agreement (NDA) executed prior to any proprietary formulation review.</p>
-            </div>
-          </div>
-
-          <div class="wwu-perk-item">
-            <div class="wwu-perk-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-            </div>
-            <div class="wwu-perk-text">
-              <strong>Direct Food Scientist Review</strong>
-              <p>Inquiries are assessed directly by formulation technologists and rheologists, not generic sales desks.</p>
-            </div>
-          </div>
-
-          <div class="wwu-perk-item">
-            <div class="wwu-perk-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12 6 12 12 16 14"/>
-              </svg>
-            </div>
-            <div class="wwu-perk-text">
-              <strong>Fast Technical Scoping</strong>
-              <p>Expect a structured response and feasibility outline within 24 to 48 business hours.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Direct Contact Info Card -->
-        <div class="wwu-direct-contact-card">
-          <h5>Direct Inquiries &amp; Laboratory Access</h5>
-          <div class="wwu-contact-row">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <span>Email: <a href="mailto:collaborate@rtchocos.com">collaborate@rtchocos.com</a></span>
-          </div>
-          <div class="wwu-contact-row">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>Lab Location: RT Chocos Chocolate Innovation Lab, India</span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Right Column: High-End On-Page Form -->
-      <div class="wwu-inquiry-form-box" id="onpage-form-box">
-        <div class="form-box-head">
-          <h3>Submit an Inquiry</h3>
-          <p>Tell us about your project, idea, or challenge. We'll tailor our response to your needs.</p>
-        </div>
-
-        <?php if ($submissionSuccess): ?>
-          <div class="alert-ok">✓ Thank you! Your inquiry has been received. Our R&amp;D team will contact you within 24–48 hours.</div>
-        <?php elseif (!empty($submissionError)): ?>
-          <div class="alert-err"><?php echo htmlspecialchars($submissionError); ?></div>
-        <?php endif; ?>
-
-        <form method="POST" action="work-with-us.php" id="inquiry-form">
-          <div class="form-grid">
-            <div class="form-row">
-              <div>
-                <label>Your Full Name *</label>
-                <input type="text" name="name" required placeholder="e.g. Aarti Sahni" />
-              </div>
-              <div>
-                <label>Work Email Address *</label>
-                <input type="email" name="email" required placeholder="name@company.com" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <label>Phone / WhatsApp</label>
-                <input type="text" name="phone" placeholder="+91 98765 43210" />
-              </div>
-              <div>
-                <label>Company / Brand Name</label>
-                <input type="text" name="company" placeholder="e.g. Artisan Cacao Ltd." />
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <label>Primary Area of Interest</label>
-                <select name="service" id="onpage-service-select">
-                  <option value="R&D & Product Innovation">🔬 R&D &amp; Product Innovation</option>
-                  <option value="Chocolate Problem Solving">🧩 Chocolate Problem Solving</option>
-                  <option value="Ingredients & Application Lab">⚗️ Ingredients &amp; Application Lab</option>
-                  <option value="Education & Masterclasses">🎓 Education &amp; Masterclasses</option>
-                  <option value="Knowledge & Industry Collaboration">🤝 Knowledge &amp; Industry Collaboration</option>
-                  <option value="General Inquiry">✨ General Inquiry</option>
-                </select>
-              </div>
-              <div>
-                <label>Project Scope / Budget Range</label>
-                <select name="budget">
-                  <option value="₹50,000 - ₹1,50,000">₹50,000 – ₹1,50,000</option>
-                  <option value="₹1,50,000 - ₹3,50,000">₹1,50,000 – ₹3,50,000</option>
-                  <option value="₹3,50,000+">₹3,50,000+ (Enterprise / Long-Term)</option>
-                  <option value="Flexible / Undecided">Flexible / Undecided</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <label>Describe Your Challenge or Question *</label>
-              <textarea name="message" rows="4" required placeholder="What's the question you're trying to answer? Tell us about your recipe, process, ingredient, or product vision..."></textarea>
-            </div>
-            <div style="margin-top:10px;">
-              <button type="submit" class="onpage-submit-btn">Send Collaboration Inquiry &rarr;</button>
-            </div>
-          </div>
-        </form>
-      </div>
-
-    </div>
-  </section>
-
   <div id="consultation-modal" class="wwu-modal-backdrop" aria-hidden="true" onclick="handleModalBackdropClick(event)">
     <div class="wwu-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       
@@ -3601,7 +3030,7 @@ html.theme-midnight-gold #page-wwu .onpage-submit-btn {
           <div class="alert-err"><?php echo htmlspecialchars($submissionError); ?></div>
         <?php endif; ?>
 
-        <form method="POST" action="work-with-us.php" id="modal-inquiry-form">
+        <form method="POST" action="work-with-us.php" id="inquiry-form">
           <div class="form-grid">
             <div class="form-row">
               <div>
@@ -3762,48 +3191,9 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// Synchronize service selection to both on-page and modal forms, and navigate gracefully
+// Alias for backwards-compatibility with existing card click handlers
 function selectCollabArea(areaName) {
-  // 1. Sync to on-page form dropdown
-  const onpageSelect = document.getElementById('onpage-service-select');
-  if (onpageSelect && areaName) {
-    for (let i = 0; i < onpageSelect.options.length; i++) {
-      const opt = onpageSelect.options[i];
-      if (opt.value.toLowerCase().includes(areaName.toLowerCase()) || 
-          opt.text.toLowerCase().includes(areaName.toLowerCase())) {
-        onpageSelect.selectedIndex = i;
-        break;
-      }
-    }
-  }
-
-  // 2. Sync to modal dropdown
-  const modalSelect = document.getElementById('modal-service-select');
-  if (modalSelect && areaName) {
-    for (let i = 0; i < modalSelect.options.length; i++) {
-      const opt = modalSelect.options[i];
-      if (opt.value.toLowerCase().includes(areaName.toLowerCase()) || 
-          opt.text.toLowerCase().includes(areaName.toLowerCase())) {
-        modalSelect.selectedIndex = i;
-        break;
-      }
-    }
-  }
-
-  // 3. Smooth scroll down to on-page form with golden accent highlight
-  const inquirySection = document.getElementById('inquiry-form-section');
-  const formBox = document.getElementById('onpage-form-box');
-  if (inquirySection) {
-    inquirySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    if (formBox) {
-      formBox.classList.add('is-highlighted');
-      setTimeout(() => {
-        formBox.classList.remove('is-highlighted');
-      }, 2200);
-    }
-  } else {
-    openConsultationModal(areaName);
-  }
+  openConsultationModal(areaName);
 }
 
 // Auto-open modal if there was a form submission response
