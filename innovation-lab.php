@@ -1186,34 +1186,34 @@ function openFailedBatchModal(id) {
   const body = document.getElementById('modalFailBody');
 
   header.innerHTML = `
-    <div class="lab-modal-header-inner">
-      <div class="lab-modal-header-left">
-        <div class="lab-modal-meta-row">
-          <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #B45309; background: #FEF3C7; padding: 4px 10px; border-radius: 4px;">
-            ${escapeHtml(fail.badge_label || 'BECAUSE FAILURE IS DATA.')}
+    <div class="lab-failed-header-container">
+      <div class="lab-failed-header-top-row">
+        <div class="lab-failed-badges">
+          <span class="lab-badge-forensic">
+            <span class="lab-badge-pulse"></span>
+            ${escapeHtml(specs.batchRef || 'FAIL-POSTMORTEM-0' + fail.id)}
           </span>
-          <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #DC2626; background: #FEE2E2; padding: 4px 10px; border-radius: 4px;">
-            ${escapeHtml(specs.batchRef)}
-          </span>
-          <span class="lab-modal-category-tag">POST-MORTEM SCIENTIFIC AUDIT</span>
+          <span class="lab-badge-category">POST-MORTEM SCIENTIFIC AUDIT</span>
+          <span class="lab-badge-motto">${escapeHtml(fail.badge_label || 'BECAUSE FAILURE IS DATA.')}</span>
         </div>
-        <h2 class="lab-modal-title">${escapeHtml(fail.title)}</h2>
-      </div>
-      <div class="lab-modal-header-right">
-        <div class="lab-modal-header-actions">
-          <button type="button" class="lab-modal-tool-btn" onclick="copyLabDossier('${escapeHtml(fail.slug || 'failed-' + fail.id)}', '${escapeHtml(fail.title)}')" title="Copy Dossier Link">
-            <span>📋</span>
+        <div class="lab-failed-actions">
+          <button type="button" class="lab-action-btn" onclick="copyLabDossier('${escapeHtml(fail.slug || 'failed-' + fail.id)}', '${escapeHtml(fail.title)}')" title="Share Dossier Link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
             <span>SHARE</span>
           </button>
-          <button type="button" class="lab-modal-tool-btn" onclick="printLabDossier()" title="Print / Export Dossier">
-            <span>🖨️</span>
+          <button type="button" class="lab-action-btn" onclick="printLabDossier()" title="Print / Export Dossier">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
             <span>PRINT</span>
           </button>
-          <button type="button" class="lab-modal-close-btn" onclick="closeLabModal('failedBatchModal')" aria-label="Close Failed Batch Dossier">
+          <button type="button" class="lab-close-btn" onclick="closeLabModal('failedBatchModal')" aria-label="Close Failed Batch Dossier">
             <span>CLOSE</span>
-            <span class="close-btn-x">✕</span>
+            <span class="close-x">✕</span>
           </button>
         </div>
+      </div>
+      <div class="lab-failed-header-title-row">
+        <h2 class="lab-failed-title">${escapeHtml(fail.title)}</h2>
+        <p class="lab-failed-subtitle">Forensic Audit &amp; Industrial Root-Cause Analysis · RT Chocos R&amp;D Formulation Unit</p>
       </div>
     </div>
   `;
@@ -1221,100 +1221,152 @@ function openFailedBatchModal(id) {
   let innerHTML = '';
   if (fail.image_path) {
     innerHTML += `
-      <div class="lab-modal-hero-frame">
+      <div class="lab-failed-hero-frame">
         <img src="${escapeHtml(fail.image_path)}" alt="${escapeHtml(fail.title)}">
-        <div class="lab-modal-hero-badge" style="background: rgba(185, 28, 28, 0.9);">
-          <span>⚠️ ANOMALY DETECTED IN TRIAL RUN #${fail.id} · FORENSIC AUDIT</span>
+        <div class="lab-failed-hero-overlay">
+          <div class="lab-failed-specimen-pill">
+            <span class="specimen-dot"></span>
+            <span>TRIAL ARCHIVAL SPECIMEN #${fail.id}</span>
+            <span class="specimen-divider">·</span>
+            <span class="specimen-ref">${escapeHtml(specs.batchRef || 'RUN-01')}</span>
+          </div>
+          <div class="lab-failed-hero-status">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>AUDITED &amp; CODIFIED INTO STANDARD LAB PROTOCOL</span>
+          </div>
         </div>
       </div>
     `;
   }
 
-  // Failure Diagnostic Telemetry Dashboard
+  // 4-Phase Chronological Forensic Investigation Grid (Replaces old stark boxes)
   innerHTML += `
-    <div class="lab-specs-grid">
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>⚠️</span>
-          <span>PRIMARY FAILURE MODE</span>
+    <div class="lab-failed-postmortem-grid">
+      <!-- 01: The Intended Goal -->
+      <div class="lab-pm-card card-hypo">
+        <div class="lab-pm-head">
+          <div class="lab-pm-pill">
+            <span class="pm-phase-num">01</span>
+            <span class="pm-phase-name">INITIAL HYPOTHESIS</span>
+          </div>
+          <div class="lab-pm-icon-blob icon-emerald" title="Intended Goal">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+          </div>
         </div>
-        <div class="lab-spec-value" style="color: #DC2626;">${escapeHtml(specs.defectMode)}</div>
-        <div class="lab-spec-sub">Organoleptic &amp; Rheology Defect</div>
+        <div class="lab-pm-title-wrap">
+          <h3 class="lab-pm-title">The Intended Goal</h3>
+          <span class="lab-pm-sub">Formulation target &amp; organoleptic expectation</span>
+        </div>
+        <div class="lab-pm-body">
+          ${renderLabContent(fail.hypothesis)}
+        </div>
+        <div class="lab-pm-foot">
+          <span class="lab-pm-tag tag-emerald">🎯 R&amp;D Target Established</span>
+        </div>
       </div>
 
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>⚖️</span>
-          <span>PILOT SCALE / VOLUME</span>
+      <!-- 02: What Happened (The Failure) -->
+      <div class="lab-pm-card card-defect">
+        <div class="lab-pm-head">
+          <div class="lab-pm-pill">
+            <span class="pm-phase-num">02</span>
+            <span class="pm-phase-name">CRITICAL ANOMALY</span>
+          </div>
+          <div class="lab-pm-icon-blob icon-rose" title="Observed Defect">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
         </div>
-        <div class="lab-spec-value">${escapeHtml(specs.trialScale)}</div>
-        <div class="lab-spec-sub">Dedicated experimental pilot run</div>
+        <div class="lab-pm-title-wrap">
+          <h3 class="lab-pm-title">What Happened? (The Failure)</h3>
+          <span class="lab-pm-sub">Observed sensory &amp; structural deviation</span>
+        </div>
+        <div class="lab-pm-body">
+          ${renderLabContent(fail.what_happened)}
+        </div>
+        <div class="lab-pm-foot">
+          <span class="lab-pm-tag tag-rose">⚠️ Defect Documented</span>
+        </div>
       </div>
 
-      <div class="lab-spec-card">
-        <div class="lab-spec-label">
-          <span>💧</span>
-          <span>CRITICAL MOISTURE ANOMALY</span>
+      <!-- 03: Understanding The Science -->
+      <div class="lab-pm-card card-cause">
+        <div class="lab-pm-head">
+          <div class="lab-pm-pill">
+            <span class="pm-phase-num">03</span>
+            <span class="pm-phase-name">ROOT CAUSE SCIENCE</span>
+          </div>
+          <div class="lab-pm-icon-blob icon-amber" title="Root Cause Mechanism">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31"></path><path d="M14 9.3V2"></path><path d="M8.5 2h7"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path><path d="M5.52 16h12.96"></path></svg>
+          </div>
         </div>
-        <div class="lab-spec-value" style="color: #D97706;">${escapeHtml(specs.criticalMoisture)}</div>
-        <div class="lab-spec-sub">Free moisture pulled into fat matrix</div>
+        <div class="lab-pm-title-wrap">
+          <h3 class="lab-pm-title">Understanding The Science</h3>
+          <span class="lab-pm-sub">Physical chemistry &amp; lipid-matrix mechanics</span>
+        </div>
+        <div class="lab-pm-body">
+          ${renderLabContent(fail.why_it_happened)}
+        </div>
+        <div class="lab-pm-foot">
+          <span class="lab-pm-tag tag-amber">🔬 Molecular Dynamics Mapped</span>
+        </div>
+      </div>
+
+      <!-- 04: The Breakthrough -->
+      <div class="lab-pm-card card-breakthrough">
+        <div class="lab-pm-head">
+          <div class="lab-pm-pill">
+            <span class="pm-phase-num">04</span>
+            <span class="pm-phase-name">THE BREAKTHROUGH</span>
+          </div>
+          <div class="lab-pm-icon-blob icon-gold" title="Validated Breakthrough">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg>
+          </div>
+        </div>
+        <div class="lab-pm-title-wrap">
+          <h3 class="lab-pm-title">The Learning (What Next?)</h3>
+          <span class="lab-pm-sub">Validated industrial solution &amp; future guardrail</span>
+        </div>
+        <div class="lab-pm-body">
+          ${renderLabContent(fail.what_next)}
+        </div>
+        <div class="lab-pm-foot">
+          <span class="lab-pm-tag tag-gold">💡 Production Standardized ✓</span>
+        </div>
       </div>
     </div>
   `;
 
-  // 4-Step Post-Mortem Cards
-  innerHTML += `
-    <div class="lab-dossier-grid">
-      <div class="lab-dossier-card card-accent-green">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">01</span>
-          <span class="lab-dossier-step-tag">INITIAL HYPOTHESIS</span>
-        </div>
-        <h4>The Intended Goal</h4>
-        <div class="lab-dossier-card-text">${renderLabContent(fail.hypothesis)}</div>
-      </div>
-
-      <div class="lab-dossier-card card-accent-red">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">02</span>
-          <span class="lab-dossier-step-tag">THE ANOMALY</span>
-        </div>
-        <h4>What Happened? (The Failure)</h4>
-        <div class="lab-dossier-card-text">${renderLabContent(fail.what_happened)}</div>
-      </div>
-
-      <div class="lab-dossier-card card-accent-amber">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">03</span>
-          <span class="lab-dossier-step-tag">ROOT CAUSE SCIENCE</span>
-        </div>
-        <h4>Understanding The Science</h4>
-        <div class="lab-dossier-card-text">${renderLabContent(fail.why_it_happened)}</div>
-      </div>
-
-      <div class="lab-dossier-card card-accent-green">
-        <div class="lab-dossier-step-row">
-          <span class="lab-dossier-step-num">04</span>
-          <span class="lab-dossier-step-tag">THE BREAKTHROUGH</span>
-        </div>
-        <h4>The Learning (What Next?)</h4>
-        <div class="lab-dossier-card-text">${renderLabContent(fail.what_next)}</div>
-      </div>
-    </div>
-  `;
-
-  // Full Story
+  // Full Story Dossier Card
   if (fail.full_story) {
     innerHTML += `
-      <div class="lab-full-notes-card">
-        <div class="lab-full-notes-header">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-          <h4>THE FULL EXPERIMENT STORY &amp; POST-MORTEM SCIENCE</h4>
+      <div class="lab-failed-story-card">
+        <div class="lab-story-header">
+          <div class="lab-story-header-left">
+            <div class="lab-story-icon-medallion">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                <line x1="9" y1="7" x2="15" y2="7"></line>
+                <line x1="9" y1="11" x2="15" y2="11"></line>
+              </svg>
+            </div>
+            <div>
+              <div class="lab-story-eyebrow">CHRONOLOGICAL FIELD LOGS &amp; POST-MORTEM DOSSIER</div>
+              <h4 class="lab-story-heading">The Full Experiment Story &amp; Post-Mortem Science</h4>
+            </div>
+          </div>
+          <div class="lab-story-badge">
+            <span>🔬 COMPREHENSIVE R&amp;D ARCHIVE</span>
+          </div>
         </div>
-        <div class="lab-full-notes-body">
+        <div class="lab-story-body">
           ${renderLabContent(fail.full_story)}
+        </div>
+        <div class="lab-story-footer">
+          <div class="lab-story-stamp">
+            <span class="stamp-dot"></span>
+            <span>AUDITED &amp; SIGNED OFF BY RT CHOCOS R&amp;D FORMULATION TEAM · TRIAL REF #${fail.id}</span>
+          </div>
         </div>
       </div>
     `;
@@ -1323,30 +1375,36 @@ function openFailedBatchModal(id) {
   // Validated Corrective Protocols Checklist Card
   if (specs.correctiveChecklist && specs.correctiveChecklist.length > 0) {
     innerHTML += `
-      <div class="lab-corrective-card">
-        <div class="lab-corrective-title">
-          <span>🛡️</span>
-          <span>VALIDATED CORRECTIVE LAB PROTOCOLS ADOPTED</span>
+      <div class="lab-failed-protocols-card">
+        <div class="lab-protocols-header">
+          <div class="lab-protocols-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <div>
+            <div class="lab-protocols-eyebrow">PREVENTATIVE MANUFACTURING PROTOCOLS</div>
+            <h4 class="lab-protocols-heading">Validated Corrective Protocols Adopted</h4>
+          </div>
         </div>
-        <ul class="lab-corrective-list">
-          ${specs.correctiveChecklist.map(item => `
-            <li class="lab-corrective-item">
-              <span class="lab-corrective-check">✓</span>
-              <span>${escapeHtml(item)}</span>
-            </li>
+        <div class="lab-protocols-list">
+          ${specs.correctiveChecklist.map((item, idx) => `
+            <div class="lab-protocol-item">
+              <span class="lab-protocol-num">${String(idx + 1).padStart(2, '0')}</span>
+              <span class="lab-protocol-check">✓</span>
+              <span class="lab-protocol-text">${escapeHtml(item)}</span>
+            </div>
           `).join('')}
-        </ul>
+        </div>
       </div>
     `;
   }
 
   innerHTML += `
     <div class="lab-modal-footer-bar">
-      <button type="button" onclick="closeLabModal('failedBatchModal')" class="lab-modal-return-btn">
+      <button type="button" onclick="closeLabModal('failedBatchModal')" class="lab-failed-modal-return-btn">
         <span class="arrow">←</span>
         <span>RETURN TO LAB WORKBENCH</span>
       </button>
-      <button type="button" onclick="closeLabModal('failedBatchModal')" class="lab-modal-return-ghost">
+      <button type="button" onclick="closeLabModal('failedBatchModal')" class="lab-failed-modal-close-ghost">
         <span>CLOSE DOSSIER (ESC)</span>
       </button>
     </div>
