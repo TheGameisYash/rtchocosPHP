@@ -645,41 +645,139 @@
   display: block;
 }
 
-/* Right: Failed Batch Card */
+/* =========================================================================
+   RIGHT: ELEVATED FAILED BATCH FORENSIC ATELIER CARD
+   ========================================================================= */
 .lab-failed-card {
   background: #FAF7F2;
   border: 1px solid #E6DED2;
-  border-radius: 4px;
-  padding: 36px 36px 32px;
+  border-radius: 12px;
+  padding: 32px 32px 28px;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 10px 30px rgba(18, 34, 23, 0.04);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.lab-failed-card:hover {
+  border-color: #D6CBB8;
+  box-shadow: 0 14px 40px rgba(18, 34, 23, 0.07);
+}
+
+.lab-failed-eyebrow-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lab-failed-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #B45309;
+  background: #FEF3C7;
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.pulse-dot {
+  color: #DC2626;
+  font-size: 8px;
+  display: inline-block;
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.lab-failed-meta-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #8C7B68;
 }
 
 .lab-failed-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 700;
   color: #122217;
   line-height: 1.25;
-  margin-top: 4px;
+  margin: 4px 0 6px;
+}
+
+.lab-failed-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #6C7E72;
+  margin: 0 0 14px;
+}
+
+/* Case Study Switcher Tabs */
+.lab-failed-switcher {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.lab-failed-pill-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: #EDE6DA;
+  color: #554433;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.lab-failed-pill-btn:hover {
+  background: #E2DACB;
+  color: #122217;
+}
+
+.lab-failed-pill-btn.active {
+  background: #14251B;
+  color: #FAF7F2;
+  border-color: #14251B;
+  box-shadow: 0 2px 8px rgba(20, 37, 27, 0.2);
 }
 
 .lab-failed-inner-box {
   background: #FFFFFF;
   border: 1px solid #EAE2D5;
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  margin-top: 24px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+  grid-template-columns: 0.95fr 1.25fr;
+  box-shadow: 0 4px 20px rgba(18, 34, 23, 0.04);
   flex: 1;
 }
 
 .lab-failed-img-wrap {
   position: relative;
   height: 100%;
-  min-height: 260px;
+  min-height: 300px;
+  overflow: hidden;
+  background: #140F0C;
 }
 
 .lab-failed-img-wrap img {
@@ -687,70 +785,335 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lab-failed-inner-box:hover .lab-failed-img-wrap img {
+  transform: scale(1.04);
+}
+
+.lab-failed-specimen-overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.lab-failed-specimen-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  background: rgba(185, 28, 28, 0.88);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.lab-failed-ref-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #FAF7F2;
+  background: rgba(18, 34, 23, 0.85);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 3px 8px;
+  border-radius: 4px;
 }
 
 .lab-failed-content {
-  padding: 24px 24px 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  background: #FFFFFF;
 }
 
-.lab-failed-case-tag {
+.lab-failed-case-header {
+  margin-bottom: 14px;
+  border-bottom: 1px solid #F0E8DD;
+  padding-bottom: 12px;
+}
+
+.lab-failed-badge-text {
   font-family: 'Inter', sans-serif;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #14251B;
-  margin-bottom: 14px;
-  padding-bottom: 6px;
-  border-bottom: 1.5px solid #14251B;
-  display: inline-block;
-  width: fit-content;
+  color: #B45309;
+  margin-bottom: 4px;
 }
 
-.lab-failed-data-row {
-  margin-bottom: 10px;
-  font-size: 12.5px;
-  line-height: 1.5;
-}
-
-.lab-failed-data-row .label {
-  font-family: 'Inter', sans-serif;
+.lab-failed-case-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px;
   font-weight: 700;
   color: #122217;
-  display: block;
-  font-size: 11.5px;
+  line-height: 1.35;
+  margin: 0;
 }
 
-.lab-failed-data-row .text {
-  font-family: 'Inter', sans-serif;
-  color: #495B4E;
+/* 4-Phase Stepper Cards on Main Page */
+.lab-failed-steps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
-.lab-failed-btn {
+.lab-failed-step-item {
+  border-radius: 6px;
+  padding: 10px 12px;
+  border: 1px solid #EAE2D5;
+  background: #FAF7F2;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.lab-failed-step-item:hover {
+  transform: translateY(-1px);
+}
+
+.lab-failed-step-item.step-hypo {
+  border-left: 3px solid #166534;
+  background: #F8FAF8;
+}
+
+.lab-failed-step-item.step-defect {
+  border-left: 3px solid #DC2626;
+  background: #FEF7F7;
+}
+
+.lab-failed-step-item.step-cause {
+  border-left: 3px solid #D97706;
+  background: #FFFDF7;
+}
+
+.lab-failed-step-item.step-learning {
+  border-left: 3px solid #059669;
+  background: #F5FAF7;
+}
+
+.lab-failed-step-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.lab-failed-step-head .step-num {
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.06);
   color: #14251B;
-  text-decoration: none;
+}
+
+.step-hypo .step-num { background: #EBF7EE; color: #166534; }
+.step-defect .step-num { background: #FEE2E2; color: #DC2626; }
+.step-cause .step-num { background: #FEF3C7; color: #B45309; }
+.step-learning .step-num { background: #D1FAE5; color: #047857; }
+
+.lab-failed-step-head .step-lbl {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6C7E72;
+}
+
+.lab-failed-step-body {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #384A3D;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Elevated CTA Action */
+.lab-failed-footer-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid #F0E8DD;
+  flex-wrap: wrap;
+}
+
+.lab-failed-cta-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: #14251B;
+  color: #FAF7F2;
+  padding: 11px 20px;
+  border-radius: 6px;
+  border: 1px solid #14251B;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(20, 37, 27, 0.15);
+}
+
+.lab-failed-cta-btn:hover {
+  background: #235436;
+  border-color: #235436;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(20, 37, 27, 0.22);
+}
+
+.lab-failed-cta-btn:active {
+  transform: scale(0.97);
+}
+
+.lab-failed-cta-btn .cta-arrow {
+  transition: transform 0.2s ease;
+  font-size: 14px;
+}
+
+.lab-failed-cta-btn:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+.lab-failed-footnote {
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-style: italic;
+  color: #8C7B68;
+}
+
+/* =========================================================================
+   FAILED BATCH MODAL: REFINED FORENSIC DOSSIER HERO & METADATA RIBBON
+   ========================================================================= */
+.lab-failed-modal-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid #E6DED2;
+  margin-bottom: 20px;
+}
+
+.lab-failed-hero-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 20px;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(18, 34, 23, 0.88) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #FFFFFF;
+}
+
+.lab-failed-hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 10px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  transition: color 0.2s ease, transform 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  background: rgba(185, 28, 28, 0.9);
+  padding: 4px 12px;
+  border-radius: 4px;
 }
 
-.lab-failed-btn:hover {
-  color: #235436;
-  transform: translateX(4px);
+.lab-failed-hero-caption {
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+}
+
+/* Compact Forensic Audit Ribbon (Replacing Clunky 3-box Specs Grid) */
+.lab-failed-audit-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #FAF7F2;
+  border: 1px solid #E5DCCE;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(18, 34, 23, 0.02);
+}
+
+.lab-audit-ribbon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.lab-audit-ribbon-item .ribbon-lbl {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8C7B68;
+}
+
+.lab-audit-ribbon-item .ribbon-val {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #122217;
+  letter-spacing: 0.02em;
+}
+
+.lab-audit-ribbon-sep {
+  width: 1px;
+  height: 24px;
+  background: #E5DCCE;
+}
+
+@media (max-width: 768px) {
+  .lab-failed-inner-box {
+    grid-template-columns: 1fr;
+  }
+  .lab-failed-img-wrap {
+    min-height: 220px;
+    height: 220px;
+  }
+  .lab-failed-steps-grid {
+    grid-template-columns: 1fr;
+  }
+  .lab-failed-audit-ribbon {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lab-audit-ribbon-sep {
+    display: none;
+  }
 }
 
 /* ==========================================
