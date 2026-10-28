@@ -26,27 +26,27 @@ try {
         return $fallback;
     }
 
-    $heroEyebrow = trim((string)get_site_setting('lab_hero_eyebrow', '')) ?: 'IDEAS × EXPERIMENTS × EVIDENCE';
+    $heroEyebrow = trim((string)get_site_setting('lab_hero_eyebrow', '')) ?: 'IDEAS · EXPERIMENTS · REAL TASTE';
     $heroTitle = trim((string)get_site_setting('lab_hero_title', '')) ?: 'Innovation Lab';
-    $heroSubtitle = trim((string)get_site_setting('lab_hero_subtitle', '')) ?: 'A working space where curious minds come together to explore new ingredients, techniques and ideas to shape a more thoughtful chocolate future.';
+    $heroSubtitle = trim((string)get_site_setting('lab_hero_subtitle', '')) ?: 'Our creative kitchen where we test fresh ideas, local ingredients, and better ways to make honest chocolate.';
     $heroCtaText = trim((string)get_site_setting('lab_hero_cta_text', '')) ?: 'STEP INTO THE LAB →';
     $heroCtaLink = trim((string)get_site_setting('lab_hero_cta_link', '')) ?: '#currently-in-lab';
     $stickyNoteText = trim((string)get_site_setting('lab_sticky_note', '')) ?: "Better Ingredients\nBigger Questions\nBrighter Chocolate";
     $heroImage = getSafeLabImg(get_site_setting('lab_hero_image', ''), 'assets/images/lab-hero.jpg');
 
-    $whatIfEyebrow = trim((string)get_site_setting('lab_what_if_eyebrow', '')) ?: 'IDEAS WE ARE EXPLORING NEXT.';
+    $whatIfEyebrow = trim((string)get_site_setting('lab_what_if_eyebrow', '')) ?: 'IDEAS WE ARE TESTING NEXT.';
     $whatIfHeading = trim((string)get_site_setting('lab_what_if_heading', '')) ?: 'What if?';
     $whatIfImage = getSafeLabImg(get_site_setting('lab_what_if_image', ''), 'assets/images/lab-what-if.jpg');
 
-    $failedEyebrow = trim((string)get_site_setting('lab_failed_batch_eyebrow', '')) ?: 'BECAUSE FAILURE IS DATA.';
-    $failedHeading = trim((string)get_site_setting('lab_failed_batch_heading', '')) ?: 'From a Failed Batch to a New Insight';
+    $failedEyebrow = trim((string)get_site_setting('lab_failed_batch_eyebrow', '')) ?: 'WHEN THINGS GO WRONG, WE LEARN.';
+    $failedHeading = trim((string)get_site_setting('lab_failed_batch_heading', '')) ?: 'From a Failed Batch to a New Idea';
 
-    $ingredientEyebrow = trim((string)get_site_setting('lab_ingredient_eyebrow', '')) ?: 'NEW INGREDIENTS. NEW BEHAVIOURS. NEW POSSIBILITIES.';
+    $ingredientEyebrow = trim((string)get_site_setting('lab_ingredient_eyebrow', '')) ?: 'LOCAL INGREDIENTS. FRESH FLAVORS. NEW IDEAS.';
     $ingredientHeading = trim((string)get_site_setting('lab_ingredient_heading', '')) ?: 'Ingredient Innovation';
 
-    $futureEyebrow = trim((string)get_site_setting('lab_future_eyebrow', '')) ?: 'BOLDER QUESTIONS. BIGGER IMPACT.';
+    $futureEyebrow = trim((string)get_site_setting('lab_future_eyebrow', '')) ?: 'BIGGER DREAMS. BETTER CHOCOLATE.';
     $futureHeading = trim((string)get_site_setting('lab_future_heading', '')) ?: 'Future of Chocolate';
-    $futureText = trim((string)get_site_setting('lab_future_text', '')) ?: 'Exploring ideas and technologies that can make chocolate more inclusive, resilient and regenerative — for people, communities and the planet.';
+    $futureText = trim((string)get_site_setting('lab_future_text', '')) ?: 'Exploring sustainable ideas that support cocoa farmers, care for our soil, and bring clean, honest chocolate to everyone.';
     $futureCtaText = trim((string)get_site_setting('lab_future_cta_text', '')) ?: 'EXPLORE FUTURE IDEAS →';
     $futureCtaLink = trim((string)get_site_setting('lab_future_cta_link', '')) ?: '#future-ideas';
     $futureImage = getSafeLabImg(get_site_setting('lab_future_image', ''), 'assets/images/lab-future.jpg');
@@ -174,7 +174,7 @@ include 'includes/header.php';
               <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/>
               <line x1="8.5" y1="2" x2="15.5" y2="2"/>
             </svg>
-            <span>FAILED EXPERIMENTS</span>
+            <span>FAILED BATCHES</span>
             <span class="arrow-icon">→</span>
           </a>
         </li>
@@ -236,7 +236,7 @@ include 'includes/header.php';
               <h3 class="lab-exp-title"><?php echo htmlspecialchars($exp['title']); ?></h3>
               <p class="lab-exp-desc"><?php echo htmlspecialchars($exp['description']); ?></p>
               <div class="lab-exp-footer">
-                <span class="lab-exp-tags"><?php echo htmlspecialchars($exp['tags'] ?: 'R&D | FORMULATION'); ?></span>
+                <span class="lab-exp-tags"><?php echo htmlspecialchars($exp['tags'] ?: 'TEST BATCH | RECIPE'); ?></span>
                 <span class="lab-circle-btn" aria-label="Open Experiment Dossier">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -308,22 +308,22 @@ include 'includes/header.php';
           <div class="lab-failed-case-tag"><?php echo htmlspecialchars($primaryFailed['title']); ?></div>
           
           <div class="lab-failed-data-row">
-            <span class="label">1. The Hypothesis</span>
+            <span class="label">1. What We Hoped For</span>
             <span class="text"><?php echo htmlspecialchars($primaryFailed['hypothesis']); ?></span>
           </div>
 
           <div class="lab-failed-data-row">
-            <span class="label">2. What Happened?</span>
+            <span class="label">2. What Went Wrong</span>
             <span class="text"><?php echo htmlspecialchars($primaryFailed['what_happened']); ?></span>
           </div>
 
           <div class="lab-failed-data-row">
-            <span class="label">3. Understanding The Science</span>
+            <span class="label">3. Why It Happened</span>
             <span class="text"><?php echo htmlspecialchars($primaryFailed['why_it_happened']); ?></span>
           </div>
 
           <div class="lab-failed-data-row">
-            <span class="label">4. The Learning</span>
+            <span class="label">4. What We Learned</span>
             <span class="text"><?php echo htmlspecialchars($primaryFailed['what_next']); ?></span>
           </div>
 
@@ -369,7 +369,7 @@ include 'includes/header.php';
             </div>
           </div>
 
-          <p class="lab-ingredient-subtext">Exploring native botanical behaviours, regional harvest dynamics, and sensory possibilities with Indian terroir cacao.</p>
+          <p class="lab-ingredient-subtext">Testing local fruits, nuts, unrefined sugars, and spices to see how they blend naturally with Indian single-estate cocoa.</p>
         </div>
 
         <!-- Search Bar on Top Right (circled in blue oblong) -->
@@ -722,52 +722,52 @@ function getExpSpecs(exp) {
 const LAB_FAIL_SPECS = {
   1: {
     batchRef: 'FAIL-POSTMORTEM-01 · GUAVA-TRIAL',
-    defectMode: 'Terpene Volatilization & Hydrophilic Sugar Seizure',
-    trialScale: '25 kg Pilot Melanger Batch',
-    criticalMoisture: 'Aw spiked to 0.58 (Safety Threshold: 0.35)',
-    viscosityImpact: '+280% Paste Thickening @ 44°C',
+    defectMode: 'Fruit Flavor Loss & Chocolate Thickening',
+    trialScale: '25 kg Test Batch',
+    criticalMoisture: 'Moisture reached 0.58 (Target: under 0.35)',
+    viscosityImpact: 'Chocolate paste thickened heavily during mixing',
     correctiveChecklist: [
-      'Mandatory Lipid Envelope: Pre-coat all freeze-dried fruits with a 5µm atomized cocoa butter barrier before refiner introduction.',
-      'Conching Thermal Ceiling: Capped exhaust conch temperature at 38°C for volatile fruit inclusion formulas to prevent terpene boil-off.',
-      'In-Line Aw Screening: Installed real-time water activity inspection for all incoming dried fruit cultivars.'
+      'Coating the fruit: Lightly coat all dried fruit pieces with warm cocoa butter before grinding so natural fruit flavors stay locked inside.',
+      'Gentle grinding heat: Keep machine temperatures under 38°C so delicate fruit aromas do not evaporate away.',
+      'Moisture test before mixing: Test every batch of dried fruit to make sure it is completely dry before adding it to melted chocolate.'
     ]
   }
 };
 
 const LAB_ING_SPECS = {
   1: { // Indian Fruits
-    taxonomy: 'Mangifera indica / Syzygium cumini / Psidium guajava',
+    taxonomy: 'Alphonso Mango, Jamun (Black Plum) & Pink Guava',
     origin: 'Ratnagiri, Konkan Belt & Allahabad Orchards',
-    chemistry: 'High Natural Pectin, Citric/Malic Acidity, Invert Fructose',
-    temperDelta: '+0.4°C Crystallization Offset',
+    chemistry: 'Natural fruit sweetness, tangy citrus acidity, and gentle pectin',
+    temperDelta: 'Needs slow, gentle cooling for high shine',
     pairings: ['70% Kerala Dark', '55% Malabar Milk', 'Spiced Fruit Ganache']
   },
   2: { // Nuts & Seeds
-    taxonomy: 'Anacardium occidentale / Prunus dulcis (Mamra) / Buchanania lanzan',
+    taxonomy: 'Malabar Cashews, Mamra Almonds & Chironji Seeds',
     origin: 'Malabar Coast, Kashmir Valley & Central India Forests',
-    chemistry: 'High Oleic Fatty Acids (62%), Plant Protein Emulsifiers',
-    temperDelta: '-0.8°C Polymorph Softening Delta',
+    chemistry: 'Silky natural nut oils, rich roasted flavor, and creamy texture',
+    temperDelta: 'Melts smoothly and evenly on the tongue',
     pairings: ['Stone-Ground Cashew Praline', 'Roasted Almond Dragees', 'Dark Truffle Fillings']
   },
   3: { // Alternative Sugars
-    taxonomy: 'Saccharum officinarum (Artisan Clarified) / Borassus flabellifer',
+    taxonomy: 'Natural Khandsari Cane Sugar & Palm Jaggery',
     origin: 'Western Uttar Pradesh & Southern Tamil Nadu Palms',
-    chemistry: 'Unbleached Sucrose with Iron, Potassium & Mineral Salts',
+    chemistry: 'Warm caramel notes, rich natural minerals, wild molasses',
     temperDelta: 'Standard Beta-V (Moisture Controlled)',
     pairings: ['Single-Origin Dark Cacao', 'Warm Spice Bars', 'Artisan Caramel Creams']
   },
   4: { // Dairy & Plant-Based
-    taxonomy: 'Bos indicus (A2 Gir/Sahiwal Vedic) / Cocos nucifera / Avena sativa',
+    taxonomy: 'A2 Vedic Cow Milk, Fresh Kerala Coconut & Rolled Oats',
     origin: 'Gujarat Vedic Dairies & Coastal Kerala Coconut Groves',
-    chemistry: 'Short-Chain Lauric Fats & A2 Beta-Casein Protein Lattice',
+    chemistry: 'Creamy natural milk fats, gentle on the stomach and velvety',
     temperDelta: '-1.2°C Quick-Melt Palatal Shift',
     pairings: ['Malted Milk Chocolate', 'Vegan White Ganache', 'Creamy Coconut Mousse']
   },
   5: { // Botanicals & Spices
-    taxonomy: 'Piper nigrum / Elettaria cardamomum / Illicium verum',
+    taxonomy: 'Wayanad Black Pepper, Green Cardamom & Star Anise',
     origin: 'Wayanad High Ranges & Idukki Cardamom Hills (Western Ghats)',
-    chemistry: 'Lipophilic Essential Oils (Piperine, Cineole, Terpenyl Acetate)',
-    temperDelta: 'Zero Polymorphic Lattice Interference',
+    chemistry: 'Warm aromatic oils with gentle, sweet tingling spice notes',
+    temperDelta: 'Leaves chocolate snap perfectly intact',
     pairings: ['72% High-Tannin Dark', 'Cardamom Sea-Salt Bars', 'Winter Solstice Edition']
   }
 };
@@ -928,8 +928,8 @@ function openExperimentModal(id) {
             <span class="status-dot ${exp.status_color || 'green'}"></span>
             <span>${exp.status_badge || 'IN PROGRESS'}</span>
           </div>
-          <span class="lab-modal-category-tag">${escapeHtml(exp.tags || 'LABORATORY DOSSIER')}</span>
-          <span class="lab-modal-id-badge">BATCH #${exp.id}</span>
+          <span class="lab-modal-category-tag">${escapeHtml(exp.tags || 'LAB EXPERIMENT')}</span>
+          <span class="lab-modal-id-badge">EXPERIMENT #${exp.id}</span>
         </div>
         <h2 class="lab-modal-title">${escapeHtml(exp.title)}</h2>
       </div>
@@ -953,7 +953,7 @@ function openExperimentModal(id) {
         <div class="lab-visual-frame">
           <img src="${escapeHtml(exp.image_path)}" alt="${escapeHtml(exp.title)}">
           <div class="lab-visual-tag">
-            <span>🔬 SPECIMEN #${exp.id}</span>
+            <span>🔬 RECIPE SAMPLE #${exp.id}</span>
           </div>
           <div class="lab-visual-caption-bar">
             <span>${escapeHtml(exp.title)}</span>
@@ -962,7 +962,7 @@ function openExperimentModal(id) {
 
         <div class="lab-specimen-passport">
           <div class="lab-passport-top">
-            <span class="lab-passport-heading">SPECIMEN TELEMETRY</span>
+            <span class="lab-passport-heading">RECIPE PROFILE</span>
             <span class="lab-passport-batch">${escapeHtml(specs.batchRef || 'RT-EXP-0' + exp.id)}</span>
           </div>
           <div class="lab-passport-grid">
@@ -971,21 +971,21 @@ function openExperimentModal(id) {
               <span class="cell-value" title="${escapeHtml(specs.origin || '')}">${escapeHtml(specs.origin ? specs.origin.split('(')[0].trim() : 'Western Ghats Cacao')}</span>
             </div>
             <div class="lab-passport-cell">
-              <span class="cell-label">Crystal Polymorph</span>
+              <span class="cell-label">Melt &amp; Snap</span>
               <span class="cell-value" title="${escapeHtml(specs.polymorph || '')}">${escapeHtml(specs.polymorph ? specs.polymorph.split('(')[0].trim() : 'Beta-V Stabilized')}</span>
             </div>
             <div class="lab-passport-cell">
-              <span class="cell-label">Particle Micron</span>
+              <span class="cell-label">Smoothness</span>
               <span class="cell-value">${escapeHtml(specs.particleSize ? specs.particleSize.split('(')[0].trim() : '< 18.5 µm')}</span>
             </div>
             <div class="lab-passport-cell">
-              <span class="cell-label">Water Activity</span>
+              <span class="cell-label">Moisture Level</span>
               <span class="cell-value">${escapeHtml(specs.waterActivity ? specs.waterActivity.split('(')[0].trim() : '0.31 Aw')}</span>
             </div>
           </div>
           <div class="lab-passport-seal">
             <span class="seal-icon">🧪</span>
-            <span class="seal-text">Western Ghats R&amp;D Protocol · Batch Certified</span>
+            <span class="seal-text">Crafted &amp; Tested in Kerala · Small Batch</span>
           </div>
         </div>
       </div>
@@ -1007,7 +1007,7 @@ function openExperimentModal(id) {
                 </div>
                 <div class="lab-quad-title-group">
                   <h3 class="lab-quad-heading heading-green">Research Question</h3>
-                  <p class="lab-quad-prompt">What are we exploring or trying to understand?</p>
+                  <p class="lab-quad-prompt">What question are we trying to answer?</p>
                 </div>
               </div>
               <div class="lab-quad-blob blob-sage" title="Research Question">
@@ -1021,7 +1021,7 @@ function openExperimentModal(id) {
             <div class="lab-quad-divider"></div>
             <div class="lab-quad-body">
               <div class="lab-quad-badge-row">
-                <span class="lab-quad-badge badge-green">🔬 CORE HYPOTHESIS</span>
+                <span class="lab-quad-badge badge-green">🔬 THE QUESTION</span>
               </div>
               <div class="lab-quad-text">${renderLabContent(exp.hypothesis)}</div>
             </div>
@@ -1036,8 +1036,8 @@ function openExperimentModal(id) {
                   <span class="lab-quad-dash dash-bronze"></span>
                 </div>
                 <div class="lab-quad-title-group">
-                  <h3 class="lab-quad-heading heading-bronze">Observations &amp; Findings</h3>
-                  <p class="lab-quad-prompt">What did we observe, measure or learn?</p>
+                  <h3 class="lab-quad-heading heading-bronze">What We Discovered</h3>
+                  <p class="lab-quad-prompt">What happened when we made and tasted the chocolate?</p>
                 </div>
               </div>
               <div class="lab-quad-blob blob-sand" title="Observations & Findings">
@@ -1053,7 +1053,7 @@ function openExperimentModal(id) {
             <div class="lab-quad-divider"></div>
             <div class="lab-quad-body">
               <div class="lab-quad-badge-row">
-                <span class="lab-quad-badge badge-bronze">📊 OBSERVED METRICS</span>
+                <span class="lab-quad-badge badge-bronze">📊 WHAT WE NOTICED</span>
               </div>
               <div class="lab-quad-text">${renderLabContent(exp.findings || exp.methodology)}</div>
             </div>
@@ -1069,7 +1069,7 @@ function openExperimentModal(id) {
                 </div>
                 <div class="lab-quad-title-group">
                   <h3 class="lab-quad-heading heading-green">Why It Matters</h3>
-                  <p class="lab-quad-prompt">The practical relevance for chocolate makers and product developers.</p>
+                  <p class="lab-quad-prompt">How this helps make better, more delicious chocolate for you.</p>
                 </div>
               </div>
               <div class="lab-quad-blob blob-sage" title="Why It Matters">
@@ -1088,7 +1088,7 @@ function openExperimentModal(id) {
             <div class="lab-quad-divider"></div>
             <div class="lab-quad-body">
               <div class="lab-quad-badge-row">
-                <span class="lab-quad-badge badge-green">💡 INDUSTRY RELEVANCE</span>
+                <span class="lab-quad-badge badge-green">💡 WHY IT MATTERS</span>
               </div>
               <div class="lab-quad-text">${renderLabContent(exp.methodology)}</div>
             </div>
@@ -1104,7 +1104,7 @@ function openExperimentModal(id) {
                 </div>
                 <div class="lab-quad-title-group">
                   <h3 class="lab-quad-heading heading-bronze">Key Takeaway</h3>
-                  <p class="lab-quad-prompt">The single most important lesson from this experiment.</p>
+                  <p class="lab-quad-prompt">The main lesson from this test batch.</p>
                 </div>
               </div>
               <div class="lab-quad-blob blob-sand" title="Key Takeaway">
@@ -1124,12 +1124,12 @@ function openExperimentModal(id) {
             <div class="lab-quad-divider"></div>
             <div class="lab-quad-body takeaway-highlight">
               <div class="lab-quad-badge-row">
-                <span class="lab-quad-badge badge-bronze">🎯 EXECUTIVE DIRECTIVE</span>
+                <span class="lab-quad-badge badge-bronze">🎯 MAIN LESSON</span>
               </div>
               <div class="lab-quad-text takeaway-text">${renderLabContent(exp.next_steps)}</div>
               <div class="lab-takeaway-meta">
                 <span class="meta-dot"></span>
-                <span class="meta-label">Action Target: Validated for Batch Production &amp; Scale</span>
+                <span class="meta-label">Status: Tested and ready for our chocolate recipes</span>
               </div>
             </div>
           </div>
@@ -1151,7 +1151,7 @@ function openExperimentModal(id) {
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
-          <h4>DETAILED LAB NOTES &amp; SCIENTIFIC DOSSIER</h4>
+          <h4>DETAILED RECIPE NOTES &amp; TASTING LOG</h4>
         </div>
         <div class="lab-full-notes-body">
           ${renderLabContent(exp.full_content)}
@@ -1193,8 +1193,8 @@ function openFailedBatchModal(id) {
             <span class="lab-badge-pulse"></span>
             ${escapeHtml(specs.batchRef || 'FAIL-POSTMORTEM-0' + fail.id)}
           </span>
-          <span class="lab-badge-category">POST-MORTEM SCIENTIFIC AUDIT</span>
-          <span class="lab-badge-motto">${escapeHtml(fail.badge_label || 'BECAUSE FAILURE IS DATA.')}</span>
+          <span class="lab-badge-category">RECIPE LESSON &amp; AUDIT</span>
+          <span class="lab-badge-motto">${escapeHtml(fail.badge_label || 'EVERY FAILED BATCH TEACHES US SOMETHING.')}</span>
         </div>
         <div class="lab-failed-actions">
           <span class="lab-modal-esc-hint">Press <kbd>ESC</kbd> to exit</span>
@@ -1214,7 +1214,7 @@ function openFailedBatchModal(id) {
       </div>
       <div class="lab-failed-header-title-row">
         <h2 class="lab-failed-title">${escapeHtml(fail.title)}</h2>
-        <p class="lab-failed-subtitle">Forensic Audit &amp; Industrial Root-Cause Analysis · RT Chocos R&amp;D Formulation Unit</p>
+        <p class="lab-failed-subtitle">What Went Wrong &amp; How We Fixed It · RT Chocos Craft Lab</p>
       </div>
     </div>
   `;
@@ -1227,13 +1227,13 @@ function openFailedBatchModal(id) {
         <div class="lab-failed-hero-overlay">
           <div class="lab-failed-specimen-pill">
             <span class="specimen-dot"></span>
-            <span>TRIAL ARCHIVAL SPECIMEN #${fail.id}</span>
+            <span>TEST BATCH #${fail.id}</span>
             <span class="specimen-divider">·</span>
             <span class="specimen-ref">${escapeHtml(specs.batchRef || 'RUN-01')}</span>
           </div>
           <div class="lab-failed-hero-status">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            <span>AUDITED &amp; CODIFIED INTO STANDARD LAB PROTOCOL</span>
+            <span>PROBLEM SOLVED &amp; FIXED FOR FUTURE BATCHES</span>
           </div>
         </div>
       </div>
@@ -1248,7 +1248,7 @@ function openFailedBatchModal(id) {
         <div class="lab-pm-head">
           <div class="lab-pm-pill">
             <span class="pm-phase-num">01</span>
-            <span class="pm-phase-name">INITIAL HYPOTHESIS</span>
+            <span class="pm-phase-name">THE GOAL</span>
           </div>
           <div class="lab-pm-icon-blob icon-emerald" title="Intended Goal">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
@@ -1256,13 +1256,13 @@ function openFailedBatchModal(id) {
         </div>
         <div class="lab-pm-title-wrap">
           <h3 class="lab-pm-title">The Intended Goal</h3>
-          <span class="lab-pm-sub">Formulation target &amp; organoleptic expectation</span>
+          <span class="lab-pm-sub">What we wanted to achieve with flavor and texture</span>
         </div>
         <div class="lab-pm-body">
           ${renderLabContent(fail.hypothesis)}
         </div>
         <div class="lab-pm-foot">
-          <span class="lab-pm-tag tag-emerald">🎯 R&amp;D Target Established</span>
+          <span class="lab-pm-tag tag-emerald">🎯 Goal Set</span>
         </div>
       </div>
 
@@ -1271,21 +1271,21 @@ function openFailedBatchModal(id) {
         <div class="lab-pm-head">
           <div class="lab-pm-pill">
             <span class="pm-phase-num">02</span>
-            <span class="pm-phase-name">CRITICAL ANOMALY</span>
+            <span class="pm-phase-name">WHAT WENT WRONG</span>
           </div>
           <div class="lab-pm-icon-blob icon-rose" title="Observed Defect">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
           </div>
         </div>
         <div class="lab-pm-title-wrap">
-          <h3 class="lab-pm-title">What Happened? (The Failure)</h3>
-          <span class="lab-pm-sub">Observed sensory &amp; structural deviation</span>
+          <h3 class="lab-pm-title">What Happened? (The Mistake)</h3>
+          <span class="lab-pm-sub">How the chocolate changed unexpectedly</span>
         </div>
         <div class="lab-pm-body">
           ${renderLabContent(fail.what_happened)}
         </div>
         <div class="lab-pm-foot">
-          <span class="lab-pm-tag tag-rose">⚠️ Defect Documented</span>
+          <span class="lab-pm-tag tag-rose">⚠️ Issue Found</span>
         </div>
       </div>
 
@@ -1294,21 +1294,21 @@ function openFailedBatchModal(id) {
         <div class="lab-pm-head">
           <div class="lab-pm-pill">
             <span class="pm-phase-num">03</span>
-            <span class="pm-phase-name">ROOT CAUSE SCIENCE</span>
+            <span class="pm-phase-name">WHY IT HAPPENED</span>
           </div>
           <div class="lab-pm-icon-blob icon-amber" title="Root Cause Mechanism">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31"></path><path d="M14 9.3V2"></path><path d="M8.5 2h7"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path><path d="M5.52 16h12.96"></path></svg>
           </div>
         </div>
         <div class="lab-pm-title-wrap">
-          <h3 class="lab-pm-title">Understanding The Science</h3>
-          <span class="lab-pm-sub">Physical chemistry &amp; lipid-matrix mechanics</span>
+          <h3 class="lab-pm-title">The Simple Science</h3>
+          <span class="lab-pm-sub">The physical reason behind the problem</span>
         </div>
         <div class="lab-pm-body">
           ${renderLabContent(fail.why_it_happened)}
         </div>
         <div class="lab-pm-foot">
-          <span class="lab-pm-tag tag-amber">🔬 Molecular Dynamics Mapped</span>
+          <span class="lab-pm-tag tag-amber">🔬 Cause Found</span>
         </div>
       </div>
 
@@ -1317,21 +1317,21 @@ function openFailedBatchModal(id) {
         <div class="lab-pm-head">
           <div class="lab-pm-pill">
             <span class="pm-phase-num">04</span>
-            <span class="pm-phase-name">THE BREAKTHROUGH</span>
+            <span class="pm-phase-name">THE FIX &amp; WHAT NEXT</span>
           </div>
           <div class="lab-pm-icon-blob icon-gold" title="Validated Breakthrough">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg>
           </div>
         </div>
         <div class="lab-pm-title-wrap">
-          <h3 class="lab-pm-title">The Learning (What Next?)</h3>
-          <span class="lab-pm-sub">Validated industrial solution &amp; future guardrail</span>
+          <h3 class="lab-pm-title">The Lesson &amp; The Fix</h3>
+          <span class="lab-pm-sub">How we fixed the recipe for our next batch</span>
         </div>
         <div class="lab-pm-body">
           ${renderLabContent(fail.what_next)}
         </div>
         <div class="lab-pm-foot">
-          <span class="lab-pm-tag tag-gold">💡 Production Standardized ✓</span>
+          <span class="lab-pm-tag tag-gold">💡 Recipe Fixed &amp; Tested ✓</span>
         </div>
       </div>
     </div>
@@ -1360,12 +1360,12 @@ function openFailedBatchModal(id) {
                 </svg>
               </div>
               <div>
-                <div class="lab-story-eyebrow">CHRONOLOGICAL FIELD LOGS &amp; POST-MORTEM DOSSIER</div>
-                <h4 class="lab-story-heading">The Full Experiment Story &amp; Post-Mortem Science</h4>
+                <div class="lab-story-eyebrow">FIELD NOTES &amp; STORY</div>
+                <h4 class="lab-story-heading">The Full Story Behind This Test Batch</h4>
               </div>
             </div>
             <div class="lab-story-badge">
-              <span>🔬 COMPREHENSIVE R&amp;D ARCHIVE</span>
+              <span>📖 BEHIND THE SCENES</span>
             </div>
           </div>
           <div class="lab-story-body">
@@ -1374,7 +1374,7 @@ function openFailedBatchModal(id) {
           <div class="lab-story-footer">
             <div class="lab-story-stamp">
               <span class="stamp-dot"></span>
-              <span>AUDITED &amp; SIGNED OFF BY RT CHOCOS R&amp;D FORMULATION TEAM · TRIAL REF #${fail.id}</span>
+              <span>TESTED &amp; SIGNED OFF BY RT CHOCOS CHOCOLATE TEAM · BATCH #${fail.id}</span>
             </div>
           </div>
         </div>
@@ -1389,8 +1389,8 @@ function openFailedBatchModal(id) {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             </div>
             <div>
-              <div class="lab-protocols-eyebrow">PREVENTATIVE MANUFACTURING PROTOCOLS</div>
-              <h4 class="lab-protocols-heading">Validated Corrective Protocols Adopted</h4>
+              <div class="lab-protocols-eyebrow">NEW RECIPE RULES</div>
+              <h4 class="lab-protocols-heading">Steps We Put in Place for Future Batches</h4>
             </div>
           </div>
           <div class="lab-protocols-list">
@@ -1415,10 +1415,10 @@ function openFailedBatchModal(id) {
     <div class="lab-modal-footer-bar">
       <button type="button" onclick="closeLabModal('failedBatchModal')" class="lab-failed-modal-return-btn">
         <span class="arrow">←</span>
-        <span>RETURN TO LAB WORKBENCH</span>
+        <span>BACK TO INNOVATION LAB</span>
       </button>
       <button type="button" onclick="closeLabModal('failedBatchModal')" class="lab-failed-modal-close-ghost">
-        <span>CLOSE DOSSIER (ESC)</span>
+        <span>CLOSE (ESC)</span>
       </button>
     </div>
   `;
@@ -1452,8 +1452,8 @@ function openIngredientModal(id, e) {
             <span class="status-dot green"></span>
             <span>INGREDIENT INNOVATION</span>
           </div>
-          <span class="lab-modal-category-tag">NATIVE INDIAN TERROIR</span>
-          <span class="lab-modal-id-badge">CATEGORY #${ing.id}</span>
+          <span class="lab-modal-category-tag">SOURCED IN INDIA</span>
+          <span class="lab-modal-id-badge">INGREDIENT #${ing.id}</span>
         </div>
         <h2 class="lab-modal-title">${escapeHtml(ing.title)}</h2>
       </div>
@@ -1476,7 +1476,7 @@ function openIngredientModal(id, e) {
         <div class="lab-visual-frame">
           <img src="${escapeHtml(ing.image_path)}" alt="${escapeHtml(ing.title)}">
           <div class="lab-visual-tag">
-            <span>🌿 BOTANICAL SPECIMEN #${ing.id}</span>
+            <span>🌿 LOCAL INGREDIENT #${ing.id}</span>
           </div>
           <div class="lab-visual-caption-bar">
             <span>${escapeHtml(ing.title)}</span>
@@ -1485,12 +1485,12 @@ function openIngredientModal(id, e) {
 
         <div class="lab-specimen-passport">
           <div class="lab-passport-top">
-            <span class="lab-passport-heading">BOTANICAL TELEMETRY</span>
+            <span class="lab-passport-heading">INGREDIENT DETAILS</span>
             <span class="lab-passport-batch">CAT #${ing.id}</span>
           </div>
           <div class="lab-passport-grid">
             <div class="lab-passport-cell">
-              <span class="cell-label">Taxonomy Species</span>
+              <span class="cell-label">Plant / Tree Variety</span>
               <span class="cell-value" title="${escapeHtml(specs.taxonomy || '')}">${escapeHtml(specs.taxonomy ? specs.taxonomy.split('/')[0].trim() : 'Indigenous Cultivar')}</span>
             </div>
             <div class="lab-passport-cell">
@@ -1498,17 +1498,17 @@ function openIngredientModal(id, e) {
               <span class="cell-value" title="${escapeHtml(specs.origin || '')}">${escapeHtml(specs.origin ? specs.origin.split(',')[0].trim() : 'Native Indian Terroir')}</span>
             </div>
             <div class="lab-passport-cell">
-              <span class="cell-label">Active Chemistry</span>
+              <span class="cell-label">Natural Flavor &amp; Texture</span>
               <span class="cell-value" title="${escapeHtml(specs.chemistry || '')}">${escapeHtml(specs.chemistry ? specs.chemistry.split(',')[0].trim() : 'Natural Bio-actives')}</span>
             </div>
             <div class="lab-passport-cell">
-              <span class="cell-label">Tempering Offset</span>
+              <span class="cell-label">Melt Temperature</span>
               <span class="cell-value">${escapeHtml(specs.temperDelta || 'Standard Form V')}</span>
             </div>
           </div>
           <div class="lab-passport-seal">
             <span class="seal-icon">🧪</span>
-            <span class="seal-text">Native Indian Terroir · Certified Lab Research</span>
+            <span class="seal-text">Locally Sourced · Kitchen Tested</span>
           </div>
         </div>
       </div>
@@ -1530,7 +1530,7 @@ function openIngredientModal(id, e) {
                 </div>
                 <div class="lab-quad-title-group">
                   <h3 class="lab-quad-heading heading-green">Ingredient Profile</h3>
-                  <p class="lab-quad-prompt">What makes this ingredient distinctive?</p>
+                  <p class="lab-quad-prompt">What makes this ingredient special?</p>
                 </div>
               </div>
               <div class="lab-quad-blob blob-sage" title="Ingredient Profile">
@@ -1567,8 +1567,8 @@ function openIngredientModal(id, e) {
                   <span class="lab-quad-dash dash-bronze"></span>
                 </div>
                 <div class="lab-quad-title-group">
-                  <h3 class="lab-quad-heading heading-bronze">Potential in Chocolate</h3>
-                  <p class="lab-quad-prompt">Where and how could it be used in chocolate or chocolate-based products?</p>
+                  <h3 class="lab-quad-heading heading-bronze">Ways to Use in Chocolate</h3>
+                  <p class="lab-quad-prompt">Where and how we use it in chocolate bars, ganaches, and spreads.</p>
                 </div>
               </div>
               <div class="lab-quad-blob blob-sand" title="Potential in Chocolate">
@@ -1585,7 +1585,7 @@ function openIngredientModal(id, e) {
             <div class="lab-quad-divider"></div>
             <div class="lab-quad-body">
               <div class="lab-quad-badge-row">
-                <span class="lab-quad-badge badge-bronze">🍫 POTENTIAL IN CHOCOLATE</span>
+                <span class="lab-quad-badge badge-bronze">🍫 HOW WE USE IT</span>
               </div>
               <div class="lab-quad-text">${renderLabContent(ing.applications)}</div>
             </div>
@@ -1600,8 +1600,8 @@ function openIngredientModal(id, e) {
                   <span class="lab-quad-dash dash-terracotta"></span>
                 </div>
                 <div class="lab-quad-title-group">
-                  <h3 class="lab-quad-heading heading-terracotta">The Technical Challenge</h3>
-                  <p class="lab-quad-prompt">What challenges could arise when using this ingredient in chocolate?</p>
+                  <h3 class="lab-quad-heading heading-terracotta">What to Watch Out For</h3>
+                  <p class="lab-quad-prompt">What challenges arise when blending this with melted chocolate?</p>
                 </div>
               </div>
               <div class="lab-quad-blob blob-blush" title="The Technical Challenge">
@@ -1614,7 +1614,7 @@ function openIngredientModal(id, e) {
             <div class="lab-quad-divider"></div>
             <div class="lab-quad-body">
               <div class="lab-quad-badge-row">
-                <span class="lab-quad-badge badge-terracotta">⚙️ THE TECHNICAL CHALLENGE</span>
+                <span class="lab-quad-badge badge-terracotta">⚙️ WHAT TO WATCH OUT FOR</span>
               </div>
               <div class="lab-quad-text">${renderLabContent(ing.science_behavior)}</div>
             </div>
@@ -1630,7 +1630,7 @@ function openIngredientModal(id, e) {
                 </div>
                 <div class="lab-quad-title-group">
                   <h3 class="lab-quad-heading heading-green">Key Takeaway</h3>
-                  <p class="lab-quad-prompt">One memorable insight for chocolate makers and product developers.</p>
+                  <p class="lab-quad-prompt">The single most important tip for working with this ingredient.</p>
                 </div>
               </div>
               <div class="lab-quad-blob blob-sage" title="Key Takeaway">
@@ -1652,7 +1652,7 @@ function openIngredientModal(id, e) {
               <div class="lab-quad-text takeaway-text" style="color: #14251B;">${renderLabContent(ing.lab_notes)}</div>
               <div class="lab-takeaway-meta" style="border-top: 1px dashed #C2D9C5;">
                 <span class="meta-dot" style="background: #166534;"></span>
-                <span class="meta-label" style="color: #2D5838;">Action Target: Validated for Sensory Balance &amp; Shelf-Life Scale</span>
+                <span class="meta-label" style="color: #2D5838;">Good to know: Balanced for great taste and natural freshness</span>
               </div>
             </div>
           </div>
