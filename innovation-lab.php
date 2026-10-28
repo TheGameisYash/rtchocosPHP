@@ -673,6 +673,29 @@ const LAB_EXP_SPECS = {
 };
 
 function getExpSpecs(exp) {
+  const defaults = LAB_EXP_SPECS[exp.id] || {};
+  if (exp.origin || exp.polymorph || exp.particle_size || exp.water_activity || exp.conching || exp.batch_ref) {
+    return {
+      batchRef: exp.batch_ref || defaults.batchRef || ('RT-EXP-0' + exp.id + ' · FORMULATION'),
+      origin: exp.origin || defaults.origin || 'Western Ghats Single Estate Cacao',
+      polymorph: exp.polymorph || defaults.polymorph || 'Beta-V Triglyceride Matrix (Tm 33.8°C)',
+      particleSize: exp.particle_size || defaults.particleSize || '< 18.5 µm (Micro-Refined)',
+      conching: exp.conching || defaults.conching || '36 Hours Longitudinal Conching',
+      waterActivity: exp.water_activity || defaults.waterActivity || '0.31 Aw (Shelf-Stable Dispersion)',
+      sensory: defaults.sensory || [
+        { name: 'Crystal Temper Snap', score: '9.1 / 10', fill: '91%', desc: 'Clean acoustic snap' },
+        { name: 'Palate Melt Dynamics', score: '33.8°C', fill: '90%', desc: 'Silky body-temp dissolution' },
+        { name: 'Flavor Preservation', score: '92%', fill: '92%', desc: 'Balanced single-origin terroir' },
+        { name: 'Thermal Stability', score: '33.0°C', fill: '85%', desc: 'Ambient shape resilience' }
+      ],
+      apparatus: defaults.apparatus || [
+        'Continuous Tempering Unit',
+        'Stone Granite Melanger',
+        'Laser Diffraction Analyzer',
+        'Viscosity Flow Gauge'
+      ]
+    };
+  }
   if (LAB_EXP_SPECS[exp.id]) return LAB_EXP_SPECS[exp.id];
   return {
     batchRef: `RT-EXP-0${exp.id} · FORMULATION`,
@@ -1000,7 +1023,7 @@ function openExperimentModal(id) {
               <div class="lab-quad-badge-row">
                 <span class="lab-quad-badge badge-green">🔬 CORE HYPOTHESIS</span>
               </div>
-              <p class="lab-quad-text">${escapeHtml(exp.hypothesis || '')}</p>
+              <div class="lab-quad-text">${renderLabContent(exp.hypothesis)}</div>
             </div>
           </div>
 
@@ -1032,7 +1055,7 @@ function openExperimentModal(id) {
               <div class="lab-quad-badge-row">
                 <span class="lab-quad-badge badge-bronze">📊 OBSERVED METRICS</span>
               </div>
-              <p class="lab-quad-text">${escapeHtml(exp.findings || exp.methodology || '')}</p>
+              <div class="lab-quad-text">${renderLabContent(exp.findings || exp.methodology)}</div>
             </div>
           </div>
 
@@ -1067,7 +1090,7 @@ function openExperimentModal(id) {
               <div class="lab-quad-badge-row">
                 <span class="lab-quad-badge badge-green">💡 INDUSTRY RELEVANCE</span>
               </div>
-              <p class="lab-quad-text">${escapeHtml(exp.methodology || '')}</p>
+              <div class="lab-quad-text">${renderLabContent(exp.methodology)}</div>
             </div>
           </div>
 
@@ -1103,7 +1126,7 @@ function openExperimentModal(id) {
               <div class="lab-quad-badge-row">
                 <span class="lab-quad-badge badge-bronze">🎯 EXECUTIVE DIRECTIVE</span>
               </div>
-              <p class="lab-quad-text takeaway-text">${escapeHtml(exp.next_steps || '')}</p>
+              <div class="lab-quad-text takeaway-text">${renderLabContent(exp.next_steps)}</div>
               <div class="lab-takeaway-meta">
                 <span class="meta-dot"></span>
                 <span class="meta-label">Action Target: Validated for Batch Production &amp; Scale</span>
@@ -1116,6 +1139,26 @@ function openExperimentModal(id) {
 
     </div>
   `;
+
+  if (exp.full_content && exp.full_content.trim()) {
+    innerHTML += `
+      <div class="lab-full-notes-card">
+        <div class="lab-full-notes-header">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <h4>DETAILED LAB NOTES &amp; SCIENTIFIC DOSSIER</h4>
+        </div>
+        <div class="lab-full-notes-body">
+          ${renderLabContent(exp.full_content)}
+        </div>
+      </div>
+    `;
+  }
 
   body.innerHTML = innerHTML;
   document.getElementById('experimentModal').classList.add('active');
@@ -1228,7 +1271,7 @@ function openFailedBatchModal(id) {
           <span class="lab-dossier-step-tag">INITIAL HYPOTHESIS</span>
         </div>
         <h4>The Intended Goal</h4>
-        <p>${escapeHtml(fail.hypothesis)}</p>
+        <div class="lab-dossier-card-text">${renderLabContent(fail.hypothesis)}</div>
       </div>
 
       <div class="lab-dossier-card card-accent-red">
@@ -1237,7 +1280,7 @@ function openFailedBatchModal(id) {
           <span class="lab-dossier-step-tag">THE ANOMALY</span>
         </div>
         <h4>What Happened? (The Failure)</h4>
-        <p>${escapeHtml(fail.what_happened)}</p>
+        <div class="lab-dossier-card-text">${renderLabContent(fail.what_happened)}</div>
       </div>
 
       <div class="lab-dossier-card card-accent-amber">
@@ -1246,7 +1289,7 @@ function openFailedBatchModal(id) {
           <span class="lab-dossier-step-tag">ROOT CAUSE SCIENCE</span>
         </div>
         <h4>Understanding The Science</h4>
-        <p>${escapeHtml(fail.why_it_happened)}</p>
+        <div class="lab-dossier-card-text">${renderLabContent(fail.why_it_happened)}</div>
       </div>
 
       <div class="lab-dossier-card card-accent-green">
@@ -1255,7 +1298,7 @@ function openFailedBatchModal(id) {
           <span class="lab-dossier-step-tag">THE BREAKTHROUGH</span>
         </div>
         <h4>The Learning (What Next?)</h4>
-        <p>${escapeHtml(fail.what_next)}</p>
+        <div class="lab-dossier-card-text">${renderLabContent(fail.what_next)}</div>
       </div>
     </div>
   `;
@@ -1271,7 +1314,7 @@ function openFailedBatchModal(id) {
           <h4>THE FULL EXPERIMENT STORY &amp; POST-MORTEM SCIENCE</h4>
         </div>
         <div class="lab-full-notes-body">
-          ${fail.full_story}
+          ${renderLabContent(fail.full_story)}
         </div>
       </div>
     `;
@@ -1434,7 +1477,7 @@ function openIngredientModal(id, e) {
               <div class="lab-quad-badge-row">
                 <span class="lab-quad-badge badge-green">🌿 INGREDIENT PROFILE</span>
               </div>
-              <p class="lab-quad-text">${escapeHtml(ing.description || ing.key_varietals || '')}</p>
+              <div class="lab-quad-text">${renderLabContent(ing.description || ing.key_varietals)}</div>
               ${ing.key_varietals ? `
               <div class="lab-takeaway-meta" style="border-top: 1px dashed #D2E3D5; margin-top: 10px; padding-top: 8px;">
                 <span class="meta-dot" style="background: #166534;"></span>
@@ -1473,7 +1516,7 @@ function openIngredientModal(id, e) {
               <div class="lab-quad-badge-row">
                 <span class="lab-quad-badge badge-bronze">🍫 POTENTIAL IN CHOCOLATE</span>
               </div>
-              <p class="lab-quad-text">${escapeHtml(ing.applications || '')}</p>
+              <div class="lab-quad-text">${renderLabContent(ing.applications)}</div>
             </div>
           </div>
 
@@ -1502,7 +1545,7 @@ function openIngredientModal(id, e) {
               <div class="lab-quad-badge-row">
                 <span class="lab-quad-badge badge-terracotta">⚙️ THE TECHNICAL CHALLENGE</span>
               </div>
-              <p class="lab-quad-text">${escapeHtml(ing.science_behavior || '')}</p>
+              <div class="lab-quad-text">${renderLabContent(ing.science_behavior)}</div>
             </div>
           </div>
 
@@ -1535,7 +1578,7 @@ function openIngredientModal(id, e) {
               <div class="lab-quad-badge-row">
                 <span class="lab-quad-badge badge-green">🎯 KEY TAKEAWAY</span>
               </div>
-              <p class="lab-quad-text takeaway-text" style="color: #14251B;">${escapeHtml(ing.lab_notes || '')}</p>
+              <div class="lab-quad-text takeaway-text" style="color: #14251B;">${renderLabContent(ing.lab_notes)}</div>
               <div class="lab-takeaway-meta" style="border-top: 1px dashed #C2D9C5;">
                 <span class="meta-dot" style="background: #166534;"></span>
                 <span class="meta-label" style="color: #2D5838;">Action Target: Validated for Sensory Balance &amp; Shelf-Life Scale</span>
@@ -1576,6 +1619,51 @@ document.addEventListener('keydown', function(e) {
     closeLabModal('ingredientModal');
   }
 });
+
+function renderLabContent(raw) {
+  if (!raw) return '';
+  const text = String(raw).trim();
+  if (!text) return '';
+
+  // Check if text already contains HTML formatting tags
+  const hasHtml = /<(p|br|ul|ol|li|strong|b|em|i|u|s|h[1-6]|blockquote|span|a|div)[^>]*>/i.test(text);
+  if (hasHtml) {
+    // Strip dangerous scripts or event handlers while keeping full formatting tags
+    return text
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+      .replace(/\bon\w+\s*=\s*(["'])?[^"'>]+(\1)?/gi, '')
+      .replace(/javascript:/gi, '');
+  }
+
+  // Plain text with newlines or bullet points (- or * or •) or numbered items (1., 2.)
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  let html = '';
+  let inUl = false;
+  let inOl = false;
+
+  lines.forEach(line => {
+    if (/^[-*•]\s+/.test(line)) {
+      if (inOl) { html += '</ol>'; inOl = false; }
+      if (!inUl) { html += '<ul>'; inUl = true; }
+      const itemContent = line.replace(/^[-*•]\s+/, '');
+      html += '<li>' + escapeHtml(itemContent) + '</li>';
+    } else if (/^\d+[\.\)]\s+/.test(line)) {
+      if (inUl) { html += '</ul>'; inUl = false; }
+      if (!inOl) { html += '<ol>'; inOl = true; }
+      const itemContent = line.replace(/^\d+[\.\)]\s+/, '');
+      html += '<li>' + escapeHtml(itemContent) + '</li>';
+    } else {
+      if (inUl) { html += '</ul>'; inUl = false; }
+      if (inOl) { html += '</ol>'; inOl = false; }
+      html += '<p>' + escapeHtml(line) + '</p>';
+    }
+  });
+
+  if (inUl) html += '</ul>';
+  if (inOl) html += '</ol>';
+  return html;
+}
 
 function escapeHtml(text) {
   if (!text) return '';

@@ -1752,6 +1752,8 @@ section.lab-ingredient-section:nth-of-type(even) {
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* =================================================================
@@ -1765,6 +1767,7 @@ section.lab-ingredient-section:nth-of-type(even) {
   height: 100%;
   align-items: stretch;
   min-height: 0;
+  flex-shrink: 0;
 }
 
 /* Left Specimen Panel (Natural Photographic Specimen Card) */
@@ -3007,4 +3010,99 @@ section.lab-ingredient-section:nth-of-type(even) {
     padding: 14px 16px;
     max-width: 170px;
   }
+}
+
+
+/* Rich Text & Bullet Point Enhancements for Lab Dossier */
+.lab-quad-text ul,
+.lab-quad-text ol {
+  margin: 8px 0 10px;
+  padding-left: 22px;
+  list-style-position: outside;
+}
+.lab-quad-text ul {
+  list-style-type: disc;
+}
+.lab-quad-text ol {
+  list-style-type: decimal;
+}
+.lab-quad-text li {
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+.lab-quad-card.card-accent-green .lab-quad-text li::marker {
+  color: #166534;
+}
+.lab-quad-card.card-accent-bronze .lab-quad-text li::marker {
+  color: #9A6A38;
+}
+.lab-quad-card.card-accent-terracotta .lab-quad-text li::marker {
+  color: #9C382A;
+}
+.lab-quad-text p {
+  margin: 0 0 8px;
+}
+.lab-quad-text p:last-child,
+.lab-quad-text ul:last-child,
+.lab-quad-text ol:last-child {
+  margin-bottom: 0;
+}
+.lab-quad-text strong,
+.lab-quad-text b {
+  font-weight: 700;
+  color: #111E16;
+}
+.lab-quad-text em,
+.lab-quad-text i {
+  font-style: italic;
+}
+.lab-quad-text blockquote {
+  margin: 8px 0;
+  padding: 6px 12px;
+  background: rgba(22, 101, 52, 0.06);
+  border-left: 3px solid #166534;
+  border-radius: 0 4px 4px 0;
+  font-style: italic;
+}
+
+#experimentModal .lab-full-notes-card {
+  background: #FFFFFF;
+  border: 1px solid #E6DED2;
+  border-radius: 12px;
+  padding: clamp(18px, 1.8vw, 28px);
+  box-shadow: 0 4px 18px rgba(18, 34, 23, 0.04);
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+#experimentModal .lab-full-notes-body {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #2F3E34;
+}
+#experimentModal .lab-full-notes-body h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #122217;
+  margin: 20px 0 8px;
+}
+#experimentModal .lab-full-notes-body h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #122217;
+  margin: 16px 0 6px;
+}
+#experimentModal .lab-full-notes-body ul,
+#experimentModal .lab-full-notes-body ol {
+  padding-left: 22px;
+  margin: 10px 0 14px;
+}
+#experimentModal .lab-full-notes-body li {
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+#experimentModal .lab-full-notes-body li::marker {
+  color: #166534;
 }

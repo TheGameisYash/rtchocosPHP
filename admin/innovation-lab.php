@@ -10,6 +10,29 @@ $csrfToken = generate_csrf();
 
 $activeTab = $_GET['tab'] ?? 'experiments';
 
+// Helper: Ensure specimen telemetry columns exist in lab_experiments table
+function ensure_lab_columns($pdo) {
+    static $done = false;
+    if ($done) return;
+    $cols = [
+        'origin' => 'VARCHAR(255) NULL',
+        'polymorph' => 'VARCHAR(255) NULL',
+        'particle_size' => 'VARCHAR(150) NULL',
+        'conching' => 'VARCHAR(255) NULL',
+        'water_activity' => 'VARCHAR(150) NULL',
+        'batch_ref' => 'VARCHAR(100) NULL'
+    ];
+    foreach ($cols as $col => $def) {
+        try {
+            $pdo->exec("ALTER TABLE lab_experiments ADD COLUMN $col $def");
+        } catch (Exception $e) {
+            // Already exists or alter not permitted
+        }
+    }
+    $done = true;
+}
+ensure_lab_columns($pdo);
+
 // Helper: Handle file upload if present
 function handle_lab_image_upload($fileKey) {
     if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] === UPLOAD_ERR_OK) {
@@ -60,9 +83,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $sortOrder = (int)($_POST['sort_order'] ?? 0);
                 $isActive = isset($_POST['is_active']) ? 1 : 0;
 
+                // Telemetry / science specs
+                $origin = trim($_POST['origin'] ?? '');
+                $polymorph = trim($_POST['polymorph'] ?? '');
+                $particleSize = trim($_POST['particle_size'] ?? '');
+                $conching = trim($_POST['conching'] ?? '');
+                $waterActivity = trim($_POST['water_activity'] ?? '');
+                $batchRef = trim($_POST['batch_ref'] ?? '');
+
                 // Check for uploaded image or fallback to existing path
                 $uploadedImg = handle_lab_image_upload('experiment_image');
-                $imagePath = $uploadedImg ?: trim($_POST['existing_image_path'] ?? 'assets/images/placeholder.jpg');
+                $imagePath = $uploadedImg ?: trim(!empty($_POST['existing_image_path_text']) ? $_POST['existing_image_path_text'] : ($_POST['existing_image_path'] ?? 'assets/images/placeholder.jpg'));
 
                 // Slug generation
                 $slug = trim($_POST['slug'] ?? '');
@@ -73,17 +104,40 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 if (empty($title)) {
                     $error = 'Experiment title cannot be empty.';
                 } else {
+                    $checkCols = [];
+                    try {
+                        $q = $pdo->query("DESCRIBE lab_experiments");
+                        $checkCols = $q->fetchAll(PDO::FETCH_COLUMN);
+                    } catch (Exception $e) {}
+                    $hasTelemetry = in_array('origin', $checkCols);
+
                     if ($id > 0) {
-                        $stmt = $pdo->prepare("UPDATE lab_experiments SET 
-                            title = ?, slug = ?, category = ?, status_badge = ?, status_color = ?, 
-                            image_path = ?, description = ?, tags = ?, hypothesis = ?, methodology = ?, 
-                            findings = ?, next_steps = ?, full_content = ?, sort_order = ?, is_active = ?, 
-                            updated_at = NOW() WHERE id = ?");
-                        $stmt->execute([
-                            $title, $slug, $category, $statusBadge, $statusColor,
-                            $imagePath, $description, $tags, $hypothesis, $methodology,
-                            $findings, $nextSteps, $fullContent, $sortOrder, $isActive, $id
-                        ]);
+                        if ($hasTelemetry) {
+                            $stmt = $pdo->prepare("UPDATE lab_experiments SET 
+                                title = ?, slug = ?, category = ?, status_badge = ?, status_color = ?, 
+                                image_path = ?, description = ?, tags = ?, hypothesis = ?, methodology = ?, 
+                                findings = ?, next_steps = ?, full_content = ?, sort_order = ?, is_active = ?, 
+                                origin = ?, polymorph = ?, particle_size = ?, conching = ?, water_activity = ?, batch_ref = ?, 
+                                updated_at = NOW() WHERE id = ?");
+                            $stmt->execute([
+                                $title, $slug, $category, $statusBadge, $statusColor,
+                                $imagePath, $description, $tags, $hypothesis, $methodology,
+                                $findings, $nextSteps, $fullContent, $sortOrder, $isActive,
+                                $origin, $polymorph, $particleSize, $conching, $waterActivity, $batchRef,
+                                $id
+                            ]);
+                        } else {
+                            $stmt = $pdo->prepare("UPDATE lab_experiments SET 
+                                title = ?, slug = ?, category = ?, status_badge = ?, status_color = ?, 
+                                image_path = ?, description = ?, tags = ?, hypothesis = ?, methodology = ?, 
+                                findings = ?, next_steps = ?, full_content = ?, sort_order = ?, is_active = ?, 
+                                updated_at = NOW() WHERE id = ?");
+                            $stmt->execute([
+                                $title, $slug, $category, $statusBadge, $statusColor,
+                                $imagePath, $description, $tags, $hypothesis, $methodology,
+                                $findings, $nextSteps, $fullContent, $sortOrder, $isActive, $id
+                            ]);
+                        }
                         $success = "Experiment '{$title}' updated successfully!";
                     } else {
                         // Ensure unique slug
@@ -93,14 +147,26 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                             $slug .= '-' . rand(10, 99);
                         }
 
-                        $stmt = $pdo->prepare("INSERT INTO lab_experiments 
-                            (title, slug, category, status_badge, status_color, image_path, description, tags, hypothesis, methodology, findings, next_steps, full_content, sort_order, is_active) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        $stmt->execute([
-                            $title, $slug, $category, $statusBadge, $statusColor,
-                            $imagePath, $description, $tags, $hypothesis, $methodology,
-                            $findings, $nextSteps, $fullContent, $sortOrder, $isActive
-                        ]);
+                        if ($hasTelemetry) {
+                            $stmt = $pdo->prepare("INSERT INTO lab_experiments 
+                                (title, slug, category, status_badge, status_color, image_path, description, tags, hypothesis, methodology, findings, next_steps, full_content, sort_order, is_active, origin, polymorph, particle_size, conching, water_activity, batch_ref) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                            $stmt->execute([
+                                $title, $slug, $category, $statusBadge, $statusColor,
+                                $imagePath, $description, $tags, $hypothesis, $methodology,
+                                $findings, $nextSteps, $fullContent, $sortOrder, $isActive,
+                                $origin, $polymorph, $particleSize, $conching, $waterActivity, $batchRef
+                            ]);
+                        } else {
+                            $stmt = $pdo->prepare("INSERT INTO lab_experiments 
+                                (title, slug, category, status_badge, status_color, image_path, description, tags, hypothesis, methodology, findings, next_steps, full_content, sort_order, is_active) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                            $stmt->execute([
+                                $title, $slug, $category, $statusBadge, $statusColor,
+                                $imagePath, $description, $tags, $hypothesis, $methodology,
+                                $findings, $nextSteps, $fullContent, $sortOrder, $isActive
+                            ]);
+                        }
                         $success = "New experiment '{$title}' created successfully!";
                     }
                 }
@@ -140,7 +206,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $isActive = isset($_POST['is_active']) ? 1 : 0;
 
                 $uploadedImg = handle_lab_image_upload('failed_image');
-                $imagePath = $uploadedImg ?: trim($_POST['existing_image_path'] ?? 'assets/images/lab-failed-batch.jpg');
+                $imagePath = $uploadedImg ?: trim(!empty($_POST['existing_image_path_text']) ? $_POST['existing_image_path_text'] : ($_POST['existing_image_path'] ?? 'assets/images/lab-failed-batch.jpg'));
 
                 $slug = trim($_POST['slug'] ?? '');
                 if (empty($slug)) {
@@ -254,7 +320,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $isActive = isset($_POST['is_active']) ? 1 : 0;
 
                 $uploadedImg = handle_lab_image_upload('ingredient_image');
-                $imagePath = $uploadedImg ?: trim($_POST['existing_image_path'] ?? 'assets/images/placeholder.jpg');
+                $imagePath = $uploadedImg ?: trim(!empty($_POST['existing_image_path_text']) ? $_POST['existing_image_path_text'] : ($_POST['existing_image_path'] ?? 'assets/images/placeholder.jpg'));
 
                 $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $title), '-'));
 
@@ -391,7 +457,7 @@ $pillarsList = $pdo->query("SELECT * FROM lab_future_pillars ORDER BY sort_order
 
 // Settings
 $settings = [
-    'lab_hero_eyebrow' => get_site_setting('lab_hero_eyebrow', 'IDEAS × EXPERIMENTS × EVIDENCE'),
+    'lab_hero_eyebrow' => get_site_setting('lab_hero_eyebrow', 'IDEAS · EXPERIMENTS · EVIDENCE'),
     'lab_hero_title' => get_site_setting('lab_hero_title', 'Innovation Lab'),
     'lab_hero_subtitle' => get_site_setting('lab_hero_subtitle', 'A working space where curious minds come together to explore new ingredients, techniques and ideas to shape a more thoughtful chocolate future.'),
     'lab_hero_cta_text' => get_site_setting('lab_hero_cta_text', 'STEP INTO THE LAB →'),
@@ -416,21 +482,509 @@ $settings = [
 render_admin_header('Innovation Lab', 'innovation-lab');
 ?>
 
-<div class="content-body" style="padding: 28px 36px;">
+<!-- Custom CSS for Innovation Lab Rich Text System -->
+<style>
+/* =========================================================================
+   INNOVATION LAB ADMIN: LUXURY ATELIER STYLING & EMIL MOTION TOKENS
+   ========================================================================= */
 
-    <!-- Top Action Bar & Page Title -->
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+/* Modal Backdrop & Dialog Physics */
+.lab-modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 8, 7, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.22s ease-out;
+}
+.lab-modal-backdrop.open {
+    display: flex;
+    opacity: 1;
+}
+.lab-modal-dialog {
+    background: var(--bg-card);
+    max-width: 920px;
+    width: 100%;
+    max-height: 94vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--border-color);
+    position: relative;
+    overflow: hidden;
+    transform: scale(0.96) translateY(12px);
+    transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out;
+}
+.lab-modal-backdrop.open .lab-modal-dialog {
+    transform: scale(1) translateY(0);
+}
+
+/* Modal Internal Stepper Header */
+.lab-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-card);
+}
+.lab-stepper-nav {
+    display: flex;
+    gap: 4px;
+    padding: 4px 24px;
+    background: var(--bg-subtle, rgba(0,0,0,0.03));
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+}
+.lab-step-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 4px 4px 0 0;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.lab-step-tab:hover {
+    color: var(--text-main);
+    background: rgba(199, 166, 106, 0.06);
+}
+.lab-step-tab.active {
+    color: var(--gold, #C7A66A);
+    border-bottom-color: var(--gold, #C7A66A);
+    background: rgba(199, 166, 106, 0.08);
+}
+.lab-step-tab:active {
+    transform: scale(0.97);
+}
+
+/* Modal Body & Step Panels */
+.lab-modal-body {
+    padding: 22px 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+.lab-step-panel {
+    display: none;
+    animation: labFadeIn 0.2s ease-out;
+}
+.lab-step-panel.active {
+    display: block;
+}
+@keyframes labFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal Footer */
+.lab-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-card);
+}
+
+/* Quick Fill Preset Chips */
+.lab-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+}
+.lab-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    background: rgba(199, 166, 106, 0.08);
+    border: 1px solid rgba(199, 166, 106, 0.24);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold, #C7A66A);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+.lab-chip:hover {
+    background: rgba(199, 166, 106, 0.2);
+    border-color: var(--gold, #C7A66A);
+    transform: translateY(-1px);
+}
+.lab-chip:active {
+    transform: scale(0.96);
+}
+
+/* Image Live Preview Box */
+.lab-img-preview-box {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    background: var(--bg-subtle, rgba(0,0,0,0.03));
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-top: 8px;
+}
+.lab-img-preview-thumb {
+    width: 80px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: #140F0C;
+    flex-shrink: 0;
+}
+
+/* Table Search & Filter Bar */
+.lab-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+}
+.lab-search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 240px;
+    max-width: 380px;
+}
+.lab-search-input {
+    width: 100%;
+    padding: 8px 12px 8px 34px;
+    font-size: 12.5px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-app);
+    color: var(--text-main);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.lab-search-input:focus {
+    border-color: var(--gold, #C7A66A);
+    box-shadow: 0 0 0 2px rgba(199, 166, 106, 0.18);
+}
+.lab-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 13px;
+    pointer-events: none;
+}
+.lab-filter-select {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-app);
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+/* Rich Text Editor Styling */
+.lab-rich-wrapper {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-card);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.lab-rich-wrapper:focus-within {
+    border-color: var(--gold, #C7A66A);
+    box-shadow: 0 0 0 2px rgba(199, 166, 106, 0.2);
+}
+.lab-rich-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background: var(--bg-subtle, rgba(0,0,0,0.03));
+    border-bottom: 1px solid var(--border-color);
+    user-select: none;
+}
+.lab-rich-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 7px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    color: var(--text-main);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.lab-rich-btn:hover {
+    background: rgba(199, 166, 106, 0.15);
+    border-color: rgba(199, 166, 106, 0.3);
+    color: var(--gold, #C7A66A);
+}
+.lab-rich-btn:active {
+    transform: scale(0.96);
+}
+.lab-rich-btn.btn-bullet-highlight {
+    background: rgba(22, 101, 52, 0.12);
+    border-color: rgba(22, 101, 52, 0.25);
+    color: #16A34A;
+}
+.lab-rich-btn.btn-bullet-highlight:hover {
+    background: rgba(22, 101, 52, 0.22);
+    color: #15803D;
+}
+.lab-rich-btn.btn-template-highlight {
+    background: rgba(199, 166, 106, 0.14);
+    border-color: rgba(199, 166, 106, 0.3);
+    color: var(--gold, #C7A66A);
+}
+.lab-rich-select {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background: var(--bg-card);
+    color: var(--text-main);
+    cursor: pointer;
+}
+.lab-rich-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--border-color);
+    margin: 0 4px;
+}
+.lab-rich-body {
+    padding: 10px 14px;
+    min-height: 75px;
+    max-height: 380px;
+    overflow-y: auto;
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-main);
+    outline: none;
+    background: var(--bg-card);
+}
+.lab-rich-body[contenteditable="true"]:empty:before {
+    content: attr(placeholder);
+    color: var(--text-muted);
+    font-style: italic;
+    pointer-events: none;
+}
+.lab-rich-body p {
+    margin: 0 0 8px;
+}
+.lab-rich-body p:last-child {
+    margin-bottom: 0;
+}
+.lab-rich-body ul, .lab-rich-body ol {
+    margin: 6px 0 10px;
+    padding-left: 22px;
+}
+.lab-rich-body li {
+    margin-bottom: 4px;
+    line-height: 1.55;
+}
+.lab-rich-body h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 14px 0 6px;
+    color: var(--gold, #C7A66A);
+}
+.lab-rich-body h4 {
+    font-size: 13.5px;
+    font-weight: 700;
+    margin: 10px 0 4px;
+}
+.lab-rich-body blockquote {
+    margin: 10px 0;
+    padding: 8px 14px;
+    background: rgba(199, 166, 106, 0.08);
+    border-left: 3px solid var(--gold, #C7A66A);
+    border-radius: 0 6px 6px 0;
+    font-style: italic;
+}
+.lab-rich-textarea-source {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: none;
+    outline: none;
+    resize: vertical;
+    display: none;
+}
+.lab-rich-mode-btn {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.lab-rich-mode-btn:hover {
+    color: var(--gold, #C7A66A);
+    border-color: var(--gold, #C7A66A);
+}
+
+/* Front-End Simulation Card in Step 5 Preview */
+.lab-preview-card-wrap {
+    background: var(--bg-subtle, #140F0C);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+}
+@media (max-width: 800px) {
+    .lab-preview-card-wrap {
+        grid-template-columns: 1fr;
+    }
+}
+.lab-live-card-sim {
+    background: #FFFFFF;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.08);
+}
+[data-theme="dark"] .lab-live-card-sim {
+    background: #1C1511;
+    border-color: rgba(212, 175, 55, 0.18);
+}
+.lab-live-card-thumb {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+}
+.lab-live-card-inner {
+    padding: 16px;
+}
+.lab-live-card-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(16, 185, 129, 0.12);
+    color: #10B981;
+    margin-bottom: 8px;
+}
+.lab-live-card-title {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+.lab-live-card-q {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+.lab-live-card-tags {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--gold, #C7A66A);
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+}
+.lab-live-dossier-sim {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.lab-sim-quad {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--bg-subtle, rgba(0,0,0,0.02));
+    border-left: 3px solid var(--gold, #C7A66A);
+}
+.lab-sim-quad-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+}
+
+/* Tactile Button Feedback */
+.btn:active {
+    transform: scale(0.98);
+}
+</style>
+
+<div class="content-wrapper">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
         <div>
-            <h1 style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--text-main); margin: 0 0 6px;">
-                Innovation Lab Management
-            </h1>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                <span style="font-size: 22px;">🧪</span>
+                <h1 style="font-size: 28px; font-weight: 700; color: var(--text-main); font-family: var(--font-heading); margin: 0;">Innovation Lab Management</h1>
+                <span class="status-badge" style="background: rgba(199, 166, 106, 0.15); color: var(--gold, #C7A66A); border: 1px solid rgba(199, 166, 106, 0.3); padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700;">
+                    LIVE ATELIER CMS
+                </span>
+            </div>
             <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
-                Full dynamic control over experiments, failed batches, exploratory questions, and R&D pillars.
+                Full dynamic control over experiments, failed batches, exploration questions, native ingredients, and live dossiers.
             </p>
         </div>
-        <div style="display: flex; gap: 12px; align-items: center;">
-            <a href="../innovation-lab.php" target="_blank" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <a href="../innovation-lab.php" target="_blank" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
                 <span>View Live Lab Page</span>
             </a>
         </div>
@@ -438,34 +992,36 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 
     <!-- Feedback Alerts -->
     <?php if (!empty($success)): ?>
-        <div style="background: #EBF8F2; border-left: 4px solid #10B981; color: #065F46; padding: 14px 20px; border-radius: 6px; margin-bottom: 24px; font-weight: 500;">
-            ✓ <?php echo htmlspecialchars($success); ?>
+        <div style="background: #EBF8F2; border-left: 4px solid #10B981; color: #065F46; padding: 14px 20px; border-radius: 6px; margin-bottom: 24px; font-weight: 500; display: flex; align-items: center; justify-content: space-between;">
+            <span>✓ <?php echo htmlspecialchars($success); ?></span>
+            <span style="cursor: pointer;" onclick="this.parentElement.style.display='none'">✕</span>
         </div>
     <?php endif; ?>
     <?php if (!empty($error)): ?>
-        <div style="background: #FEF2F2; border-left: 4px solid #EF4444; color: #991B1B; padding: 14px 20px; border-radius: 6px; margin-bottom: 24px; font-weight: 500;">
-            ✕ <?php echo htmlspecialchars($error); ?>
+        <div style="background: #FEF2F2; border-left: 4px solid #EF4444; color: #991B1B; padding: 14px 20px; border-radius: 6px; margin-bottom: 24px; font-weight: 500; display: flex; align-items: center; justify-content: space-between;">
+            <span>✕ <?php echo htmlspecialchars($error); ?></span>
+            <span style="cursor: pointer;" onclick="this.parentElement.style.display='none'">✕</span>
         </div>
     <?php endif; ?>
 
     <!-- KPI Metric Cards -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 28px;">
-        <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card);">
+        <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card); transition: transform 0.2s ease, border-color 0.2s ease;">
             <div style="font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Total Experiments</div>
             <div style="font-size: 32px; font-weight: 700; color: var(--text-main); font-family: var(--font-heading);"><?php echo count($experiments); ?></div>
-            <div style="font-size: 12px; color: var(--status-active); font-weight: 600; margin-top: 4px;">Active R&D in Lab</div>
+            <div style="font-size: 12px; color: var(--status-active, #10B981); font-weight: 600; margin-top: 4px;">Active R&D in Lab</div>
         </div>
-        <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card);">
+        <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card); transition: transform 0.2s ease, border-color 0.2s ease;">
             <div style="font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Failed Batches Logged</div>
             <div style="font-size: 32px; font-weight: 700; color: #B45309; font-family: var(--font-heading);"><?php echo count($failedBatches); ?></div>
             <div style="font-size: 12px; color: #B45309; font-weight: 600; margin-top: 4px;">Failures Converted to Data</div>
         </div>
-        <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card);">
+        <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card); transition: transform 0.2s ease, border-color 0.2s ease;">
             <div style="font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">What If? Inquiries</div>
             <div style="font-size: 32px; font-weight: 700; color: var(--text-main); font-family: var(--font-heading);"><?php echo count($whatIfList); ?></div>
             <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px;">Future Curiosities</div>
         </div>
-        <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card);">
+        <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card); transition: transform 0.2s ease, border-color 0.2s ease;">
             <div style="font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Ingredient Categories</div>
             <div style="font-size: 32px; font-weight: 700; color: var(--text-main); font-family: var(--font-heading);"><?php echo count($ingredientsList); ?></div>
             <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px;">Frontiers of Taste</div>
@@ -473,7 +1029,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
     </div>
 
     <!-- Navigation Tabs -->
-    <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--border-color); margin-bottom: 28px; overflow-x: auto; padding-bottom: 2px;">
+    <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--border-color); margin-bottom: 24px; overflow-x: auto; padding-bottom: 2px;">
         <a href="?tab=experiments" class="btn <?php echo $activeTab === 'experiments' ? 'btn-primary' : 'btn-outline'; ?>" style="border-radius: 8px 8px 0 0; padding: 10px 18px;">
             🧪 Lab Experiments (<?php echo count($experiments); ?>)
         </a>
@@ -495,38 +1051,61 @@ render_admin_header('Innovation Lab', 'innovation-lab');
          TAB 1: EXPERIMENTS ("CURRENTLY IN THE LAB")
          ===================================================================== -->
     <?php if ($activeTab === 'experiments'): ?>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-            <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0;">Currently in the Lab Experiments</h2>
-            <button type="button" class="btn btn-primary" onclick="openNewExperimentModal()">
-                + New Experiment
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Currently in the Lab Experiments</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Active formulations tested across temper curves, micron particle metrics, and sensory taste panels.</p>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="openNewExperimentModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
+                <span style="font-size: 16px;">+</span> New Experiment
             </button>
         </div>
 
-        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden;">
+        <!-- Live Instant Filter & Search Bar -->
+        <div class="lab-filter-bar">
+            <div class="lab-search-wrap">
+                <span class="lab-search-icon">🔍</span>
+                <input type="text" id="expSearchInput" class="lab-search-input" placeholder="Search experiments by title, question, tags..." oninput="filterExperimentsTable()">
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <select id="expCategoryFilter" class="lab-filter-select" onchange="filterExperimentsTable()">
+                    <option value="">All Categories</option>
+                    <option value="ingredient-innovation">Ingredient Innovation</option>
+                    <option value="process-exploration">Process Exploration</option>
+                    <option value="formulation-lab">Formulation Lab</option>
+                    <option value="sensory-insights">Sensory Insights</option>
+                    <option value="stability-shelf-life">Stability &amp; Shelf Life</option>
+                    <option value="scale-applications">Scale &amp; Applications</option>
+                    <option value="future-of-chocolate">Future of Chocolate</option>
+                </select>
+                <span id="expCountBadge" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Showing <?php echo count($experiments); ?> of <?php echo count($experiments); ?></span>
+            </div>
+        </div>
+
+        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0 0 10px 10px; overflow: hidden; margin-bottom: 30px;">
             <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
+                <table id="experimentsTable" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
                     <thead style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-color);">
                         <tr>
                             <th style="padding: 12px 18px; width: 64px;">Image</th>
                             <th style="padding: 12px 18px;">Title &amp; Question</th>
                             <th style="padding: 12px 18px;">Category</th>
                             <th style="padding: 12px 18px;">Status Badge</th>
-                            <th style="padding: 12px 18px;">Tags</th>
                             <th style="padding: 12px 18px; width: 80px;">Order</th>
                             <th style="padding: 12px 18px; width: 90px;">Active</th>
-                            <th style="padding: 12px 18px; width: 140px; text-align: right;">Actions</th>
+                            <th style="padding: 12px 18px; width: 220px; text-align: right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($experiments)): ?>
                             <?php foreach ($experiments as $exp): ?>
-                                <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.15s ease;">
+                                <tr class="exp-row" data-title="<?php echo strtolower(htmlspecialchars($exp['title'])); ?>" data-desc="<?php echo strtolower(htmlspecialchars($exp['description'])); ?>" data-tags="<?php echo strtolower(htmlspecialchars($exp['tags'])); ?>" data-cat="<?php echo strtolower(htmlspecialchars($exp['category'])); ?>" style="border-bottom: 1px solid var(--border-color); transition: background 0.15s ease;">
                                     <td style="padding: 12px 18px;">
-                                        <img src="../<?php echo htmlspecialchars($exp['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" style="width: 52px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="">
+                                        <img src="../<?php echo htmlspecialchars($exp['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" style="width: 52px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="" onerror="this.src='../assets/images/placeholder.jpg'">
                                     </td>
                                     <td style="padding: 12px 18px;">
-                                        <div style="font-weight: 700; color: var(--text-main);"><?php echo htmlspecialchars($exp['title']); ?></div>
-                                        <div style="font-size: 12px; color: var(--text-muted); max-width: 320px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                                        <div style="font-weight: 700; color: var(--text-main); font-size: 14px;"><?php echo htmlspecialchars($exp['title']); ?></div>
+                                        <div style="font-size: 12px; color: var(--text-muted); max-width: 340px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                                             <?php echo htmlspecialchars($exp['description']); ?>
                                         </div>
                                     </td>
@@ -534,12 +1113,9 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                         <?php echo htmlspecialchars($exp['category']); ?>
                                     </td>
                                     <td style="padding: 12px 18px;">
-                                        <span class="status-badge" style="background: rgba(0,0,0,0.05); padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700;">
+                                        <span class="status-badge" style="background: rgba(199, 166, 106, 0.1); border: 1px solid rgba(199, 166, 106, 0.25); color: var(--text-main); padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap;">
                                             ● <?php echo htmlspecialchars($exp['status_badge']); ?>
                                         </span>
-                                    </td>
-                                    <td style="padding: 12px 18px; font-size: 11px; color: var(--text-light);">
-                                        <?php echo htmlspecialchars($exp['tags']); ?>
                                     </td>
                                     <td style="padding: 12px 18px; font-weight: 600;">
                                         <?php echo (int)$exp['sort_order']; ?>
@@ -549,25 +1125,27 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                             <input type="hidden" name="action" value="toggle_experiment">
                                             <input type="hidden" name="experiment_id" value="<?php echo (int)$exp['id']; ?>">
-                                            <button type="submit" class="btn btn-sm <?php echo $exp['is_active'] ? 'btn-primary' : 'btn-outline'; ?>" style="padding: 2px 8px; font-size: 11px;">
+                                            <button type="submit" class="btn btn-sm <?php echo $exp['is_active'] ? 'btn-primary' : 'btn-outline'; ?>" style="padding: 2px 8px; font-size: 11px;" title="Click to toggle status">
                                                 <?php echo $exp['is_active'] ? 'Active' : 'Hidden'; ?>
                                             </button>
                                         </form>
                                     </td>
-                                    <td style="padding: 12px 18px; text-align: right;">
-                                        <button type="button" class="btn btn-sm btn-outline" onclick='editExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
-                                        <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Are you sure you want to delete this experiment?');">
+                                    <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
+                                        <button type="button" class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 12px;" onclick='editExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
+                                        <button type="button" class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 12px; color: var(--gold, #C7A66A);" onclick='cloneExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)' title="Clone / Duplicate this experiment in 1 click">Clone</button>
+                                        <a href="../innovation-lab.php#exp-<?php echo htmlspecialchars($exp['slug'] ?: $exp['id']); ?>" target="_blank" class="btn btn-sm btn-outline" style="padding: 3px 6px; font-size: 11px;" title="View on live page">↗</a>
+                                        <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Are you sure you want to delete experiment '<?php echo addslashes($exp['title']); ?>'?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                             <input type="hidden" name="action" value="delete_experiment">
                                             <input type="hidden" name="experiment_id" value="<?php echo (int)$exp['id']; ?>">
-                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                            <button type="submit" class="btn btn-sm btn-danger" style="padding: 3px 8px; font-size: 12px;">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="8" style="padding: 32px; text-align: center; color: var(--text-light);">No experiments found. Click "+ New Experiment" to add one!</td>
+                                <td colspan="7" style="padding: 32px; text-align: center; color: var(--text-light);">No experiments found. Click "+ New Experiment" to add one!</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -579,19 +1157,27 @@ render_admin_header('Innovation Lab', 'innovation-lab');
          TAB 2: FAILED BATCHES ("FROM A FAILED BATCH TO A NEW INSIGHT")
          ===================================================================== -->
     <?php elseif ($activeTab === 'failed-batches'): ?>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
                 <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Failed Batch Case Studies ("Failure is Data")</h2>
                 <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Log failed formulation attempts and the scientific breakthroughs they unlocked.</p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openNewFailedBatchModal()">
-                + Log Failed Batch
+            <button type="button" class="btn btn-primary" onclick="openNewFailedBatchModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
+                <span style="font-size: 16px;">+</span> Log Failed Batch
             </button>
         </div>
 
-        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden;">
+        <div class="lab-filter-bar">
+            <div class="lab-search-wrap">
+                <span class="lab-search-icon">🔍</span>
+                <input type="text" id="failedSearchInput" class="lab-search-input" placeholder="Search failed batch case studies..." oninput="filterFailedBatchesTable()">
+            </div>
+            <span id="failedCountBadge" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Showing <?php echo count($failedBatches); ?> of <?php echo count($failedBatches); ?></span>
+        </div>
+
+        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0 0 10px 10px; overflow: hidden; margin-bottom: 30px;">
             <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
+                <table id="failedBatchesTable" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
                     <thead style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-color);">
                         <tr>
                             <th style="padding: 12px 18px; width: 64px;">Image</th>
@@ -599,29 +1185,29 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                             <th style="padding: 12px 18px;">Hypothesis</th>
                             <th style="padding: 12px 18px;">What Happened?</th>
                             <th style="padding: 12px 18px;">What Next?</th>
-                            <th style="padding: 12px 18px; width: 100px;">Featured</th>
+                            <th style="padding: 12px 18px; width: 110px;">Featured</th>
                             <th style="padding: 12px 18px; width: 140px; text-align: right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($failedBatches)): ?>
                             <?php foreach ($failedBatches as $fb): ?>
-                                <tr style="border-bottom: 1px solid var(--border-color); <?php echo $fb['is_featured'] ? 'background: rgba(212, 175, 55, 0.05);' : ''; ?>">
+                                <tr class="failed-row" data-title="<?php echo strtolower(htmlspecialchars($fb['title'])); ?>" data-hypo="<?php echo strtolower(htmlspecialchars($fb['hypothesis'])); ?>" style="border-bottom: 1px solid var(--border-color); <?php echo $fb['is_featured'] ? 'background: rgba(212, 175, 55, 0.05);' : ''; ?>">
                                     <td style="padding: 12px 18px;">
-                                        <img src="../<?php echo htmlspecialchars($fb['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" style="width: 52px; height: 52px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="">
+                                        <img src="../<?php echo htmlspecialchars($fb['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" style="width: 52px; height: 52px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="" onerror="this.src='../assets/images/lab-failed-batch.jpg'">
                                     </td>
                                     <td style="padding: 12px 18px;">
                                         <div style="font-weight: 700; color: var(--text-main); font-size: 14px;"><?php echo htmlspecialchars($fb['title']); ?></div>
                                         <div style="font-size: 11px; color: #B45309; font-weight: 700; text-transform: uppercase;"><?php echo htmlspecialchars($fb['badge_label']); ?></div>
                                     </td>
                                     <td style="padding: 12px 18px; font-size: 12.5px; max-width: 200px; color: var(--text-muted);">
-                                        <?php echo htmlspecialchars($fb['hypothesis']); ?>
+                                        <?php echo htmlspecialchars(strip_tags($fb['hypothesis'])); ?>
                                     </td>
                                     <td style="padding: 12px 18px; font-size: 12.5px; max-width: 200px; color: #DC2626;">
-                                        <?php echo htmlspecialchars($fb['what_happened']); ?>
+                                        <?php echo htmlspecialchars(strip_tags($fb['what_happened'])); ?>
                                     </td>
                                     <td style="padding: 12px 18px; font-size: 12.5px; max-width: 200px; color: #16A34A; font-weight: 500;">
-                                        <?php echo htmlspecialchars($fb['what_next']); ?>
+                                        <?php echo htmlspecialchars(strip_tags($fb['what_next'])); ?>
                                     </td>
                                     <td style="padding: 12px 18px;">
                                         <?php if ($fb['is_featured']): ?>
@@ -635,7 +1221,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                             </form>
                                         <?php endif; ?>
                                     </td>
-                                    <td style="padding: 12px 18px; text-align: right;">
+                                    <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
                                         <button type="button" class="btn btn-sm btn-outline" onclick='editFailedBatch(<?php echo json_encode($fb, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
                                         <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this failed batch case study?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
@@ -660,17 +1246,17 @@ render_admin_header('Innovation Lab', 'innovation-lab');
          TAB 3: "WHAT IF?" QUESTIONS
          ===================================================================== -->
     <?php elseif ($activeTab === 'what-if'): ?>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
                 <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">"What If?" Exploration Questions</h2>
                 <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Curated list of bold questions guiding upcoming research.</p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openNewWhatIfModal()">
-                + Add Question
+            <button type="button" class="btn btn-primary" onclick="openNewWhatIfModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
+                <span style="font-size: 16px;">+</span> Add Question
             </button>
         </div>
 
-        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden;">
+        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; margin-bottom: 30px;">
             <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
                 <thead style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-color);">
                     <tr>
@@ -701,7 +1287,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                         <?php echo $q['is_active'] ? 'Active' : 'Hidden'; ?>
                                     </span>
                                 </td>
-                                <td style="padding: 12px 18px; text-align: right;">
+                                <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
                                     <button type="button" class="btn btn-sm btn-outline" onclick='editWhatIf(<?php echo json_encode($q, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
                                     <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this question?');">
                                         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
@@ -721,17 +1307,17 @@ render_admin_header('Innovation Lab', 'innovation-lab');
          TAB 4: INGREDIENT CATEGORIES
          ===================================================================== -->
     <?php elseif ($activeTab === 'ingredients'): ?>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
                 <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Ingredient Innovation Categories</h2>
-                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Featured materials explored across our test melangers.</p>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Featured botanical materials explored across our test melangers.</p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openNewIngredientModal()">
-                + Add Ingredient Category
+            <button type="button" class="btn btn-primary" onclick="openNewIngredientModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
+                <span style="font-size: 16px;">+</span> Add Ingredient Category
             </button>
         </div>
 
-        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden;">
+        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; margin-bottom: 30px;">
             <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
                 <thead style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-color);">
                     <tr>
@@ -748,19 +1334,19 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                         <?php foreach ($ingredientsList as $ing): ?>
                             <tr style="border-bottom: 1px solid var(--border-color);">
                                 <td style="padding: 12px 18px;">
-                                    <img src="../<?php echo htmlspecialchars($ing['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="">
+                                    <img src="../<?php echo htmlspecialchars($ing['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="" onerror="this.src='../assets/images/placeholder.jpg'">
                                 </td>
                                 <td style="padding: 12px 18px; font-weight: 700; color: var(--text-main);">
                                     <?php echo htmlspecialchars($ing['title']); ?>
                                 </td>
                                 <td style="padding: 12px 18px; font-size: 12.5px; color: var(--text-muted);">
-                                    <?php echo htmlspecialchars($ing['description']); ?>
+                                    <?php echo htmlspecialchars(strip_tags($ing['description'])); ?>
                                 </td>
                                 <td style="padding: 12px 18px; font-size: 12px; color: var(--text-muted);">
                                     <?php echo htmlspecialchars($ing['link_url']); ?>
                                 </td>
                                 <td style="padding: 12px 18px;"><?php echo (int)$ing['sort_order']; ?></td>
-                                <td style="padding: 12px 18px; text-align: right;">
+                                <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
                                     <button type="button" class="btn btn-sm btn-outline" onclick='editIngredient(<?php echo json_encode($ing, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
                                     <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this ingredient category?');">
                                         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
@@ -793,38 +1379,38 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                     
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Hero Eyebrow</label>
-                        <input type="text" name="lab_hero_eyebrow" value="<?php echo htmlspecialchars($settings['lab_hero_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <input type="text" name="lab_hero_eyebrow" value="<?php echo htmlspecialchars($settings['lab_hero_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                     </div>
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Main Title</label>
-                        <input type="text" name="lab_hero_title" value="<?php echo htmlspecialchars($settings['lab_hero_title']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <input type="text" name="lab_hero_title" value="<?php echo htmlspecialchars($settings['lab_hero_title']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                     </div>
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Subtitle Description</label>
-                        <textarea name="lab_hero_subtitle" rows="3" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"><?php echo htmlspecialchars($settings['lab_hero_subtitle']); ?></textarea>
+                        <textarea name="lab_hero_subtitle" rows="3" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);"><?php echo htmlspecialchars($settings['lab_hero_subtitle']); ?></textarea>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
                         <div>
                             <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">CTA Button Text</label>
-                            <input type="text" name="lab_hero_cta_text" value="<?php echo htmlspecialchars($settings['lab_hero_cta_text']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <input type="text" name="lab_hero_cta_text" value="<?php echo htmlspecialchars($settings['lab_hero_cta_text']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                         </div>
                         <div>
                             <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">CTA Button Link</label>
-                            <input type="text" name="lab_hero_cta_link" value="<?php echo htmlspecialchars($settings['lab_hero_cta_link']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <input type="text" name="lab_hero_cta_link" value="<?php echo htmlspecialchars($settings['lab_hero_cta_link']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                         </div>
                     </div>
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Sticky Note Text (Mantra pinned on wall)</label>
-                        <textarea name="lab_sticky_note" rows="3" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-style: italic;"><?php echo htmlspecialchars($settings['lab_sticky_note']); ?></textarea>
+                        <textarea name="lab_sticky_note" rows="3" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-style: italic; background: var(--bg-card); color: var(--text-main);"><?php echo htmlspecialchars($settings['lab_sticky_note']); ?></textarea>
                     </div>
 
                     <div>
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Hero Image</label>
-                        <input type="text" name="lab_hero_image" value="<?php echo htmlspecialchars($settings['lab_hero_image']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 6px;">
+                        <input type="text" name="lab_hero_image" value="<?php echo htmlspecialchars($settings['lab_hero_image']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 6px; background: var(--bg-card); color: var(--text-main);">
                         <input type="file" name="hero_image_file" accept="image/*" style="font-size: 12px;">
                     </div>
                 </div>
@@ -835,33 +1421,33 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Eyebrow</label>
-                        <input type="text" name="lab_future_eyebrow" value="<?php echo htmlspecialchars($settings['lab_future_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <input type="text" name="lab_future_eyebrow" value="<?php echo htmlspecialchars($settings['lab_future_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                     </div>
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Section Heading</label>
-                        <input type="text" name="lab_future_heading" value="<?php echo htmlspecialchars($settings['lab_future_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <input type="text" name="lab_future_heading" value="<?php echo htmlspecialchars($settings['lab_future_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                     </div>
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Paragraph Content</label>
-                        <textarea name="lab_future_text" rows="3" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"><?php echo htmlspecialchars($settings['lab_future_text']); ?></textarea>
+                        <textarea name="lab_future_text" rows="3" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);"><?php echo htmlspecialchars($settings['lab_future_text']); ?></textarea>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
                         <div>
                             <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">CTA Button Text</label>
-                            <input type="text" name="lab_future_cta_text" value="<?php echo htmlspecialchars($settings['lab_future_cta_text']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <input type="text" name="lab_future_cta_text" value="<?php echo htmlspecialchars($settings['lab_future_cta_text']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                         </div>
                         <div>
                             <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">CTA Link</label>
-                            <input type="text" name="lab_future_cta_link" value="<?php echo htmlspecialchars($settings['lab_future_cta_link']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <input type="text" name="lab_future_cta_link" value="<?php echo htmlspecialchars($settings['lab_future_cta_link']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                         </div>
                     </div>
 
                     <div>
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Landscape Photo</label>
-                        <input type="text" name="lab_future_image" value="<?php echo htmlspecialchars($settings['lab_future_image']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 6px;">
+                        <input type="text" name="lab_future_image" value="<?php echo htmlspecialchars($settings['lab_future_image']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 6px; background: var(--bg-card); color: var(--text-main);">
                         <input type="file" name="future_image_file" accept="image/*" style="font-size: 12px;">
                     </div>
                 </div>
@@ -872,12 +1458,12 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Eyebrow</label>
-                        <input type="text" name="lab_ingredient_eyebrow" value="<?php echo htmlspecialchars($settings['lab_ingredient_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <input type="text" name="lab_ingredient_eyebrow" value="<?php echo htmlspecialchars($settings['lab_ingredient_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                     </div>
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Section Heading</label>
-                        <input type="text" name="lab_ingredient_heading" value="<?php echo htmlspecialchars($settings['lab_ingredient_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <input type="text" name="lab_ingredient_heading" value="<?php echo htmlspecialchars($settings['lab_ingredient_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                     </div>
                 </div>
 
@@ -887,22 +1473,22 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">What If? Eyebrow</label>
-                        <input type="text" name="lab_what_if_eyebrow" value="<?php echo htmlspecialchars($settings['lab_what_if_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <input type="text" name="lab_what_if_eyebrow" value="<?php echo htmlspecialchars($settings['lab_what_if_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                     </div>
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">What If? Section Heading</label>
-                        <input type="text" name="lab_what_if_heading" value="<?php echo htmlspecialchars($settings['lab_what_if_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <input type="text" name="lab_what_if_heading" value="<?php echo htmlspecialchars($settings['lab_what_if_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                     </div>
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Failed Batch Eyebrow</label>
-                        <input type="text" name="lab_failed_batch_eyebrow" value="<?php echo htmlspecialchars($settings['lab_failed_batch_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <input type="text" name="lab_failed_batch_eyebrow" value="<?php echo htmlspecialchars($settings['lab_failed_batch_eyebrow']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                     </div>
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Failed Batch Section Heading</label>
-                        <input type="text" name="lab_failed_batch_heading" value="<?php echo htmlspecialchars($settings['lab_failed_batch_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <input type="text" name="lab_failed_batch_heading" value="<?php echo htmlspecialchars($settings['lab_failed_batch_heading']); ?>" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                     </div>
                 </div>
 
@@ -940,7 +1526,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                 <td style="padding: 12px 18px; font-size: 12.5px; color: var(--text-muted);"><?php echo htmlspecialchars($pl['description']); ?></td>
                                 <td style="padding: 12px 18px; font-size: 12px; color: var(--text-muted);"><?php echo htmlspecialchars($pl['link_url']); ?></td>
                                 <td style="padding: 12px 18px;"><?php echo (int)$pl['sort_order']; ?></td>
-                                <td style="padding: 12px 18px; text-align: right;">
+                                <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
                                     <button type="button" class="btn btn-sm btn-outline" onclick='editPillar(<?php echo json_encode($pl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
                                     <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this pillar?');">
                                         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
@@ -961,111 +1547,325 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 </div>
 
 <!-- =========================================================================
-     MODAL: ADD / EDIT EXPERIMENT
+     MODAL: ADD / EDIT EXPERIMENT (STEPPER-TABBED & LIVE PREVIEW SYSTEM)
      ========================================================================= -->
-<div id="experimentModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: var(--bg-card); max-width: 760px; width: 100%; max-height: 90vh; overflow-y: auto; border-radius: 12px; padding: 28px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); position: relative;">
-        <button type="button" onclick="closeModal('experimentModal')" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light);">✕</button>
+<div id="experimentModal" class="lab-modal-backdrop" onclick="handleBackdropClick(event, 'experimentModal')">
+    <div class="lab-modal-dialog">
+        <!-- Modal Top Header -->
+        <div class="lab-modal-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(199, 166, 106, 0.15); color: var(--gold, #C7A66A); display: flex; align-items: center; justify-content: center; font-size: 16px;">🧪</div>
+                <div>
+                    <h2 id="expModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0; color: var(--text-main);">Create New Lab Experiment</h2>
+                    <div style="font-size: 12px; color: var(--text-muted);">Step-by-step formulation studio &amp; live dossier editor</div>
+                </div>
+            </div>
+            <button type="button" onclick="closeModal('experimentModal')" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light); transition: color 0.15s;" title="Close Modal (Esc)">✕</button>
+        </div>
+
+        <!-- Stepper Navigation Bar -->
+        <div class="lab-stepper-nav">
+            <button type="button" class="lab-step-tab active" data-step="0" onclick="switchExpStep(0)">
+                <span>🏷️ 1. Identity &amp; Card</span>
+            </button>
+            <button type="button" class="lab-step-tab" data-step="1" onclick="switchExpStep(1)">
+                <span>🔬 2. Research Pillars</span>
+            </button>
+            <button type="button" class="lab-step-tab" data-step="2" onclick="switchExpStep(2)">
+                <span>⚙️ 3. Science Telemetry</span>
+            </button>
+            <button type="button" class="lab-step-tab" data-step="3" onclick="switchExpStep(3)">
+                <span>📋 4. Full Lab Dossier</span>
+            </button>
+            <button type="button" class="lab-step-tab" data-step="4" onclick="switchExpStep(4)">
+                <span>👁️ 5. Live Preview</span>
+            </button>
+        </div>
         
-        <h2 id="expModalTitle" style="font-family: var(--font-heading); font-size: 24px; margin: 0 0 20px; color: var(--text-main);">Create New Lab Experiment</h2>
-        
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" id="expForm" style="display: flex; flex-direction: column; flex: 1; overflow: hidden; margin: 0;">
             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
             <input type="hidden" name="action" value="save_experiment">
             <input type="hidden" name="experiment_id" id="exp_id" value="0">
             <input type="hidden" name="existing_image_path" id="exp_existing_image" value="">
 
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 14px;">
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Experiment Title *</label>
-                    <input type="text" name="title" id="exp_title" required placeholder="e.g. CBE × Bean-to-Bar" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+            <div class="lab-modal-body">
+                <!-- STEP 1: IDENTITY & CARD FRONT -->
+                <div class="lab-step-panel active" id="exp_step_0">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 14px;">
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Experiment Title *</label>
+                            <input type="text" name="title" id="exp_title" required placeholder="e.g. CBE × Bean-to-Bar" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);" oninput="updateLiveExpPreview()">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Category *</label>
+                            <select name="category" id="exp_category" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);" onchange="updateLiveExpPreview()">
+                                <option value="ingredient-innovation">Ingredient Innovation</option>
+                                <option value="process-exploration">Process Exploration</option>
+                                <option value="formulation-lab" selected>Formulation Lab</option>
+                                <option value="sensory-insights">Sensory Insights</option>
+                                <option value="stability-shelf-life">Stability &amp; Shelf Life</option>
+                                <option value="scale-applications">Scale &amp; Applications</option>
+                                <option value="future-of-chocolate">Future of Chocolate</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Status Badge & Color -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Status Badge Label</label>
+                            <input type="text" name="status_badge" id="exp_status_badge" value="IN PROGRESS" placeholder="e.g. IN PROGRESS, SENSORY TRIALS" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);" oninput="updateLiveExpPreview()">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Badge Dot Color</label>
+                            <select name="status_color" id="exp_status_color" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);" onchange="updateLiveExpPreview()">
+                                <option value="green">🟢 Green (In Progress / Formulation)</option>
+                                <option value="amber">🟡 Amber (Sensory / Stability Trials)</option>
+                                <option value="purple">🟣 Purple (Analysis / Insights)</option>
+                                <option value="blue">🔵 Blue (Concluded / Scale)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Card Summary / Inquiry Question -->
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Card Summary / Inquiry Question * (Front of Card)</label>
+                        <textarea name="description" id="exp_desc" rows="2" required placeholder="e.g. Can cocoa butter equivalents deliver great texture, snap and flavour in high-cocoa chocolate?" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);" oninput="updateLiveExpPreview()"></textarea>
+                    </div>
+
+                    <!-- Tags & Sort Order -->
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 14px;">
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Tags (Card Footer)</label>
+                            <input type="text" name="tags" id="exp_tags" placeholder="e.g. FAT SYSTEMS | FORMULATION" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);" oninput="updateLiveExpPreview()">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Display Sort Order</label>
+                            <input type="number" name="sort_order" id="exp_sort_order" value="0" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                        </div>
+                    </div>
+
+                    <!-- Card Image with Live Thumbnail & Quick Presets -->
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Card Cover Image</label>
+                        <div class="lab-img-preview-box">
+                            <img id="exp_preview_thumb" src="../assets/images/placeholder.jpg" class="lab-img-preview-thumb" alt="Preview" onerror="this.src='../assets/images/placeholder.jpg'">
+                            <div style="flex: 1;">
+                                <input type="file" name="experiment_image" id="exp_file_input" accept="image/*" style="font-size: 12px; margin-bottom: 6px;" onchange="handleFilePreview(this, 'exp_preview_thumb', 'exp_img_text')">
+                                <input type="text" name="existing_image_path_text" id="exp_img_text" placeholder="Or enter image URL (e.g. assets/images/lab-cbe.jpg)" style="width: 100%; padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; background: var(--bg-card); color: var(--text-main);" oninput="updateImgPreview(this.value, 'exp_preview_thumb')">
+                                
+                                <div style="display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
+                                    <span style="font-size: 11px; color: var(--text-muted);">Quick Presets:</span>
+                                    <button type="button" class="lab-chip" onclick="setImgPreset('exp_img_text', 'exp_preview_thumb', 'assets/images/lab-cbe.jpg')">CBE Fat</button>
+                                    <button type="button" class="lab-chip" onclick="setImgPreset('exp_img_text', 'exp_preview_thumb', 'assets/images/lab-fruits.jpg')">Dried Fruits</button>
+                                    <button type="button" class="lab-chip" onclick="setImgPreset('exp_img_text', 'exp_preview_thumb', 'assets/images/lab-khandsari.jpg')">Sugar Trials</button>
+                                    <button type="button" class="lab-chip" onclick="setImgPreset('exp_img_text', 'exp_preview_thumb', 'assets/images/lab-spread.jpg')">Spreads</button>
+                                    <button type="button" class="lab-chip" onclick="setImgPreset('exp_img_text', 'exp_preview_thumb', 'assets/images/lab-failed-batch.jpg')">Failed Batch</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Category *</label>
-                    <select name="category" id="exp_category" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
-                        <option value="ingredient-innovation">Ingredient Innovation</option>
-                        <option value="process-exploration">Process Exploration</option>
-                        <option value="formulation-lab" selected>Formulation Lab</option>
-                        <option value="sensory-insights">Sensory Insights</option>
-                        <option value="stability-shelf-life">Stability & Shelf Life</option>
-                        <option value="scale-applications">Scale & Applications</option>
-                        <option value="future-of-chocolate">Future of Chocolate</option>
-                    </select>
+
+                <!-- STEP 2: 4 RESEARCH PILLARS (WYSIWYG) -->
+                <div class="lab-step-panel" id="exp_step_1">
+                    <div style="background: var(--bg-subtle, rgba(0,0,0,0.02)); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; margin-bottom: 16px;">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
+                            <span>🔬 4 Core Research Pillars (WYSIWYG &amp; Bullet Points)</span>
+                            <span style="font-size: 11px; color: var(--gold, #C7A66A);">Displayed on Front-End Dossier Popup</span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+                            Click <b>• Bullet List</b> or <b>+ 3 Bullets Template</b> to instantly structure observations into crisp, readable directives.
+                        </div>
+
+                        <!-- 01. Research Question -->
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">01. Research Question (What are we exploring or trying to understand?)</label>
+                            <div id="mount_exp_hypothesis"></div>
+                        </div>
+
+                        <!-- 02. Observations & Findings -->
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">02. Observations &amp; Findings (What did we observe, measure or learn?)</label>
+                            <div id="mount_exp_findings"></div>
+                        </div>
+
+                        <!-- 03. Why It Matters -->
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">03. Why It Matters (The practical relevance for chocolate makers)</label>
+                            <div id="mount_exp_methodology"></div>
+                        </div>
+
+                        <!-- 04. Key Takeaway -->
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">04. Key Takeaway (The single most important lesson from this experiment)</label>
+                            <div id="mount_exp_next_steps"></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Status Badge Label</label>
-                    <input type="text" name="status_badge" id="exp_status_badge" value="IN PROGRESS" placeholder="e.g. IN PROGRESS, SENSORY TRIALS" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                <!-- STEP 3: SCIENCE TELEMETRY -->
+                <div class="lab-step-panel" id="exp_step_2">
+                    <div style="background: var(--bg-subtle, rgba(0,0,0,0.02)); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; margin-bottom: 16px;">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
+                            ⚙️ Specimen Telemetry &amp; Scientific Specifications
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+                            Displayed in the top live telemetry strip on the front-end dossier modal. Click any chip to quick-fill!
+                        </div>
+
+                        <!-- Row 1: Terroir Origin & Crystal Polymorph -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Terroir Origin</label>
+                                <input type="text" name="origin" id="exp_origin" placeholder="e.g. Idukki Single Estate, Kerala (70% Cacao)" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                                <div class="lab-chip-group">
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_origin', 'Idukki Single Estate, Kerala (70% Cacao)')">Kerala Single Estate</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_origin', 'Wayanad Agroforest Organic (75% Cacao)')">Wayanad Organic</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_origin', 'Anamalai Hills Smallholder Harvest')">Anamalai Hills</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Crystal Polymorph Matrix</label>
+                                <input type="text" name="polymorph" id="exp_polymorph" placeholder="e.g. Beta-V (Form V) Triglyceride Matrix (Tm 34.2°C)" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                                <div class="lab-chip-group">
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_polymorph', 'Beta-V (Form V) Triglyceride Matrix (Tm 34.2°C)')">Beta-V (Form V)</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_polymorph', 'Form V High-Stability Seed Matrix')">High-Stability Seed</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_polymorph', 'Beta-VI Annealed Crystal Grid')">Beta-VI Annealed</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Particle Size Micron & Water Activity -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Particle Size Micron</label>
+                                <input type="text" name="particle_size" id="exp_particle_size" placeholder="e.g. < 18.2 µm (D90 Laser Diffraction)" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                                <div class="lab-chip-group">
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_particle_size', '< 18.2 µm (D90 Laser Diffraction)')">&lt; 18.2 µm Laser</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_particle_size', '< 15.0 µm (Ultra-Refined Silky)')">&lt; 15 µm Ultra-Refined</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_particle_size', '20-22 µm (Artisanal Stone Melange)')">20-22 µm Stone Melange</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Water Activity (Aw)</label>
+                                <input type="text" name="water_activity" id="exp_water_activity" placeholder="e.g. 0.31 Aw (Optimal Moisture Inactivity)" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                                <div class="lab-chip-group">
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_water_activity', '0.31 Aw (Optimal Moisture Inactivity)')">0.31 Aw Optimal</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_water_activity', '0.28 Aw (Bone Dry Grid)')">0.28 Aw Bone Dry</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_water_activity', '0.35 Aw (Upper Microbial Limit)')">0.35 Aw Upper Bound</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Conching & Batch Reference -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Conching / Refining Protocol</label>
+                                <input type="text" name="conching" id="exp_conching" placeholder="e.g. 36 Hours Longitudinal Dry Conche @ 48°C" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                                <div class="lab-chip-group">
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_conching', '36 Hours Longitudinal Dry Conche @ 48°C')">36h Dry Conche @ 48°C</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_conching', '48 Hours Two-Stage Aerated Conche @ 52°C')">48h Two-Stage Conche</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_conching', '24 Hours Low-Temperature Stone Grind @ 42°C')">24h Low-Temp Stone</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Batch Reference ID</label>
+                                <input type="text" name="batch_ref" id="exp_batch_ref" placeholder="e.g. RT-EXP-01 · CBE-POLY" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                                <div class="lab-chip-group">
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_batch_ref', 'RT-EXP-01 · CBE-POLY')">RT-EXP-01</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_batch_ref', 'RT-EXP-02 · FERMENT')">RT-EXP-02</button>
+                                    <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_batch_ref', 'RT-EXP-03 · INCLUSION')">RT-EXP-03</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Badge Dot Color</label>
-                    <select name="status_color" id="exp_status_color" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
-                        <option value="green">🟢 Green (In Progress / Formulation)</option>
-                        <option value="amber">🟡 Amber (Sensory / Stability Trials)</option>
-                        <option value="purple">🟣 Purple (Analysis / Insights)</option>
-                        <option value="blue">🔵 Blue (Concluded / Scale)</option>
-                    </select>
+
+                <!-- STEP 4: DETAILED LAB NOTES (FULL HTML DOSSIER) -->
+                <div class="lab-step-panel" id="exp_step_3">
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="display: block; font-size: 13px; font-weight: 700; color: var(--gold, #C7A66A);">
+                                📋 Detailed Lab Notes &amp; Scientific Dossier (Live HTML)
+                            </label>
+                            <span style="font-size: 11px; color: var(--text-muted);">Rendered in the detailed dossier card on the website</span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+                            Use headings, lists, quotes, and colors to format executive summaries, raw data measurements, and tasting notes.
+                        </div>
+                        <div id="mount_exp_full_content"></div>
+                    </div>
                 </div>
-            </div>
 
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Card Summary / Inquiry Question *</label>
-                <textarea name="description" id="exp_desc" rows="2" required placeholder="e.g. Can cocoa butter equivalents deliver great texture, snap and flavour in high-cocoa chocolate?" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
+                <!-- STEP 5: LIVE FRONT-END PREVIEW -->
+                <div class="lab-step-panel" id="exp_step_4">
+                    <div style="font-size: 13px; font-weight: 700; color: var(--gold, #C7A66A); margin-bottom: 4px;">
+                        👁️ Live Real-Time Front-End Simulation
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+                        This simulates how your experiment card will appear on the live website before you click Save.
+                    </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Tags (Card Footer)</label>
-                    <input type="text" name="tags" id="exp_tags" placeholder="e.g. FAT SYSTEMS | FORMULATION" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                    <div class="lab-preview-card-wrap">
+                        <!-- Front Card Sim -->
+                        <div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">1. Front-End Grid Card:</div>
+                            <div class="lab-live-card-sim">
+                                <img id="sim_card_img" src="../assets/images/placeholder.jpg" class="lab-live-card-thumb" alt="" onerror="this.src='../assets/images/placeholder.jpg'">
+                                <div class="lab-live-card-inner">
+                                    <div id="sim_card_badge" class="lab-live-card-badge">● IN PROGRESS</div>
+                                    <div id="sim_card_title" class="lab-live-card-title">CBE × Bean-to-Bar</div>
+                                    <div id="sim_card_desc" class="lab-live-card-q">Can cocoa butter equivalents deliver great texture in chocolate?</div>
+                                    <div id="sim_card_tags" class="lab-live-card-tags">FAT SYSTEMS | FORMULATION</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mini Dossier Sim -->
+                        <div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">2. Dossier Popup Overview:</div>
+                            <div class="lab-live-dossier-sim">
+                                <div class="lab-sim-quad" style="border-left-color: #166534;">
+                                    <div class="lab-sim-quad-title" style="color: #166534;">01. Research Question</div>
+                                    <div id="sim_quad_1" style="font-size: 12px; line-height: 1.5;"></div>
+                                </div>
+                                <div class="lab-sim-quad" style="border-left-color: #9A6A38;">
+                                    <div class="lab-sim-quad-title" style="color: #9A6A38;">02. Observations &amp; Findings</div>
+                                    <div id="sim_quad_2" style="font-size: 12px; line-height: 1.5;"></div>
+                                </div>
+                                <div class="lab-sim-quad" style="border-left-color: #166534;">
+                                    <div class="lab-sim-quad-title" style="color: #166534;">03. Why It Matters</div>
+                                    <div id="sim_quad_3" style="font-size: 12px; line-height: 1.5;"></div>
+                                </div>
+                                <div class="lab-sim-quad" style="border-left-color: #9A6A38;">
+                                    <div class="lab-sim-quad-title" style="color: #9A6A38;">04. Key Takeaway</div>
+                                    <div id="sim_quad_4" style="font-size: 12px; line-height: 1.5;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Display Sort Order</label>
-                    <input type="number" name="sort_order" id="exp_sort_order" value="0" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+
+            </div>
+
+            <!-- Sticky Modal Footer -->
+            <div class="lab-modal-footer">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button type="button" id="exp_prev_btn" class="btn btn-outline" style="display: none; padding: 7px 14px; font-size: 12px;" onclick="stepExp(-1)">← Prev Step</button>
+                    <button type="button" id="exp_next_btn" class="btn btn-outline" style="padding: 7px 14px; font-size: 12px;" onclick="stepExp(1)">Next Step →</button>
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer;">
+                        <input type="checkbox" name="is_active" id="exp_active" value="1" checked>
+                        <span>Publish live on site</span>
+                    </label>
                 </div>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Card Image</label>
-                <input type="file" name="experiment_image" accept="image/*" style="display: block; margin-bottom: 6px; font-size: 12px;">
-                <input type="text" name="existing_image_path_text" id="exp_img_text" placeholder="Or enter image URL / assets path" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px;">
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">01. Research Question (What are we exploring or trying to understand?)</label>
-                <textarea name="hypothesis" id="exp_hypothesis" rows="2" placeholder="What core theory or premise is being tested?" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">02. Observations &amp; Findings (What did we observe, measure or learn?)</label>
-                    <textarea name="findings" id="exp_findings" rows="2" placeholder="Lab observations, melting data, temper curves..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-                </div>
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">03. Why It Matters (The practical relevance for chocolate makers)</label>
-                    <textarea name="methodology" id="exp_methodology" rows="2" placeholder="Process, equipment, formulation setup..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-                </div>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">04. Key Takeaway (The single most important lesson from this experiment)</label>
-                <textarea name="next_steps" id="exp_next_steps" rows="2" placeholder="Conclusions, next scaling iteration..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 18px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Detailed Lab Notes (Full HTML Dossier)</label>
-                <textarea name="full_content" id="exp_full_content" rows="4" placeholder="Deep research logs, charts, recipes, technical breakdown..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-family: monospace; font-size: 12px;"></textarea>
-            </div>
-
-            <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 16px;">
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                    <input type="checkbox" name="is_active" id="exp_active" value="1" checked>
-                    <span>Publish live on Innovation Lab page</span>
-                </label>
-                <div style="display: flex; gap: 10px;">
+                <div style="display: flex; gap: 8px;">
                     <button type="button" class="btn btn-outline" onclick="closeModal('experimentModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Experiment</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 8px 22px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                        <span>💾 Save Experiment</span>
+                        <span style="font-size: 10px; opacity: 0.7;">(Ctrl+S)</span>
+                    </button>
                 </div>
             </div>
         </form>
@@ -1073,76 +1873,136 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 </div>
 
 <!-- =========================================================================
-     MODAL: ADD / EDIT FAILED BATCH
+     MODAL: ADD / EDIT FAILED BATCH (UPGRADED STEPPER MODAL)
      ========================================================================= -->
-<div id="failedModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: var(--bg-card); max-width: 760px; width: 100%; max-height: 90vh; overflow-y: auto; border-radius: 12px; padding: 28px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); position: relative;">
-        <button type="button" onclick="closeModal('failedModal')" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light);">✕</button>
-        
-        <h2 id="failedModalTitle" style="font-family: var(--font-heading); font-size: 24px; margin: 0 0 20px; color: var(--text-main);">Log Failed Batch Case Study</h2>
-        
-        <form method="POST" enctype="multipart/form-data">
+<div id="failedModal" class="lab-modal-backdrop" onclick="handleBackdropClick(event, 'failedModal')">
+    <div class="lab-modal-dialog" style="max-width: 880px;">
+        <div class="lab-modal-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(220, 38, 38, 0.15); color: #EF4444; display: flex; align-items: center; justify-content: center; font-size: 16px;">💥</div>
+                <div>
+                    <h2 id="failedModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0; color: var(--text-main);">Log Failed Batch Case Study</h2>
+                    <div style="font-size: 12px; color: var(--text-muted);">Transform formulation defects and anomalies into public scientific breakthroughs</div>
+                </div>
+            </div>
+            <button type="button" onclick="closeModal('failedModal')" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light);" title="Close Modal (Esc)">✕</button>
+        </div>
+
+        <div class="lab-stepper-nav">
+            <button type="button" class="lab-step-tab active" data-step="0" onclick="switchFailedStep(0)">
+                <span>💥 1. Case Study &amp; Photo</span>
+            </button>
+            <button type="button" class="lab-step-tab" data-step="1" onclick="switchFailedStep(1)">
+                <span>🔬 2. 4 Forensic Steps</span>
+            </button>
+            <button type="button" class="lab-step-tab" data-step="2" onclick="switchFailedStep(2)">
+                <span>📖 3. The Full Story</span>
+            </button>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" id="failedForm" style="display: flex; flex-direction: column; flex: 1; overflow: hidden; margin: 0;">
             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
             <input type="hidden" name="action" value="save_failed_batch">
             <input type="hidden" name="failed_id" id="failed_id" value="0">
             <input type="hidden" name="existing_image_path" id="failed_existing_image" value="">
 
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 14px;">
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Experiment Name / Title *</label>
-                    <input type="text" name="title" id="failed_title" required placeholder="e.g. THE GUAVA EXPERIMENT" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+            <div class="lab-modal-body">
+                <!-- STEP 1: Case Identity -->
+                <div class="lab-step-panel active" id="failed_step_0">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 14px;">
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Case Study Title *</label>
+                            <input type="text" name="title" id="failed_title" required placeholder="e.g. Batch 047: Water-Activity Seizure" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Badge Banner</label>
+                            <input type="text" name="badge_label" id="failed_badge" value="BECAUSE FAILURE IS DATA." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                        </div>
+                    </div>
+
+                    <!-- Photo with live preview & presets -->
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Case Study Photo</label>
+                        <div class="lab-img-preview-box">
+                            <img id="failed_preview_thumb" src="../assets/images/lab-failed-batch.jpg" class="lab-img-preview-thumb" alt="Preview" onerror="this.src='../assets/images/lab-failed-batch.jpg'">
+                            <div style="flex: 1;">
+                                <input type="file" name="failed_image" accept="image/*" style="font-size: 12px; margin-bottom: 6px;" onchange="handleFilePreview(this, 'failed_preview_thumb', 'failed_img_text')">
+                                <input type="text" name="existing_image_path_text" id="failed_img_text" placeholder="Or enter image URL (e.g. assets/images/lab-failed-batch.jpg)" style="width: 100%; padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; background: var(--bg-card); color: var(--text-main);" oninput="updateImgPreview(this.value, 'failed_preview_thumb')">
+                                <div style="display: flex; gap: 6px; margin-top: 6px;">
+                                    <button type="button" class="lab-chip" onclick="setImgPreset('failed_img_text', 'failed_preview_thumb', 'assets/images/lab-failed-batch.jpg')">Failed Batch Macro</button>
+                                    <button type="button" class="lab-chip" onclick="setImgPreset('failed_img_text', 'failed_preview_thumb', 'assets/images/lab-cbe.jpg')">CBE Sample</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 20px; align-items: center; margin-top: 14px;">
+                        <label style="display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer;">
+                            <input type="checkbox" name="is_featured" id="failed_featured" value="1">
+                            <span>★ Feature on Innovation Lab Homepage</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer;">
+                            <input type="checkbox" name="is_active" id="failed_active" value="1" checked>
+                            <span>Publish live</span>
+                        </label>
+                    </div>
                 </div>
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Badge Eyebrow</label>
-                    <input type="text" name="badge_label" id="failed_badge" value="BECAUSE FAILURE IS DATA." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+
+                <!-- STEP 2: 4 Forensic Steps -->
+                <div class="lab-step-panel" id="failed_step_1">
+                    <div style="background: var(--bg-subtle, rgba(0,0,0,0.02)); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; margin-bottom: 16px;">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
+                            🔬 4 Forensic Pillars (Rich Text &amp; Bullet Points)
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+                            Structure each stage of the post-mortem analysis.
+                        </div>
+
+                        <!-- 1. The Hypothesis -->
+                        <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">1. The Hypothesis (What did you set out to test?)</label>
+                            <div id="mount_failed_hypothesis"></div>
+                        </div>
+
+                        <!-- 2. What Happened -->
+                        <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #DC2626; margin-bottom: 4px;">2. What Happened (The defect, seizing, or anomalous result?)</label>
+                            <div id="mount_failed_what_happened"></div>
+                        </div>
+
+                        <!-- 3. Why It Happened -->
+                        <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #D97706; margin-bottom: 4px;">3. Why It Happened (The scientific root cause)</label>
+                            <div id="mount_failed_why"></div>
+                        </div>
+
+                        <!-- 4. What We Do Next -->
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #16A34A; margin-bottom: 4px;">4. What We Do Next (The breakthrough rule or new insight)</label>
+                            <div id="mount_failed_what_next"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Full Narrative Story -->
+                <div class="lab-step-panel" id="failed_step_2">
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 13px; font-weight: 700; color: var(--gold, #C7A66A); margin-bottom: 6px;">
+                            📖 The Experiment Explained (Complete Narrative Story)
+                        </label>
+                        <div id="mount_failed_full_story"></div>
+                    </div>
                 </div>
             </div>
 
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">1. The Hypothesis * (What did you set out to test?)</label>
-                <textarea name="hypothesis" id="failed_hypothesis" rows="2" required placeholder="e.g. Freeze-dried guava will create an intense natural fruit note." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: #DC2626; margin-bottom: 4px;">2. What Happened? * (The Failure)</label>
-                <textarea name="what_happened" id="failed_what_happened" rows="2" required placeholder="e.g. Flavour disappeared after incorporation." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: #D97706; margin-bottom: 4px;">3. Understanding The Science * (Scientific root cause)</label>
-                <textarea name="why_it_happened" id="failed_why" rows="2" required placeholder="e.g. Possible volatile loss and fat interaction." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: #16A34A; margin-bottom: 4px;">4. The Learning * (Breakthrough / Remediation)</label>
-                <textarea name="what_next" id="failed_what_next" rows="2" required placeholder="e.g. Test cocoa butter pre-coating." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Case Study Photo</label>
-                <input type="file" name="failed_image" accept="image/*" style="display: block; margin-bottom: 6px; font-size: 12px;">
-                <input type="text" name="existing_image_path_text" id="failed_img_text" placeholder="Or enter image URL / assets path" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px;">
-            </div>
-
-            <div style="margin-bottom: 18px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">The Experiment, Explained (Detailed write-up shown in modal)</label>
-                <textarea name="full_story" id="failed_full_story" rows="4" placeholder="Complete article explaining the trial, chromatography checks, lessons learned..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 16px;">
-                <div style="display: flex; gap: 16px;">
-                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                        <input type="checkbox" name="is_featured" id="failed_featured" value="1" checked>
-                        <span>Feature on main page</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                        <input type="checkbox" name="is_active" id="failed_active" value="1" checked>
-                        <span>Active</span>
-                    </label>
+            <div class="lab-modal-footer">
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" id="failed_prev_btn" class="btn btn-outline" style="display: none; padding: 7px 14px; font-size: 12px;" onclick="stepFailed(-1)">← Prev Step</button>
+                    <button type="button" id="failed_next_btn" class="btn btn-outline" style="padding: 7px 14px; font-size: 12px;" onclick="stepFailed(1)">Next Step →</button>
                 </div>
-                <div style="display: flex; gap: 10px;">
+                <div style="display: flex; gap: 8px;">
                     <button type="button" class="btn btn-outline" onclick="closeModal('failedModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Failed Batch</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 8px 22px; font-weight: 700;">💾 Save Failed Batch</button>
                 </div>
             </div>
         </form>
@@ -1150,49 +2010,49 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 </div>
 
 <!-- =========================================================================
-     MODAL: ADD / EDIT WHAT IF QUESTION
+     MODAL: ADD / EDIT WHAT IF? QUESTION
      ========================================================================= -->
-<div id="whatIfModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: var(--bg-card); max-width: 540px; width: 100%; border-radius: 12px; padding: 28px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); position: relative;">
-        <button type="button" onclick="closeModal('whatIfModal')" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light);">✕</button>
+<div id="whatIfModal" class="lab-modal-backdrop" onclick="handleBackdropClick(event, 'whatIfModal')">
+    <div class="lab-modal-dialog" style="max-width: 540px;">
+        <div class="lab-modal-header">
+            <h2 id="whatIfModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0; color: var(--text-main);">Add What If? Question</h2>
+            <button type="button" onclick="closeModal('whatIfModal')" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light);">✕</button>
+        </div>
         
-        <h2 id="whatIfModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0 0 18px; color: var(--text-main);">What If? Exploration Question</h2>
-        
-        <form method="POST">
+        <form method="POST" style="margin: 0;">
             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
             <input type="hidden" name="action" value="save_what_if">
             <input type="hidden" name="whatif_id" id="whatif_id" value="0">
 
-            <div style="display: grid; grid-template-columns: 80px 1fr; gap: 12px; margin-bottom: 14px;">
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Number</label>
-                    <input type="text" name="num_label" id="whatif_num" value="01" required style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+            <div class="lab-modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 14px; margin-bottom: 14px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Number Label *</label>
+                        <input type="text" name="num_label" id="whatif_num" value="01" required style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Display Sort Order</label>
+                        <input type="number" name="sort_order" id="whatif_order" value="0" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                    </div>
                 </div>
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Question *</label>
-                    <input type="text" name="question" id="whatif_question" required placeholder="e.g. Can we reduce sugar without losing melt?" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Question Text *</label>
+                    <textarea name="question" id="whatif_question" rows="3" required placeholder="e.g. Can jackfruit flour replace refined sugar without altering the snap of dark chocolate?" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);"></textarea>
                 </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Link URL / Section Anchor</label>
+                    <input type="text" name="link_url" id="whatif_link" value="#currently-in-lab" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                </div>
+
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer;">
+                    <input type="checkbox" name="is_active" id="whatif_active" value="1" checked>
+                    <span>Publish live in "What If?" exploration grid</span>
+                </label>
             </div>
 
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Target Link URL / Anchor</label>
-                <input type="text" name="link_url" id="whatif_link" value="#currently-in-lab" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Sort Order</label>
-                    <input type="number" name="sort_order" id="whatif_order" value="0" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
-                </div>
-                <div style="display: flex; align-items: flex-end; padding-bottom: 8px;">
-                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                        <input type="checkbox" name="is_active" id="whatif_active" value="1" checked>
-                        <span>Active</span>
-                    </label>
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+            <div class="lab-modal-footer">
                 <button type="button" class="btn btn-outline" onclick="closeModal('whatIfModal')">Cancel</button>
                 <button type="submit" class="btn btn-primary">Save Question</button>
             </div>
@@ -1201,72 +2061,113 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 </div>
 
 <!-- =========================================================================
-     MODAL: ADD / EDIT INGREDIENT CATEGORY
+     MODAL: ADD / EDIT INGREDIENT CATEGORY (STEPPER MODAL)
      ========================================================================= -->
-<div id="ingredientModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: var(--bg-card); max-width: 540px; width: 100%; border-radius: 12px; padding: 28px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); position: relative;">
-        <button type="button" onclick="closeModal('ingredientModal')" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light);">✕</button>
-        
-        <h2 id="ingModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0 0 18px; color: var(--text-main);">Ingredient Innovation Category</h2>
-        
-        <form method="POST" enctype="multipart/form-data">
+<div id="ingredientModal" class="lab-modal-backdrop" onclick="handleBackdropClick(event, 'ingredientModal')">
+    <div class="lab-modal-dialog" style="max-width: 820px;">
+        <div class="lab-modal-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(22, 101, 52, 0.15); color: #16A34A; display: flex; align-items: center; justify-content: center; font-size: 16px;">🌱</div>
+                <div>
+                    <h2 id="ingredientModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0; color: var(--text-main);">Ingredient Innovation Category</h2>
+                    <div style="font-size: 12px; color: var(--text-muted);">Explore regional botanicals, alternative sugars, and indigenous fat systems</div>
+                </div>
+            </div>
+            <button type="button" onclick="closeModal('ingredientModal')" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light);">✕</button>
+        </div>
+
+        <div class="lab-stepper-nav">
+            <button type="button" class="lab-step-tab active" data-step="0" onclick="switchIngStep(0)">
+                <span>🌱 1. Botanical Identity</span>
+            </button>
+            <button type="button" class="lab-step-tab" data-step="1" onclick="switchIngStep(1)">
+                <span>🔬 2. 4 Botanical Quadrants</span>
+            </button>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" id="ingForm" style="display: flex; flex-direction: column; flex: 1; overflow: hidden; margin: 0;">
             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
             <input type="hidden" name="action" value="save_ingredient">
             <input type="hidden" name="ing_id" id="ing_id" value="0">
             <input type="hidden" name="existing_image_path" id="ing_existing_image" value="">
 
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Category Title *</label>
-                <input type="text" name="title" id="ing_title" required placeholder="e.g. INDIAN FRUITS" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
-            </div>
+            <div class="lab-modal-body">
+                <!-- STEP 1: Botanical Identity -->
+                <div class="lab-step-panel active" id="ing_step_0">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 14px;">
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Category Title *</label>
+                            <input type="text" name="title" id="ing_title" required placeholder="e.g. Native Fruits &amp; Inclusions" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Sort Order</label>
+                            <input type="number" name="sort_order" id="ing_order" value="0" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                        </div>
+                    </div>
 
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Photo</label>
-                <input type="file" name="ingredient_image" accept="image/*" style="display: block; margin-bottom: 6px; font-size: 12px;">
-                <input type="text" name="existing_image_path_text" id="ing_img_text" placeholder="Or enter image URL" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px;">
-            </div>
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Link URL / Hash</label>
+                        <input type="text" name="link_url" id="ing_link" value="#currently-in-lab" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                    </div>
 
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">01. Ingredient Profile (What makes this ingredient distinctive?)</label>
-                <textarea name="description" id="ing_desc" rows="2" placeholder="e.g. Exploring sub-tropical Indian fruits — Alphonso mango..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Key Heritage Varietals / Cultivars (Appended to Profile)</label>
-                <textarea name="key_varietals" id="ing_key_varietals" rows="2" placeholder="e.g. Ratnagiri Alphonso Mango, Sindhudurg Sun-Dried Kokum..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">02. Potential in Chocolate (Where and how could it be used in chocolate?)</label>
-                <textarea name="applications" id="ing_applications" rows="2" placeholder="e.g. Direct melanger infusions for vibrant fruit-noted bars..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">03. The Technical Challenge (What challenges could arise?)</label>
-                <textarea name="science_behavior" id="ing_science_behavior" rows="2" placeholder="e.g. Water Activity (aw < 0.3) is strictly controlled..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">04. Key Takeaway (One memorable insight for chocolate makers)</label>
-                <textarea name="lab_notes" id="ing_lab_notes" rows="2" placeholder="e.g. Batch #089 confirmed that vacuum-dehydrated Kokum preserves..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Sort Order</label>
-                    <input type="number" name="sort_order" id="ing_order" value="0" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Category Image</label>
+                        <div class="lab-img-preview-box">
+                            <img id="ing_preview_thumb" src="../assets/images/placeholder.jpg" class="lab-img-preview-thumb" alt="Preview" onerror="this.src='../assets/images/placeholder.jpg'">
+                            <div style="flex: 1;">
+                                <input type="file" name="ingredient_image" accept="image/*" style="font-size: 12px; margin-bottom: 6px;" onchange="handleFilePreview(this, 'ing_preview_thumb', 'ing_img_text')">
+                                <input type="text" name="existing_image_path_text" id="ing_img_text" placeholder="Or enter image URL (e.g. assets/images/lab-fruits.jpg)" style="width: 100%; padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; background: var(--bg-card); color: var(--text-main);" oninput="updateImgPreview(this.value, 'ing_preview_thumb')">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div style="display: flex; align-items: flex-end; padding-bottom: 8px;">
-                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                        <input type="checkbox" name="is_active" id="ing_active" value="1" checked>
-                        <span>Active</span>
-                    </label>
+
+                <!-- STEP 2: 4 Botanical Quadrants -->
+                <div class="lab-step-panel" id="ing_step_1">
+                    <div style="background: var(--bg-subtle, rgba(0,0,0,0.02)); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; margin-bottom: 16px;">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
+                            🔬 4 Botanical Modal Quadrants
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+                            Configure the 4 structured scientific cards displayed in the pop-up modal.
+                        </div>
+
+                        <!-- 1. Description -->
+                        <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">01. Distinctive Botanical Profile &amp; Summary</label>
+                            <div id="mount_ing_desc"></div>
+                        </div>
+
+                        <!-- 2. Science Behavior -->
+                        <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">02. Scientific Behavior (Moisture, fat compatibility, melting)</label>
+                            <div id="mount_ing_science_behavior"></div>
+                        </div>
+
+                        <!-- 3. Applications -->
+                        <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">03. Confectionery Applications (Bars, ganache, inclusions)</label>
+                            <div id="mount_ing_applications"></div>
+                        </div>
+
+                        <!-- 4. Lab Notes -->
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">04. Practical Confectioner Directives &amp; Takeaway</label>
+                            <div id="mount_ing_lab_notes"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 16px;">
-                <button type="button" class="btn btn-outline" onclick="closeModal('ingredientModal')">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save Category</button>
+            <div class="lab-modal-footer">
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" id="ing_prev_btn" class="btn btn-outline" style="display: none; padding: 7px 14px; font-size: 12px;" onclick="stepIng(-1)">← Prev Step</button>
+                    <button type="button" id="ing_next_btn" class="btn btn-outline" style="padding: 7px 14px; font-size: 12px;" onclick="stepIng(1)">Next Step →</button>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('ingredientModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 8px 22px; font-weight: 700;">💾 Save Ingredient</button>
+                </div>
             </div>
         </form>
     </div>
@@ -1275,38 +2176,41 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 <!-- =========================================================================
      MODAL: ADD / EDIT FUTURE PILLAR
      ========================================================================= -->
-<div id="pillarModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: var(--bg-card); max-width: 500px; width: 100%; border-radius: 12px; padding: 28px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); position: relative;">
-        <button type="button" onclick="closeModal('pillarModal')" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light);">✕</button>
+<div id="pillarModal" class="lab-modal-backdrop" onclick="handleBackdropClick(event, 'pillarModal')">
+    <div class="lab-modal-dialog" style="max-width: 500px;">
+        <div class="lab-modal-header">
+            <h2 id="pillarModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0; color: var(--text-main);">Future Pillar</h2>
+            <button type="button" onclick="closeModal('pillarModal')" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light);">✕</button>
+        </div>
         
-        <h2 id="pillarModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0 0 18px; color: var(--text-main);">Future Pillar</h2>
-        
-        <form method="POST">
+        <form method="POST" style="margin: 0;">
             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
             <input type="hidden" name="action" value="save_pillar">
             <input type="hidden" name="pillar_id" id="pillar_id" value="0">
 
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Pillar Title *</label>
-                <input type="text" name="title" id="pillar_title" required placeholder="e.g. REGENERATIVE CACAO" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+            <div class="lab-modal-body">
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Pillar Title *</label>
+                    <input type="text" name="title" id="pillar_title" required placeholder="e.g. REGENERATIVE CACAO" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Description / Context</label>
+                    <textarea name="description" id="pillar_desc" rows="2" placeholder="Agroforestry initiatives, biodiversity..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);"></textarea>
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Link URL</label>
+                    <input type="text" name="link_url" id="pillar_link" value="#future-ideas" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                </div>
+
+                <div style="margin-bottom: 18px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Sort Order</label>
+                    <input type="number" name="sort_order" id="pillar_order" value="0" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
+                </div>
             </div>
 
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Description / Context</label>
-                <textarea name="description" id="pillar_desc" rows="2" placeholder="Agroforestry initiatives, biodiversity..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Link URL</label>
-                <input type="text" name="link_url" id="pillar_link" value="#future-ideas" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
-            </div>
-
-            <div style="margin-bottom: 18px;">
-                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Sort Order</label>
-                <input type="number" name="sort_order" id="pillar_order" value="0" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+            <div class="lab-modal-footer">
                 <button type="button" class="btn btn-outline" onclick="closeModal('pillarModal')">Cancel</button>
                 <button type="submit" class="btn btn-primary">Save Pillar</button>
             </div>
@@ -1314,9 +2218,536 @@ render_admin_header('Innovation Lab', 'innovation-lab');
     </div>
 </div>
 
+<!-- =========================================================================
+     JAVASCRIPT: RICH EDITORS, TELEMETRY, PREVIEWS & STEPPER CONTROLLERS
+     ========================================================================= -->
 <script>
+// Global Registry of all Rich Text Editors
+window.LAB_RICH_EDITORS = {};
+
+/**
+ * Creates an enhanced native WYSIWYG editor with bullet formatting, templates, and color swatches
+ */
+function createRichEditor(mountId, textareaName, textareaId, options = {}) {
+    const mountEl = document.getElementById(mountId);
+    if (!mountEl) return null;
+
+    const isFull = options.isFull !== false;
+    const minHeight = options.minHeight || (isFull ? '180px' : '75px');
+    const placeholder = options.placeholder || 'Enter text... Use • Bullet List for clean points.';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'lab-rich-wrapper';
+
+    // Build Toolbar
+    let toolbarHtml = '<div class="lab-rich-toolbar">';
+
+    if (isFull) {
+        toolbarHtml += `
+            <select class="lab-rich-select" data-role="formatBlock" title="Heading & Style">
+                <option value="p">Normal Text</option>
+                <option value="h3">Heading 3 (Section)</option>
+                <option value="h4">Heading 4 (Subhead)</option>
+                <option value="blockquote">Quote / Callout</option>
+            </select>
+            <div class="lab-rich-sep"></div>
+        `;
+    }
+
+    toolbarHtml += `
+        <button type="button" class="lab-rich-btn btn-bullet-highlight" data-cmd="insertUnorderedList" title="• Bullet Points List">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><circle cx="3.5" cy="6" r="1.5" fill="currentColor"></circle><circle cx="3.5" cy="12" r="1.5" fill="currentColor"></circle><circle cx="3.5" cy="18" r="1.5" fill="currentColor"></circle></svg>
+            <span>• Bullet List</span>
+        </button>
+        <button type="button" class="lab-rich-btn" data-cmd="insertOrderedList" title="1. Numbered List">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line><path d="M4 6h1v4M4 10h2"></path></svg>
+            <span>1. Numbers</span>
+        </button>
+        <button type="button" class="lab-rich-btn btn-template-highlight" data-role="insertBulletsTemplate" title="Insert 3-Bullet Points Template">
+            <span>+ 3 Bullets</span>
+        </button>
+        <div class="lab-rich-sep"></div>
+
+        <button type="button" class="lab-rich-btn" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+        <button type="button" class="lab-rich-btn" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+        <button type="button" class="lab-rich-btn" data-cmd="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+    `;
+
+    if (isFull) {
+        toolbarHtml += `
+            <button type="button" class="lab-rich-btn" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+            <div class="lab-rich-sep"></div>
+            <button type="button" class="lab-rich-btn" data-color="#C7A66A" title="Gold Accent" style="color:#C7A66A; font-weight:800;">Gold</button>
+            <button type="button" class="lab-rich-btn" data-color="#166534" title="Forest Green Accent" style="color:#166534; font-weight:800;">Green</button>
+            <button type="button" class="lab-rich-btn" data-color="#9A6A38" title="Bronze Accent" style="color:#9A6A38; font-weight:800;">Bronze</button>
+            <div class="lab-rich-sep"></div>
+            <button type="button" class="lab-rich-btn" data-role="link" title="Insert Hyperlink">🔗 Link</button>
+        `;
+    }
+
+    toolbarHtml += `
+        <button type="button" class="lab-rich-btn" data-cmd="removeFormat" title="Clear Formatting">Tx</button>
+        
+        <button type="button" class="lab-rich-mode-btn" data-role="toggleMode" title="Switch between Visual WYSIWYG and HTML Source Code">
+            👁️ Visual
+        </button>
+    </div>
+    `;
+
+    wrapper.innerHTML = toolbarHtml;
+
+    // Body: Visual ContentEditable Div
+    const visualBody = document.createElement('div');
+    visualBody.className = 'lab-rich-body';
+    visualBody.contentEditable = 'true';
+    visualBody.spellcheck = true;
+    visualBody.style.minHeight = minHeight;
+    visualBody.setAttribute('placeholder', placeholder);
+
+    // Backing Textarea (sent with POST form)
+    const sourceTextarea = document.createElement('textarea');
+    sourceTextarea.className = 'lab-rich-textarea-source';
+    sourceTextarea.name = textareaName;
+    sourceTextarea.id = textareaId;
+    sourceTextarea.style.minHeight = minHeight;
+
+    wrapper.appendChild(visualBody);
+    wrapper.appendChild(sourceTextarea);
+    mountEl.innerHTML = '';
+    mountEl.appendChild(wrapper);
+
+    let isCodeMode = false;
+    const modeBtn = wrapper.querySelector('[data-role="toggleMode"]');
+
+    // Toolbar Event Delegation
+    wrapper.querySelector('.lab-rich-toolbar').addEventListener('click', function(e) {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        // Mode switch
+        if (btn.dataset.role === 'toggleMode') {
+            e.preventDefault();
+            isCodeMode = !isCodeMode;
+            if (isCodeMode) {
+                sourceTextarea.value = visualBody.innerHTML;
+                visualBody.style.display = 'none';
+                sourceTextarea.style.display = 'block';
+                sourceTextarea.focus();
+                btn.innerHTML = '&lt;/&gt; Code';
+                btn.style.color = 'var(--gold, #C7A66A)';
+            } else {
+                visualBody.innerHTML = sourceTextarea.value;
+                sourceTextarea.style.display = 'none';
+                visualBody.style.display = 'block';
+                visualBody.focus();
+                btn.innerHTML = '👁️ Visual';
+                btn.style.color = '';
+            }
+            return;
+        }
+
+        // Insert Bullets Template
+        if (btn.dataset.role === 'insertBulletsTemplate') {
+            e.preventDefault();
+            visualBody.focus();
+            const templateHtml = '<ul><li>First key observation or metric...</li><li>Second key finding or measurement...</li><li>Third actionable takeaway...</li></ul>';
+            if (isCodeMode) {
+                sourceTextarea.value += templateHtml;
+                visualBody.innerHTML = sourceTextarea.value;
+            } else {
+                document.execCommand('insertHTML', false, templateHtml);
+                sourceTextarea.value = visualBody.innerHTML;
+            }
+            updateLiveExpPreview();
+            return;
+        }
+
+        if (isCodeMode) {
+            alert('Switch to Visual mode to use toolbar formatting buttons, or edit HTML tags directly in code view.');
+            return;
+        }
+
+        visualBody.focus();
+
+        // Commands
+        if (btn.dataset.cmd) {
+            e.preventDefault();
+            document.execCommand(btn.dataset.cmd, false, null);
+            sourceTextarea.value = visualBody.innerHTML;
+            updateLiveExpPreview();
+            return;
+        }
+
+        // Color swatches
+        if (btn.dataset.color) {
+            e.preventDefault();
+            document.execCommand('foreColor', false, btn.dataset.color);
+            sourceTextarea.value = visualBody.innerHTML;
+            updateLiveExpPreview();
+            return;
+        }
+
+        // Link
+        if (btn.dataset.role === 'link') {
+            e.preventDefault();
+            const url = prompt('Enter destination link URL (e.g. #currently-in-lab or https://):', 'https://');
+            if (url) {
+                document.execCommand('createLink', false, url);
+                sourceTextarea.value = visualBody.innerHTML;
+                updateLiveExpPreview();
+            }
+            return;
+        }
+    });
+
+    // Format block dropdown
+    const formatSelect = wrapper.querySelector('[data-role="formatBlock"]');
+    if (formatSelect) {
+        formatSelect.addEventListener('change', function() {
+            if (isCodeMode) return;
+            visualBody.focus();
+            const tag = this.value;
+            if (tag === 'p') {
+                document.execCommand('formatBlock', false, '<p>');
+            } else if (tag === 'h3') {
+                document.execCommand('formatBlock', false, '<h3>');
+            } else if (tag === 'h4') {
+                document.execCommand('formatBlock', false, '<h4>');
+            } else if (tag === 'blockquote') {
+                document.execCommand('formatBlock', false, '<blockquote>');
+            }
+            sourceTextarea.value = visualBody.innerHTML;
+            updateLiveExpPreview();
+        });
+    }
+
+    // Input Sync
+    visualBody.addEventListener('input', function() {
+        sourceTextarea.value = visualBody.innerHTML;
+        updateLiveExpPreview();
+    });
+
+    sourceTextarea.addEventListener('input', function() {
+        visualBody.innerHTML = sourceTextarea.value;
+        updateLiveExpPreview();
+    });
+
+    const editorObj = {
+        textareaId,
+        textareaName,
+        visualBody,
+        sourceTextarea,
+        setHtml: function(html) {
+            visualBody.innerHTML = html || '';
+            sourceTextarea.value = html || '';
+            if (isCodeMode) {
+                isCodeMode = false;
+                visualBody.style.display = 'block';
+                sourceTextarea.style.display = 'none';
+                if (modeBtn) {
+                    modeBtn.innerHTML = '👁️ Visual';
+                    modeBtn.style.color = '';
+                }
+            }
+        },
+        getHtml: function() {
+            if (isCodeMode) return sourceTextarea.value;
+            return visualBody.innerHTML;
+        },
+        sync: function() {
+            if (isCodeMode) {
+                visualBody.innerHTML = sourceTextarea.value;
+            } else {
+                sourceTextarea.value = visualBody.innerHTML;
+            }
+        }
+    };
+
+    window.LAB_RICH_EDITORS[textareaId] = editorObj;
+    return editorObj;
+}
+
+// Helper to set editor content safely
+function setRichEditorContent(editorId, html) {
+    if (window.LAB_RICH_EDITORS[editorId]) {
+        window.LAB_RICH_EDITORS[editorId].setHtml(html);
+    } else {
+        const el = document.getElementById(editorId);
+        if (el) el.value = html || '';
+    }
+}
+
+function getRichEditorContent(editorId) {
+    if (window.LAB_RICH_EDITORS[editorId]) {
+        return window.LAB_RICH_EDITORS[editorId].getHtml();
+    }
+    const el = document.getElementById(editorId);
+    return el ? el.value : '';
+}
+
+// Initialize Editors on DOM Ready
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Experiment Editors
+    createRichEditor('mount_exp_hypothesis', 'hypothesis', 'exp_hypothesis', { isFull: false, minHeight: '68px', placeholder: 'Enter core research premise or hypothesis...' });
+    createRichEditor('mount_exp_findings', 'findings', 'exp_findings', { isFull: false, minHeight: '68px', placeholder: 'Observed temper curves, snap metrics, melting behavior...' });
+    createRichEditor('mount_exp_methodology', 'methodology', 'exp_methodology', { isFull: false, minHeight: '68px', placeholder: 'Formulation ratio, conching duration, why it matters...' });
+    createRichEditor('mount_exp_next_steps', 'next_steps', 'exp_next_steps', { isFull: false, minHeight: '68px', placeholder: 'Key directive, scale parameters, next testing phase...' });
+    createRichEditor('mount_exp_full_content', 'full_content', 'exp_full_content', { isFull: true, minHeight: '220px', placeholder: 'Executive summary, full methodology, testing breakdown, bullet points...' });
+
+    // 2. Failed Batch Editors
+    createRichEditor('mount_failed_hypothesis', 'hypothesis', 'failed_hypothesis', { isFull: false, minHeight: '60px', placeholder: 'What did you set out to test in this formulation?' });
+    createRichEditor('mount_failed_what_happened', 'what_happened', 'failed_what_happened', { isFull: false, minHeight: '60px', placeholder: 'What was the defect, seizing, or anomaly?' });
+    createRichEditor('mount_failed_why', 'why_it_happened', 'failed_why', { isFull: false, minHeight: '60px', placeholder: 'Scientific root cause, moisture migration, polymorph collapse...' });
+    createRichEditor('mount_failed_what_next', 'what_next', 'failed_what_next', { isFull: false, minHeight: '60px', placeholder: 'Breakthrough discovery, remediation protocol...' });
+    createRichEditor('mount_failed_full_story', 'full_story', 'failed_full_story', { isFull: true, minHeight: '200px', placeholder: 'Full narrative case study explaining the trial, lab data, and lessons learned...' });
+
+    // 3. Ingredient Category Editors
+    createRichEditor('mount_ing_desc', 'description', 'ing_desc', { isFull: false, minHeight: '65px', placeholder: 'Describe what makes this native botanical distinctive...' });
+    createRichEditor('mount_ing_applications', 'applications', 'ing_applications', { isFull: false, minHeight: '65px', placeholder: 'Where and how could this be used in chocolate bars...' });
+    createRichEditor('mount_ing_science_behavior', 'science_behavior', 'ing_science_behavior', { isFull: false, minHeight: '65px', placeholder: 'Moisture hygroscopy, fat compatibility, rheology...' });
+    createRichEditor('mount_ing_lab_notes', 'lab_notes', 'ing_lab_notes', { isFull: false, minHeight: '65px', placeholder: 'Key takeaway for makers and confectioners...' });
+
+    // Pre-submit sync
+    ['expForm', 'failedForm', 'ingForm'].forEach(formId => {
+        const form = document.getElementById(formId);
+        if (form) {
+            form.addEventListener('submit', function() {
+                Object.values(window.LAB_RICH_EDITORS).forEach(ed => {
+                    if (ed && ed.sync) ed.sync();
+                });
+            });
+        }
+    });
+
+    // Keyboard Shortcuts: Ctrl+S saves active form, Esc closes modal
+    window.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+            const openModal = document.querySelector('.lab-modal-backdrop.open');
+            if (openModal) {
+                e.preventDefault();
+                const form = openModal.querySelector('form');
+                if (form) {
+                    Object.values(window.LAB_RICH_EDITORS).forEach(ed => {
+                        if (ed && ed.sync) ed.sync();
+                    });
+                    form.submit();
+                }
+            }
+        }
+        if (e.key === 'Escape') {
+            const openModal = document.querySelector('.lab-modal-backdrop.open');
+            if (openModal) closeModal(openModal.id);
+        }
+    });
+});
+
+/* =========================================================================
+   STEPPER NAVIGATION CONTROLLERS
+   ========================================================================= */
+let currentExpStep = 0;
+function switchExpStep(stepIndex) {
+    currentExpStep = stepIndex;
+    for (let i = 0; i <= 4; i++) {
+        const panel = document.getElementById('exp_step_' + i);
+        if (panel) panel.classList.toggle('active', i === stepIndex);
+        const tab = document.querySelector('#experimentModal .lab-step-tab[data-step="' + i + '"]');
+        if (tab) tab.classList.toggle('active', i === stepIndex);
+    }
+    const prevBtn = document.getElementById('exp_prev_btn');
+    const nextBtn = document.getElementById('exp_next_btn');
+    if (prevBtn) prevBtn.style.display = stepIndex > 0 ? 'inline-flex' : 'none';
+    if (nextBtn) nextBtn.style.display = stepIndex < 4 ? 'inline-flex' : 'none';
+    if (stepIndex === 4) updateLiveExpPreview();
+}
+
+function stepExp(delta) {
+    const target = Math.max(0, Math.min(4, currentExpStep + delta));
+    switchExpStep(target);
+}
+
+let currentFailedStep = 0;
+function switchFailedStep(stepIndex) {
+    currentFailedStep = stepIndex;
+    for (let i = 0; i <= 2; i++) {
+        const panel = document.getElementById('failed_step_' + i);
+        if (panel) panel.classList.toggle('active', i === stepIndex);
+        const tab = document.querySelector('#failedModal .lab-step-tab[data-step="' + i + '"]');
+        if (tab) tab.classList.toggle('active', i === stepIndex);
+    }
+    const prevBtn = document.getElementById('failed_prev_btn');
+    const nextBtn = document.getElementById('failed_next_btn');
+    if (prevBtn) prevBtn.style.display = stepIndex > 0 ? 'inline-flex' : 'none';
+    if (nextBtn) nextBtn.style.display = stepIndex < 2 ? 'inline-flex' : 'none';
+}
+
+function stepFailed(delta) {
+    const target = Math.max(0, Math.min(2, currentFailedStep + delta));
+    switchFailedStep(target);
+}
+
+let currentIngStep = 0;
+function switchIngStep(stepIndex) {
+    currentIngStep = stepIndex;
+    for (let i = 0; i <= 1; i++) {
+        const panel = document.getElementById('ing_step_' + i);
+        if (panel) panel.classList.toggle('active', i === stepIndex);
+        const tab = document.querySelector('#ingredientModal .lab-step-tab[data-step="' + i + '"]');
+        if (tab) tab.classList.toggle('active', i === stepIndex);
+    }
+    const prevBtn = document.getElementById('ing_prev_btn');
+    const nextBtn = document.getElementById('ing_next_btn');
+    if (prevBtn) prevBtn.style.display = stepIndex > 0 ? 'inline-flex' : 'none';
+    if (nextBtn) nextBtn.style.display = stepIndex < 1 ? 'inline-flex' : 'none';
+}
+
+function stepIng(delta) {
+    const target = Math.max(0, Math.min(1, currentIngStep + delta));
+    switchIngStep(target);
+}
+
+/* =========================================================================
+   LIVE PREVIEWS & PRESET CHIPS
+   ========================================================================= */
+function updateLiveExpPreview() {
+    const title = document.getElementById('exp_title')?.value || 'Experiment Title';
+    const desc = document.getElementById('exp_desc')?.value || 'Inquiry question here...';
+    const tags = document.getElementById('exp_tags')?.value || 'TAGS';
+    const badge = document.getElementById('exp_status_badge')?.value || 'IN PROGRESS';
+    const imgPath = document.getElementById('exp_img_text')?.value || 'assets/images/placeholder.jpg';
+
+    const simTitle = document.getElementById('sim_card_title');
+    const simDesc = document.getElementById('sim_card_desc');
+    const simTags = document.getElementById('sim_card_tags');
+    const simBadge = document.getElementById('sim_card_badge');
+    const simImg = document.getElementById('sim_card_img');
+
+    if (simTitle) simTitle.innerText = title;
+    if (simDesc) simDesc.innerText = desc;
+    if (simTags) simTags.innerText = tags;
+    if (simBadge) simBadge.innerText = '● ' + badge;
+    if (simImg) simImg.src = imgPath.startsWith('http') ? imgPath : ('../' + imgPath);
+
+    // Quad text
+    const q1 = document.getElementById('sim_quad_1');
+    const q2 = document.getElementById('sim_quad_2');
+    const q3 = document.getElementById('sim_quad_3');
+    const q4 = document.getElementById('sim_quad_4');
+
+    if (q1) q1.innerHTML = getRichEditorContent('exp_hypothesis') || '<em>Not set</em>';
+    if (q2) q2.innerHTML = getRichEditorContent('exp_findings') || '<em>Not set</em>';
+    if (q3) q3.innerHTML = getRichEditorContent('exp_methodology') || '<em>Not set</em>';
+    if (q4) q4.innerHTML = getRichEditorContent('exp_next_steps') || '<em>Not set</em>';
+}
+
+function updateImgPreview(src, thumbId) {
+    const thumb = document.getElementById(thumbId);
+    if (!thumb) return;
+    if (!src) {
+        thumb.src = '../assets/images/placeholder.jpg';
+        return;
+    }
+    thumb.src = src.startsWith('http') ? src : ('../' + src);
+}
+
+function setImgPreset(textInputId, thumbId, path) {
+    const input = document.getElementById(textInputId);
+    if (input) input.value = path;
+    updateImgPreview(path, thumbId);
+    updateLiveExpPreview();
+}
+
+function handleFilePreview(inputEl, thumbId, textInputId) {
+    if (inputEl.files && inputEl.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const thumb = document.getElementById(thumbId);
+            if (thumb) thumb.src = e.target.result;
+            const textInput = document.getElementById(textInputId);
+            if (textInput) textInput.value = 'File selected: ' + inputEl.files[0].name;
+            updateLiveExpPreview();
+        };
+        reader.readAsDataURL(inputEl.files[0]);
+    }
+}
+
+function setTelemetryPreset(fieldId, val) {
+    const el = document.getElementById(fieldId);
+    if (el) {
+        el.value = val;
+        el.style.borderColor = 'var(--gold, #C7A66A)';
+        setTimeout(() => el.style.borderColor = '', 600);
+    }
+}
+
+/* =========================================================================
+   TABLE INSTANT FILTERING (OPERATE MODE)
+   ========================================================================= */
+function filterExperimentsTable() {
+    const query = (document.getElementById('expSearchInput')?.value || '').toLowerCase().trim();
+    const cat = (document.getElementById('expCategoryFilter')?.value || '').toLowerCase().trim();
+    const rows = document.querySelectorAll('#experimentsTable tbody .exp-row');
+    let visible = 0;
+
+    rows.forEach(r => {
+        const title = r.dataset.title || '';
+        const desc = r.dataset.desc || '';
+        const tags = r.dataset.tags || '';
+        const rCat = r.dataset.cat || '';
+
+        const matchesQuery = !query || title.includes(query) || desc.includes(query) || tags.includes(query);
+        const matchesCat = !cat || rCat === cat;
+
+        if (matchesQuery && matchesCat) {
+            r.style.display = '';
+            visible++;
+        } else {
+            r.style.display = 'none';
+        }
+    });
+
+    const badge = document.getElementById('expCountBadge');
+    if (badge) badge.innerText = `Showing ${visible} of ${rows.length}`;
+}
+
+function filterFailedBatchesTable() {
+    const query = (document.getElementById('failedSearchInput')?.value || '').toLowerCase().trim();
+    const rows = document.querySelectorAll('#failedBatchesTable tbody .failed-row');
+    let visible = 0;
+
+    rows.forEach(r => {
+        const title = r.dataset.title || '';
+        const hypo = r.dataset.hypo || '';
+        if (!query || title.includes(query) || hypo.includes(query)) {
+            r.style.display = '';
+            visible++;
+        } else {
+            r.style.display = 'none';
+        }
+    });
+
+    const badge = document.getElementById('failedCountBadge');
+    if (badge) badge.innerText = `Showing ${visible} of ${rows.length}`;
+}
+
+/* =========================================================================
+   MODAL OPEN / CLOSE & CLONING
+   ========================================================================= */
+function openModal(id) {
+    const m = document.getElementById(id);
+    if (!m) return;
+    m.style.display = 'flex';
+    requestAnimationFrame(() => m.classList.add('open'));
+}
+
 function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
+    const m = document.getElementById(id);
+    if (!m) return;
+    m.classList.remove('open');
+    setTimeout(() => { m.style.display = 'none'; }, 220);
+}
+
+function handleBackdropClick(e, id) {
+    if (e.target.id === id) closeModal(id);
 }
 
 function openNewExperimentModal() {
@@ -1331,17 +2762,28 @@ function openNewExperimentModal() {
     document.getElementById('exp_sort_order').value = '0';
     document.getElementById('exp_existing_image').value = 'assets/images/placeholder.jpg';
     document.getElementById('exp_img_text').value = '';
-    document.getElementById('exp_hypothesis').value = '';
-    document.getElementById('exp_methodology').value = '';
-    document.getElementById('exp_findings').value = '';
-    document.getElementById('exp_next_steps').value = '';
-    document.getElementById('exp_full_content').value = '';
+    updateImgPreview('assets/images/placeholder.jpg', 'exp_preview_thumb');
+
+    // Clear telemetry
+    ['origin', 'polymorph', 'particle_size', 'conching', 'water_activity', 'batch_ref'].forEach(f => {
+        const el = document.getElementById('exp_' + f);
+        if (el) el.value = '';
+    });
+
+    // Clear rich text
+    setRichEditorContent('exp_hypothesis', '');
+    setRichEditorContent('exp_findings', '');
+    setRichEditorContent('exp_methodology', '');
+    setRichEditorContent('exp_next_steps', '');
+    setRichEditorContent('exp_full_content', '');
+
     document.getElementById('exp_active').checked = true;
-    document.getElementById('experimentModal').style.display = 'flex';
+    switchExpStep(0);
+    openModal('experimentModal');
 }
 
 function editExperiment(exp) {
-    document.getElementById('expModalTitle').innerText = 'Edit Lab Experiment: ' + exp.title;
+    document.getElementById('expModalTitle').innerText = 'Edit Lab Experiment: ' + (exp.title || '');
     document.getElementById('exp_id').value = exp.id;
     document.getElementById('exp_title').value = exp.title || '';
     document.getElementById('exp_category').value = exp.category || 'formulation-lab';
@@ -1352,13 +2794,35 @@ function editExperiment(exp) {
     document.getElementById('exp_sort_order').value = exp.sort_order || '0';
     document.getElementById('exp_existing_image').value = exp.image_path || '';
     document.getElementById('exp_img_text').value = exp.image_path || '';
-    document.getElementById('exp_hypothesis').value = exp.hypothesis || '';
-    document.getElementById('exp_methodology').value = exp.methodology || '';
-    document.getElementById('exp_findings').value = exp.findings || '';
-    document.getElementById('exp_next_steps').value = exp.next_steps || '';
-    document.getElementById('exp_full_content').value = exp.full_content || '';
+    updateImgPreview(exp.image_path || '', 'exp_preview_thumb');
+
+    // Telemetry fields
+    document.getElementById('exp_origin').value = exp.origin || '';
+    document.getElementById('exp_polymorph').value = exp.polymorph || '';
+    document.getElementById('exp_particle_size').value = exp.particle_size || '';
+    document.getElementById('exp_conching').value = exp.conching || '';
+    document.getElementById('exp_water_activity').value = exp.water_activity || '';
+    document.getElementById('exp_batch_ref').value = exp.batch_ref || '';
+
+    // Populate rich text
+    setRichEditorContent('exp_hypothesis', exp.hypothesis || '');
+    setRichEditorContent('exp_findings', exp.findings || '');
+    setRichEditorContent('exp_methodology', exp.methodology || '');
+    setRichEditorContent('exp_next_steps', exp.next_steps || '');
+    setRichEditorContent('exp_full_content', exp.full_content || '');
+
     document.getElementById('exp_active').checked = Number(exp.is_active) === 1;
-    document.getElementById('experimentModal').style.display = 'flex';
+    switchExpStep(0);
+    openModal('experimentModal');
+}
+
+function cloneExperiment(exp) {
+    editExperiment(exp);
+    document.getElementById('expModalTitle').innerText = 'Clone Experiment: ' + (exp.title || '') + ' (Copy)';
+    document.getElementById('exp_id').value = '0';
+    document.getElementById('exp_title').value = (exp.title || '') + ' (Copy)';
+    switchExpStep(0);
+    openModal('experimentModal');
 }
 
 function openNewFailedBatchModal() {
@@ -1366,16 +2830,20 @@ function openNewFailedBatchModal() {
     document.getElementById('failed_id').value = '0';
     document.getElementById('failed_title').value = '';
     document.getElementById('failed_badge').value = 'BECAUSE FAILURE IS DATA.';
-    document.getElementById('failed_hypothesis').value = '';
-    document.getElementById('failed_what_happened').value = '';
-    document.getElementById('failed_why').value = '';
-    document.getElementById('failed_what_next').value = '';
     document.getElementById('failed_existing_image').value = 'assets/images/lab-failed-batch.jpg';
     document.getElementById('failed_img_text').value = '';
-    document.getElementById('failed_full_story').value = '';
-    document.getElementById('failed_featured').checked = true;
+    updateImgPreview('assets/images/lab-failed-batch.jpg', 'failed_preview_thumb');
+
+    setRichEditorContent('failed_hypothesis', '');
+    setRichEditorContent('failed_what_happened', '');
+    setRichEditorContent('failed_why', '');
+    setRichEditorContent('failed_what_next', '');
+    setRichEditorContent('failed_full_story', '');
+
+    document.getElementById('failed_featured').checked = false;
     document.getElementById('failed_active').checked = true;
-    document.getElementById('failedModal').style.display = 'flex';
+    switchFailedStep(0);
+    openModal('failedModal');
 }
 
 function editFailedBatch(fb) {
@@ -1383,16 +2851,20 @@ function editFailedBatch(fb) {
     document.getElementById('failed_id').value = fb.id;
     document.getElementById('failed_title').value = fb.title || '';
     document.getElementById('failed_badge').value = fb.badge_label || 'BECAUSE FAILURE IS DATA.';
-    document.getElementById('failed_hypothesis').value = fb.hypothesis || '';
-    document.getElementById('failed_what_happened').value = fb.what_happened || '';
-    document.getElementById('failed_why').value = fb.why_it_happened || '';
-    document.getElementById('failed_what_next').value = fb.what_next || '';
     document.getElementById('failed_existing_image').value = fb.image_path || '';
     document.getElementById('failed_img_text').value = fb.image_path || '';
-    document.getElementById('failed_full_story').value = fb.full_story || '';
+    updateImgPreview(fb.image_path || '', 'failed_preview_thumb');
+
+    setRichEditorContent('failed_hypothesis', fb.hypothesis || '');
+    setRichEditorContent('failed_what_happened', fb.what_happened || '');
+    setRichEditorContent('failed_why', fb.why_it_happened || '');
+    setRichEditorContent('failed_what_next', fb.what_next || '');
+    setRichEditorContent('failed_full_story', fb.full_story || '');
+
     document.getElementById('failed_featured').checked = Number(fb.is_featured) === 1;
     document.getElementById('failed_active').checked = Number(fb.is_active) === 1;
-    document.getElementById('failedModal').style.display = 'flex';
+    switchFailedStep(0);
+    openModal('failedModal');
 }
 
 function openNewWhatIfModal() {
@@ -1403,7 +2875,7 @@ function openNewWhatIfModal() {
     document.getElementById('whatif_link').value = '#currently-in-lab';
     document.getElementById('whatif_order').value = (<?php echo count($whatIfList); ?> + 1);
     document.getElementById('whatif_active').checked = true;
-    document.getElementById('whatIfModal').style.display = 'flex';
+    openModal('whatIfModal');
 }
 
 function editWhatIf(q) {
@@ -1414,39 +2886,45 @@ function editWhatIf(q) {
     document.getElementById('whatif_link').value = q.link_url || '';
     document.getElementById('whatif_order').value = q.sort_order || 0;
     document.getElementById('whatif_active').checked = Number(q.is_active) === 1;
-    document.getElementById('whatIfModal').style.display = 'flex';
+    openModal('whatIfModal');
 }
 
 function openNewIngredientModal() {
-    document.getElementById('ingModalTitle').innerText = 'Add Ingredient Category';
+    document.getElementById('ingredientModalTitle').innerText = 'Add Ingredient Category';
     document.getElementById('ing_id').value = '0';
     document.getElementById('ing_title').value = '';
-    document.getElementById('ing_desc').value = '';
-    document.getElementById('ing_key_varietals').value = '';
-    document.getElementById('ing_science_behavior').value = '';
-    document.getElementById('ing_applications').value = '';
-    document.getElementById('ing_lab_notes').value = '';
     document.getElementById('ing_existing_image').value = 'assets/images/placeholder.jpg';
     document.getElementById('ing_img_text').value = '';
+    document.getElementById('ing_link').value = '#currently-in-lab';
     document.getElementById('ing_order').value = (<?php echo count($ingredientsList); ?> + 1);
-    document.getElementById('ing_active').checked = true;
-    document.getElementById('ingredientModal').style.display = 'flex';
+    updateImgPreview('assets/images/placeholder.jpg', 'ing_preview_thumb');
+
+    setRichEditorContent('ing_desc', '');
+    setRichEditorContent('ing_science_behavior', '');
+    setRichEditorContent('ing_applications', '');
+    setRichEditorContent('ing_lab_notes', '');
+
+    switchIngStep(0);
+    openModal('ingredientModal');
 }
 
 function editIngredient(ing) {
-    document.getElementById('ingModalTitle').innerText = 'Edit Ingredient: ' + ing.title;
+    document.getElementById('ingredientModalTitle').innerText = 'Edit Ingredient: ' + ing.title;
     document.getElementById('ing_id').value = ing.id;
     document.getElementById('ing_title').value = ing.title || '';
-    document.getElementById('ing_desc').value = ing.description || '';
-    document.getElementById('ing_key_varietals').value = ing.key_varietals || '';
-    document.getElementById('ing_science_behavior').value = ing.science_behavior || '';
-    document.getElementById('ing_applications').value = ing.applications || '';
-    document.getElementById('ing_lab_notes').value = ing.lab_notes || '';
     document.getElementById('ing_existing_image').value = ing.image_path || '';
     document.getElementById('ing_img_text').value = ing.image_path || '';
+    document.getElementById('ing_link').value = ing.link_url || '#currently-in-lab';
     document.getElementById('ing_order').value = ing.sort_order || 0;
-    document.getElementById('ing_active').checked = Number(ing.is_active) === 1;
-    document.getElementById('ingredientModal').style.display = 'flex';
+    updateImgPreview(ing.image_path || '', 'ing_preview_thumb');
+
+    setRichEditorContent('ing_desc', ing.description || '');
+    setRichEditorContent('ing_science_behavior', ing.science_behavior || '');
+    setRichEditorContent('ing_applications', ing.applications || '');
+    setRichEditorContent('ing_lab_notes', ing.lab_notes || '');
+
+    switchIngStep(0);
+    openModal('ingredientModal');
 }
 
 function openNewPillarModal() {
@@ -1456,7 +2934,7 @@ function openNewPillarModal() {
     document.getElementById('pillar_desc').value = '';
     document.getElementById('pillar_link').value = '#future-ideas';
     document.getElementById('pillar_order').value = (<?php echo count($pillarsList); ?> + 1);
-    document.getElementById('pillarModal').style.display = 'flex';
+    openModal('pillarModal');
 }
 
 function editPillar(pl) {
@@ -1464,10 +2942,11 @@ function editPillar(pl) {
     document.getElementById('pillar_id').value = pl.id;
     document.getElementById('pillar_title').value = pl.title || '';
     document.getElementById('pillar_desc').value = pl.description || '';
-    document.getElementById('pillar_link').value = pl.link_url || '';
+    document.getElementById('pillar_link').value = pl.link_url || '#future-ideas';
     document.getElementById('pillar_order').value = pl.sort_order || 0;
-    document.getElementById('pillarModal').style.display = 'flex';
+    openModal('pillarModal');
 }
 </script>
 
-<?php render_admin_footer(); ?>
+<?php
+render_admin_footer();
