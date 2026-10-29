@@ -1289,7 +1289,7 @@
         temp.innerHTML = rawHtml;
 
         // Remove UI helper elements
-        temp.querySelectorAll('.editor-figure-topbar, .editor-table-topbar, .editor-block-drag-handle, .editor-resize-handle, .editor-table-resize-handle, .editor-size-badge, .editor-drop-line, .editor-col-guide, .editor-drag-ghost').forEach(el => el.remove());
+        temp.querySelectorAll('.editor-figure-topbar, .editor-table-topbar, .topbar-actions, .topbar-btn, .topbar-sep, .editor-block-drag-handle, .editor-resize-handle, .editor-table-resize-handle, .editor-size-badge, .editor-drop-line, .editor-col-guide, .editor-drag-ghost').forEach(el => el.remove());
 
         // Clean editor-specific classes
         temp.querySelectorAll('.is-selected, .is-dragging, .is-resizing, .just-moved, .drag-over').forEach(el => {

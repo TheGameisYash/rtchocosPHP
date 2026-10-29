@@ -202,6 +202,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
     $conching = trim($_POST['conching'] ?? '');
     $waterActivity = trim($_POST['water_activity'] ?? '');
     $fullContent = trim($_POST['full_content'] ?? ($_POST['content'] ?? ''));
+
+    // Server-side cleanup of any editor UI artifacts before saving
+    $fullContent = preg_replace('/<div class="editor-(?:table-topbar|figure-topbar|table-resize-handle|resize-handle|block-drag-handle|drop-line|col-guide|size-badge)"[^>]*>.*?<\/div>/is', '', $fullContent);
+    $fullContent = preg_replace('/<div class="topbar-actions"[^>]*>.*?<\/div>/is', '', $fullContent);
+    $fullContent = preg_replace('/<button\b[^>]*\b(?:data-action|topbar-btn)[^>]*>.*?<\/button>/is', '', $fullContent);
+    $fullContent = preg_replace('/<span class="topbar-sep"[^>]*>.*?<\/span>/is', '', $fullContent);
+    $fullContent = preg_replace('/\s*contenteditable=[\'"][^\'"]*[\'"]/i', '', $fullContent);
+    $fullContent = preg_replace('/\s*data-controls-attached=[\'"][^\'"]*[\'"]/i', '', $fullContent);
+    $fullContent = preg_replace('/\s*class=[\'"]([^\'"]*)\b(is-selected|is-dragging|is-resizing|just-moved|drag-over)\b([^\'"]*)[\'"]/i', 'class="$1 $3"', $fullContent);
+
     $sortOrder = (int)($_POST['sort_order'] ?? 0);
     $isActive = (!empty($_POST['is_active']) && $_POST['is_active'] !== '0') ? 1 : 0;
     $existingImg = trim($_POST['existing_image_path'] ?? $exp['image_path']);
@@ -919,6 +929,24 @@ document.addEventListener('DOMContentLoaded', function() {
             syncSlugPreview(clean);
         });
     }
+
+    // 4. Ctrl+S / Cmd+S save shortcut
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            submitExpEditorForm();
+        }
+    });
+
+    // 5. Ensure form submission always serializes clean HTML
+    const expForm = document.getElementById('expEditorForm');
+    if (expForm) {
+        expForm.addEventListener('submit', function() {
+            if (window.syncWordEditorContent) {
+                window.syncWordEditorContent();
+            }
+        });
+    }
 });
 
 function syncCanvasTitle(val) {
@@ -1000,14 +1028,31 @@ function toggleExperimentActive(expId, checked) {
     }
 }
 
-function submitExpEditorForm() {
-    const editorDoc = document.getElementById('wordEditorDoc');
-    const hiddenContent = document.getElementById('content');
-    if (editorDoc && hiddenContent) {
-        hiddenContent.value = editorDoc.innerHTML;
+function submitExpEditorForm(actionType) {
+    if (window.syncWordEditorContent) {
+        window.syncWordEditorContent();
+    } else {
+        const editorDoc = document.getElementById('wordEditorDoc');
+        const hiddenContent = document.getElementById('content');
+        if (editorDoc && hiddenContent) {
+            hiddenContent.value = window.cleanHtmlForSave ? window.cleanHtmlForSave(editorDoc.innerHTML) : editorDoc.innerHTML;
+        }
     }
     const form = document.getElementById('expEditorForm');
-    if (form) form.submit();
+    if (form) {
+        if (actionType === 'exit') {
+            let exitInput = document.getElementById('saveAndExitInput');
+            if (!exitInput) {
+                exitInput = document.createElement('input');
+                exitInput.type = 'hidden';
+                exitInput.name = 'save_and_exit';
+                exitInput.id = 'saveAndExitInput';
+                exitInput.value = '1';
+                form.appendChild(exitInput);
+            }
+        }
+        form.submit();
+    }
 }
 
 function previewFile(input, previewId) {

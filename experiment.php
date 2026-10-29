@@ -70,7 +70,7 @@ $relatedStmt = $pdo->prepare("SELECT id, title, slug, category, status_badge, st
 $relatedStmt->execute([$exp['id']]);
 $relatedExperiments = $relatedStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Full Markdown / HTML Parser (Identical to blog-article.php)
+// Full Markdown / HTML Parser for Innovation Lab Experiments
 $headings_list = [];
 
 function parse_exp_inline($text) {
@@ -100,161 +100,184 @@ function parse_exp_inline($text) {
 
 function parse_exp_markdown($markdown) {
     global $headings_list;
+    $headings_list = [];
     if (!trim((string)$markdown)) return '';
-    $markdown = str_replace(["\r\n", "\r"], "\n", $markdown);
     
-    // YouTube embeds: {{youtube:VIDEO_ID}}
-    $markdown = preg_replace('/\{\{youtube:([a-zA-Z0-9_\-]+)\}\}/', '<div class="blog-yt-embed" style="margin:36px 0; border-radius:12px; overflow:hidden; position:relative; padding-bottom:56.25%; height:0; box-shadow:0 10px 30px rgba(0,0,0,0.08);"><iframe src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"></iframe></div>', $markdown);
+    $html = str_replace(["\r\n", "\r"], "\n", $markdown);
 
-    $blocks = explode("\n\n", $markdown);
-    $html = '';
-
-    foreach ($blocks as $block) {
-        $block = trim($block);
-        if (empty($block)) continue;
-
-        // Divider
-        if ($block === '---') {
-            $html .= "<hr class=\"block-divider\">\n";
-            continue;
+    // 1. YouTube embeds: {{youtube:ID}} or [youtube](url)
+    $html = preg_replace('/\{\{youtube:([a-zA-Z0-9_\-]+)\}\}/i', '<div class="blog-yt-embed" style="margin:36px 0; border-radius:12px; overflow:hidden; position:relative; padding-bottom:56.25%; height:0; box-shadow:0 10px 30px rgba(0,0,0,0.08);"><iframe src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"></iframe></div>', $html);
+    $html = preg_replace_callback('/\[youtube\]\((.*?)\)/i', function($m) {
+        $url = $m[1];
+        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $url, $yt)) {
+            return '<div class="blog-yt-embed" style="margin:36px 0; border-radius:12px; overflow:hidden; position:relative; padding-bottom:56.25%; height:0; box-shadow:0 10px 30px rgba(0,0,0,0.08);"><iframe src="https://www.youtube.com/embed/' . $yt[1] . '" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"></iframe></div>';
         }
+        return '';
+    }, $html);
 
-        // Fenced Code blocks
-        if (strpos($block, '```') === 0) {
-            $lines = explode("\n", $block);
-            $lang = trim(str_replace('```', '', $lines[0]));
-            $code = implode("\n", array_slice($lines, 1, count($lines) - 2));
-            $classAttr = $lang ? " class=\"language-{$lang}\"" : "";
-            $html .= "<pre><code{$classAttr}>" . htmlspecialchars($code) . "</code></pre>\n";
-            continue;
-        }
+    // 2. Strip any lingering admin editor UI artifacts and unwanted helper attributes
+    $html = preg_replace('/<div class="editor-(?:table-topbar|figure-topbar|table-resize-handle|resize-handle|block-drag-handle|drop-line|col-guide|size-badge)"[^>]*>.*?<\/div>/is', '', $html);
+    $html = preg_replace('/<div class="topbar-actions"[^>]*>.*?<\/div>/is', '', $html);
+    $html = preg_replace('/<button\b[^>]*\b(?:data-action|topbar-btn)[^>]*>.*?<\/button>/is', '', $html);
+    $html = preg_replace('/<span class="topbar-sep"[^>]*>.*?<\/span>/is', '', $html);
+    $html = preg_replace('/\s*contenteditable=[\'"][^\'"]*[\'"]/i', '', $html);
+    $html = preg_replace('/\s*data-controls-attached=[\'"][^\'"]*[\'"]/i', '', $html);
+    $html = preg_replace('/\s*class=[\'"]([^\'"]*)\b(is-selected|is-dragging|is-resizing|just-moved|drag-over)\b([^\'"]*)[\'"]/i', 'class="$1 $3"', $html);
 
-        // Heading 1 (demoted to h2 for SEO)
-        if (preg_match('/^#\s+(.+)$/', $block, $m)) {
-            $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $m[1]), '-'));
-            $headings_list[] = ['level' => 2, 'text' => $m[1], 'slug' => $slug];
-            $html .= "<h2 id=\"{$slug}\">" . parse_exp_inline($m[1]) . "</h2>\n";
-            continue;
-        }
-
-        // Heading 2
-        if (preg_match('/^##\s+(.+)$/', $block, $m)) {
-            $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $m[1]), '-'));
-            $headings_list[] = ['level' => 2, 'text' => $m[1], 'slug' => $slug];
-            $html .= "<h2 id=\"{$slug}\">" . parse_exp_inline($m[1]) . "</h2>\n";
-            continue;
-        }
-
-        // Heading 3
-        if (preg_match('/^###\s+(.+)$/', $block, $m)) {
-            $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $m[1]), '-'));
-            $headings_list[] = ['level' => 3, 'text' => $m[1], 'slug' => $slug];
-            $html .= "<h3 id=\"{$slug}\">" . parse_exp_inline($m[1]) . "</h3>\n";
-            continue;
-        }
-
-        // Heading 4
-        if (preg_match('/^####\s+(.+)$/', $block, $m)) {
-            $html .= "<h4>" . parse_exp_inline($m[1]) . "</h4>\n";
-            continue;
-        }
-
-        // HTML Heading tag interception for TOC
-        if (preg_match('/^<h([2-3])([^>]*)>(.*?)<\/h\1>/i', $block, $hMatches)) {
-            $hLevel = (int)$hMatches[1];
-            $hAttrs = $hMatches[2];
-            $hText = strip_tags($hMatches[3]);
-            $hSlug = '';
-            if (preg_match('/id=[\'"]([^\'"]+)[\'"]/i', $hAttrs, $idMatch)) {
-                $hSlug = $idMatch[1];
+    // 3. Process Markdown Pipe Tables (converts markdown table syntax to responsive HTML table)
+    $html = preg_replace_callback('/(?:^|\n)(\|[^\n]+\|\n\|[\s:\-\|]+\|\n(?:\|[^\n]+\|\n?)+)/m', function($m) {
+        $lines = explode("\n", trim($m[1]));
+        $tHtml = "\n<div class=\"table-responsive-wrapper\"><table class=\"blog-custom-table blog-table-artisan\">\n";
+        $hasHeader = false;
+        foreach ($lines as $line) {
+            $trimmedLine = trim($line, "|\r\n ");
+            if (!$trimmedLine || preg_match('/^[:\-\s|]+$/', $trimmedLine)) continue;
+            $cols = explode('|', $trimmedLine);
+            $rowHtml = "  <tr>\n";
+            foreach ($cols as $col) {
+                $cellTag = !$hasHeader ? 'th' : 'td';
+                $rowHtml .= "    <{$cellTag}>" . parse_exp_inline(trim($col)) . "</{$cellTag}>\n";
+            }
+            $rowHtml .= "  </tr>\n";
+            if (!$hasHeader) {
+                $tHtml .= "<thead>\n{$rowHtml}</thead>\n<tbody>\n";
+                $hasHeader = true;
             } else {
-                $hSlug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $hText), '-'));
-                $block = "<h{$hLevel} id=\"{$hSlug}\"{$hAttrs}>{$hMatches[3]}</h{$hLevel}>";
-            }
-            $headings_list[] = ['level' => $hLevel, 'text' => $hText, 'slug' => $hSlug];
-            $html .= $block . "\n";
-            continue;
-        }
-
-        // Tables (Markdown Pipe Syntax)
-        if (strpos($block, '|') === 0) {
-            $lines = explode("\n", $block);
-            if (count($lines) >= 2) {
-                $tableHtml = "<div class=\"table-responsive-wrapper\"><table class=\"blog-custom-table blog-table-artisan\">\n";
-                $hasHeader = false;
-                foreach ($lines as $line) {
-                    $trimmedLine = trim($line, "|\r\n ");
-                    if (!$trimmedLine || preg_match('/^[:\-\s|]+$/', $trimmedLine)) continue;
-                    $cols = explode('|', $trimmedLine);
-                    $rowHtml = "  <tr>\n";
-                    foreach ($cols as $col) {
-                        $colVal = parse_exp_inline(trim($col));
-                        $cellTag = !$hasHeader ? 'th' : 'td';
-                        $rowHtml .= "    <{$cellTag}>{$colVal}</{$cellTag}>\n";
-                    }
-                    $rowHtml .= "  </tr>\n";
-                    if (!$hasHeader) {
-                        $tableHtml .= "<thead>\n{$rowHtml}</thead>\n<tbody>\n";
-                        $hasHeader = true;
-                    } else {
-                        $tableHtml .= $rowHtml;
-                    }
-                }
-                if ($hasHeader) $tableHtml .= "</tbody>\n";
-                $tableHtml .= "</table></div>\n";
-                $html .= $tableHtml;
-                continue;
+                $tHtml .= $rowHtml;
             }
         }
+        if ($hasHeader) $tHtml .= "</tbody>\n";
+        $tHtml .= "</table></div>\n";
+        return $tHtml;
+    }, $html);
 
-        // Blockquotes & Callouts
-        if (strpos($block, '> ') === 0) {
-            $lines = explode("\n", $block);
-            $quoteText = '';
-            foreach ($lines as $line) {
-                $quoteText .= substr(trim($line), 2) . ' ';
+    // 4. Ensure all HTML tables (WYSIWYG or pasted from Word/Excel) have luxury artisan styling & responsive wrapper
+    $html = preg_replace_callback('/<table\b([^>]*)>(.*?)<\/table>/is', function($m) {
+        $attrs = $m[1];
+        $inner = $m[2];
+        if (strpos($attrs, 'blog-custom-table') === false) {
+            if (preg_match('/class=[\'"]([^\'"]*)[\'"]/i', $attrs, $cm)) {
+                $attrs = preg_replace('/class=[\'"][^\'"]*[\'"]/i', 'class="' . trim($cm[1]) . ' blog-custom-table blog-table-artisan"', $attrs);
+            } else {
+                $attrs .= ' class="blog-custom-table blog-table-artisan"';
             }
-            $quoteText = trim($quoteText);
-            $html .= "<blockquote><p>" . parse_exp_inline($quoteText) . "</p></blockquote>\n";
-            continue;
+        }
+        // Remove hardcoded width / height attributes from pasted Word tables to keep them fully responsive
+        $attrs = preg_replace('/\s*(?:width|height)=[\'"][^\'"]*[\'"]/i', '', $attrs);
+        return '<table' . $attrs . '>' . $inner . '</table>';
+    }, $html);
+
+    // Wrap bare tables in table-responsive-wrapper
+    $html = preg_replace_callback('/(?<!<div class="table-responsive-wrapper">)\s*(<table\b[^>]*>.*?<\/table>)/is', function($m) {
+        return "\n<div class=\"table-responsive-wrapper\">" . $m[1] . "</div>\n";
+    }, $html);
+    // Remove duplicate wrapper or empty wrapper if any nested
+    $html = preg_replace('/<div class="table-responsive-wrapper">\s*<div class="table-responsive-wrapper">/is', '<div class="table-responsive-wrapper">', $html);
+    $html = preg_replace('/<div class="table-responsive-wrapper">\s*<\/div>/is', '', $html);
+
+    // 5. Convert Markdown Headings (# H1 -> H2, ## H2, ### H3, #### H4)
+    $html = preg_replace_callback('/^(#{1,6})\s+(.+)$/m', function($m) {
+        $level = min(4, max(2, strlen($m[1])));
+        $text = trim($m[2]);
+        $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', strip_tags($text)), '-'));
+        return "<h{$level} id=\"{$slug}\">" . parse_exp_inline($text) . "</h{$level}>";
+    }, $html);
+
+    // 6. Extract Table of Contents from ALL H2 and H3 tags & ensure each has a clean anchor ID (in-place replacement)
+    $html = preg_replace_callback('/<h([2-3])([^>]*)>(.*?)<\/h\1>/is', function($m) use (&$headings_list) {
+        $level = (int)$m[1];
+        $attrs = $m[2];
+        $content = $m[3];
+        $cleanText = trim(strip_tags($content));
+
+        $slug = '';
+        if (preg_match('/id=[\'"]([^\'"]+)[\'"]/i', $attrs, $idMatch)) {
+            $slug = $idMatch[1];
+        } else {
+            $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $cleanText), '-'));
+            $attrs = ' id="' . htmlspecialchars($slug) . '"' . $attrs;
         }
 
-        // Bullet Lists
-        if (strpos($block, '- ') === 0 || strpos($block, '* ') === 0) {
-            $items = explode("\n", $block);
-            $listHtml = "<ul>\n";
-            foreach ($items as $item) {
-                $listHtml .= "  <li>" . parse_exp_inline(substr(trim($item), 2)) . "</li>\n";
+        if ($cleanText) {
+            $headings_list[] = [
+                'level' => $level,
+                'text' => $cleanText,
+                'slug' => $slug
+            ];
+        }
+
+        return "<h{$level}{$attrs}>{$content}</h{$level}>";
+    }, $html);
+
+    // 7. Process Markdown blockquotes (> quote)
+    $html = preg_replace_callback('/(?:^|\n)((?:>\s?[^\n]+\n?)+)/', function($m) {
+        $lines = explode("\n", trim($m[1]));
+        $q = '';
+        foreach ($lines as $l) {
+            $q .= preg_replace('/^>\s?/', '', $l) . ' ';
+        }
+        $q = trim($q);
+        if (preg_match('/^\[!(NOTE|TIP|WARNING)\]\s*(.*)$/is', $q, $cm)) {
+            return "\n<blockquote class=\"callout\"><p>" . parse_exp_inline(trim($cm[2])) . "</p></blockquote>\n";
+        }
+        return "\n<blockquote><p>" . parse_exp_inline($q) . "</p></blockquote>\n";
+    }, $html);
+
+    // 8. Process Markdown lists if not already HTML
+    $html = preg_replace_callback('/(?:^|\n)((?:[*•\-]\s+[^\n]+\n?)+)/', function($m) {
+        $lines = explode("\n", trim($m[1]));
+        $lHtml = "\n<ul>\n";
+        foreach ($lines as $l) {
+            $t = trim(preg_replace('/^[*•\-]\s+/', '', trim($l)));
+            if ($t) $lHtml .= "  <li>" . parse_exp_inline($t) . "</li>\n";
+        }
+        $lHtml .= "</ul>\n";
+        return $lHtml;
+    }, $html);
+
+    $html = preg_replace_callback('/(?:^|\n)((?:\d+[\.\)]\s+[^\n]+\n?)+)/', function($m) {
+        $lines = explode("\n", trim($m[1]));
+        $lHtml = "\n<ol>\n";
+        foreach ($lines as $l) {
+            $t = trim(preg_replace('/^\d+[\.\)]\s+/', '', trim($l)));
+            if ($t) $lHtml .= "  <li>" . parse_exp_inline($t) . "</li>\n";
+        }
+        $lHtml .= "</ol>\n";
+        return $lHtml;
+    }, $html);
+
+    // 9. Process Markdown images: ![alt](url)
+    $html = preg_replace_callback('/!\[(.*?)\]\((.*?)\)/', function($m) {
+        $caption = htmlspecialchars($m[1]);
+        $url = htmlspecialchars($m[2]);
+        return "<figure class=\"blog-figure blog-figure-center\"><img src=\"{$url}\" alt=\"{$caption}\" loading=\"lazy\" onclick=\"openLightbox(this.src)\" style=\"cursor:zoom-in;\">" . ($caption ? "<figcaption>{$caption}</figcaption>" : "") . "</figure>";
+    }, $html);
+
+    // 10. Process Markdown links: [text](url)
+    $html = preg_replace('/\[(.*?)\]\((.*?)\)/', '<a href="$2">$1</a>', $html);
+
+    // 11. Process Markdown inline bold and italic
+    $html = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $html);
+    $html = preg_replace('/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/', '<em>$1</em>', $html);
+
+    // 12. Handle loose blocks: if content is mixed plain text, wrap loose non-HTML blocks in <p>
+    $hasBlockTags = preg_match('/<(?:p|div|blockquote|ul|ol|table|figure)\b/i', $html);
+    if (!$hasBlockTags) {
+        $paragraphs = explode("\n\n", $html);
+        $res = '';
+        foreach ($paragraphs as $para) {
+            $para = trim($para);
+            if (!$para) continue;
+            if (preg_match('/^<(?:h[1-6]|div|table|blockquote|ul|ol|figure|hr)/i', $para)) {
+                $res .= $para . "\n\n";
+            } else {
+                $res .= "<p>" . nl2br($para) . "</p>\n\n";
             }
-            $listHtml .= "</ul>\n";
-            $html .= $listHtml;
-            continue;
         }
-
-        // Ordered Lists
-        if (preg_match('/^\d+\.\s+/', $block)) {
-            $items = explode("\n", $block);
-            $listHtml = "<ol>\n";
-            foreach ($items as $item) {
-                $clean = preg_replace('/^\d+\.\s+/', '', trim($item));
-                $listHtml .= "  <li>" . parse_exp_inline($clean) . "</li>\n";
-            }
-            $listHtml .= "</ol>\n";
-            $html .= $listHtml;
-            continue;
-        }
-
-        // Raw HTML blocks (pass through safely)
-        if (preg_match('/^<(div|img|hr|p|section|a|span|h[1-6]|table|thead|tbody|tr|td|th|iframe|blockquote|ul|ol|pre|figure)/i', $block)) {
-            $html .= $block . "\n";
-            continue;
-        }
-
-        // Paragraph
-        $html .= "<p>" . parse_exp_inline($block) . "</p>\n";
+        $html = $res;
     }
 
-    return $html;
+    return trim($html);
 }
 
 // Build compiled article content:
@@ -697,7 +720,7 @@ include 'includes/header.php';
     box-shadow: 0 4px 20px rgba(59, 42, 34, 0.08);
     -webkit-overflow-scrolling: touch;
 }
-table.blog-custom-table {
+table.blog-custom-table, #blog-article-content table {
     width: 100%;
     border-collapse: collapse;
     font-family: var(--font-sans, sans-serif);
@@ -705,26 +728,29 @@ table.blog-custom-table {
     line-height: 1.6;
     text-align: left;
 }
-table.blog-table-artisan {
+table.blog-table-artisan, #blog-article-content table {
     background: #FAF7F2;
     border: 1px solid #EDE7DB;
+    border-radius: 10px;
+    overflow: hidden;
 }
-table.blog-table-artisan th {
+table.blog-table-artisan th, #blog-article-content table th {
     background: #3B2A22;
     color: #C7A66A;
     font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 18px;
+    font-size: 17.5px;
     padding: 14px 18px;
     font-weight: 700;
     letter-spacing: 0.3px;
+    border-bottom: 2px solid #C7A66A;
 }
-table.blog-table-artisan td {
+table.blog-table-artisan td, #blog-article-content table td {
     padding: 13px 18px;
     border-top: 1px solid rgba(199, 166, 106, 0.2);
     color: #1F2E25;
 }
-table.blog-table-artisan tr:nth-child(even) td {
-    background: rgba(255, 255, 255, 0.6);
+table.blog-table-artisan tr:nth-child(even) td, #blog-article-content table tr:nth-child(even) td {
+    background: rgba(255, 255, 255, 0.65);
 }
 
 table.blog-table-minimal th {
