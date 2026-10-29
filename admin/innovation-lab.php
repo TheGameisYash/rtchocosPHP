@@ -464,16 +464,16 @@ $settings = [
     'lab_hero_cta_link' => get_site_setting('lab_hero_cta_link', '#currently-in-lab'),
     'lab_sticky_note' => get_site_setting('lab_sticky_note', "Better Ingredients\nBigger Questions\nBrighter Chocolate"),
     'lab_hero_image' => get_site_setting('lab_hero_image', 'assets/images/lab-hero.jpg'),
-    'lab_what_if_eyebrow' => get_site_setting('lab_what_if_eyebrow', 'IDEAS WE ARE EXPLORING NEXT.'),
+    'lab_what_if_eyebrow' => get_site_setting('lab_what_if_eyebrow', 'IDEAS WE ARE TESTING NEXT.'),
     'lab_what_if_heading' => get_site_setting('lab_what_if_heading', 'What if?'),
     'lab_what_if_image' => get_site_setting('lab_what_if_image', 'assets/images/lab-what-if.jpg'),
-    'lab_failed_batch_eyebrow' => get_site_setting('lab_failed_batch_eyebrow', 'BECAUSE FAILURE IS DATA.'),
-    'lab_failed_batch_heading' => get_site_setting('lab_failed_batch_heading', 'From a Failed Batch to a New Insight'),
-    'lab_ingredient_eyebrow' => get_site_setting('lab_ingredient_eyebrow', 'NEW INGREDIENTS. NEW BEHAVIOURS. NEW POSSIBILITIES.'),
+    'lab_failed_batch_eyebrow' => get_site_setting('lab_failed_batch_eyebrow', 'WHEN THINGS GO WRONG, WE LEARN.'),
+    'lab_failed_batch_heading' => get_site_setting('lab_failed_batch_heading', 'From a Failed Batch to a New Idea'),
+    'lab_ingredient_eyebrow' => get_site_setting('lab_ingredient_eyebrow', 'LOCAL INGREDIENTS. FRESH FLAVORS. NEW IDEAS.'),
     'lab_ingredient_heading' => get_site_setting('lab_ingredient_heading', 'Ingredient Innovation'),
-    'lab_future_eyebrow' => get_site_setting('lab_future_eyebrow', 'BOLDER QUESTIONS. BIGGER IMPACT.'),
+    'lab_future_eyebrow' => get_site_setting('lab_future_eyebrow', 'BIGGER DREAMS. BETTER CHOCOLATE.'),
     'lab_future_heading' => get_site_setting('lab_future_heading', 'Future of Chocolate'),
-    'lab_future_text' => get_site_setting('lab_future_text', 'Exploring ideas and technologies that can make chocolate more inclusive, resilient and regenerative — for people, communities and the planet.'),
+    'lab_future_text' => get_site_setting('lab_future_text', 'Exploring sustainable ideas that support cocoa farmers, care for our soil, and bring clean, honest chocolate to everyone.'),
     'lab_future_cta_text' => get_site_setting('lab_future_cta_text', 'EXPLORE FUTURE IDEAS →'),
     'lab_future_cta_link' => get_site_setting('lab_future_cta_link', '#future-ideas'),
     'lab_future_image' => get_site_setting('lab_future_image', 'assets/images/lab-future.jpg'),
@@ -1009,12 +1009,12 @@ render_admin_header('Innovation Lab', 'innovation-lab');
         <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card); transition: transform 0.2s ease, border-color 0.2s ease;">
             <div style="font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Total Experiments</div>
             <div style="font-size: 32px; font-weight: 700; color: var(--text-main); font-family: var(--font-heading);"><?php echo count($experiments); ?></div>
-            <div style="font-size: 12px; color: var(--status-active, #10B981); font-weight: 600; margin-top: 4px;">Active R&D in Lab</div>
+            <div style="font-size: 12px; color: var(--status-active, #10B981); font-weight: 600; margin-top: 4px;">Currently in the Lab</div>
         </div>
         <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card); transition: transform 0.2s ease, border-color 0.2s ease;">
             <div style="font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Failed Batches Logged</div>
             <div style="font-size: 32px; font-weight: 700; color: #B45309; font-family: var(--font-heading);"><?php echo count($failedBatches); ?></div>
-            <div style="font-size: 12px; color: #B45309; font-weight: 600; margin-top: 4px;">Failures Converted to Data</div>
+            <div style="font-size: 12px; color: #B45309; font-weight: 600; margin-top: 4px;">From a Failed Batch to a New Idea</div>
         </div>
         <div class="card" style="padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card); transition: transform 0.2s ease, border-color 0.2s ease;">
             <div style="font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">What If? Inquiries</div>
@@ -1031,16 +1031,16 @@ render_admin_header('Innovation Lab', 'innovation-lab');
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--border-color); margin-bottom: 24px; overflow-x: auto; padding-bottom: 2px;">
         <a href="?tab=experiments" class="btn <?php echo $activeTab === 'experiments' ? 'btn-primary' : 'btn-outline'; ?>" style="border-radius: 8px 8px 0 0; padding: 10px 18px;">
-            🧪 Lab Experiments (<?php echo count($experiments); ?>)
+            🧪 Currently in the Lab (<?php echo count($experiments); ?>)
         </a>
         <a href="?tab=failed-batches" class="btn <?php echo $activeTab === 'failed-batches' ? 'btn-primary' : 'btn-outline'; ?>" style="border-radius: 8px 8px 0 0; padding: 10px 18px;">
-            💥 Failed Batches (<?php echo count($failedBatches); ?>)
+            💥 From a Failed Batch to a New Idea (<?php echo count($failedBatches); ?>)
         </a>
         <a href="?tab=what-if" class="btn <?php echo $activeTab === 'what-if' ? 'btn-primary' : 'btn-outline'; ?>" style="border-radius: 8px 8px 0 0; padding: 10px 18px;">
-            💡 "What If?" Questions (<?php echo count($whatIfList); ?>)
+            💡 What if? (<?php echo count($whatIfList); ?>)
         </a>
         <a href="?tab=ingredients" class="btn <?php echo $activeTab === 'ingredients' ? 'btn-primary' : 'btn-outline'; ?>" style="border-radius: 8px 8px 0 0; padding: 10px 18px;">
-            🌱 Ingredient Categories (<?php echo count($ingredientsList); ?>)
+            🌱 Ingredient Innovation (<?php echo count($ingredientsList); ?>)
         </a>
         <a href="?tab=future" class="btn <?php echo $activeTab === 'future' ? 'btn-primary' : 'btn-outline'; ?>" style="border-radius: 8px 8px 0 0; padding: 10px 18px;">
             🌍 Future of Chocolate &amp; Settings
@@ -1053,8 +1053,9 @@ render_admin_header('Innovation Lab', 'innovation-lab');
     <?php if ($activeTab === 'experiments'): ?>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
-                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Currently in the Lab Experiments</h2>
-                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Active formulations tested across temper curves, micron particle metrics, and sensory taste panels.</p>
+                <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--gold, #C7A66A); text-transform: uppercase; margin-bottom: 2px;">WHERE CURIOSITY TAKES SHAPE.</div>
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Currently in the Lab</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Active recipe tests, ingredient blends, and kitchen notes from our chocolate makers.</p>
             </div>
             <button type="button" class="btn btn-primary" onclick="openNewExperimentModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
                 <span style="font-size: 16px;">+</span> New Experiment
@@ -1159,8 +1160,9 @@ render_admin_header('Innovation Lab', 'innovation-lab');
     <?php elseif ($activeTab === 'failed-batches'): ?>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
-                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Failed Batch Case Studies ("Failure is Data")</h2>
-                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Log failed formulation attempts and the scientific breakthroughs they unlocked.</p>
+                <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--gold, #C7A66A); text-transform: uppercase; margin-bottom: 2px;">WHEN THINGS GO WRONG, WE LEARN.</div>
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">From a Failed Batch to a New Idea</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">How we turn unexpected recipe mistakes into better, more delicious chocolate.</p>
             </div>
             <button type="button" class="btn btn-primary" onclick="openNewFailedBatchModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
                 <span style="font-size: 16px;">+</span> Log Failed Batch
@@ -1181,10 +1183,10 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                     <thead style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-color);">
                         <tr>
                             <th style="padding: 12px 18px; width: 64px;">Image</th>
-                            <th style="padding: 12px 18px;">Case Study Name</th>
-                            <th style="padding: 12px 18px;">Hypothesis</th>
-                            <th style="padding: 12px 18px;">What Happened?</th>
-                            <th style="padding: 12px 18px;">What Next?</th>
+                            <th style="padding: 12px 18px;">Case Study Title</th>
+                            <th style="padding: 12px 18px;">1. What We Hoped For</th>
+                            <th style="padding: 12px 18px;">2. What Went Wrong</th>
+                            <th style="padding: 12px 18px;">4. What We Learned</th>
                             <th style="padding: 12px 18px; width: 110px;">Featured</th>
                             <th style="padding: 12px 18px; width: 140px; text-align: right;">Actions</th>
                         </tr>
@@ -1248,8 +1250,9 @@ render_admin_header('Innovation Lab', 'innovation-lab');
     <?php elseif ($activeTab === 'what-if'): ?>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
-                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">"What If?" Exploration Questions</h2>
-                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Curated list of bold questions guiding upcoming research.</p>
+                <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--gold, #C7A66A); text-transform: uppercase; margin-bottom: 2px;">IDEAS WE ARE TESTING NEXT.</div>
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">What if?</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">The creative questions guiding our next batch of experiments.</p>
             </div>
             <button type="button" class="btn btn-primary" onclick="openNewWhatIfModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
                 <span style="font-size: 16px;">+</span> Add Question
@@ -1309,8 +1312,9 @@ render_admin_header('Innovation Lab', 'innovation-lab');
     <?php elseif ($activeTab === 'ingredients'): ?>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
-                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Ingredient Innovation Categories</h2>
-                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Featured botanical materials explored across our test melangers.</p>
+                <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--gold, #C7A66A); text-transform: uppercase; margin-bottom: 2px;">LOCAL INGREDIENTS. FRESH FLAVORS. NEW IDEAS.</div>
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Ingredient Innovation</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Discover local fruits, spices, and natural sweeteners we test in our kitchen.</p>
             </div>
             <button type="button" class="btn btn-primary" onclick="openNewIngredientModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
                 <span style="font-size: 16px;">+</span> Add Ingredient Category
@@ -1375,7 +1379,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 
                 <!-- Hero Section Settings Card -->
                 <div class="card" style="padding: 24px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-card);">
-                    <h3 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0 0 16px;">1. Hero Banner Settings</h3>
+                    <h3 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0 0 16px;">1. Hero Banner — Innovation Lab</h3>
                     
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Hero Eyebrow</label>
@@ -1469,7 +1473,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 
                 <!-- What If? & Failed Batches Card -->
                 <div class="card" style="padding: 24px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-card);">
-                    <h3 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0 0 16px;">4. What If? &amp; Failed Batches Headers</h3>
+                    <h3 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0 0 16px;">4. What if? &amp; From a Failed Batch to a New Idea Headers</h3>
 
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">What If? Eyebrow</label>
@@ -1671,34 +1675,34 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 <div class="lab-step-panel" id="exp_step_1">
                     <div style="background: var(--bg-subtle, rgba(0,0,0,0.02)); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; margin-bottom: 16px;">
                         <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
-                            <span>🔬 4 Core Research Pillars (WYSIWYG &amp; Bullet Points)</span>
-                            <span style="font-size: 11px; color: var(--gold, #C7A66A);">Displayed on Front-End Dossier Popup</span>
+                            <span>🔬 The 4 Cards (Matching the Website Modal)</span>
+                            <span style="font-size: 11px; color: var(--gold, #C7A66A);">Displayed on Live Dossier Popup</span>
                         </div>
                         <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
-                            Click <b>• Bullet List</b> or <b>+ 3 Bullets Template</b> to instantly structure observations into crisp, readable directives.
+                            Click <b>• Bullet List</b> or <b>+ 3 Bullets Template</b> to instantly structure observations into crisp, readable points.
                         </div>
 
                         <!-- 01. Research Question -->
                         <div style="margin-bottom: 16px;">
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">01. Research Question (What are we exploring or trying to understand?)</label>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">01. Research Question (What question are we trying to answer?)</label>
                             <div id="mount_exp_hypothesis"></div>
                         </div>
 
-                        <!-- 02. Observations & Findings -->
+                        <!-- 02. What We Discovered -->
                         <div style="margin-bottom: 16px;">
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">02. Observations &amp; Findings (What did we observe, measure or learn?)</label>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">02. What We Discovered (What happened when we made and tasted the chocolate?)</label>
                             <div id="mount_exp_findings"></div>
                         </div>
 
                         <!-- 03. Why It Matters -->
                         <div style="margin-bottom: 16px;">
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">03. Why It Matters (The practical relevance for chocolate makers)</label>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">03. Why It Matters (How this helps make better, more delicious chocolate for you)</label>
                             <div id="mount_exp_methodology"></div>
                         </div>
 
                         <!-- 04. Key Takeaway -->
                         <div>
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">04. Key Takeaway (The single most important lesson from this experiment)</label>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">04. Key Takeaway (The main lesson from this test batch)</label>
                             <div id="mount_exp_next_steps"></div>
                         </div>
                     </div>
@@ -1708,10 +1712,10 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 <div class="lab-step-panel" id="exp_step_2">
                     <div style="background: var(--bg-subtle, rgba(0,0,0,0.02)); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; margin-bottom: 16px;">
                         <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
-                            ⚙️ Specimen Telemetry &amp; Scientific Specifications
+                            ⚙️ Chocolate Making Details &amp; Recipe Specs
                         </div>
                         <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
-                            Displayed in the top live telemetry strip on the front-end dossier modal. Click any chip to quick-fill!
+                            Displayed in the top details strip on the live website modal. Click any chip to quick-fill!
                         </div>
 
                         <!-- Row 1: Terroir Origin & Crystal Polymorph -->
@@ -1726,7 +1730,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                 </div>
                             </div>
                             <div>
-                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Crystal Polymorph Matrix</label>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Melt &amp; Snap (Crystal Polymorph Matrix)</label>
                                 <input type="text" name="polymorph" id="exp_polymorph" placeholder="e.g. Beta-V (Form V) Triglyceride Matrix (Tm 34.2°C)" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                                 <div class="lab-chip-group">
                                     <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_polymorph', 'Beta-V (Form V) Triglyceride Matrix (Tm 34.2°C)')">Beta-V (Form V)</button>
@@ -1739,7 +1743,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                         <!-- Row 2: Particle Size Micron & Water Activity -->
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
                             <div>
-                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Particle Size Micron</label>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Smoothness (Particle Size Micron)</label>
                                 <input type="text" name="particle_size" id="exp_particle_size" placeholder="e.g. < 18.2 µm (D90 Laser Diffraction)" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                                 <div class="lab-chip-group">
                                     <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_particle_size', '< 18.2 µm (D90 Laser Diffraction)')">&lt; 18.2 µm Laser</button>
@@ -1748,7 +1752,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                 </div>
                             </div>
                             <div>
-                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Water Activity (Aw)</label>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Moisture Level (Water Activity Aw)</label>
                                 <input type="text" name="water_activity" id="exp_water_activity" placeholder="e.g. 0.31 Aw (Optimal Moisture Inactivity)" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                                 <div class="lab-chip-group">
                                     <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_water_activity', '0.31 Aw (Optimal Moisture Inactivity)')">0.31 Aw Optimal</button>
@@ -1761,7 +1765,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                         <!-- Row 3: Conching & Batch Reference -->
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                             <div>
-                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Conching / Refining Protocol</label>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Conching &amp; Refining Protocol</label>
                                 <input type="text" name="conching" id="exp_conching" placeholder="e.g. 36 Hours Longitudinal Dry Conche @ 48°C" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                                 <div class="lab-chip-group">
                                     <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_conching', '36 Hours Longitudinal Dry Conche @ 48°C')">36h Dry Conche @ 48°C</button>
@@ -1770,7 +1774,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                 </div>
                             </div>
                             <div>
-                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Batch Reference ID</label>
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Batch Number / Reference ID</label>
                                 <input type="text" name="batch_ref" id="exp_batch_ref" placeholder="e.g. RT-EXP-01 · CBE-POLY" style="width: 100%; padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
                                 <div class="lab-chip-group">
                                     <button type="button" class="lab-chip" onclick="setTelemetryPreset('exp_batch_ref', 'RT-EXP-01 · CBE-POLY')">RT-EXP-01</button>
@@ -1783,17 +1787,17 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                     </div>
                 </div>
 
-                <!-- STEP 4: DETAILED LAB NOTES (FULL HTML DOSSIER) -->
+                <!-- STEP 4: DETAILED KITCHEN NOTES (FULL DOSSIER) -->
                 <div class="lab-step-panel" id="exp_step_3">
                     <div style="margin-bottom: 14px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                             <label style="display: block; font-size: 13px; font-weight: 700; color: var(--gold, #C7A66A);">
-                                📋 Detailed Lab Notes &amp; Scientific Dossier (Live HTML)
+                                📋 Detailed Kitchen Notes &amp; Story (Live HTML)
                             </label>
                             <span style="font-size: 11px; color: var(--text-muted);">Rendered in the detailed dossier card on the website</span>
                         </div>
                         <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-                            Use headings, lists, quotes, and colors to format executive summaries, raw data measurements, and tasting notes.
+                            Use headings, lists, quotes, and colors to format recipe summaries, kitchen measurements, and tasting notes.
                         </div>
                         <div id="mount_exp_full_content"></div>
                     </div>
@@ -1832,7 +1836,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                     <div id="sim_quad_1" style="font-size: 12px; line-height: 1.5;"></div>
                                 </div>
                                 <div class="lab-sim-quad" style="border-left-color: #9A6A38;">
-                                    <div class="lab-sim-quad-title" style="color: #9A6A38;">02. Observations &amp; Findings</div>
+                                    <div class="lab-sim-quad-title" style="color: #9A6A38;">02. What We Discovered</div>
                                     <div id="sim_quad_2" style="font-size: 12px; line-height: 1.5;"></div>
                                 </div>
                                 <div class="lab-sim-quad" style="border-left-color: #166534;">
@@ -1881,8 +1885,8 @@ render_admin_header('Innovation Lab', 'innovation-lab');
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(220, 38, 38, 0.15); color: #EF4444; display: flex; align-items: center; justify-content: center; font-size: 16px;">💥</div>
                 <div>
-                    <h2 id="failedModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0; color: var(--text-main);">Log Failed Batch Case Study</h2>
-                    <div style="font-size: 12px; color: var(--text-muted);">Transform formulation defects and anomalies into public scientific breakthroughs</div>
+                    <h2 id="failedModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0; color: var(--text-main);">Log Failed Batch — From a Failed Batch to a New Idea</h2>
+                    <div style="font-size: 12px; color: var(--text-muted);">Document what went wrong and what we learned to turn mistakes into better chocolate</div>
                 </div>
             </div>
             <button type="button" onclick="closeModal('failedModal')" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light);" title="Close Modal (Esc)">✕</button>
@@ -1893,7 +1897,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 <span>💥 1. Case Study &amp; Photo</span>
             </button>
             <button type="button" class="lab-step-tab" data-step="1" onclick="switchFailedStep(1)">
-                <span>🔬 2. 4 Forensic Steps</span>
+                <span>🔬 2. The 4 Stages</span>
             </button>
             <button type="button" class="lab-step-tab" data-step="2" onclick="switchFailedStep(2)">
                 <span>📖 3. The Full Story</span>
@@ -1948,37 +1952,41 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                     </div>
                 </div>
 
-                <!-- STEP 2: 4 Forensic Steps -->
+                <!-- STEP 2: The 4 Stages -->
                 <div class="lab-step-panel" id="failed_step_1">
                     <div style="background: var(--bg-subtle, rgba(0,0,0,0.02)); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; margin-bottom: 16px;">
                         <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
-                            🔬 4 Forensic Pillars (Rich Text &amp; Bullet Points)
+                            🔬 The 4 Stages (Matching the Client Modal Cards)
                         </div>
                         <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
-                            Structure each stage of the post-mortem analysis.
+                            1. What We Hoped For → 2. What Went Wrong → 3. Why It Happened → 4. What We Learned
                         </div>
 
-                        <!-- 1. The Hypothesis -->
+                        <!-- 1. The Goal -->
                         <div style="margin-bottom: 14px;">
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">1. The Hypothesis (What did you set out to test?)</label>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 2px;">1. What We Hoped For (The Intended Goal) *</label>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">What did you set out to achieve with flavor and texture?</div>
                             <div id="mount_failed_hypothesis"></div>
                         </div>
 
-                        <!-- 2. What Happened -->
+                        <!-- 2. What Went Wrong -->
                         <div style="margin-bottom: 14px;">
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #DC2626; margin-bottom: 4px;">2. What Happened (The defect, seizing, or anomalous result?)</label>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #DC2626; margin-bottom: 2px;">2. What Went Wrong (What Happened?) *</label>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">How the chocolate changed unexpectedly (e.g. flavor disappeared, paste seized, bloom)</div>
                             <div id="mount_failed_what_happened"></div>
                         </div>
 
                         <!-- 3. Why It Happened -->
                         <div style="margin-bottom: 14px;">
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #D97706; margin-bottom: 4px;">3. Why It Happened (The scientific root cause)</label>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #D97706; margin-bottom: 2px;">3. Why It Happened (The Simple Science) *</label>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">The physical reason behind the problem (e.g. moisture pulled into fat matrix)</div>
                             <div id="mount_failed_why"></div>
                         </div>
 
-                        <!-- 4. What We Do Next -->
+                        <!-- 4. What We Learned -->
                         <div>
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #16A34A; margin-bottom: 4px;">4. What We Do Next (The breakthrough rule or new insight)</label>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #059669; margin-bottom: 2px;">4. What We Learned (The Lesson &amp; The Fix) *</label>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">How we fixed the recipe for our next batch (e.g. pre-coat inclusions with cocoa butter)</div>
                             <div id="mount_failed_what_next"></div>
                         </div>
                     </div>
@@ -1987,9 +1995,10 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 <!-- STEP 3: Full Narrative Story -->
                 <div class="lab-step-panel" id="failed_step_2">
                     <div style="margin-bottom: 14px;">
-                        <label style="display: block; font-size: 13px; font-weight: 700; color: var(--gold, #C7A66A); margin-bottom: 6px;">
-                            📖 The Experiment Explained (Complete Narrative Story)
+                        <label style="display: block; font-size: 13px; font-weight: 700; color: var(--gold, #C7A66A); margin-bottom: 2px;">
+                            📖 The Full Story Behind This Test Batch (Field Notes &amp; Story)
                         </label>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">The complete story and kitchen notes behind this test batch as displayed in the full modal dossier.</div>
                         <div id="mount_failed_full_story"></div>
                     </div>
                 </div>
@@ -2134,25 +2143,25 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 
                         <!-- 1. Description -->
                         <div style="margin-bottom: 14px;">
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">01. Distinctive Botanical Profile &amp; Summary</label>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">01. Ingredient Profile (What makes this ingredient special?)</label>
                             <div id="mount_ing_desc"></div>
                         </div>
 
-                        <!-- 2. Science Behavior -->
+                        <!-- 2. Applications -->
                         <div style="margin-bottom: 14px;">
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">02. Scientific Behavior (Moisture, fat compatibility, melting)</label>
-                            <div id="mount_ing_science_behavior"></div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">02. Ways to Use in Chocolate (Where and how we use it in bars, ganaches, and spreads)</label>
+                            <div id="mount_ing_applications"></div>
                         </div>
 
-                        <!-- 3. Applications -->
+                        <!-- 3. Science Behavior -->
                         <div style="margin-bottom: 14px;">
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">03. Confectionery Applications (Bars, ganache, inclusions)</label>
-                            <div id="mount_ing_applications"></div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">03. What to Watch Out For (What challenges arise when blending with melted chocolate?)</label>
+                            <div id="mount_ing_science_behavior"></div>
                         </div>
 
                         <!-- 4. Lab Notes -->
                         <div>
-                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">04. Practical Confectioner Directives &amp; Takeaway</label>
+                            <label style="display: block; font-size: 12px; font-weight: 700; color: #9A6A38; margin-bottom: 4px;">04. Key Takeaway (The single most important tip for working with this ingredient)</label>
                             <div id="mount_ing_lab_notes"></div>
                         </div>
                     </div>
@@ -2487,25 +2496,25 @@ function getRichEditorContent(editorId) {
 
 // Initialize Editors on DOM Ready
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Experiment Editors
-    createRichEditor('mount_exp_hypothesis', 'hypothesis', 'exp_hypothesis', { isFull: false, minHeight: '68px', placeholder: 'Enter core research premise or hypothesis...' });
-    createRichEditor('mount_exp_findings', 'findings', 'exp_findings', { isFull: false, minHeight: '68px', placeholder: 'Observed temper curves, snap metrics, melting behavior...' });
-    createRichEditor('mount_exp_methodology', 'methodology', 'exp_methodology', { isFull: false, minHeight: '68px', placeholder: 'Formulation ratio, conching duration, why it matters...' });
-    createRichEditor('mount_exp_next_steps', 'next_steps', 'exp_next_steps', { isFull: false, minHeight: '68px', placeholder: 'Key directive, scale parameters, next testing phase...' });
-    createRichEditor('mount_exp_full_content', 'full_content', 'exp_full_content', { isFull: true, minHeight: '220px', placeholder: 'Executive summary, full methodology, testing breakdown, bullet points...' });
+    // 1. Experiment Editors (Matching Currently in the Lab Modal Cards)
+    createRichEditor('mount_exp_hypothesis', 'hypothesis', 'exp_hypothesis', { isFull: false, minHeight: '68px', placeholder: 'What question are we trying to answer with this test batch?' });
+    createRichEditor('mount_exp_findings', 'findings', 'exp_findings', { isFull: false, minHeight: '68px', placeholder: 'What happened when we made and tasted the chocolate?' });
+    createRichEditor('mount_exp_methodology', 'methodology', 'exp_methodology', { isFull: false, minHeight: '68px', placeholder: 'How this helps make better, more delicious chocolate for you...' });
+    createRichEditor('mount_exp_next_steps', 'next_steps', 'exp_next_steps', { isFull: false, minHeight: '68px', placeholder: 'The main lesson from this test batch...' });
+    createRichEditor('mount_exp_full_content', 'full_content', 'exp_full_content', { isFull: true, minHeight: '220px', placeholder: 'Full kitchen notes, recipe details, tasting notes, bullet points...' });
 
-    // 2. Failed Batch Editors
-    createRichEditor('mount_failed_hypothesis', 'hypothesis', 'failed_hypothesis', { isFull: false, minHeight: '60px', placeholder: 'What did you set out to test in this formulation?' });
-    createRichEditor('mount_failed_what_happened', 'what_happened', 'failed_what_happened', { isFull: false, minHeight: '60px', placeholder: 'What was the defect, seizing, or anomaly?' });
-    createRichEditor('mount_failed_why', 'why_it_happened', 'failed_why', { isFull: false, minHeight: '60px', placeholder: 'Scientific root cause, moisture migration, polymorph collapse...' });
-    createRichEditor('mount_failed_what_next', 'what_next', 'failed_what_next', { isFull: false, minHeight: '60px', placeholder: 'Breakthrough discovery, remediation protocol...' });
-    createRichEditor('mount_failed_full_story', 'full_story', 'failed_full_story', { isFull: true, minHeight: '200px', placeholder: 'Full narrative case study explaining the trial, lab data, and lessons learned...' });
+    // 2. Failed Batch Editors (Matching From a Failed Batch to a New Idea Cards)
+    createRichEditor('mount_failed_hypothesis', 'hypothesis', 'failed_hypothesis', { isFull: false, minHeight: '60px', placeholder: 'What we wanted to achieve with flavor and texture...' });
+    createRichEditor('mount_failed_what_happened', 'what_happened', 'failed_what_happened', { isFull: false, minHeight: '60px', placeholder: 'What happened unexpectedly (flavor lost, chocolate seized, bloom)...' });
+    createRichEditor('mount_failed_why', 'why_it_happened', 'failed_why', { isFull: false, minHeight: '60px', placeholder: 'The simple science of why it happened (moisture in fat matrix, sugar crystallization)...' });
+    createRichEditor('mount_failed_what_next', 'what_next', 'failed_what_next', { isFull: false, minHeight: '60px', placeholder: 'The lesson and how we fixed the recipe for our next batch...' });
+    createRichEditor('mount_failed_full_story', 'full_story', 'failed_full_story', { isFull: true, minHeight: '200px', placeholder: 'The full story and kitchen notes behind this test batch...' });
 
-    // 3. Ingredient Category Editors
-    createRichEditor('mount_ing_desc', 'description', 'ing_desc', { isFull: false, minHeight: '65px', placeholder: 'Describe what makes this native botanical distinctive...' });
-    createRichEditor('mount_ing_applications', 'applications', 'ing_applications', { isFull: false, minHeight: '65px', placeholder: 'Where and how could this be used in chocolate bars...' });
-    createRichEditor('mount_ing_science_behavior', 'science_behavior', 'ing_science_behavior', { isFull: false, minHeight: '65px', placeholder: 'Moisture hygroscopy, fat compatibility, rheology...' });
-    createRichEditor('mount_ing_lab_notes', 'lab_notes', 'ing_lab_notes', { isFull: false, minHeight: '65px', placeholder: 'Key takeaway for makers and confectioners...' });
+    // 3. Ingredient Category Editors (Matching Ingredient Innovation Cards)
+    createRichEditor('mount_ing_desc', 'description', 'ing_desc', { isFull: false, minHeight: '65px', placeholder: 'What makes this ingredient special and unique...' });
+    createRichEditor('mount_ing_applications', 'applications', 'ing_applications', { isFull: false, minHeight: '65px', placeholder: 'Where and how we use it in bars, ganaches, and spreads...' });
+    createRichEditor('mount_ing_science_behavior', 'science_behavior', 'ing_science_behavior', { isFull: false, minHeight: '65px', placeholder: 'What challenges arise when blending with melted chocolate...' });
+    createRichEditor('mount_ing_lab_notes', 'lab_notes', 'ing_lab_notes', { isFull: false, minHeight: '65px', placeholder: 'The single most important tip for working with this ingredient...' });
 
     // Pre-submit sync
     ['expForm', 'failedForm', 'ingForm'].forEach(formId => {
@@ -2751,7 +2760,7 @@ function handleBackdropClick(e, id) {
 }
 
 function openNewExperimentModal() {
-    document.getElementById('expModalTitle').innerText = 'Create New Lab Experiment';
+    document.getElementById('expModalTitle').innerText = 'New Experiment — Currently in the Lab';
     document.getElementById('exp_id').value = '0';
     document.getElementById('exp_title').value = '';
     document.getElementById('exp_category').value = 'formulation-lab';
@@ -2826,7 +2835,7 @@ function cloneExperiment(exp) {
 }
 
 function openNewFailedBatchModal() {
-    document.getElementById('failedModalTitle').innerText = 'Log Failed Batch Case Study';
+    document.getElementById('failedModalTitle').innerText = 'Log Failed Batch — From a Failed Batch to a New Idea';
     document.getElementById('failed_id').value = '0';
     document.getElementById('failed_title').value = '';
     document.getElementById('failed_badge').value = 'BECAUSE FAILURE IS DATA.';
@@ -2868,7 +2877,7 @@ function editFailedBatch(fb) {
 }
 
 function openNewWhatIfModal() {
-    document.getElementById('whatIfModalTitle').innerText = 'Add What If? Question';
+    document.getElementById('whatIfModalTitle').innerText = 'Add Question — What if?';
     document.getElementById('whatif_id').value = '0';
     document.getElementById('whatif_num').value = '0' + (<?php echo count($whatIfList); ?> + 1);
     document.getElementById('whatif_question').value = '';
@@ -2890,7 +2899,7 @@ function editWhatIf(q) {
 }
 
 function openNewIngredientModal() {
-    document.getElementById('ingredientModalTitle').innerText = 'Add Ingredient Category';
+    document.getElementById('ingredientModalTitle').innerText = 'New Category — Ingredient Innovation';
     document.getElementById('ing_id').value = '0';
     document.getElementById('ing_title').value = '';
     document.getElementById('ing_existing_image').value = 'assets/images/placeholder.jpg';
