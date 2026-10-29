@@ -56,7 +56,6 @@ function handle_lab_image_upload($fileKey) {
 // POST REQUEST PROCESSING (CRUD ACTIONS)
 // =========================================================================
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
-    $isAjax = !empty($_POST['is_ajax']) || (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
     $token = $_POST['csrf_token'] ?? '';
     $action = $_POST['action'] ?? '';
 
@@ -185,65 +184,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 if ($id > 0) {
                     $stmt = $pdo->prepare("UPDATE lab_experiments SET is_active = 1 - is_active WHERE id = ?");
                     $stmt->execute([$id]);
-                    $stmt = $pdo->prepare("SELECT is_active, title FROM lab_experiments WHERE id = ?");
-                    $stmt->execute([$id]);
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    $isAct = (int)($row['is_active'] ?? 0);
-                    if ($isAjax) {
-                        header('Content-Type: application/json');
-                        echo json_encode([
-                            'success' => true,
-                            'id' => $id,
-                            'is_active' => $isAct,
-                            'message' => "Experiment '" . ($row['title'] ?? 'Experiment') . "' is now " . ($isAct ? 'Visible' : 'Hidden') . "."
-                        ]);
-                        exit;
-                    }
                     $success = "Experiment status toggled.";
-                }
-            } elseif ($action === 'toggle_failed_batch') {
-                $activeTab = 'failed-batches';
-                $id = (int)($_POST['failed_id'] ?? 0);
-                if ($id > 0) {
-                    $stmt = $pdo->prepare("UPDATE lab_failed_batches SET is_active = 1 - is_active WHERE id = ?");
-                    $stmt->execute([$id]);
-                    $stmt = $pdo->prepare("SELECT is_active, title FROM lab_failed_batches WHERE id = ?");
-                    $stmt->execute([$id]);
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    $isAct = (int)($row['is_active'] ?? 0);
-                    if ($isAjax) {
-                        header('Content-Type: application/json');
-                        echo json_encode([
-                            'success' => true,
-                            'id' => $id,
-                            'is_active' => $isAct,
-                            'message' => "Failed batch '" . ($row['title'] ?? 'Batch') . "' is now " . ($isAct ? 'Visible' : 'Hidden') . "."
-                        ]);
-                        exit;
-                    }
-                    $success = "Failed batch status toggled.";
-                }
-            } elseif ($action === 'toggle_ingredient') {
-                $activeTab = 'ingredients';
-                $id = (int)($_POST['ing_id'] ?? 0);
-                if ($id > 0) {
-                    $stmt = $pdo->prepare("UPDATE lab_ingredient_categories SET is_active = 1 - is_active WHERE id = ?");
-                    $stmt->execute([$id]);
-                    $stmt = $pdo->prepare("SELECT is_active, title FROM lab_ingredient_categories WHERE id = ?");
-                    $stmt->execute([$id]);
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    $isAct = (int)($row['is_active'] ?? 0);
-                    if ($isAjax) {
-                        header('Content-Type: application/json');
-                        echo json_encode([
-                            'success' => true,
-                            'id' => $id,
-                            'is_active' => $isAct,
-                            'message' => "Ingredient '" . ($row['title'] ?? 'Ingredient') . "' is now " . ($isAct ? 'Visible' : 'Hidden') . "."
-                        ]);
-                        exit;
-                    }
-                    $success = "Ingredient category status toggled.";
                 }
             }
 
@@ -538,7 +479,6 @@ $settings = [
     'lab_future_image' => get_site_setting('lab_future_image', 'assets/images/lab-future.jpg'),
 ];
 
-$viewMode = $_COOKIE['lab_view_pref'] ?? 'grid';
 render_admin_header('Innovation Lab', 'innovation-lab');
 ?>
 
@@ -1025,56 +965,6 @@ render_admin_header('Innovation Lab', 'innovation-lab');
 .btn:active {
     transform: scale(0.98);
 }
-
-    /* Dropdown & Blog Card Enhancements from admin/blogs.php */
-    .blog-card {
-        overflow: visible !important;
-    }
-    .blog-card:hover,
-    .blog-card:focus-within,
-    .blog-card.menu-active {
-        z-index: 100 !important;
-    }
-    .blog-card .more-actions-dropdown {
-        display: none;
-        position: absolute;
-        right: 0;
-        bottom: calc(100% + 8px) !important;
-        top: auto !important;
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.3);
-        z-index: 9999 !important;
-        min-width: 155px;
-        overflow: hidden;
-    }
-    .more-actions-dropdown button,
-    .more-actions-dropdown a {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        padding: 9px 16px;
-        background: none;
-        border: none;
-        text-align: left;
-        font-size: 13px;
-        color: var(--text-muted);
-        text-decoration: none;
-        cursor: pointer;
-        font-family: var(--font-sans);
-        transition: background-color var(--transition), color var(--transition);
-        white-space: nowrap;
-    }
-    .more-actions-dropdown button:hover,
-    .more-actions-dropdown a:hover {
-        background-color: var(--bg-subtle, var(--cream));
-        color: var(--text-main);
-    }
-    .more-actions-dropdown button.delete-btn:hover {
-        background-color: rgba(211, 47, 47, 0.08);
-        color: #d32f2f;
-    }
 </style>
 
 <div class="content-wrapper">
@@ -1161,131 +1051,40 @@ render_admin_header('Innovation Lab', 'innovation-lab');
          TAB 1: EXPERIMENTS ("CURRENTLY IN THE LAB")
          ===================================================================== -->
     <?php if ($activeTab === 'experiments'): ?>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
                 <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--gold, #C7A66A); text-transform: uppercase; margin-bottom: 2px;">WHERE CURIOSITY TAKES SHAPE.</div>
-                <h2 style="font-size: 22px; font-weight: 700; color: var(--text-main); margin: 0 0 4px; font-family: 'Playfair Display', Georgia, serif;">Currently in the Lab</h2>
-                <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Active recipe tests, ingredient blends, and kitchen notes from our chocolate makers.</p>
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Currently in the Lab</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Active recipe tests, ingredient blends, and kitchen notes from our chocolate makers.</p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openNewExperimentModal()" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-weight: 700;">
-                <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M12 4v16m8-8H4"></path></svg>
-                New Experiment
+            <button type="button" class="btn btn-primary" onclick="openNewExperimentModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
+                <span style="font-size: 16px;">+</span> New Experiment
             </button>
         </div>
 
-        <!-- Action Bar: Live Search, Category Filter Chips, Status Dropdown, View Toggle -->
-        <div class="action-bar" style="margin-bottom: 24px;">
-            <div class="action-bar-left">
-                <!-- Search input -->
-                <div class="topbar-search" style="display: block; width: 280px; position: relative;">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); pointer-events: none;"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" id="expSearchInput" placeholder="Search experiments, tags, batches..." oninput="filterExperimentsView()" style="width: 100%; border-radius: 8px; padding-left: 36px; padding-top: 9px; padding-bottom: 9px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 13px;">
-                </div>
-
-                <!-- Category Filters -->
-                <button type="button" class="filter-chip active" data-cat="" onclick="setExpCategoryFilter('', this)">All Categories</button>
-                <button type="button" class="filter-chip" data-cat="ingredient-innovation" onclick="setExpCategoryFilter('ingredient-innovation', this)">Ingredient Innovation</button>
-                <button type="button" class="filter-chip" data-cat="process-exploration" onclick="setExpCategoryFilter('process-exploration', this)">Process Exploration</button>
-                <button type="button" class="filter-chip" data-cat="formulation-lab" onclick="setExpCategoryFilter('formulation-lab', this)">Formulation Lab</button>
-                <button type="button" class="filter-chip" data-cat="sensory-insights" onclick="setExpCategoryFilter('sensory-insights', this)">Sensory Insights</button>
-                <button type="button" class="filter-chip" data-cat="stability-shelf-life" onclick="setExpCategoryFilter('stability-shelf-life', this)">Stability &amp; Shelf Life</button>
+        <!-- Live Instant Filter & Search Bar -->
+        <div class="lab-filter-bar">
+            <div class="lab-search-wrap">
+                <span class="lab-search-icon">🔍</span>
+                <input type="text" id="expSearchInput" class="lab-search-input" placeholder="Search experiments by title, question, tags..." oninput="filterExperimentsTable()">
             </div>
-
-            <div class="action-bar-right">
-                <!-- Status Filter -->
-                <select id="expStatusSelect" onchange="filterExperimentsView()" style="padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 13px; font-family: var(--font-sans); outline: none;">
-                    <option value="">All Statuses</option>
-                    <option value="published">Visible (Active)</option>
-                    <option value="draft">Hidden (Inactive)</option>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <select id="expCategoryFilter" class="lab-filter-select" onchange="filterExperimentsTable()">
+                    <option value="">All Categories</option>
+                    <option value="ingredient-innovation">Ingredient Innovation</option>
+                    <option value="process-exploration">Process Exploration</option>
+                    <option value="formulation-lab">Formulation Lab</option>
+                    <option value="sensory-insights">Sensory Insights</option>
+                    <option value="stability-shelf-life">Stability &amp; Shelf Life</option>
+                    <option value="scale-applications">Scale &amp; Applications</option>
+                    <option value="future-of-chocolate">Future of Chocolate</option>
                 </select>
-
-                <!-- Layout Selector Toggle -->
-                <div class="view-toggle">
-                    <button type="button" class="view-toggle-btn <?php echo $viewMode === 'grid' ? 'active' : ''; ?>" onclick="setLabViewMode('grid')" title="Grid View">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                    </button>
-                    <button type="button" class="view-toggle-btn <?php echo $viewMode === 'list' ? 'active' : ''; ?>" onclick="setLabViewMode('list')" title="List View">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </button>
-                </div>
-
-                <span id="expCountBadge" style="font-size: 12.5px; color: var(--text-muted); font-weight: 600; white-space: nowrap;">
-                    Showing <?php echo count($experiments); ?> items
-                </span>
+                <span id="expCountBadge" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Showing <?php echo count($experiments); ?> of <?php echo count($experiments); ?></span>
             </div>
         </div>
 
-        <?php if (empty($experiments)): ?>
-            <div class="form-card" style="padding: 60px; text-align: center; color: var(--text-light);">
-                <p style="font-size: 16px; font-weight: 500;">No experiments found. Click "+ New Experiment" to add one!</p>
-            </div>
-        <?php else: ?>
-            <!-- GRID VIEW (Matching admin/blogs.php) -->
-            <div class="blogs-grid-view" id="expGridContainer" style="<?php echo $viewMode === 'grid' ? '' : 'display:none;'; ?>">
-                <?php foreach ($experiments as $exp): 
-                    $isPub = (int)$exp['is_active'];
-                    $thumbUrl = !empty($exp['image_path']) ? '../' . $exp['image_path'] : '../assets/images/placeholder.jpg';
-                ?>
-                    <div class="blog-card exp-card-item" id="exp-card-<?php echo $exp['id']; ?>"
-                         data-title="<?php echo strtolower(htmlspecialchars($exp['title'])); ?>"
-                         data-desc="<?php echo strtolower(htmlspecialchars($exp['description'])); ?>"
-                         data-tags="<?php echo strtolower(htmlspecialchars($exp['tags'])); ?>"
-                         data-cat="<?php echo strtolower(htmlspecialchars($exp['category'])); ?>"
-                         data-status="<?php echo $isPub ? 'published' : 'draft'; ?>">
-                        <div class="blog-card-image">
-                            <div class="blog-card-badges">
-                                <span class="status-badge <?php echo $isPub ? 'published' : 'draft'; ?>" 
-                                      id="badge-exp-grid-<?php echo $exp['id']; ?>"
-                                      style="<?php echo $isPub ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
-                                    <span class="badge-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                    <span class="badge-label"><?php echo $isPub ? 'Visible' : 'Hidden'; ?></span>
-                                </span>
-                            </div>
-                            <img src="<?php echo htmlspecialchars($thumbUrl); ?>" alt="<?php echo htmlspecialchars($exp['title']); ?>" onerror="this.onerror=null; this.src='../assets/images/placeholder.jpg';" loading="lazy">
-                            <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.65); color: #fff; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 600;">
-                                <?php echo htmlspecialchars($exp['status_badge'] ?: 'TEST BATCH'); ?>
-                            </div>
-                        </div>
-                        <div class="blog-card-body">
-                            <span class="blog-card-category"><?php echo htmlspecialchars($exp['category']); ?></span>
-                            <h3 class="blog-card-title"><?php echo htmlspecialchars($exp['title']); ?></h3>
-                            <p class="blog-card-excerpt"><?php echo htmlspecialchars($exp['description'] ?: 'No research question summary entered.'); ?></p>
-                            <div class="blog-card-footer">
-                                <span class="blog-card-date">Batch #<?php echo htmlspecialchars($exp['batch_ref'] ?: $exp['id']); ?></span>
-                                <div class="blog-card-actions">
-                                    <button type="button" class="btn btn-outline btn-sm" style="padding:6px 12px;" onclick='editExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
-                                    <button type="button" 
-                                            class="btn btn-outline btn-sm btn-visibility-toggle <?php echo $isPub ? 'btn-status-visible' : 'btn-status-hidden'; ?>" 
-                                            data-item-type="experiment"
-                                            data-id="<?php echo $exp['id']; ?>" 
-                                            onclick="toggleLabItem('experiment', <?php echo $exp['id']; ?>, this)" 
-                                            title="<?php echo $isPub ? 'Click to Hide from site' : 'Click to Make Visible on site'; ?>"
-                                            style="padding:6px 10px; display:inline-flex; align-items:center; gap:5px; font-weight:600; <?php echo $isPub ? 'color:#15803d;' : 'color:#d97706;'; ?>">
-                                        <span class="toggle-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                        <span class="toggle-text"><?php echo $isPub ? 'Hide' : 'Show'; ?></span>
-                                    </button>
-                                    <div style="position: relative; display: inline-block;">
-                                        <button type="button" class="btn btn-outline btn-sm" onclick="toggleMoreMenu(event, this)" style="padding: 6px 8px; min-width: 0;">&bull;&bull;&bull;</button>
-                                        <div class="more-actions-dropdown">
-                                            <a href="../innovation-lab.php#exp-<?php echo htmlspecialchars($exp['slug'] ?: $exp['id']); ?>" target="_blank">View on Site &nearr;</a>
-                                            <button type="button" onclick='cloneExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Duplicate</button>
-                                            <form method="POST" onsubmit="return confirm('Delete this experiment?');" class="delete-form">
-                                                <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                                <input type="hidden" name="action" value="delete_experiment">
-                                                <input type="hidden" name="experiment_id" value="<?php echo (int)$exp['id']; ?>">
-                                                <button type="submit" class="delete-btn">Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- LIST VIEW (Wrapped in #expListContainer) -->
-            <div class="table-container" id="expListContainer" style="<?php echo $viewMode === 'list' ? '' : 'display:none;'; ?> background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; margin-bottom: 30px;">
+        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0 0 10px 10px; overflow: hidden; margin-bottom: 30px;">
+            <div style="overflow-x: auto;">
                 <table id="experimentsTable" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
                     <thead style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-color);">
                         <tr>
@@ -1294,204 +1093,92 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                             <th style="padding: 12px 18px;">Category</th>
                             <th style="padding: 12px 18px;">Status Badge</th>
                             <th style="padding: 12px 18px; width: 80px;">Order</th>
-                            <th style="padding: 12px 18px; width: 110px;">Status</th>
+                            <th style="padding: 12px 18px; width: 90px;">Active</th>
                             <th style="padding: 12px 18px; width: 220px; text-align: right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($experiments as $exp): 
-                            $isPub = (int)$exp['is_active'];
-                        ?>
-                            <tr class="exp-row" id="exp-row-<?php echo $exp['id']; ?>"
-                                data-title="<?php echo strtolower(htmlspecialchars($exp['title'])); ?>" 
-                                data-desc="<?php echo strtolower(htmlspecialchars($exp['description'])); ?>" 
-                                data-tags="<?php echo strtolower(htmlspecialchars($exp['tags'])); ?>" 
-                                data-cat="<?php echo strtolower(htmlspecialchars($exp['category'])); ?>" 
-                                data-status="<?php echo $isPub ? 'published' : 'draft'; ?>"
-                                style="border-bottom: 1px solid var(--border-color); transition: background 0.15s ease;">
-                                <td style="padding: 12px 18px;">
-                                    <img src="../<?php echo htmlspecialchars($exp['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" style="width: 52px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="" onerror="this.src='../assets/images/placeholder.jpg'">
-                                </td>
-                                <td style="padding: 12px 18px;">
-                                    <div style="font-weight: 700; color: var(--text-main); font-size: 14px;"><?php echo htmlspecialchars($exp['title']); ?></div>
-                                    <div style="font-size: 12px; color: var(--text-muted); max-width: 340px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-                                        <?php echo htmlspecialchars($exp['description']); ?>
-                                    </div>
-                                </td>
-                                <td style="padding: 12px 18px; font-weight: 600; text-transform: uppercase; font-size: 11px; color: var(--text-muted);">
-                                    <?php echo htmlspecialchars($exp['category']); ?>
-                                </td>
-                                <td style="padding: 12px 18px;">
-                                    <span class="status-badge" style="background: rgba(199, 166, 106, 0.1); border: 1px solid rgba(199, 166, 106, 0.25); color: var(--text-main); padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap;">
-                                        ● <?php echo htmlspecialchars($exp['status_badge']); ?>
-                                    </span>
-                                </td>
-                                <td style="padding: 12px 18px; font-weight: 600;">
-                                    <?php echo (int)$exp['sort_order']; ?>
-                                </td>
-                                <td style="padding: 12px 18px;">
-                                    <span class="status-badge <?php echo $isPub ? 'published' : 'draft'; ?>" 
-                                          id="badge-exp-list-<?php echo $exp['id']; ?>"
-                                          style="<?php echo $isPub ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
-                                        <span class="badge-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                        <span class="badge-label"><?php echo $isPub ? 'Visible' : 'Hidden'; ?></span>
-                                    </span>
-                                </td>
-                                <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
-                                    <button type="button" class="btn btn-sm btn-outline" style="padding: 4px 8px; font-size: 12px;" onclick='editExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
-                                    <button type="button" 
-                                            class="btn btn-sm btn-outline btn-visibility-toggle <?php echo $isPub ? 'btn-status-visible' : 'btn-status-hidden'; ?>" 
-                                            data-item-type="experiment"
-                                            data-id="<?php echo $exp['id']; ?>" 
-                                            onclick="toggleLabItem('experiment', <?php echo $exp['id']; ?>, this)" 
-                                            style="padding: 4px 8px; font-size: 12px; <?php echo $isPub ? 'color:#15803d;' : 'color:#d97706;'; ?>">
-                                        <span class="toggle-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                        <span class="toggle-text"><?php echo $isPub ? 'Hide' : 'Show'; ?></span>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline" style="padding: 4px 8px; font-size: 12px; color: var(--gold, #C7A66A);" onclick='cloneExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)' title="Clone in 1 click">Clone</button>
-                                    <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Are you sure you want to delete experiment \'<?php echo addslashes($exp['title']); ?>\'?');">
-                                        <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                        <input type="hidden" name="action" value="delete_experiment">
-                                        <input type="hidden" name="experiment_id" value="<?php echo (int)$exp['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger" style="padding: 4px 8px; font-size: 12px;">Delete</button>
-                                    </form>
-                                </td>
+                        <?php if (!empty($experiments)): ?>
+                            <?php foreach ($experiments as $exp): ?>
+                                <tr class="exp-row" data-title="<?php echo strtolower(htmlspecialchars($exp['title'])); ?>" data-desc="<?php echo strtolower(htmlspecialchars($exp['description'])); ?>" data-tags="<?php echo strtolower(htmlspecialchars($exp['tags'])); ?>" data-cat="<?php echo strtolower(htmlspecialchars($exp['category'])); ?>" style="border-bottom: 1px solid var(--border-color); transition: background 0.15s ease;">
+                                    <td style="padding: 12px 18px;">
+                                        <img src="../<?php echo htmlspecialchars($exp['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" style="width: 52px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="" onerror="this.src='../assets/images/placeholder.jpg'">
+                                    </td>
+                                    <td style="padding: 12px 18px;">
+                                        <div style="font-weight: 700; color: var(--text-main); font-size: 14px;"><?php echo htmlspecialchars($exp['title']); ?></div>
+                                        <div style="font-size: 12px; color: var(--text-muted); max-width: 340px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                                            <?php echo htmlspecialchars($exp['description']); ?>
+                                        </div>
+                                    </td>
+                                    <td style="padding: 12px 18px; font-weight: 600; text-transform: uppercase; font-size: 11px; color: var(--text-muted);">
+                                        <?php echo htmlspecialchars($exp['category']); ?>
+                                    </td>
+                                    <td style="padding: 12px 18px;">
+                                        <span class="status-badge" style="background: rgba(199, 166, 106, 0.1); border: 1px solid rgba(199, 166, 106, 0.25); color: var(--text-main); padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap;">
+                                            ● <?php echo htmlspecialchars($exp['status_badge']); ?>
+                                        </span>
+                                    </td>
+                                    <td style="padding: 12px 18px; font-weight: 600;">
+                                        <?php echo (int)$exp['sort_order']; ?>
+                                    </td>
+                                    <td style="padding: 12px 18px;">
+                                        <form method="POST" style="margin: 0;">
+                                            <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
+                                            <input type="hidden" name="action" value="toggle_experiment">
+                                            <input type="hidden" name="experiment_id" value="<?php echo (int)$exp['id']; ?>">
+                                            <button type="submit" class="btn btn-sm <?php echo $exp['is_active'] ? 'btn-primary' : 'btn-outline'; ?>" style="padding: 2px 8px; font-size: 11px;" title="Click to toggle status">
+                                                <?php echo $exp['is_active'] ? 'Active' : 'Hidden'; ?>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
+                                        <button type="button" class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 12px;" onclick='editExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
+                                        <button type="button" class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 12px; color: var(--gold, #C7A66A);" onclick='cloneExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)' title="Clone / Duplicate this experiment in 1 click">Clone</button>
+                                        <a href="../innovation-lab.php#exp-<?php echo htmlspecialchars($exp['slug'] ?: $exp['id']); ?>" target="_blank" class="btn btn-sm btn-outline" style="padding: 3px 6px; font-size: 11px;" title="View on live page">↗</a>
+                                        <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Are you sure you want to delete experiment '<?php echo addslashes($exp['title']); ?>'?');">
+                                            <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
+                                            <input type="hidden" name="action" value="delete_experiment">
+                                            <input type="hidden" name="experiment_id" value="<?php echo (int)$exp['id']; ?>">
+                                            <button type="submit" class="btn btn-sm btn-danger" style="padding: 3px 8px; font-size: 12px;">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7" style="padding: 32px; text-align: center; color: var(--text-light);">No experiments found. Click "+ New Experiment" to add one!</td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
-        <?php endif; ?>
+        </div>
+
+    <!-- =====================================================================
+         TAB 2: FAILED BATCHES ("FROM A FAILED BATCH TO A NEW INSIGHT")
+         ===================================================================== -->
     <?php elseif ($activeTab === 'failed-batches'): ?>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
                 <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--gold, #C7A66A); text-transform: uppercase; margin-bottom: 2px;">WHEN THINGS GO WRONG, WE LEARN.</div>
-                <h2 style="font-size: 22px; font-weight: 700; color: var(--text-main); margin: 0 0 4px; font-family: 'Playfair Display', Georgia, serif;">From a Failed Batch to a New Idea</h2>
-                <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">How we turn unexpected recipe mistakes into better, more delicious chocolate.</p>
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">From a Failed Batch to a New Idea</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">How we turn unexpected recipe mistakes into better, more delicious chocolate.</p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openNewFailedBatchModal()" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-weight: 700;">
-                <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M12 4v16m8-8H4"></path></svg>
-                Log Failed Batch
+            <button type="button" class="btn btn-primary" onclick="openNewFailedBatchModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
+                <span style="font-size: 16px;">+</span> Log Failed Batch
             </button>
         </div>
 
-        <!-- Action Bar -->
-        <div class="action-bar" style="margin-bottom: 24px;">
-            <div class="action-bar-left">
-                <div class="topbar-search" style="display: block; width: 280px; position: relative;">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); pointer-events: none;"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" id="failedSearchInput" placeholder="Search failed batch case studies..." oninput="filterFailedBatchesView()" style="width: 100%; border-radius: 8px; padding-left: 36px; padding-top: 9px; padding-bottom: 9px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 13px;">
-                </div>
+        <div class="lab-filter-bar">
+            <div class="lab-search-wrap">
+                <span class="lab-search-icon">🔍</span>
+                <input type="text" id="failedSearchInput" class="lab-search-input" placeholder="Search failed batch case studies..." oninput="filterFailedBatchesTable()">
             </div>
-
-            <div class="action-bar-right">
-                <select id="failedStatusSelect" onchange="filterFailedBatchesView()" style="padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 13px; font-family: var(--font-sans); outline: none;">
-                    <option value="">All Statuses</option>
-                    <option value="published">Visible</option>
-                    <option value="draft">Hidden</option>
-                    <option value="featured">Featured Only</option>
-                </select>
-
-                <div class="view-toggle">
-                    <button type="button" class="view-toggle-btn <?php echo $viewMode === 'grid' ? 'active' : ''; ?>" onclick="setLabViewMode('grid')" title="Grid View">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                    </button>
-                    <button type="button" class="view-toggle-btn <?php echo $viewMode === 'list' ? 'active' : ''; ?>" onclick="setLabViewMode('list')" title="List View">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </button>
-                </div>
-
-                <span id="failedCountBadge" style="font-size: 12.5px; color: var(--text-muted); font-weight: 600; white-space: nowrap;">
-                    Showing <?php echo count($failedBatches); ?> items
-                </span>
-            </div>
+            <span id="failedCountBadge" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Showing <?php echo count($failedBatches); ?> of <?php echo count($failedBatches); ?></span>
         </div>
 
-        <?php if (empty($failedBatches)): ?>
-            <div class="form-card" style="padding: 60px; text-align: center; color: var(--text-light);">
-                <p style="font-size: 16px; font-weight: 500;">No failed batch case studies logged yet. Click "+ Log Failed Batch" to add one!</p>
-            </div>
-        <?php else: ?>
-            <!-- GRID VIEW -->
-            <div class="blogs-grid-view" id="failedGridContainer" style="<?php echo $viewMode === 'grid' ? '' : 'display:none;'; ?>">
-                <?php foreach ($failedBatches as $fb): 
-                    $isPub = (int)$fb['is_active'];
-                    $thumbUrl = !empty($fb['image_path']) ? '../' . $fb['image_path'] : '../assets/images/lab-failed-batch.jpg';
-                ?>
-                    <div class="blog-card failed-card-item" id="failed-card-<?php echo $fb['id']; ?>"
-                         data-title="<?php echo strtolower(htmlspecialchars($fb['title'])); ?>"
-                         data-hypo="<?php echo strtolower(htmlspecialchars(strip_tags($fb['hypothesis']))); ?>"
-                         data-happened="<?php echo strtolower(htmlspecialchars(strip_tags($fb['what_happened']))); ?>"
-                         data-next="<?php echo strtolower(htmlspecialchars(strip_tags($fb['what_next']))); ?>"
-                         data-featured="<?php echo $fb['is_featured'] ? 'featured' : ''; ?>"
-                         data-status="<?php echo $isPub ? 'published' : 'draft'; ?>">
-                        <div class="blog-card-image">
-                            <div class="blog-card-badges">
-                                <span class="status-badge <?php echo $isPub ? 'published' : 'draft'; ?>" 
-                                      id="badge-failed-grid-<?php echo $fb['id']; ?>"
-                                      style="<?php echo $isPub ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
-                                    <span class="badge-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                    <span class="badge-label"><?php echo $isPub ? 'Visible' : 'Hidden'; ?></span>
-                                </span>
-                                <?php if ($fb['is_featured']): ?>
-                                    <span class="status-badge published" style="background: #FEF3C7; color: #92400E; border-color: #FCD34D;">
-                                        <span class="badge-icon">★</span>
-                                        <span class="badge-label">Featured</span>
-                                    </span>
-                                <?php endif; ?>
-                            </div>
-                            <img src="<?php echo htmlspecialchars($thumbUrl); ?>" alt="<?php echo htmlspecialchars($fb['title']); ?>" onerror="this.onerror=null; this.src='../assets/images/lab-failed-batch.jpg';" loading="lazy">
-                            <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.65); color: #fff; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 600;">
-                                <?php echo htmlspecialchars($fb['badge_label'] ?: 'FAILURE IS DATA'); ?>
-                            </div>
-                        </div>
-                        <div class="blog-card-body">
-                            <span class="blog-card-category"><?php echo htmlspecialchars($fb['badge_label'] ?: 'Case Study'); ?></span>
-                            <h3 class="blog-card-title"><?php echo htmlspecialchars($fb['title']); ?></h3>
-                            <p class="blog-card-excerpt"><?php echo htmlspecialchars(strip_tags($fb['hypothesis']) ?: 'No hypothesis entered.'); ?></p>
-                            <div class="blog-card-footer">
-                                <span class="blog-card-date"><?php echo $fb['is_featured'] ? '★ Home Featured' : 'Case Study'; ?></span>
-                                <div class="blog-card-actions">
-                                    <button type="button" class="btn btn-outline btn-sm" style="padding:6px 12px;" onclick='editFailedBatch(<?php echo json_encode($fb, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
-                                    <button type="button" 
-                                            class="btn btn-outline btn-sm btn-visibility-toggle <?php echo $isPub ? 'btn-status-visible' : 'btn-status-hidden'; ?>" 
-                                            data-item-type="failed_batch"
-                                            data-id="<?php echo $fb['id']; ?>" 
-                                            onclick="toggleLabItem('failed_batch', <?php echo $fb['id']; ?>, this)" 
-                                            title="<?php echo $isPub ? 'Click to Hide from site' : 'Click to Make Visible on site'; ?>"
-                                            style="padding:6px 10px; display:inline-flex; align-items:center; gap:5px; font-weight:600; <?php echo $isPub ? 'color:#15803d;' : 'color:#d97706;'; ?>">
-                                        <span class="toggle-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                        <span class="toggle-text"><?php echo $isPub ? 'Hide' : 'Show'; ?></span>
-                                    </button>
-                                    <div style="position: relative; display: inline-block;">
-                                        <button type="button" class="btn btn-outline btn-sm" onclick="toggleMoreMenu(event, this)" style="padding: 6px 8px; min-width: 0;">&bull;&bull;&bull;</button>
-                                        <div class="more-actions-dropdown">
-                                            <?php if (!$fb['is_featured']): ?>
-                                                <form method="POST">
-                                                    <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                                    <input type="hidden" name="action" value="set_featured_failed_batch">
-                                                    <input type="hidden" name="failed_id" value="<?php echo (int)$fb['id']; ?>">
-                                                    <button type="submit">★ Make Featured</button>
-                                                </form>
-                                            <?php endif; ?>
-                                            <a href="../innovation-lab.php#failed-experiments" target="_blank">View on Site &nearr;</a>
-                                            <form method="POST" onsubmit="return confirm('Delete this failed batch case study?');" class="delete-form">
-                                                <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                                <input type="hidden" name="action" value="delete_failed_batch">
-                                                <input type="hidden" name="failed_id" value="<?php echo (int)$fb['id']; ?>">
-                                                <button type="submit" class="delete-btn">Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- LIST VIEW -->
-            <div class="table-container" id="failedListContainer" style="<?php echo $viewMode === 'list' ? '' : 'display:none;'; ?> background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; margin-bottom: 30px;">
+        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0 0 10px 10px; overflow: hidden; margin-bottom: 30px;">
+            <div style="overflow-x: auto;">
                 <table id="failedBatchesTable" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
                     <thead style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-color);">
                         <tr>
@@ -1501,82 +1188,65 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                             <th style="padding: 12px 18px;">2. What Went Wrong</th>
                             <th style="padding: 12px 18px;">4. What We Learned</th>
                             <th style="padding: 12px 18px; width: 110px;">Featured</th>
-                            <th style="padding: 12px 18px; width: 110px;">Status</th>
-                            <th style="padding: 12px 18px; width: 170px; text-align: right;">Actions</th>
+                            <th style="padding: 12px 18px; width: 140px; text-align: right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($failedBatches as $fb): 
-                            $isPub = (int)$fb['is_active'];
-                        ?>
-                            <tr class="failed-row" id="failed-row-<?php echo $fb['id']; ?>"
-                                data-title="<?php echo strtolower(htmlspecialchars($fb['title'])); ?>" 
-                                data-hypo="<?php echo strtolower(htmlspecialchars(strip_tags($fb['hypothesis']))); ?>"
-                                data-happened="<?php echo strtolower(htmlspecialchars(strip_tags($fb['what_happened']))); ?>"
-                                data-next="<?php echo strtolower(htmlspecialchars(strip_tags($fb['what_next']))); ?>"
-                                data-featured="<?php echo $fb['is_featured'] ? 'featured' : ''; ?>"
-                                data-status="<?php echo $isPub ? 'published' : 'draft'; ?>"
-                                style="border-bottom: 1px solid var(--border-color); <?php echo $fb['is_featured'] ? 'background: rgba(212, 175, 55, 0.05);' : ''; ?>">
-                                <td style="padding: 12px 18px;">
-                                    <img src="../<?php echo htmlspecialchars($fb['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" style="width: 52px; height: 52px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="" onerror="this.src='../assets/images/lab-failed-batch.jpg'">
-                                </td>
-                                <td style="padding: 12px 18px;">
-                                    <div style="font-weight: 700; color: var(--text-main); font-size: 14px;"><?php echo htmlspecialchars($fb['title']); ?></div>
-                                    <div style="font-size: 11px; color: #B45309; font-weight: 700; text-transform: uppercase;"><?php echo htmlspecialchars($fb['badge_label']); ?></div>
-                                </td>
-                                <td style="padding: 12px 18px; font-size: 12.5px; max-width: 200px; color: var(--text-muted);">
-                                    <?php echo htmlspecialchars(strip_tags($fb['hypothesis'])); ?>
-                                </td>
-                                <td style="padding: 12px 18px; font-size: 12.5px; max-width: 200px; color: #DC2626;">
-                                    <?php echo htmlspecialchars(strip_tags($fb['what_happened'])); ?>
-                                </td>
-                                <td style="padding: 12px 18px; font-size: 12.5px; max-width: 200px; color: #16A34A; font-weight: 500;">
-                                    <?php echo htmlspecialchars(strip_tags($fb['what_next'])); ?>
-                                </td>
-                                <td style="padding: 12px 18px;">
-                                    <?php if ($fb['is_featured']): ?>
-                                        <span style="background: #FEF3C7; color: #92400E; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">★ Featured</span>
-                                    <?php else: ?>
-                                        <form method="POST" style="margin: 0;">
+                        <?php if (!empty($failedBatches)): ?>
+                            <?php foreach ($failedBatches as $fb): ?>
+                                <tr class="failed-row" data-title="<?php echo strtolower(htmlspecialchars($fb['title'])); ?>" data-hypo="<?php echo strtolower(htmlspecialchars($fb['hypothesis'])); ?>" style="border-bottom: 1px solid var(--border-color); <?php echo $fb['is_featured'] ? 'background: rgba(212, 175, 55, 0.05);' : ''; ?>">
+                                    <td style="padding: 12px 18px;">
+                                        <img src="../<?php echo htmlspecialchars($fb['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" style="width: 52px; height: 52px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="" onerror="this.src='../assets/images/lab-failed-batch.jpg'">
+                                    </td>
+                                    <td style="padding: 12px 18px;">
+                                        <div style="font-weight: 700; color: var(--text-main); font-size: 14px;"><?php echo htmlspecialchars($fb['title']); ?></div>
+                                        <div style="font-size: 11px; color: #B45309; font-weight: 700; text-transform: uppercase;"><?php echo htmlspecialchars($fb['badge_label']); ?></div>
+                                    </td>
+                                    <td style="padding: 12px 18px; font-size: 12.5px; max-width: 200px; color: var(--text-muted);">
+                                        <?php echo htmlspecialchars(strip_tags($fb['hypothesis'])); ?>
+                                    </td>
+                                    <td style="padding: 12px 18px; font-size: 12.5px; max-width: 200px; color: #DC2626;">
+                                        <?php echo htmlspecialchars(strip_tags($fb['what_happened'])); ?>
+                                    </td>
+                                    <td style="padding: 12px 18px; font-size: 12.5px; max-width: 200px; color: #16A34A; font-weight: 500;">
+                                        <?php echo htmlspecialchars(strip_tags($fb['what_next'])); ?>
+                                    </td>
+                                    <td style="padding: 12px 18px;">
+                                        <?php if ($fb['is_featured']): ?>
+                                            <span style="background: #FEF3C7; color: #92400E; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">★ Home Featured</span>
+                                        <?php else: ?>
+                                            <form method="POST" style="margin: 0;">
+                                                <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
+                                                <input type="hidden" name="action" value="set_featured_failed_batch">
+                                                <input type="hidden" name="failed_id" value="<?php echo (int)$fb['id']; ?>">
+                                                <button type="submit" class="btn btn-sm btn-outline" style="font-size: 11px; padding: 2px 8px;">Make Feature</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
+                                        <button type="button" class="btn btn-sm btn-outline" onclick='editFailedBatch(<?php echo json_encode($fb, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
+                                        <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this failed batch case study?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                            <input type="hidden" name="action" value="set_featured_failed_batch">
+                                            <input type="hidden" name="action" value="delete_failed_batch">
                                             <input type="hidden" name="failed_id" value="<?php echo (int)$fb['id']; ?>">
-                                            <button type="submit" class="btn btn-sm btn-outline" style="font-size: 11px; padding: 2px 8px;">Make Feature</button>
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                         </form>
-                                    <?php endif; ?>
-                                </td>
-                                <td style="padding: 12px 18px;">
-                                    <span class="status-badge <?php echo $isPub ? 'published' : 'draft'; ?>" 
-                                          id="badge-failed-list-<?php echo $fb['id']; ?>"
-                                          style="<?php echo $isPub ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
-                                        <span class="badge-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                        <span class="badge-label"><?php echo $isPub ? 'Visible' : 'Hidden'; ?></span>
-                                    </span>
-                                </td>
-                                <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
-                                    <button type="button" class="btn btn-sm btn-outline" onclick='editFailedBatch(<?php echo json_encode($fb, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
-                                    <button type="button" 
-                                            class="btn btn-sm btn-outline btn-visibility-toggle <?php echo $isPub ? 'btn-status-visible' : 'btn-status-hidden'; ?>" 
-                                            data-item-type="failed_batch"
-                                            data-id="<?php echo $fb['id']; ?>" 
-                                            onclick="toggleLabItem('failed_batch', <?php echo $fb['id']; ?>, this)" 
-                                            style="padding: 4px 8px; font-size: 12px; <?php echo $isPub ? 'color:#15803d;' : 'color:#d97706;'; ?>">
-                                        <span class="toggle-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                        <span class="toggle-text"><?php echo $isPub ? 'Hide' : 'Show'; ?></span>
-                                    </button>
-                                    <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this failed batch case study?');">
-                                        <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                        <input type="hidden" name="action" value="delete_failed_batch">
-                                        <input type="hidden" name="failed_id" value="<?php echo (int)$fb['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
-                                </td>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7" style="padding: 32px; text-align: center; color: var(--text-light);">No failed batch case studies logged yet.</td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
-        <?php endif; ?>
+        </div>
+
+    <!-- =====================================================================
+         TAB 3: "WHAT IF?" QUESTIONS
+         ===================================================================== -->
     <?php elseif ($activeTab === 'what-if'): ?>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
@@ -1640,140 +1310,33 @@ render_admin_header('Innovation Lab', 'innovation-lab');
          TAB 4: INGREDIENT CATEGORIES
          ===================================================================== -->
     <?php elseif ($activeTab === 'ingredients'): ?>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
                 <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--gold, #C7A66A); text-transform: uppercase; margin-bottom: 2px;">LOCAL INGREDIENTS. FRESH FLAVORS. NEW IDEAS.</div>
-                <h2 style="font-size: 22px; font-weight: 700; color: var(--text-main); margin: 0 0 4px; font-family: 'Playfair Display', Georgia, serif;">Ingredient Innovation</h2>
-                <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Discover local fruits, spices, and natural sweeteners we test in our kitchen.</p>
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Ingredient Innovation</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Discover local fruits, spices, and natural sweeteners we test in our kitchen.</p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openNewIngredientModal()" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-weight: 700;">
-                <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M12 4v16m8-8H4"></path></svg>
-                Add Ingredient Category
+            <button type="button" class="btn btn-primary" onclick="openNewIngredientModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
+                <span style="font-size: 16px;">+</span> Add Ingredient Category
             </button>
         </div>
 
-        <!-- Action Bar -->
-        <div class="action-bar" style="margin-bottom: 24px;">
-            <div class="action-bar-left">
-                <div class="topbar-search" style="display: block; width: 280px; position: relative;">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); pointer-events: none;"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" id="ingSearchInput" placeholder="Search ingredient categories..." oninput="filterIngredientsView()" style="width: 100%; border-radius: 8px; padding-left: 36px; padding-top: 9px; padding-bottom: 9px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 13px;">
-                </div>
-            </div>
-
-            <div class="action-bar-right">
-                <select id="ingStatusSelect" onchange="filterIngredientsView()" style="padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 13px; font-family: var(--font-sans); outline: none;">
-                    <option value="">All Statuses</option>
-                    <option value="published">Visible</option>
-                    <option value="draft">Hidden</option>
-                </select>
-
-                <div class="view-toggle">
-                    <button type="button" class="view-toggle-btn <?php echo $viewMode === 'grid' ? 'active' : ''; ?>" onclick="setLabViewMode('grid')" title="Grid View">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                    </button>
-                    <button type="button" class="view-toggle-btn <?php echo $viewMode === 'list' ? 'active' : ''; ?>" onclick="setLabViewMode('list')" title="List View">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </button>
-                </div>
-
-                <span id="ingCountBadge" style="font-size: 12.5px; color: var(--text-muted); font-weight: 600; white-space: nowrap;">
-                    Showing <?php echo count($ingredientsList); ?> items
-                </span>
-            </div>
-        </div>
-
-        <?php if (empty($ingredientsList)): ?>
-            <div class="form-card" style="padding: 60px; text-align: center; color: var(--text-light);">
-                <p style="font-size: 16px; font-weight: 500;">No ingredient categories found. Click "+ Add Ingredient Category" to create one!</p>
-            </div>
-        <?php else: ?>
-            <!-- GRID VIEW -->
-            <div class="blogs-grid-view" id="ingGridContainer" style="<?php echo $viewMode === 'grid' ? '' : 'display:none;'; ?>">
-                <?php foreach ($ingredientsList as $ing): 
-                    $isPub = (int)$ing['is_active'];
-                    $thumbUrl = !empty($ing['image_path']) ? '../' . $ing['image_path'] : '../assets/images/placeholder.jpg';
-                ?>
-                    <div class="blog-card ing-card-item" id="ing-card-<?php echo $ing['id']; ?>"
-                         data-title="<?php echo strtolower(htmlspecialchars($ing['title'])); ?>"
-                         data-desc="<?php echo strtolower(htmlspecialchars(strip_tags($ing['description']))); ?>"
-                         data-varietals="<?php echo strtolower(htmlspecialchars($ing['key_varietals'])); ?>"
-                         data-status="<?php echo $isPub ? 'published' : 'draft'; ?>">
-                        <div class="blog-card-image">
-                            <div class="blog-card-badges">
-                                <span class="status-badge <?php echo $isPub ? 'published' : 'draft'; ?>" 
-                                      id="badge-ing-grid-<?php echo $ing['id']; ?>"
-                                      style="<?php echo $isPub ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
-                                    <span class="badge-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                    <span class="badge-label"><?php echo $isPub ? 'Visible' : 'Hidden'; ?></span>
-                                </span>
-                            </div>
-                            <img src="<?php echo htmlspecialchars($thumbUrl); ?>" alt="<?php echo htmlspecialchars($ing['title']); ?>" onerror="this.onerror=null; this.src='../assets/images/placeholder.jpg';" loading="lazy">
-                            <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.65); color: #fff; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 600;">
-                                <?php echo htmlspecialchars($ing['key_varietals'] ?: 'INNOVATION'); ?>
-                            </div>
-                        </div>
-                        <div class="blog-card-body">
-                            <span class="blog-card-category">Ingredient Category</span>
-                            <h3 class="blog-card-title"><?php echo htmlspecialchars($ing['title']); ?></h3>
-                            <p class="blog-card-excerpt"><?php echo htmlspecialchars(strip_tags($ing['description']) ?: 'No description entered.'); ?></p>
-                            <div class="blog-card-footer">
-                                <span class="blog-card-date">Sort Order: #<?php echo (int)$ing['sort_order']; ?></span>
-                                <div class="blog-card-actions">
-                                    <button type="button" class="btn btn-outline btn-sm" style="padding:6px 12px;" onclick='editIngredient(<?php echo json_encode($ing, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
-                                    <button type="button" 
-                                            class="btn btn-outline btn-sm btn-visibility-toggle <?php echo $isPub ? 'btn-status-visible' : 'btn-status-hidden'; ?>" 
-                                            data-item-type="ingredient"
-                                            data-id="<?php echo $ing['id']; ?>" 
-                                            onclick="toggleLabItem('ingredient', <?php echo $ing['id']; ?>, this)" 
-                                            title="<?php echo $isPub ? 'Click to Hide from site' : 'Click to Make Visible on site'; ?>"
-                                            style="padding:6px 10px; display:inline-flex; align-items:center; gap:5px; font-weight:600; <?php echo $isPub ? 'color:#15803d;' : 'color:#d97706;'; ?>">
-                                        <span class="toggle-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                        <span class="toggle-text"><?php echo $isPub ? 'Hide' : 'Show'; ?></span>
-                                    </button>
-                                    <div style="position: relative; display: inline-block;">
-                                        <button type="button" class="btn btn-outline btn-sm" onclick="toggleMoreMenu(event, this)" style="padding: 6px 8px; min-width: 0;">&bull;&bull;&bull;</button>
-                                        <div class="more-actions-dropdown">
-                                            <a href="../innovation-lab.php#ingredient-innovation" target="_blank">View on Site &nearr;</a>
-                                            <form method="POST" onsubmit="return confirm('Delete this ingredient category?');" class="delete-form">
-                                                <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                                <input type="hidden" name="action" value="delete_ingredient">
-                                                <input type="hidden" name="ing_id" value="<?php echo (int)$ing['id']; ?>">
-                                                <button type="submit" class="delete-btn">Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- LIST VIEW -->
-            <div class="table-container" id="ingListContainer" style="<?php echo $viewMode === 'list' ? '' : 'display:none;'; ?> background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; margin-bottom: 30px;">
-                <table id="ingredientsTable" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
-                    <thead style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-color);">
-                        <tr>
-                            <th style="padding: 12px 18px; width: 64px;">Image</th>
-                            <th style="padding: 12px 18px;">Category Title</th>
-                            <th style="padding: 12px 18px;">Description</th>
-                            <th style="padding: 12px 18px;">Link / Action</th>
-                            <th style="padding: 12px 18px; width: 80px;">Order</th>
-                            <th style="padding: 12px 18px; width: 110px;">Status</th>
-                            <th style="padding: 12px 18px; width: 170px; text-align: right;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($ingredientsList as $ing): 
-                            $isPub = (int)$ing['is_active'];
-                        ?>
-                            <tr class="ing-row" id="ing-row-<?php echo $ing['id']; ?>"
-                                data-title="<?php echo strtolower(htmlspecialchars($ing['title'])); ?>"
-                                data-desc="<?php echo strtolower(htmlspecialchars(strip_tags($ing['description']))); ?>"
-                                data-varietals="<?php echo strtolower(htmlspecialchars($ing['key_varietals'])); ?>"
-                                data-status="<?php echo $isPub ? 'published' : 'draft'; ?>"
-                                style="border-bottom: 1px solid var(--border-color);">
+        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; margin-bottom: 30px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
+                <thead style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-color);">
+                    <tr>
+                        <th style="padding: 12px 18px; width: 64px;">Image</th>
+                        <th style="padding: 12px 18px;">Category Title</th>
+                        <th style="padding: 12px 18px;">Description</th>
+                        <th style="padding: 12px 18px;">Link / Action</th>
+                        <th style="padding: 12px 18px; width: 80px;">Order</th>
+                        <th style="padding: 12px 18px; width: 140px; text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($ingredientsList)): ?>
+                        <?php foreach ($ingredientsList as $ing): ?>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
                                 <td style="padding: 12px 18px;">
                                     <img src="../<?php echo htmlspecialchars($ing['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="" onerror="this.src='../assets/images/placeholder.jpg'">
                                 </td>
@@ -1787,25 +1350,8 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                     <?php echo htmlspecialchars($ing['link_url']); ?>
                                 </td>
                                 <td style="padding: 12px 18px;"><?php echo (int)$ing['sort_order']; ?></td>
-                                <td style="padding: 12px 18px;">
-                                    <span class="status-badge <?php echo $isPub ? 'published' : 'draft'; ?>" 
-                                          id="badge-ing-list-<?php echo $ing['id']; ?>"
-                                          style="<?php echo $isPub ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
-                                        <span class="badge-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                        <span class="badge-label"><?php echo $isPub ? 'Visible' : 'Hidden'; ?></span>
-                                    </span>
-                                </td>
                                 <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
                                     <button type="button" class="btn btn-sm btn-outline" onclick='editIngredient(<?php echo json_encode($ing, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
-                                    <button type="button" 
-                                            class="btn btn-sm btn-outline btn-visibility-toggle <?php echo $isPub ? 'btn-status-visible' : 'btn-status-hidden'; ?>" 
-                                            data-item-type="ingredient"
-                                            data-id="<?php echo $ing['id']; ?>" 
-                                            onclick="toggleLabItem('ingredient', <?php echo $ing['id']; ?>, this)" 
-                                            style="padding: 4px 8px; font-size: 12px; <?php echo $isPub ? 'color:#15803d;' : 'color:#d97706;'; ?>">
-                                        <span class="toggle-icon"><?php echo $isPub ? '👁️' : '🔒'; ?></span>
-                                        <span class="toggle-text"><?php echo $isPub ? 'Hide' : 'Show'; ?></span>
-                                    </button>
                                     <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this ingredient category?');">
                                         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                         <input type="hidden" name="action" value="delete_ingredient">
@@ -1815,10 +1361,14 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php endif; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+    <!-- =====================================================================
+         TAB 5: FUTURE OF CHOCOLATE & GENERAL HERO SETTINGS
+         ===================================================================== -->
     <?php elseif ($activeTab === 'future'): ?>
         
         <form method="POST" enctype="multipart/form-data">
@@ -3141,306 +2691,56 @@ function setTelemetryPreset(fieldId, val) {
 /* =========================================================================
    TABLE INSTANT FILTERING (OPERATE MODE)
    ========================================================================= */
-
-/* =========================================================================
-   VIEW TOGGLE & INSTANT FILTERING (BLOG & LIST HYBRID MODE)
-   ========================================================================= */
-function toggleMoreMenu(e, btn) {
-    e.stopPropagation();
-    const dropdown = btn.nextElementSibling;
-    const isVisible = dropdown.style.display === 'block';
-    
-    document.querySelectorAll('.more-actions-dropdown').forEach(d => {
-        d.style.display = 'none';
-        const card = d.closest('.blog-card');
-        if (card) card.classList.remove('menu-active');
-    });
-
-    if (!isVisible) {
-        dropdown.style.display = 'block';
-        const card = btn.closest('.blog-card');
-        if (card) card.classList.add('menu-active');
-    }
-}
-
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('.more-actions-dropdown') && !e.target.closest('button[onclick*="toggleMoreMenu"]')) {
-        document.querySelectorAll('.more-actions-dropdown').forEach(d => {
-            d.style.display = 'none';
-            const card = d.closest('.blog-card');
-            if (card) card.classList.remove('menu-active');
-        });
-    }
-});
-
-function setLabViewMode(mode) {
-    document.cookie = "lab_view_pref=" + mode + "; path=/; max-age=" + (60*60*24*30);
-    
-    document.querySelectorAll('.view-toggle-btn').forEach(btn => {
-        const isCurrent = (mode === 'grid' && btn.title === 'Grid View') || (mode === 'list' && btn.title === 'List View');
-        btn.classList.toggle('active', isCurrent);
-    });
-
-    const expGrid = document.getElementById('expGridContainer');
-    const expList = document.getElementById('expListContainer');
-    if (expGrid && expList) {
-        expGrid.style.display = mode === 'grid' ? '' : 'none';
-        expList.style.display = mode === 'list' ? '' : 'none';
-    }
-
-    const failedGrid = document.getElementById('failedGridContainer');
-    const failedList = document.getElementById('failedListContainer');
-    if (failedGrid && failedList) {
-        failedGrid.style.display = mode === 'grid' ? '' : 'none';
-        failedList.style.display = mode === 'list' ? '' : 'none';
-    }
-
-    const ingGrid = document.getElementById('ingGridContainer');
-    const ingList = document.getElementById('ingListContainer');
-    if (ingGrid && ingList) {
-        ingGrid.style.display = mode === 'grid' ? '' : 'none';
-        ingList.style.display = mode === 'list' ? '' : 'none';
-    }
-}
-
-function toggleLabItem(type, id, btnEl) {
-    if (btnEl) {
-        btnEl.disabled = true;
-        btnEl.style.opacity = '0.6';
-    }
-
-    let actionName = 'toggle_' + type;
-    let idParam = type + '_id';
-    if (type === 'failed_batch') {
-        idParam = 'failed_id';
-    } else if (type === 'ingredient') {
-        idParam = 'ing_id';
-    }
-
-    const formData = new FormData();
-    formData.append('csrf_token', '<?php echo $csrfToken; ?>');
-    formData.append('action', actionName);
-    formData.append(idParam, id);
-    formData.append('is_ajax', '1');
-
-    fetch('innovation-lab.php', {
-        method: 'POST',
-        headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        body: formData
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (btnEl) {
-            btnEl.disabled = false;
-            btnEl.style.opacity = '1';
-        }
-
-        if (data.success) {
-            const isAct = data.is_active === 1;
-
-            document.querySelectorAll(`.btn-visibility-toggle[data-item-type="${type}"][data-id="${id}"]`).forEach(btn => {
-                const iconSpan = btn.querySelector('.toggle-icon');
-                const textSpan = btn.querySelector('.toggle-text');
-                if (isAct) {
-                    btn.classList.remove('btn-status-hidden');
-                    btn.classList.add('btn-status-visible');
-                    btn.style.color = '#15803d';
-                    btn.title = 'Click to Hide from site';
-                    if (iconSpan) iconSpan.innerText = '👁️';
-                    if (textSpan) textSpan.innerText = 'Hide';
-                } else {
-                    btn.classList.remove('btn-status-visible');
-                    btn.classList.add('btn-status-hidden');
-                    btn.style.color = '#d97706';
-                    btn.title = 'Click to Make Visible on site';
-                    if (iconSpan) iconSpan.innerText = '🔒';
-                    if (textSpan) textSpan.innerText = 'Show';
-                }
-            });
-
-            ['grid', 'list'].forEach(viewType => {
-                const badge = document.getElementById(`badge-${type === 'failed_batch' ? 'failed' : (type === 'ingredient' ? 'ing' : 'exp')}-${viewType}-${id}`);
-                if (badge) {
-                    const iconSpan = badge.querySelector('.badge-icon');
-                    const labelSpan = badge.querySelector('.badge-label');
-                    if (isAct) {
-                        badge.className = 'status-badge published';
-                        badge.style.background = '';
-                        badge.style.color = '';
-                        badge.style.borderColor = '';
-                        if (iconSpan) iconSpan.innerText = '👁️';
-                        if (labelSpan) labelSpan.innerText = 'Visible';
-                    } else {
-                        badge.className = 'status-badge draft';
-                        badge.style.background = 'rgba(217, 119, 6, 0.15)';
-                        badge.style.color = '#d97706';
-                        badge.style.borderColor = 'rgba(217, 119, 6, 0.3)';
-                        if (iconSpan) iconSpan.innerText = '🔒';
-                        if (labelSpan) labelSpan.innerText = 'Hidden';
-                    }
-                }
-            });
-
-            const card = document.getElementById(`${type === 'failed_batch' ? 'failed' : (type === 'ingredient' ? 'ing' : 'exp')}-card-${id}`);
-            if (card) card.dataset.status = isAct ? 'published' : 'draft';
-            const row = document.getElementById(`${type === 'failed_batch' ? 'failed' : (type === 'ingredient' ? 'ing' : 'exp')}-row-${id}`);
-            if (row) row.dataset.status = isAct ? 'published' : 'draft';
-
-            if (window.showToast) {
-                showToast(data.message, isAct ? 'success' : 'warning');
-            }
-        } else {
-            alert('Error: ' + (data.message || 'Action failed'));
-        }
-    })
-    .catch(err => {
-        if (btnEl) {
-            btnEl.disabled = false;
-            btnEl.style.opacity = '1';
-        }
-        alert('Network error: ' + err.message);
-    });
-}
-
-let currentExpCat = '';
-function setExpCategoryFilter(cat, btn) {
-    currentExpCat = (cat || '').toLowerCase().trim();
-    document.querySelectorAll('.action-bar-left .filter-chip').forEach(c => c.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    filterExperimentsView();
-}
-
-function filterExperimentsView() {
+function filterExperimentsTable() {
     const query = (document.getElementById('expSearchInput')?.value || '').toLowerCase().trim();
-    const status = (document.getElementById('expStatusSelect')?.value || '').toLowerCase().trim();
-
-    const cards = document.querySelectorAll('.exp-card-item');
+    const cat = (document.getElementById('expCategoryFilter')?.value || '').toLowerCase().trim();
     const rows = document.querySelectorAll('#experimentsTable tbody .exp-row');
     let visible = 0;
-
-    cards.forEach(c => {
-        const title = c.dataset.title || '';
-        const desc = c.dataset.desc || '';
-        const tags = c.dataset.tags || '';
-        const cat = c.dataset.cat || '';
-        const stat = c.dataset.status || '';
-
-        const matchQ = !query || title.includes(query) || desc.includes(query) || tags.includes(query);
-        const matchCat = !currentExpCat || cat === currentExpCat;
-        const matchStatus = !status || stat === status;
-
-        if (matchQ && matchCat && matchStatus) {
-            c.style.display = '';
-            visible++;
-        } else {
-            c.style.display = 'none';
-        }
-    });
 
     rows.forEach(r => {
         const title = r.dataset.title || '';
         const desc = r.dataset.desc || '';
         const tags = r.dataset.tags || '';
-        const cat = r.dataset.cat || '';
-        const stat = r.dataset.status || '';
+        const rCat = r.dataset.cat || '';
 
-        const matchQ = !query || title.includes(query) || desc.includes(query) || tags.includes(query);
-        const matchCat = !currentExpCat || cat === currentExpCat;
-        const matchStatus = !status || stat === status;
+        const matchesQuery = !query || title.includes(query) || desc.includes(query) || tags.includes(query);
+        const matchesCat = !cat || rCat === cat;
 
-        r.style.display = (matchQ && matchCat && matchStatus) ? '' : 'none';
+        if (matchesQuery && matchesCat) {
+            r.style.display = '';
+            visible++;
+        } else {
+            r.style.display = 'none';
+        }
     });
 
     const badge = document.getElementById('expCountBadge');
-    if (badge) badge.innerText = `Showing ${visible} items`;
+    if (badge) badge.innerText = `Showing ${visible} of ${rows.length}`;
 }
 
-function filterFailedBatchesView() {
+function filterFailedBatchesTable() {
     const query = (document.getElementById('failedSearchInput')?.value || '').toLowerCase().trim();
-    const status = (document.getElementById('failedStatusSelect')?.value || '').toLowerCase().trim();
-
-    const cards = document.querySelectorAll('.failed-card-item');
     const rows = document.querySelectorAll('#failedBatchesTable tbody .failed-row');
     let visible = 0;
-
-    cards.forEach(c => {
-        const title = c.dataset.title || '';
-        const hypo = c.dataset.hypo || '';
-        const happened = c.dataset.happened || '';
-        const next = c.dataset.next || '';
-        const stat = c.dataset.status || '';
-        const feat = c.dataset.featured || '';
-
-        const matchQ = !query || title.includes(query) || hypo.includes(query) || happened.includes(query) || next.includes(query);
-        const matchStatus = !status || (status === 'featured' ? feat === 'featured' : stat === status);
-
-        if (matchQ && matchStatus) {
-            c.style.display = '';
-            visible++;
-        } else {
-            c.style.display = 'none';
-        }
-    });
 
     rows.forEach(r => {
         const title = r.dataset.title || '';
         const hypo = r.dataset.hypo || '';
-        const happened = r.dataset.happened || '';
-        const next = r.dataset.next || '';
-        const stat = r.dataset.status || '';
-        const feat = r.dataset.featured || '';
-
-        const matchQ = !query || title.includes(query) || hypo.includes(query) || happened.includes(query) || next.includes(query);
-        const matchStatus = !status || (status === 'featured' ? feat === 'featured' : stat === status);
-
-        r.style.display = (matchQ && matchStatus) ? '' : 'none';
-    });
-
-    const badge = document.getElementById('failedCountBadge');
-    if (badge) badge.innerText = `Showing ${visible} items`;
-}
-
-function filterIngredientsView() {
-    const query = (document.getElementById('ingSearchInput')?.value || '').toLowerCase().trim();
-    const status = (document.getElementById('ingStatusSelect')?.value || '').toLowerCase().trim();
-
-    const cards = document.querySelectorAll('.ing-card-item');
-    const rows = document.querySelectorAll('#ingredientsTable tbody .ing-row');
-    let visible = 0;
-
-    cards.forEach(c => {
-        const title = c.dataset.title || '';
-        const desc = c.dataset.desc || '';
-        const varietals = c.dataset.varietals || '';
-        const stat = c.dataset.status || '';
-
-        const matchQ = !query || title.includes(query) || desc.includes(query) || varietals.includes(query);
-        const matchStatus = !status || stat === status;
-
-        if (matchQ && matchStatus) {
-            c.style.display = '';
+        if (!query || title.includes(query) || hypo.includes(query)) {
+            r.style.display = '';
             visible++;
         } else {
-            c.style.display = 'none';
+            r.style.display = 'none';
         }
     });
 
-    rows.forEach(r => {
-        const title = r.dataset.title || '';
-        const desc = r.dataset.desc || '';
-        const varietals = r.dataset.varietals || '';
-        const stat = r.dataset.status || '';
-
-        const matchQ = !query || title.includes(query) || desc.includes(query) || varietals.includes(query);
-        const matchStatus = !status || stat === status;
-
-        r.style.display = (matchQ && matchStatus) ? '' : 'none';
-    });
-
-    const badge = document.getElementById('ingCountBadge');
-    if (badge) badge.innerText = `Showing ${visible} items`;
+    const badge = document.getElementById('failedCountBadge');
+    if (badge) badge.innerText = `Showing ${visible} of ${rows.length}`;
 }
 
+/* =========================================================================
+   MODAL OPEN / CLOSE & CLONING
+   ========================================================================= */
 function openModal(id) {
     const m = document.getElementById(id);
     if (!m) return;

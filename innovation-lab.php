@@ -223,15 +223,15 @@ include 'includes/header.php';
   </nav>
 
   <!-- =================================================================
-       3. CURRENTLY IN THE LAB SECTION (Blog Card Layout)
+       3. CURRENTLY IN THE LAB SECTION
        ================================================================= -->
   <section class="lab-section" id="currently-in-lab">
-    <div class="lab-section-header-row" style="margin-bottom: 24px;">
+    <div class="lab-section-header-row">
       <div class="lab-section-title-wrap">
         <h2 class="lab-section-title">Currently in the Lab</h2>
         <div class="lab-section-rule"></div>
       </div>
-      <a href="#currently-in-lab" class="lab-section-link" onclick="filterClientExperiments('all', null, event)">
+      <a href="#currently-in-lab" class="lab-section-link" onclick="filterLabExperiments('all', null, event)">
         <span>VIEW ALL EXPERIMENTS</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -240,52 +240,32 @@ include 'includes/header.php';
       </a>
     </div>
 
-    <!-- Blog-Style Header Bar with Filter Pills & Search -->
-    <div class="blog-header-bar" style="margin-bottom: 36px;">
-      <div class="blog-filters-wrapper" id="expClientFilters">
-        <button type="button" class="filter-btn active" data-filter="all" onclick="filterClientExperiments('all', this)">All</button>
-        <button type="button" class="filter-btn" data-filter="ingredient-innovation" onclick="filterClientExperiments('ingredient-innovation', this)">Ingredient Innovation</button>
-        <button type="button" class="filter-btn" data-filter="process-exploration" onclick="filterClientExperiments('process-exploration', this)">Process Exploration</button>
-        <button type="button" class="filter-btn" data-filter="formulation-lab" onclick="filterClientExperiments('formulation-lab', this)">Formulation Lab</button>
-        <button type="button" class="filter-btn" data-filter="sensory-insights" onclick="filterClientExperiments('sensory-insights', this)">Sensory Insights</button>
-        <button type="button" class="filter-btn" data-filter="stability-shelf-life" onclick="filterClientExperiments('stability-shelf-life', this)">Stability &amp; Shelf Life</button>
-      </div>
-      <div class="search-container">
-        <input class="blog-search" type="text" id="expClientSearch" placeholder="Search experiments by recipe, topic, keyword..." oninput="searchClientExperiments(this.value)" />
-        <svg class="search-bar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-      </div>
-    </div>
-
-    <!-- Blog Grid (Matching blog.php) -->
-    <div class="grid-blog" id="experimentsGrid">
+    <!-- Dynamic 4-Column Grid of Experiments -->
+    <div class="lab-experiments-grid" id="experimentsGrid">
       <?php if (!empty($experiments)): ?>
         <?php foreach ($experiments as $exp): 
           $badgeColor = htmlspecialchars($exp['status_color'] ?: 'green');
         ?>
-          <div class="card blog-card-link client-exp-item" 
-               data-category="<?php echo htmlspecialchars(strtolower($exp['category'])); ?>" 
-               data-title="<?php echo htmlspecialchars(strtolower($exp['title'])); ?>" 
-               data-desc="<?php echo htmlspecialchars(strtolower($exp['description'])); ?>" 
-               data-tags="<?php echo htmlspecialchars(strtolower($exp['tags'])); ?>" 
-               onclick="openExperimentModal(<?php echo (int)$exp['id']; ?>)">
-            <div class="blog-card-img" style="position: relative;">
-              <img src="<?php echo htmlspecialchars($exp['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($exp['title']); ?>" loading="lazy" onerror="this.src='assets/images/placeholder.jpg';" />
-              <div class="lab-status-badge" style="position: absolute; top: 12px; left: 12px; margin: 0; background: rgba(14, 10, 8, 0.75); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.15);">
+          <div class="lab-exp-card" data-category="<?php echo htmlspecialchars($exp['category']); ?>" onclick="openExperimentModal(<?php echo (int)$exp['id']; ?>)">
+            <div class="lab-exp-media">
+              <img src="<?php echo htmlspecialchars($exp['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($exp['title']); ?>" loading="lazy" />
+              <div class="lab-status-badge">
                 <span class="status-dot <?php echo $badgeColor; ?>"></span>
-                <span style="color: #fff; font-weight: 600;"><?php echo htmlspecialchars($exp['status_badge']); ?></span>
+                <span><?php echo htmlspecialchars($exp['status_badge']); ?></span>
               </div>
             </div>
-            <div class="blog-card-body">
-              <h3 class="blog-card-title"><?php echo htmlspecialchars($exp['title']); ?></h3>
-              <div class="blog-meta">
-                <span class="tag"><?php echo htmlspecialchars($exp['category']); ?></span>
-                <span class="blog-date">Batch #<?php echo htmlspecialchars($exp['batch_ref'] ?: $exp['id']); ?> • <?php echo htmlspecialchars($exp['status_badge']); ?></span>
+            <div class="lab-exp-content">
+              <h3 class="lab-exp-title"><?php echo htmlspecialchars($exp['title']); ?></h3>
+              <p class="lab-exp-desc"><?php echo htmlspecialchars($exp['description']); ?></p>
+              <div class="lab-exp-footer">
+                <span class="lab-exp-tags"><?php echo htmlspecialchars($exp['tags'] ?: 'TEST BATCH | RECIPE'); ?></span>
+                <span class="lab-circle-btn" aria-label="Open Experiment Dossier">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </span>
               </div>
-              <p class="blog-excerpt"><?php echo htmlspecialchars($exp['description']); ?></p>
-              <div class="blog-read-more">EXPLORE DOSSIER &rarr;</div>
             </div>
           </div>
         <?php endforeach; ?>
@@ -296,10 +276,12 @@ include 'includes/header.php';
   </section>
 
   <!-- =================================================================
-       4. WHAT IF? SECTION
+       4. TWO-COLUMN SPLIT: "WHAT IF?" & "FROM A FAILED BATCH TO A NEW INSIGHT"
        ================================================================= -->
-  <section class="lab-section" id="what-if-section" style="padding-top: 20px; padding-bottom: 20px;">
-    <div class="lab-whatif-card" id="what-if" style="max-width: 1400px; margin: 0 auto;">
+  <section class="lab-split-section" id="ideas-and-failures">
+    
+    <!-- LEFT: WHAT IF? CARD -->
+    <div class="lab-whatif-card" id="what-if">
       <div class="lab-whatif-header">
         <h2 class="lab-whatif-title"><?php echo htmlspecialchars($whatIfHeading); ?></h2>
         <div class="lab-eyebrow" style="margin-top: 6px; margin-bottom: 0;">
@@ -329,124 +311,195 @@ include 'includes/header.php';
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- =================================================================
-       5. FROM A FAILED BATCH TO A NEW INSIGHT (Blog Card Layout)
-       ================================================================= -->
-  <section class="lab-section" id="failed-experiments" style="padding-top: 36px; padding-bottom: 40px;">
-    <div class="lab-section-header-row" style="margin-bottom: 20px;">
-      <div class="lab-section-title-wrap">
-        <div class="lab-eyebrow" style="margin-bottom: 6px;">
+    <!-- RIGHT: FROM A FAILED BATCH TO A NEW INSIGHT CARD -->
+    <div class="lab-failed-card" id="failed-experiments">
+      <div class="lab-failed-header">
+        <h2 class="lab-failed-title"><?php echo htmlspecialchars($failedHeading); ?></h2>
+        <div class="lab-eyebrow" style="margin-top: 6px; margin-bottom: 0;">
           <span><?php echo htmlspecialchars($failedEyebrow); ?></span>
         </div>
-        <h2 class="lab-section-title"><?php echo htmlspecialchars($failedHeading); ?></h2>
-        <div class="lab-section-rule"></div>
       </div>
-    </div>
-    <p style="font-size: 14.5px; color: #555; max-width: 720px; margin: 0 0 32px; font-family: var(--font-sans); line-height: 1.6;">
-      How we turn unexpected recipe mistakes into better, more delicious chocolate. Because failure is data.
-    </p>
 
-    <!-- Blog Grid for Failed Batches -->
-    <div class="grid-blog" id="failedBatchesGrid">
-      <?php if (!empty($failedBatches)): ?>
-        <?php foreach ($failedBatches as $fb): ?>
-          <div class="card blog-card-link client-failed-item" 
-               onclick="openFailedBatchModal(<?php echo (int)$fb['id']; ?>)">
-            <div class="blog-card-img" style="position: relative;">
-              <img src="<?php echo htmlspecialchars($fb['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" alt="<?php echo htmlspecialchars($fb['title']); ?>" loading="lazy" onerror="this.src='assets/images/lab-failed-batch.jpg';" />
-              <?php if ($fb['is_featured']): ?>
-                <div style="position: absolute; top: 12px; left: 12px; background: rgba(30, 25, 20, 0.85); backdrop-filter: blur(4px); color: #FCD34D; font-size: 10.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.08em; text-transform: uppercase;">
-                  ★ FEATURED CASE STUDY
-                </div>
-              <?php endif; ?>
-            </div>
-            <div class="blog-card-body">
-              <h3 class="blog-card-title"><?php echo htmlspecialchars($fb['title']); ?></h3>
-              <div class="blog-meta">
-                <span class="tag"><?php echo htmlspecialchars($fb['badge_label'] ?: 'CASE STUDY'); ?></span>
-                <span class="blog-date">Failure to Data</span>
-              </div>
-              <p class="blog-excerpt"><?php echo getLabCardSnippet($fb['hypothesis'] ?: $fb['what_happened']); ?></p>
-              <div class="blog-read-more">READ FULL STORY &rarr;</div>
-            </div>
+      <?php if ($primaryFailed): ?>
+      <div class="lab-failed-inner-box">
+        <div class="lab-failed-img-wrap">
+          <img src="<?php echo htmlspecialchars($primaryFailed['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" alt="<?php echo htmlspecialchars($primaryFailed['title']); ?>" loading="lazy" />
+        </div>
+        <div class="lab-failed-content">
+          <div class="lab-failed-case-tag"><?php echo htmlspecialchars($primaryFailed['title']); ?></div>
+          
+          <div class="lab-failed-data-row">
+            <span class="label">1. What We Hoped For</span>
+            <span class="text"><?php echo getLabCardSnippet($primaryFailed['hypothesis']); ?></span>
           </div>
-        <?php endforeach; ?>
+
+          <div class="lab-failed-data-row">
+            <span class="label">2. What Went Wrong</span>
+            <span class="text"><?php echo getLabCardSnippet($primaryFailed['what_happened']); ?></span>
+          </div>
+
+          <div class="lab-failed-data-row">
+            <span class="label">3. Why It Happened</span>
+            <span class="text"><?php echo getLabCardSnippet($primaryFailed['why_it_happened']); ?></span>
+          </div>
+
+          <div class="lab-failed-data-row">
+            <span class="label">4. What We Learned</span>
+            <span class="text"><?php echo getLabCardSnippet($primaryFailed['what_next']); ?></span>
+          </div>
+
+          <button type="button" class="lab-failed-btn" onclick="openFailedBatchModal(<?php echo (int)$primaryFailed['id']; ?>)">
+            <span>READ FULL STORY</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
       <?php else: ?>
-        <p style="grid-column: 1/-1; text-align: center; color: #555; padding: 40px 0;">No failed batch case studies documented yet.</p>
+        <div class="lab-failed-inner-box" style="padding: 24px; text-align: center; color: #666;">
+          No failed batch case studies documented yet. All experiments are running smoothly!
+        </div>
       <?php endif; ?>
     </div>
+
   </section>
 
   <!-- =================================================================
-       6. INGREDIENT INNOVATION SECTION (Blog Card Layout)
+       5. INGREDIENT INNOVATION SECTION
        ================================================================= -->
   <section class="lab-ingredient-section" id="ingredient-innovation">
     <div class="lab-ingredient-inner">
-      <div class="lab-section-header-row" style="margin-bottom: 20px;">
-        <div class="lab-section-title-wrap">
-          <div class="lab-eyebrow" style="margin-bottom: 6px;">
+      
+      <!-- Header Top Row: Left (Eyebrow + Title + Category Pills + Subtext) and Right (Search Bar) -->
+      <div class="lab-ingredient-header-top">
+        <div class="lab-ingredient-header-left">
+          <div class="lab-eyebrow" style="margin-bottom: 8px;">
             <span><?php echo htmlspecialchars($ingredientEyebrow); ?></span>
           </div>
-          <h2 class="lab-ingredient-title" style="margin: 0;"><?php echo htmlspecialchars($ingredientHeading); ?></h2>
-          <div class="lab-section-rule" style="background: rgba(255,255,255,0.2);"></div>
-        </div>
-      </div>
-      <p class="lab-ingredient-subtext" style="margin: 0 0 32px; color: rgba(255,255,255,0.8); max-width: 720px; line-height: 1.6;">
-        Testing local fruits, nuts, unrefined sugars, and spices to see how they blend naturally with Indian single-estate cocoa.
-      </p>
-
-      <!-- Blog-Style Header Bar with Pills & Search -->
-      <div class="blog-header-bar" style="margin-bottom: 36px;">
-        <div class="blog-filters-wrapper" id="ingClientFilters">
-          <button type="button" class="filter-btn active" data-filter="all" onclick="filterClientIngredients('all', this)">All</button>
-          <button type="button" class="filter-btn" data-filter="fruits" onclick="filterClientIngredients('fruits', this)">Fruits</button>
-          <button type="button" class="filter-btn" data-filter="nuts-seeds" onclick="filterClientIngredients('nuts-seeds', this)">Nuts &amp; Seeds</button>
-          <button type="button" class="filter-btn" data-filter="sugars" onclick="filterClientIngredients('sugars', this)">Sugars</button>
-          <button type="button" class="filter-btn" data-filter="dairy-vegan" onclick="filterClientIngredients('dairy-vegan', this)">Dairy &amp; Vegan</button>
-          <button type="button" class="filter-btn" data-filter="spices" onclick="filterClientIngredients('spices', this)">Spices</button>
-        </div>
-        <div class="search-container">
-          <input class="blog-search" type="text" id="ingClientSearch" placeholder="Search ingredients, sugars, spices..." oninput="searchClientIngredients(this.value)" />
-          <svg class="search-bar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </div>
-      </div>
-
-      <!-- Blog Grid (Matching blog.php) -->
-      <div class="grid-blog" id="ingredientsGrid">
-        <?php if (!empty($ingredientCategories)): ?>
-          <?php foreach ($ingredientCategories as $cat): ?>
-            <div class="card blog-card-link client-ing-item" 
-                 data-id="<?php echo (int)$cat['id']; ?>"
-                 data-slug="<?php echo htmlspecialchars($cat['slug']); ?>"
-                 data-title="<?php echo htmlspecialchars(strtolower($cat['title'])); ?>"
-                 data-desc="<?php echo htmlspecialchars(strtolower(strip_tags($cat['description'] ?? ''))); ?>"
-                 data-varietals="<?php echo htmlspecialchars(strtolower($cat['key_varietals'] ?? '')); ?>"
-                 data-science="<?php echo htmlspecialchars(strtolower($cat['science_behavior'] ?? '')); ?>"
-                 data-apps="<?php echo htmlspecialchars(strtolower($cat['applications'] ?? '')); ?>"
-                 onclick="openIngredientModal(<?php echo (int)$cat['id']; ?>)">
-              <div class="blog-card-img" style="position: relative;">
-                <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" onerror="this.src='assets/images/placeholder.jpg';" />
-              </div>
-              <div class="blog-card-body">
-                <h3 class="blog-card-title"><?php echo htmlspecialchars($cat['title']); ?></h3>
-                <div class="blog-meta">
-                  <span class="tag"><?php echo htmlspecialchars($cat['key_varietals'] ?: 'INGREDIENT RESEARCH'); ?></span>
-                  <span class="blog-date">Native Exploration</span>
-                </div>
-                <p class="blog-excerpt"><?php echo htmlspecialchars(strip_tags($cat['description'] ?? '')); ?></p>
-                <div class="blog-read-more">EXPLORE INGREDIENT &rarr;</div>
-              </div>
+          
+          <div class="lab-ingredient-title-row">
+            <h2 class="lab-ingredient-title"><?php echo htmlspecialchars($ingredientHeading); ?></h2>
+            
+            <!-- Category Filter Pills (circled next to title) -->
+            <div class="lab-ingredient-pills-wrap" role="tablist" aria-label="Ingredient categories">
+              <button type="button" class="lab-ing-pill active" data-filter="all" onclick="filterIngredientCategory('all', this)">All</button>
+              <button type="button" class="lab-ing-pill" data-filter="indian-fruits" onclick="filterIngredientCategory('indian-fruits', this)">Fruits</button>
+              <button type="button" class="lab-ing-pill" data-filter="nuts-seeds" onclick="filterIngredientCategory('nuts-seeds', this)">Nuts & Seeds</button>
+              <button type="button" class="lab-ing-pill" data-filter="alternative-sugars" onclick="filterIngredientCategory('alternative-sugars', this)">Sugars</button>
+              <button type="button" class="lab-ing-pill" data-filter="dairy-plant-based" onclick="filterIngredientCategory('dairy-plant-based', this)">Dairy & Vegan</button>
+              <button type="button" class="lab-ing-pill" data-filter="botanicals-spices" onclick="filterIngredientCategory('botanicals-spices', this)">Spices</button>
             </div>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <p style="grid-column: 1/-1; text-align: center; color: rgba(255,255,255,0.7); padding: 40px 0;">No ingredient categories found at this time.</p>
-        <?php endif; ?>
+          </div>
+
+          <p class="lab-ingredient-subtext">Testing local fruits, nuts, unrefined sugars, and spices to see how they blend naturally with Indian single-estate cocoa.</p>
+        </div>
+
+        <!-- Search Bar on Top Right (circled in blue oblong) -->
+        <div class="lab-ingredient-search-wrap">
+          <div class="lab-ingredient-search-inner">
+            <svg class="lab-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              id="labIngredientSearch" 
+              class="lab-search-input" 
+              placeholder="Search ingredients, sugars, spices..." 
+              autocomplete="off" 
+              oninput="handleIngredientSearch(this.value)"
+              aria-label="Search laboratory ingredients"
+            />
+            <button type="button" id="labSearchClearBtn" class="lab-search-clear-btn" onclick="clearIngredientSearch()" title="Clear search" style="display: none;">✕</button>
+          </div>
+          <div class="lab-search-status-bar">
+            <span id="labSearchCount" class="lab-search-counter"><?php echo count($ingredientCategories); ?> categories</span>
+          </div>
+        </div>
       </div>
+
+      <!-- Auto-Floating Carousel with Prev/Next Navigation Arrows -->
+      <div class="lab-carousel-wrapper" id="ingredientCarouselWrapper">
+        <!-- Navigation Prev Button (drawn on left side) -->
+        <button type="button" class="lab-carousel-arrow lab-carousel-prev" onclick="scrollIngredientCarousel(-1)" aria-label="Previous ingredients">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- Viewport Container -->
+        <div class="lab-carousel-viewport" id="ingredientCarouselViewport">
+          <div class="lab-carousel-track" id="ingredientCarouselTrack">
+            <?php if (!empty($ingredientCategories)): ?>
+              <!-- Primary Cards Set -->
+              <?php foreach ($ingredientCategories as $cat): ?>
+                <a href="javascript:void(0)" 
+                   class="lab-ing-card" 
+                   data-id="<?php echo (int)$cat['id']; ?>"
+                   data-slug="<?php echo htmlspecialchars($cat['slug']); ?>"
+                   data-title="<?php echo htmlspecialchars(strtolower($cat['title'])); ?>"
+                   data-desc="<?php echo htmlspecialchars(strtolower($cat['description'] ?? '')); ?>"
+                   data-varietals="<?php echo htmlspecialchars(strtolower($cat['key_varietals'] ?? '')); ?>"
+                   data-science="<?php echo htmlspecialchars(strtolower($cat['science_behavior'] ?? '')); ?>"
+                   data-apps="<?php echo htmlspecialchars(strtolower($cat['applications'] ?? '')); ?>"
+                   onclick="handleCardClick(<?php echo (int)$cat['id']; ?>, event)" 
+                   role="button" 
+                   aria-haspopup="dialog" 
+                   aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> dossier">
+                  <div class="lab-ing-photo-wrap">
+                    <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" />
+                  </div>
+                  <span class="lab-ing-label">
+                    <span><?php echo htmlspecialchars($cat['title']); ?></span>
+                    <span>→</span>
+                  </span>
+                </a>
+              <?php endforeach; ?>
+
+              <!-- Cloned Cards Set for Seamless Infinite Floating Loop -->
+              <?php foreach ($ingredientCategories as $cat): ?>
+                <a href="javascript:void(0)" 
+                   class="lab-ing-card is-clone" 
+                   data-id="<?php echo (int)$cat['id']; ?>"
+                   data-slug="<?php echo htmlspecialchars($cat['slug']); ?>"
+                   data-title="<?php echo htmlspecialchars(strtolower($cat['title'])); ?>"
+                   data-desc="<?php echo htmlspecialchars(strtolower($cat['description'] ?? '')); ?>"
+                   data-varietals="<?php echo htmlspecialchars(strtolower($cat['key_varietals'] ?? '')); ?>"
+                   data-science="<?php echo htmlspecialchars(strtolower($cat['science_behavior'] ?? '')); ?>"
+                   data-apps="<?php echo htmlspecialchars(strtolower($cat['applications'] ?? '')); ?>"
+                   onclick="handleCardClick(<?php echo (int)$cat['id']; ?>, event)" 
+                   role="button" 
+                   aria-haspopup="dialog" 
+                   aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> dossier">
+                  <div class="lab-ing-photo-wrap">
+                    <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" />
+                  </div>
+                  <span class="lab-ing-label">
+                    <span><?php echo htmlspecialchars($cat['title']); ?></span>
+                    <span>→</span>
+                  </span>
+                </a>
+              <?php endforeach; ?>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <!-- Navigation Next Button (drawn on right side) -->
+        <button type="button" class="lab-carousel-arrow lab-carousel-next" onclick="scrollIngredientCarousel(1)" aria-label="Next ingredients">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- No Results Feedback State -->
+      <div id="ingredientNoResults" class="lab-ingredient-no-results" style="display: none;">
+        <span class="no-results-icon">🔍</span>
+        <h4>No matching ingredients found</h4>
+        <p>No native ingredients matched "<span id="noResultsQuery"></span>". Try searching for "mango", "jaggery", "cashew", "kokum", or "cardamom".</p>
+        <button type="button" onclick="clearIngredientSearch()" class="lab-reset-search-btn">Reset Filter</button>
+      </div>
+
     </div>
   </section>
 
