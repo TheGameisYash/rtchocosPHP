@@ -61,7 +61,7 @@ if ($uri === '/sitemap.xml') {
 }
 
 // Serve static files requested from subpaths like /shop/style.css, /blog/style.css, /shop/assets/..., /blog/js/...
-if (preg_match('#^/(?:shop|blog)/((?:style\.css|script\.js|favicon\.[a-z]+|(?:css|js|assets|data)/.+))$#', $uri, $m)) {
+if (preg_match('#^/(?:shop|blog|experiment|lab)/((?:style\.css|script\.js|favicon\.[a-z]+|(?:css|js|assets|data)/.+))$#', $uri, $m)) {
     $realStaticPath = __DIR__ . '/' . $m[1];
     if (file_exists($realStaticPath)) {
         $mimeTypes = [
@@ -123,6 +123,13 @@ if ($uri !== '/' && preg_match('#^/([^/]+)$#', $uri, $m)) {
 if (preg_match('#^/blog/([^/]+)/?$#', $uri, $m)) {
     $articleKey = $m[1];
     include __DIR__ . '/blog-article.php';
+    return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
     return true;
 }
 

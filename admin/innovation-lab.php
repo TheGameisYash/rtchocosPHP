@@ -1057,9 +1057,9 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Currently in the Lab</h2>
                 <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Active recipe tests, ingredient blends, and kitchen notes from our chocolate makers.</p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openNewExperimentModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
+            <a href="experiment-editor.php" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
                 <span style="font-size: 16px;">+</span> New Experiment
-            </button>
+            </a>
         </div>
 
         <!-- Live Instant Filter & Search Bar -->
@@ -1132,9 +1132,9 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                         </form>
                                     </td>
                                     <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
-                                        <button type="button" class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 12px;" onclick='editExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
+                                        <a href="experiment-editor.php?id=<?php echo (int)$exp['id']; ?>" class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 12px;">Edit</a>
                                         <button type="button" class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 12px; color: var(--gold, #C7A66A);" onclick='cloneExperiment(<?php echo json_encode($exp, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)' title="Clone / Duplicate this experiment in 1 click">Clone</button>
-                                        <a href="../innovation-lab.php#exp-<?php echo htmlspecialchars($exp['slug'] ?: $exp['id']); ?>" target="_blank" class="btn btn-sm btn-outline" style="padding: 3px 6px; font-size: 11px;" title="View on live page">↗</a>
+                                        <a href="../experiment/<?php echo htmlspecialchars($exp['slug'] ?: $exp['id']); ?>" target="_blank" class="btn btn-sm btn-outline" style="padding: 3px 6px; font-size: 11px;" title="View on live page">↗</a>
                                         <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Are you sure you want to delete experiment '<?php echo addslashes($exp['title']); ?>'?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                             <input type="hidden" name="action" value="delete_experiment">

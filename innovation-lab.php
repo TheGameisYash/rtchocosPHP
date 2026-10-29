@@ -245,8 +245,10 @@ include 'includes/header.php';
       <?php if (!empty($experiments)): ?>
         <?php foreach ($experiments as $exp): 
           $badgeColor = htmlspecialchars($exp['status_color'] ?: 'green');
+          $expSlug = !empty($exp['slug']) ? $exp['slug'] : ('exp-' . $exp['id']);
+          $expUrl = 'experiment/' . rawurlencode($expSlug);
         ?>
-          <div class="lab-exp-card" data-category="<?php echo htmlspecialchars($exp['category']); ?>">
+          <a href="<?php echo htmlspecialchars($expUrl); ?>" class="lab-exp-card" data-category="<?php echo htmlspecialchars($exp['category']); ?>">
             <div class="lab-exp-media">
               <img src="<?php echo htmlspecialchars($exp['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($exp['title']); ?>" loading="lazy" />
               <div class="lab-status-badge">
@@ -259,9 +261,10 @@ include 'includes/header.php';
               <p class="lab-exp-desc"><?php echo htmlspecialchars($exp['description']); ?></p>
               <div class="lab-exp-footer">
                 <span class="lab-exp-tags"><?php echo htmlspecialchars($exp['tags'] ?: 'TEST BATCH | RECIPE'); ?></span>
+                <span class="lab-circle-btn" aria-hidden="true">&rarr;</span>
               </div>
             </div>
-          </div>
+          </a>
         <?php endforeach; ?>
       <?php else: ?>
         <p style="grid-column: 1/-1; text-align: center; color: #555; padding: 40px 0;">No active experiments found in the laboratory at this time.</p>
