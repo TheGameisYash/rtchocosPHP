@@ -291,13 +291,121 @@ include 'includes/header.php';
 
 <style>
 /* =========================================================================
-   LUXURY BLOG EDITORIAL ARTICLE STYLES (Matching blog-article.php)
+   LUXURY EXPERIMENT EDITORIAL HERO STYLES
    ========================================================================= */
+.exp-hero-section {
+    background: linear-gradient(180deg, #FBF8F3 0%, #F5EFEB 100%);
+    border-bottom: 1px solid rgba(199, 166, 106, 0.25);
+    padding: 36px 24px 64px;
+    position: relative;
+    overflow: hidden;
+}
 
-/* Hero status pulse */
+.exp-hero-inner {
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.exp-nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.exp-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #FFFFFF;
+    border: 1px solid rgba(199, 166, 106, 0.35);
+    color: #3B2A22;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(59, 42, 34, 0.04);
+    transition: all 0.25s ease;
+}
+.exp-back-btn:hover {
+    background: #3B2A22;
+    color: #FFFFFF;
+    border-color: #3B2A22;
+    transform: translateX(-2px);
+    box-shadow: 0 4px 12px rgba(59, 42, 34, 0.12);
+}
+.exp-back-btn svg {
+    transition: transform 0.2s ease;
+}
+.exp-back-btn:hover svg {
+    transform: translateX(-3px);
+}
+
+.exp-breadcrumbs-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #8C786E;
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    flex-wrap: wrap;
+}
+.exp-breadcrumbs-nav a {
+    color: #8C786E;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.exp-breadcrumbs-nav a:hover {
+    color: var(--gold, #C7A66A);
+    text-decoration: underline;
+}
+.exp-breadcrumbs-nav .sep {
+    opacity: 0.5;
+    margin: 0 2px;
+}
+.exp-breadcrumbs-nav .current {
+    color: #122217;
+    font-weight: 600;
+}
+
+.exp-hero-center {
+    text-align: center;
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.exp-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #FFFFFF;
+    border: 1px solid rgba(199, 166, 106, 0.4);
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7D6B62;
+    margin-bottom: 22px;
+    box-shadow: 0 3px 12px rgba(18, 34, 23, 0.04);
+}
+.exp-pill-dot {
+    opacity: 0.35;
+    margin: 0 1px;
+}
+.exp-status-name {
+    color: #16A34A;
+    font-weight: 800;
+}
+
+/* Pulsing Status Dot */
 .exp-status-dot {
-    width: 7.5px;
-    height: 7.5px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     display: inline-block;
 }
@@ -321,6 +429,113 @@ include 'includes/header.php';
 @keyframes expPulseGreen {
     0%, 100% { box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25); }
     50% { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0.1); }
+}
+
+.exp-main-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(36px, 5.5vw, 56px);
+    font-weight: 700;
+    line-height: 1.16;
+    color: #122217;
+    margin: 0 0 18px;
+    letter-spacing: -0.015em;
+    text-align: center;
+}
+
+.exp-meta-bar {
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 13.5px;
+    color: #6E7D73;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+}
+.exp-meta-bar .sep {
+    color: var(--gold, #C7A66A);
+    opacity: 0.8;
+}
+.exp-admin-edit-link {
+    color: var(--gold, #C7A66A);
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.exp-admin-edit-link:hover {
+    text-decoration: underline;
+    opacity: 0.85;
+}
+
+/* Cover Image Frame: Completely fills width, cover height, beautiful soft gold border & shadow (Eliminates beige letterboxing) */
+.exp-hero-cover-frame {
+    max-width: 980px;
+    margin: 0 auto;
+    height: 480px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    background: #E8DFD3;
+    border: 1px solid rgba(199, 166, 106, 0.35);
+    box-shadow: 0 24px 60px rgba(18, 34, 23, 0.12), 0 6px 18px rgba(18, 34, 23, 0.04);
+    cursor: zoom-in;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.exp-hero-cover-frame:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 32px 72px rgba(18, 34, 23, 0.16), 0 8px 24px rgba(18, 34, 23, 0.06);
+}
+.exp-hero-cover-frame img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.exp-hero-cover-frame:hover img {
+    transform: scale(1.03) !important;
+}
+
+.exp-cover-zoom-hint {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(18, 34, 23, 0.65);
+    backdrop-filter: blur(8px);
+    color: #FFFFFF;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+.exp-hero-cover-frame:hover .exp-cover-zoom-hint {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .exp-hero-section {
+        padding: 24px 16px 44px;
+    }
+    .exp-nav-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+    .exp-hero-cover-frame {
+        height: 280px;
+        border-radius: 14px;
+    }
 }
 
 /* Luxury Editorial Typography (Matching blog-article-content) */
@@ -593,55 +808,6 @@ table.blog-table-minimal td {
     margin-left: -8px;
 }
 
-/* Lab Facts Card in Sidebar */
-.exp-facts-card {
-    background: #FEFDFB;
-    border: 1px solid #EDE7DB;
-    border-radius: 12px;
-    padding: 22px 24px;
-    box-shadow: 0 4px 16px rgba(59,42,34,0.03);
-    margin-bottom: 24px;
-}
-.exp-facts-title {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 17px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #3B2A22;
-    margin-bottom: 14px;
-    border-bottom: 1px solid #EDE7DB;
-    padding-bottom: 8px;
-}
-.exp-facts-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-.exp-facts-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-size: 12.5px;
-    padding: 8px 0;
-    border-bottom: 1px dashed #EDE7DB;
-}
-.exp-facts-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-.exp-facts-label {
-    color: #7A8B7E;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
-}
-.exp-facts-val {
-    color: #122217;
-    font-weight: 700;
-}
-
 /* Sidebar Callout Card */
 .exp-sidebar-callout {
     background: #14251B;
@@ -790,213 +956,184 @@ table.blog-table-minimal td {
     </div>
 <?php endif; ?>
 
-<!-- LUXURY BLOG EDITORIAL HERO (Exact blog-article.php layout) -->
-<div id="page-blog-article" class="page active">
-  <div class="page-hero blog-page-hero">
-    <div class="page-hero-content blog-article-hero-content">
-      <a class="btn-outline-dark back-to-blog-btn" href="<?php echo $pathPrefix; ?>innovation-lab.php">&larr; Back to Innovation Lab</a>
-      
-      <div class="article-hero-text-container" style="max-width: 760px; margin: 0 auto; text-align: left;">
-        <!-- Visual Breadcrumbs Trail -->
-        <div class="blog-breadcrumbs" style="font-size: 13px; color: var(--gold, #C7A66A); margin: 16px 0 8px; font-family: var(--font-sans, sans-serif);">
-          <a href="<?php echo $pathPrefix; ?>index.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Home</a>
-          <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
-          <a href="<?php echo $pathPrefix; ?>innovation-lab.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Innovation Lab</a>
-          <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
-          <span style="opacity: 0.7; font-weight: 500;"><?php echo htmlspecialchars($exp['title']); ?></span>
-        </div>
+<!-- LUXURY EXPERIMENT EDITORIAL HERO -->
+<header class="exp-hero-section">
+  <div class="exp-hero-inner">
+    
+    <!-- Top Navigation Row: Back Button on Left, Breadcrumbs on Right -->
+    <div class="exp-nav-bar">
+      <a href="<?php echo $pathPrefix; ?>innovation-lab.php" class="exp-back-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>Back to Innovation Lab</span>
+      </a>
 
-        <div class="section-label" id="blog-article-category" style="display:inline-flex; align-items:center; gap:8px;">
-          <span><?php echo htmlspecialchars($exp['category']); ?></span>
-          <span style="opacity:0.4;">•</span>
-          <span class="exp-status-dot <?php echo $badgeColor; ?>"></span>
-          <span><?php echo htmlspecialchars($exp['status_badge'] ?: 'IN PROGRESS'); ?></span>
-        </div>
-        
-        <h1 id="blog-article-title" class="fade-up"><?php echo htmlspecialchars($exp['title']); ?></h1>
-        
-        <p id="blog-article-meta" class="fade-up-d1">
-          <span>Batch #<?php echo $batchCode; ?></span> • 
-          <span>Logged <?php echo date('M Y', strtotime($exp['created_at'])); ?></span> • 
-          <span>5 min read</span> • 
-          <span>RT Chocos Kitchen Research</span>
-          <?php if ($isAdmin): ?>
-            • <a href="<?php echo $pathPrefix; ?>admin/experiment-editor.php?id=<?php echo $exp['id']; ?>" style="color:var(--gold, #C7A66A); font-weight:700; text-decoration:none;">✏️ Edit in Admin</a>
-          <?php endif; ?>
-        </p>
+      <nav class="exp-breadcrumbs-nav" aria-label="Breadcrumb">
+        <a href="<?php echo $pathPrefix; ?>index.php">Home</a>
+        <span class="sep">&rsaquo;</span>
+        <a href="<?php echo $pathPrefix; ?>innovation-lab.php">Innovation Lab</a>
+        <span class="sep">&rsaquo;</span>
+        <span class="current"><?php echo htmlspecialchars($exp['title']); ?></span>
+      </nav>
+    </div>
+
+    <!-- Center Headline & Metadata -->
+    <div class="exp-hero-center">
+      <!-- Status Badge Pill -->
+      <div class="exp-status-pill">
+        <span><?php echo htmlspecialchars($exp['category']); ?></span>
+        <span class="exp-pill-dot">•</span>
+        <span class="exp-status-dot <?php echo $badgeColor; ?>"></span>
+        <span class="exp-status-name"><?php echo htmlspecialchars($exp['status_badge'] ?: 'IN PROGRESS'); ?></span>
       </div>
-
-      <?php if (!empty($rawImg)): ?>
-        <img id="blog-article-image" src="<?php echo htmlspecialchars($resolvedImg); ?>" alt="<?php echo htmlspecialchars($exp['title']); ?>" onclick="openLightbox(this.src)" style="cursor:zoom-in;" onerror="this.style.display='none';" />
-      <?php endif; ?>
-    </div>
-  </div>
-  
-  <!-- MAIN ARTICLE SECTION -->
-  <div class="section blog-article-section">
-    <div class="article-layout-wrapper">
-        
-        <!-- Main body text pane (Flows like a luxury blog article) -->
-        <main class="article-main-body">
-            
-            <!-- Executive Research Brief Card -->
-            <?php if (!empty($exp['description'])): ?>
-                <div class="exp-brief-card" style="background:#FAF7F2; border:1px solid #EDE7DB; border-left:4px solid var(--gold, #C7A66A); border-radius:0 12px 12px 0; padding:24px 28px; margin-bottom:40px; box-shadow:0 4px 18px rgba(59, 42, 34, 0.04);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <span style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold, #C7A66A); font-family:var(--font-sans, sans-serif);">RESEARCH BRIEF &amp; HYPOTHESIS</span>
-                        <span style="font-family:monospace; font-size:11.5px; font-weight:700; color:#7D6B62;">BATCH #<?php echo htmlspecialchars($batchCode); ?></span>
-                    </div>
-                    <p style="font-family:'Playfair Display', Georgia, serif; font-size:19px; line-height:1.68; color:#1F2E25; font-style:italic; margin:0;">
-                        "<?php echo htmlspecialchars($exp['description']); ?>"
-                    </p>
-                </div>
-            <?php endif; ?>
-
-            <!-- Article Body (HTML / Markdown formatted with luxury typography) -->
-            <div id="blog-article-content">
-                <?php echo $articleContent; ?>
-            </div>
-            
-            <!-- Social Share Bar (Exact blog share container) -->
-            <?php 
-                $articleUrl = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'rtchocos.com') . ($_SERVER['REQUEST_URI'] ?? '');
-                $shareTitle = $exp['title'] . ' | RT Chocos Innovation Lab';
-            ?>
-            <div class="share-container">
-                <span class="share-title">Share Dossier:</span>
-                <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode($articleUrl); ?>&text=<?php echo urlencode($shareTitle); ?>" target="_blank" class="share-btn tw" title="Share on Twitter">Twitter</a>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn fb" title="Share on Facebook">Facebook</a>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn ln" title="Share on LinkedIn">LinkedIn</a>
-                <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($shareTitle . ' - ' . $articleUrl); ?>" target="_blank" class="share-btn wa" title="Share via WhatsApp">WhatsApp</a>
-                <button type="button" class="share-btn copy" onclick="copyArticleLink()" title="Copy Link">Copy Link</button>
-            </div>
-
-            <!-- Author / Lab Kitchen Bio Box (E-E-A-T) -->
-            <div style="background:#FAF7F2; border-radius:20px; padding:24px; margin-top:40px; margin-bottom:24px; box-shadow:0 4px 16px rgba(59,42,34,0.06); display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
-                <img src="<?php echo $pathPrefix; ?>assets/myphoto.jpg" alt="Aarti Saluja Sahni — founder and expert chocolate educator at RT Chocos India" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #5C4033; flex-shrink:0;">
-                <div style="flex:1; min-width:240px;">
-                    <span style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--gold, #C7A66A); letter-spacing:0.08em; display:block; margin-bottom:4px;">Research &amp; Formulation</span>
-                    <h4 style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:#3B2A22; margin:0 0 8px;">Aarti Saluja Sahni &amp; The RT Chocos Kitchen</h4>
-                    <p style="font-family:var(--font-sans, sans-serif); font-size:13.5px; line-height:1.6; color:#5C4033; font-weight:300; margin:0 0 12px;">
-                        Certified chocolate educator and formulation researcher testing bean-to-bar boundaries, tropical fat structures, and indigenous Indian botanical pairings.
-                    </p>
-                    <a href="<?php echo $pathPrefix; ?>innovation-lab.php" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">Explore Innovation Lab</a>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Sticky Sidebar Panel (On this page TOC & Quick Factsheet) -->
-        <aside class="article-sidebar" id="tocSidebar">
-            
-            <!-- Table of Contents -->
-            <?php if (!empty($headings_list)): ?>
-                <div class="toc-box">
-                    <div class="toc-title">On this page</div>
-                    <ul class="toc-list" id="tocList">
-                        <?php foreach ($headings_list as $h): ?>
-                            <li class="toc-item <?php echo $h['level'] === 3 ? 'indent-h3' : ''; ?>">
-                                <a href="#<?php echo $h['slug']; ?>"><?php echo htmlspecialchars($h['text']); ?></a>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
-
-            <!-- Clean Quick Factsheet Card (No rigid boxes) -->
-            <div class="exp-facts-card">
-                <div class="exp-facts-title">Experiment Overview</div>
-                <ul class="exp-facts-list">
-                    <li class="exp-facts-item">
-                        <span class="exp-facts-label">Research Focus</span>
-                        <span class="exp-facts-val"><?php echo htmlspecialchars($exp['category']); ?></span>
-                    </li>
-                    <li class="exp-facts-item">
-                        <span class="exp-facts-label">Batch Code</span>
-                        <span class="exp-facts-val" style="font-family:monospace;"><?php echo htmlspecialchars($batchCode); ?></span>
-                    </li>
-                    <li class="exp-facts-item">
-                        <span class="exp-facts-label">Trial Status</span>
-                        <span class="exp-facts-val"><?php echo htmlspecialchars($exp['status_badge'] ?: 'IN PROGRESS'); ?></span>
-                    </li>
-                    <?php if (!empty($exp['origin'])): ?>
-                    <li class="exp-facts-item">
-                        <span class="exp-facts-label">Terroir Origin</span>
-                        <span class="exp-facts-val"><?php echo htmlspecialchars($exp['origin']); ?></span>
-                    </li>
-                    <?php endif; ?>
-                    <?php if (!empty($exp['polymorph'])): ?>
-                    <li class="exp-facts-item">
-                        <span class="exp-facts-label">Crystal Matrix</span>
-                        <span class="exp-facts-val"><?php echo htmlspecialchars($exp['polymorph']); ?></span>
-                    </li>
-                    <?php endif; ?>
-                    <?php if (!empty($exp['particle_size'])): ?>
-                    <li class="exp-facts-item">
-                        <span class="exp-facts-label">Smoothness</span>
-                        <span class="exp-facts-val"><?php echo htmlspecialchars($exp['particle_size']); ?></span>
-                    </li>
-                    <?php endif; ?>
-                    <?php if (!empty($exp['water_activity'])): ?>
-                    <li class="exp-facts-item">
-                        <span class="exp-facts-label">Moisture Level</span>
-                        <span class="exp-facts-val"><?php echo htmlspecialchars($exp['water_activity']); ?></span>
-                    </li>
-                    <?php endif; ?>
-                    <li class="exp-facts-item">
-                        <span class="exp-facts-label">Kitchen</span>
-                        <span class="exp-facts-val">RT Chocos Lab</span>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Callout Card -->
-            <div class="exp-sidebar-callout">
-                <h4>Curious About Our Chocolate?</h4>
-                <p>Every chocolate bar we craft starts with experiments right here in our Innovation Lab. Taste the outcome in our chocolate shop.</p>
-                <a href="<?php echo $pathPrefix; ?>shop.php">
-                    <span>Explore Chocolate Shop</span>
-                    <span>→</span>
-                </a>
-            </div>
-
-        </aside>
-
+      
+      <h1 class="exp-main-title"><?php echo htmlspecialchars($exp['title']); ?></h1>
+      
+      <div class="exp-meta-bar">
+        <span><strong>Batch #<?php echo $batchCode; ?></strong></span>
+        <span class="sep">•</span>
+        <span>Logged <?php echo date('M Y', strtotime($exp['created_at'])); ?></span>
+        <span class="sep">•</span>
+        <span>5 min read</span>
+        <span class="sep">•</span>
+        <span>RT Chocos Kitchen Research</span>
+        <?php if ($isAdmin): ?>
+          <span class="sep">•</span>
+          <a href="<?php echo $pathPrefix; ?>admin/experiment-editor.php?id=<?php echo $exp['id']; ?>" class="exp-admin-edit-link">✏️ Edit in Admin</a>
+        <?php endif; ?>
+      </div>
     </div>
 
-    <!-- Related Experiments Section (Matching Related Insights from blog-article.php) -->
-    <?php if (!empty($relatedExperiments)): ?>
-        <div style="margin-top: 60px; border-top: 1px solid #EDE7DB; padding-top: 48px;">
-            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 24px;">
-                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; margin:0; color: #3B2A22; font-weight: 700;">More Experiments From the Lab</h3>
-                <a href="<?php echo $pathPrefix; ?>innovation-lab.php#currently-in-lab" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold, #C7A66A); text-decoration:none;">View All Experiments &rarr;</a>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 24px;">
-                <?php foreach ($relatedExperiments as $rel): 
-                    $relRawImg = $rel['image_path'] ?: 'assets/images/placeholder.jpg';
-                    $relImgUrl = (strpos($relRawImg, 'http') === 0 || strpos($relRawImg, '/') === 0 || strpos($relRawImg, '../') === 0) ? $relRawImg : ($pathPrefix . $relRawImg);
-                    $relLink = $pathPrefix . "experiment/" . $rel['slug'];
-                ?>
-                    <a href="<?php echo htmlspecialchars($relLink); ?>" class="related-card">
-                        <div style="height:180px; overflow:hidden; background:linear-gradient(145deg, #FAF7F2 0%, #EDE7DB 100%); display:flex; align-items:center; justify-content:center;">
-                            <img src="<?php echo htmlspecialchars($relImgUrl); ?>" style="width:100%; height:100%; object-fit:cover;" loading="lazy" onerror="this.src='<?php echo $pathPrefix; ?>assets/images/placeholder.jpg';">
-                        </div>
-                        <div style="padding: 18px; display: flex; flex-direction: column; flex: 1;">
-                            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gold, #C7A66A); margin-bottom: 6px;"><?php echo htmlspecialchars($rel['category']); ?></span>
-                            <h4 style="font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #3B2A22; margin: 0 0 8px; line-height: 1.35;"><?php echo htmlspecialchars($rel['title']); ?></h4>
-                            <p style="font-family: var(--font-sans, sans-serif); font-size: 12.5px; color: #5C4033; line-height: 1.5; margin: 0 0 14px; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                                <?php echo htmlspecialchars($rel['description']); ?>
-                            </p>
-                            <span style="font-size: 11px; font-weight: 700; color: var(--gold, #C7A66A); text-transform: uppercase; letter-spacing: 0.5px;">Read Dossier &rarr;</span>
-                        </div>
-                    </a>
-                <?php endforeach; ?>
-            </div>
+    <!-- High-Resolution Edge-to-Edge Cover Image Canvas (No beige letterboxing) -->
+    <?php if (!empty($rawImg)): ?>
+      <div class="exp-hero-cover-frame" onclick="openLightbox('<?php echo htmlspecialchars($resolvedImg); ?>')">
+        <img src="<?php echo htmlspecialchars($resolvedImg); ?>" alt="<?php echo htmlspecialchars($exp['title']); ?>" onerror="this.style.display='none';">
+        <div class="exp-cover-zoom-hint">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          <span>Click to enlarge photo</span>
         </div>
+      </div>
     <?php endif; ?>
 
   </div>
+</header>
+
+<!-- MAIN ARTICLE SECTION -->
+<div class="section blog-article-section">
+  <div class="article-layout-wrapper">
+      
+      <!-- Main body text pane (Flows like a luxury blog article) -->
+      <main class="article-main-body">
+          
+          <!-- Executive Research Brief Card -->
+          <?php if (!empty($exp['description'])): ?>
+              <div class="exp-brief-card" style="background:#FAF7F2; border:1px solid #EDE7DB; border-left:4px solid var(--gold, #C7A66A); border-radius:0 12px 12px 0; padding:24px 28px; margin-bottom:40px; box-shadow:0 4px 18px rgba(59, 42, 34, 0.04);">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                      <span style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold, #C7A66A); font-family:var(--font-sans, sans-serif);">RESEARCH BRIEF &amp; HYPOTHESIS</span>
+                      <span style="font-family:monospace; font-size:11.5px; font-weight:700; color:#7D6B62;">BATCH #<?php echo htmlspecialchars($batchCode); ?></span>
+                  </div>
+                  <p style="font-family:'Playfair Display', Georgia, serif; font-size:19px; line-height:1.68; color:#1F2E25; font-style:italic; margin:0;">
+                      "<?php echo htmlspecialchars($exp['description']); ?>"
+                  </p>
+              </div>
+          <?php endif; ?>
+
+          <!-- Article Body (HTML / Markdown formatted with luxury typography) -->
+          <div id="blog-article-content">
+              <?php echo $articleContent; ?>
+          </div>
+          
+          <!-- Social Share Bar (Exact blog share container) -->
+          <?php 
+              $articleUrl = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'rtchocos.com') . ($_SERVER['REQUEST_URI'] ?? '');
+              $shareTitle = $exp['title'] . ' | RT Chocos Innovation Lab';
+          ?>
+          <div class="share-container">
+              <span class="share-title">Share Dossier:</span>
+              <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode($articleUrl); ?>&text=<?php echo urlencode($shareTitle); ?>" target="_blank" class="share-btn tw" title="Share on Twitter">Twitter</a>
+              <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn fb" title="Share on Facebook">Facebook</a>
+              <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn ln" title="Share on LinkedIn">LinkedIn</a>
+              <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($shareTitle . ' - ' . $articleUrl); ?>" target="_blank" class="share-btn wa" title="Share via WhatsApp">WhatsApp</a>
+              <button type="button" class="share-btn copy" onclick="copyArticleLink()" title="Copy Link">Copy Link</button>
+          </div>
+
+          <!-- Author / Lab Kitchen Bio Box (E-E-A-T) -->
+          <div style="background:#FAF7F2; border-radius:20px; padding:24px; margin-top:40px; margin-bottom:24px; box-shadow:0 4px 16px rgba(59,42,34,0.06); display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+              <img src="<?php echo $pathPrefix; ?>assets/myphoto.jpg" alt="Aarti Saluja Sahni — founder and expert chocolate educator at RT Chocos India" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #5C4033; flex-shrink:0;">
+              <div style="flex:1; min-width:240px;">
+                  <span style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--gold, #C7A66A); letter-spacing:0.08em; display:block; margin-bottom:4px;">Research &amp; Formulation</span>
+                  <h4 style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:#3B2A22; margin:0 0 8px;">Aarti Saluja Sahni &amp; The RT Chocos Kitchen</h4>
+                  <p style="font-family:var(--font-sans, sans-serif); font-size:13.5px; line-height:1.6; color:#5C4033; font-weight:300; margin:0 0 12px;">
+                      Certified chocolate educator and formulation researcher testing bean-to-bar boundaries, tropical fat structures, and indigenous Indian botanical pairings.
+                  </p>
+                  <a href="<?php echo $pathPrefix; ?>innovation-lab.php" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">Explore Innovation Lab</a>
+              </div>
+          </div>
+
+      </main>
+
+      <!-- Sticky Sidebar Panel (Clean, Uncluttered: TOC & Chocolate Shop Callout) -->
+      <aside class="article-sidebar" id="tocSidebar">
+          
+          <!-- Table of Contents -->
+          <?php if (!empty($headings_list)): ?>
+              <div class="toc-box">
+                  <div class="toc-title">On this page</div>
+                  <ul class="toc-list" id="tocList">
+                      <?php foreach ($headings_list as $h): ?>
+                          <li class="toc-item <?php echo $h['level'] === 3 ? 'indent-h3' : ''; ?>">
+                              <a href="#<?php echo $h['slug']; ?>"><?php echo htmlspecialchars($h['text']); ?></a>
+                          </li>
+                      <?php endforeach; ?>
+                  </ul>
+              </div>
+          <?php endif; ?>
+
+          <!-- Callout Card -->
+          <div class="exp-sidebar-callout">
+              <h4>Curious About Our Chocolate?</h4>
+              <p>Every chocolate bar we craft starts with experiments right here in our Innovation Lab. Taste the outcome in our chocolate shop.</p>
+              <a href="<?php echo $pathPrefix; ?>shop.php">
+                  <span>Explore Chocolate Shop</span>
+                  <span>&rarr;</span>
+              </a>
+          </div>
+
+      </aside>
+
+  </div>
+
+  <!-- Related Experiments Section (Matching Related Insights from blog-article.php) -->
+  <?php if (!empty($relatedExperiments)): ?>
+      <div style="margin-top: 60px; border-top: 1px solid #EDE7DB; padding-top: 48px;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 24px;">
+              <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; margin:0; color: #3B2A22; font-weight: 700;">More Experiments From the Lab</h3>
+              <a href="<?php echo $pathPrefix; ?>innovation-lab.php#currently-in-lab" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold, #C7A66A); text-decoration:none;">View All Experiments &rarr;</a>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 24px;">
+              <?php foreach ($relatedExperiments as $rel): 
+                  $relRawImg = $rel['image_path'] ?: 'assets/images/placeholder.jpg';
+                  $relImgUrl = (strpos($relRawImg, 'http') === 0 || strpos($relRawImg, '/') === 0 || strpos($relRawImg, '../') === 0) ? $relRawImg : ($pathPrefix . $relRawImg);
+                  $relLink = $pathPrefix . "experiment/" . $rel['slug'];
+              ?>
+                  <a href="<?php echo htmlspecialchars($relLink); ?>" class="related-card">
+                      <div style="height:180px; overflow:hidden; background:linear-gradient(145deg, #FAF7F2 0%, #EDE7DB 100%); display:flex; align-items:center; justify-content:center;">
+                          <img src="<?php echo htmlspecialchars($relImgUrl); ?>" style="width:100%; height:100%; object-fit:cover;" loading="lazy" onerror="this.src='<?php echo $pathPrefix; ?>assets/images/placeholder.jpg';">
+                      </div>
+                      <div style="padding: 18px; display: flex; flex-direction: column; flex: 1;">
+                          <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gold, #C7A66A); margin-bottom: 6px;"><?php echo htmlspecialchars($rel['category']); ?></span>
+                          <h4 style="font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #3B2A22; margin: 0 0 8px; line-height: 1.35;"><?php echo htmlspecialchars($rel['title']); ?></h4>
+                          <p style="font-family: var(--font-sans, sans-serif); font-size: 12.5px; color: #5C4033; line-height: 1.5; margin: 0 0 14px; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                              <?php echo htmlspecialchars($rel['description']); ?>
+                          </p>
+                          <span style="font-size: 11px; font-weight: 700; color: var(--gold, #C7A66A); text-transform: uppercase; letter-spacing: 0.5px;">Read Dossier &rarr;</span>
+                      </div>
+                  </a>
+              <?php endforeach; ?>
+          </div>
+      </div>
+  <?php endif; ?>
+
 </div>
 
 <!-- Image Lightbox Modal -->
