@@ -6,3 +6,4 @@ if (!empty($_GET['slug'])) {
     header('Location: ../innovation-lab.php#currently-in-lab');
     exit;
 }
+

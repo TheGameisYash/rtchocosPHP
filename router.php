@@ -10,9 +10,23 @@ if ($uri === '/admin') {
     return true;
 }
 
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
+}
+
 // Enforce trailing slash on /dev directory for correct relative path resolution
 if ($uri === '/dev') {
     header('Location: /dev/');
+    return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
     return true;
 }
 
@@ -22,9 +36,23 @@ if ($uri === '/login' || $uri === '/login.php') {
     return true;
 }
 
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
+}
+
 // Route clean /maintenance URL
 if ($uri === '/maintenance' || $uri === '/maintenance/') {
     include __DIR__ . '/maintenance.php';
+    return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
     return true;
 }
 
@@ -34,6 +62,13 @@ if (preg_match('#^/dev/([^/]+)/?$#', $uri, $m)) {
     if (file_exists($devFile)) {
         include $devFile;
         return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
     }
 }
 
@@ -48,15 +83,36 @@ if ($uri === '/blog' || $uri === '/blog/') {
     return true;
 }
 
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
+}
+
 // Route physical /shop folder request or clean /shop to shop.php
 if ($uri === '/shop' || $uri === '/shop/') {
     include __DIR__ . '/shop.php';
     return true;
 }
 
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
+}
+
 // Match the production sitemap rewrite during local verification.
 if ($uri === '/sitemap.xml') {
     include __DIR__ . '/sitemap.php';
+    return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
     return true;
 }
 
@@ -82,6 +138,13 @@ if (preg_match('#^/(?:shop|blog|experiment|lab)/((?:style\.css|script\.js|favico
         }
         readfile($realStaticPath);
         return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
     }
 }
 
@@ -91,6 +154,13 @@ if (preg_match('#^/(?:shop|blog)/((?:api_[a-zA-Z0-9_\-]+|send_contact)\.php)$#',
     if (file_exists($apiFile)) {
         include $apiFile;
         return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
     }
 }
 
@@ -100,13 +170,34 @@ if ($uri === '/cart' || $uri === '/cart/') {
     return true;
 }
 
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
+}
+
 if ($uri === '/checkout' || $uri === '/checkout/') {
     include __DIR__ . '/checkout.php';
     return true;
 }
 
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
+}
+
 if (preg_match('#^/(?:shop|blog)/(cart|checkout)\.php$#', $uri, $m)) {
     include __DIR__ . '/' . $m[1] . '.php';
+    return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
     return true;
 }
 
@@ -116,6 +207,13 @@ if ($uri !== '/' && preg_match('#^/([^/]+)$#', $uri, $m)) {
     if (file_exists($file)) {
         include $file;
         return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
     }
 }
 
@@ -124,8 +222,17 @@ if (preg_match('#^/blog/([^/]+)/?$#', $uri, $m)) {
     $articleKey = $m[1];
     include __DIR__ . '/blog-article.php';
     return true;
-}
-
+}
+
+
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
+}
+
 // Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
 if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
     $_GET['slug'] = $m[1];
@@ -139,10 +246,24 @@ if (preg_match('#^/(?:shop|blog)/(?:shop|blog)/([a-zA-Z0-9_\-]+)/?$#', $uri, $m)
     return true;
 }
 
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
+}
+
 // Route clean shop product URLs: /shop/{slug} or /product/{slug}
 if (preg_match('#^/(?:shop|product)/([a-zA-Z0-9_\-]+)/?$#', $uri, $m)) {
     $_GET['slug'] = $m[1];
     include __DIR__ . '/product.php';
+    return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
     return true;
 }
 
@@ -152,10 +273,24 @@ if (preg_match('#^/indian-chocolate-brands/?$#', $uri)) {
     return true;
 }
 
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
+}
+
 // Route missing blog images to blog_image.php
 if (preg_match('#^/assets/blogs/(.+)$#', $uri, $m)) {
     $_GET['file'] = $m[1];
     include __DIR__ . '/blog_image.php';
+    return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
     return true;
 }
 

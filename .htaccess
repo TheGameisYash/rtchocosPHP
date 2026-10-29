@@ -71,11 +71,6 @@ Options +FollowSymLinks -Indexes
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^blog/([^/]+)/?$ /blog-article.php?slug=$1 [L,QSA]
 
-    # Rewrite clean experiment URLs (/experiment/slug or /lab/slug) to experiment.php
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(?:experiment|lab)/([^/]+)/?$ /experiment.php?slug=$1 [L,QSA]
-
     # Handle accidental nested /shop/shop/{slug} requests
     RewriteRule ^(?:shop|blog)/(?:shop|blog)/([^/]+)/?$ /shop/$1 [R=301,L]
 
