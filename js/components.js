@@ -349,7 +349,7 @@ if (popupEl) {
 // --- FORM HANDLING & INTERACTIVITY ------------------------------
 function initInteractiveForms() {
   const getSubfolderPrefix = () => {
-    const isBlogSubfolder = window.location.pathname.includes('/blog/');
+    const isBlogSubfolder = window.location.pathname.includes('/blog/') || window.location.pathname.includes('/experiment/') || window.location.pathname.includes('/lab/');
     return isBlogSubfolder ? '../' : '';
   };
 

@@ -167,19 +167,21 @@ function parse_exp_markdown($markdown) {
         return '<table' . $attrs . '>' . $inner . '</table>';
     }, $html);
 
-    // Wrap bare tables in table-responsive-wrapper
-    $html = preg_replace_callback('/(?<!<div class="table-responsive-wrapper">)\s*(<table\b[^>]*>.*?<\/table>)/is', function($m) {
-        return "\n<div class=\"table-responsive-wrapper\">" . $m[1] . "</div>\n";
-    }, $html);
-    // Remove duplicate wrapper or empty wrapper if any nested
-    $html = preg_replace('/<div class="table-responsive-wrapper">\s*<div class="table-responsive-wrapper">/is', '<div class="table-responsive-wrapper">', $html);
+    // Clean up any empty wrappers or nested wrappers before wrapping
     $html = preg_replace('/<div class="table-responsive-wrapper">\s*<\/div>/is', '', $html);
+    // Canonicalize: strip existing wrapper so we wrap exactly once without duplicates or orphaned </div>
+    $html = preg_replace('/<div class="table-responsive-wrapper">\s*(<table\b.*?<\/table>)\s*<\/div>/is', '$1', $html);
+    // Wrap bare tables in table-responsive-wrapper
+    $html = preg_replace('/(<table\b.*?<\/table>)/is', "\n<div class=\"table-responsive-wrapper\">$1</div>\n", $html);
+    // Remove any trailing orphan </div> immediately following table-responsive-wrapper
+    $html = preg_replace('/(<div class="table-responsive-wrapper">.*?<\/div>)\s*<\/div>/is', '$1', $html);
 
     // 5. Convert Markdown Headings (# H1 -> H2, ## H2, ### H3, #### H4)
     $html = preg_replace_callback('/^(#{1,6})\s+(.+)$/m', function($m) {
         $level = min(4, max(2, strlen($m[1])));
         $text = trim($m[2]);
-        $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', strip_tags($text)), '-'));
+        $cleanHeading = html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $cleanHeading), '-'));
         return "<h{$level} id=\"{$slug}\">" . parse_exp_inline($text) . "</h{$level}>";
     }, $html);
 
@@ -188,7 +190,7 @@ function parse_exp_markdown($markdown) {
         $level = (int)$m[1];
         $attrs = $m[2];
         $content = $m[3];
-        $cleanText = trim(strip_tags($content));
+        $cleanText = html_entity_decode(trim(strip_tags($content)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
         $slug = '';
         if (preg_match('/id=[\'"]([^\'"]+)[\'"]/i', $attrs, $idMatch)) {
@@ -277,6 +279,24 @@ function parse_exp_markdown($markdown) {
         $html = $res;
     }
 
+    // Defensive guarantee: ensure <div> tags are strictly balanced so that
+    // stray or missing </div> tags in content can NEVER break the outer 2-column grid layout.
+    $openDivs = substr_count(strtolower($html), '<div');
+    $closeDivs = substr_count(strtolower($html), '</div>');
+    while ($closeDivs > $openDivs) {
+        $pos = strrpos($html, '</div>');
+        if ($pos !== false) {
+            $html = substr_replace($html, '', $pos, 6);
+            $closeDivs--;
+        } else {
+            break;
+        }
+    }
+    while ($openDivs > $closeDivs) {
+        $html .= "\n</div>\n";
+        $closeDivs++;
+    }
+
     return trim($html);
 }
 
@@ -316,26 +336,32 @@ include 'includes/header.php';
 /* =========================================================================
    LUXURY EXPERIMENT EDITORIAL HERO STYLES
    ========================================================================= */
+/* =========================================================================
+   LUXURY EXPERIMENT EDITORIAL HERO STYLES (1140px Aligned Grid)
+   ========================================================================= */
 .exp-hero-section {
     background: linear-gradient(180deg, #FBF8F3 0%, #F5EFEB 100%);
     border-bottom: 1px solid rgba(199, 166, 106, 0.25);
-    padding: 36px 24px 64px;
+    padding: 32px 24px 44px;
     position: relative;
     overflow: hidden;
 }
 
 .exp-hero-inner {
-    max-width: 1040px;
+    max-width: 1140px;
     margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
+/* Top Navigation Bar: Back button on left, Badges on right */
 .exp-nav-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
+    margin-bottom: 28px;
     gap: 16px;
+    width: 100%;
 }
 
 .exp-back-btn {
@@ -343,7 +369,7 @@ include 'includes/header.php';
     align-items: center;
     gap: 8px;
     background: #FFFFFF;
-    border: 1px solid rgba(199, 166, 106, 0.35);
+    border: 1px solid rgba(199, 166, 106, 0.38);
     color: #3B2A22;
     padding: 8px 18px;
     border-radius: 999px;
@@ -357,78 +383,68 @@ include 'includes/header.php';
     background: #3B2A22;
     color: #FFFFFF;
     border-color: #3B2A22;
-    transform: translateX(-2px);
-    box-shadow: 0 4px 12px rgba(59, 42, 34, 0.12);
+    transform: translateX(-3px);
+    box-shadow: 0 4px 14px rgba(59, 42, 34, 0.12);
 }
 .exp-back-btn svg {
     transition: transform 0.2s ease;
 }
 .exp-back-btn:hover svg {
-    transform: translateX(-3px);
+    transform: translateX(-2px);
 }
 
-.exp-breadcrumbs-nav {
+.exp-hero-badges {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: #8C786E;
-    font-family: var(--font-sans, 'Inter', sans-serif);
-    flex-wrap: wrap;
-}
-.exp-breadcrumbs-nav a {
-    color: #8C786E;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-.exp-breadcrumbs-nav a:hover {
-    color: var(--gold, #C7A66A);
-    text-decoration: underline;
-}
-.exp-breadcrumbs-nav .sep {
-    opacity: 0.5;
-    margin: 0 2px;
-}
-.exp-breadcrumbs-nav .current {
-    color: #122217;
-    font-weight: 600;
+    gap: 10px;
 }
 
-.exp-hero-center {
-    text-align: center;
-    max-width: 860px;
-    margin: 0 auto;
+.exp-cat-badge {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold, #C7A66A);
+    font-family: var(--font-sans, 'Inter', sans-serif);
 }
 
 .exp-status-pill {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    background: #FFFFFF;
-    border: 1px solid rgba(199, 166, 106, 0.4);
-    padding: 6px 18px;
+    gap: 6px;
+    padding: 4px 14px;
     border-radius: 999px;
-    font-size: 11.5px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #7D6B62;
-    margin-bottom: 22px;
-    box-shadow: 0 3px 12px rgba(18, 34, 23, 0.04);
-}
-.exp-pill-dot {
-    opacity: 0.35;
-    margin: 0 1px;
-}
-.exp-status-name {
-    color: #16A34A;
+    font-size: 11px;
     font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: var(--font-sans, 'Inter', sans-serif);
+}
+.exp-status-pill.green {
+    background: rgba(22, 163, 74, 0.1);
+    color: #16A34A;
+    border: 1px solid rgba(22, 163, 74, 0.28);
+}
+.exp-status-pill.amber {
+    background: rgba(217, 119, 6, 0.1);
+    color: #D97706;
+    border: 1px solid rgba(217, 119, 6, 0.28);
+}
+.exp-status-pill.blue {
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563EB;
+    border: 1px solid rgba(37, 99, 235, 0.28);
+}
+.exp-status-pill.purple {
+    background: rgba(147, 51, 234, 0.1);
+    color: #9333EA;
+    border: 1px solid rgba(147, 51, 234, 0.28);
 }
 
 /* Pulsing Status Dot */
 .exp-status-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     display: inline-block;
 }
@@ -454,46 +470,80 @@ include 'includes/header.php';
     50% { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0.1); }
 }
 
+/* Hero Typography (Center-balanced within 1140px grid) */
+.exp-hero-text {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto 30px;
+}
+
 .exp-main-title {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(36px, 5.5vw, 56px);
+    font-size: clamp(34px, 4.8vw, 50px);
     font-weight: 700;
-    line-height: 1.16;
+    line-height: 1.15;
     color: #122217;
-    margin: 0 0 18px;
+    margin: 0 0 16px;
     letter-spacing: -0.015em;
     text-align: center;
 }
 
-.exp-meta-bar {
-    font-family: var(--font-sans, 'Inter', sans-serif);
-    font-size: 13.5px;
-    color: #6E7D73;
+.exp-lead-deck {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.55;
+    color: #5C4033;
+    font-style: italic;
+    margin: 0 auto 20px;
+    max-width: 760px;
+    text-align: center;
+}
+
+.exp-meta-strip {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
+    font-size: 13px;
+    color: #7D6B62;
+    font-family: var(--font-sans, 'Inter', sans-serif);
     flex-wrap: wrap;
-    margin-bottom: 36px;
+    margin: 0 auto;
 }
-.exp-meta-bar .sep {
-    color: var(--gold, #C7A66A);
-    opacity: 0.8;
+
+.exp-meta-sep {
+    opacity: 0.4;
+    color: #8C786E;
+    margin: 0 2px;
 }
-.exp-admin-edit-link {
+
+.exp-meta-batch {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    color: #8A6420;
+    background: #FAF5EB;
+    border: 1px solid rgba(199, 166, 106, 0.35);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+}
+
+.exp-admin-link {
     color: var(--gold, #C7A66A);
     font-weight: 700;
     text-decoration: none;
     transition: opacity 0.2s;
 }
-.exp-admin-edit-link:hover {
+.exp-admin-link:hover {
     text-decoration: underline;
     opacity: 0.85;
 }
 
-/* Cover Image Frame: Completely fills width, cover height, beautiful soft gold border & shadow (Eliminates beige letterboxing) */
+/* Cover Image Frame: Completely fills the 1140px width to align with content grid below */
 .exp-hero-cover-frame {
-    max-width: 980px;
+    width: 100%;
+    max-width: 1140px;
     margin: 0 auto;
     height: 480px;
     border-radius: 20px;
@@ -501,13 +551,13 @@ include 'includes/header.php';
     position: relative;
     background: #E8DFD3;
     border: 1px solid rgba(199, 166, 106, 0.35);
-    box-shadow: 0 24px 60px rgba(18, 34, 23, 0.12), 0 6px 18px rgba(18, 34, 23, 0.04);
+    box-shadow: 0 20px 50px rgba(18, 34, 23, 0.1), 0 4px 12px rgba(18, 34, 23, 0.03);
     cursor: zoom-in;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 .exp-hero-cover-frame:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 32px 72px rgba(18, 34, 23, 0.16), 0 8px 24px rgba(18, 34, 23, 0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 28px 64px rgba(18, 34, 23, 0.14), 0 6px 18px rgba(18, 34, 23, 0.05);
 }
 .exp-hero-cover-frame img {
     width: 100% !important;
@@ -518,19 +568,20 @@ include 'includes/header.php';
     transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 .exp-hero-cover-frame:hover img {
-    transform: scale(1.03) !important;
+    transform: scale(1.025) !important;
 }
 
 .exp-cover-zoom-hint {
     position: absolute;
     bottom: 16px;
     right: 16px;
-    background: rgba(18, 34, 23, 0.65);
+    background: rgba(18, 34, 23, 0.72);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: #FFFFFF;
     font-size: 11.5px;
     font-weight: 600;
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
@@ -547,13 +598,13 @@ include 'includes/header.php';
 
 @media (max-width: 768px) {
     .exp-hero-section {
-        padding: 24px 16px 44px;
+        padding: 24px 16px 36px;
     }
     .exp-nav-bar {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
     }
     .exp-hero-cover-frame {
         height: 280px;
@@ -582,8 +633,8 @@ include 'includes/header.php';
     font-family: 'Playfair Display', Georgia, serif;
     font-size: 3.8rem;
     float: left;
-    line-height: 0.78;
-    margin-right: 12px;
+    line-height: 0.8;
+    margin-right: 6px; /* Optimized kerning for slender initial glyphs like 'I' */
     margin-top: 4px;
     font-weight: 700;
     color: var(--gold, #C7A66A);
@@ -593,6 +644,13 @@ include 'includes/header.php';
 #blog-article-content p {
     margin-bottom: 26px;
     color: var(--text-primary, #1F2E25);
+}
+
+#blog-article-content h1,
+#blog-article-content h2,
+#blog-article-content h3,
+#blog-article-content h4 {
+    scroll-margin-top: 100px; /* Clear fixed sticky header on TOC anchor navigation */
 }
 
 #blog-article-content h1 {
@@ -717,11 +775,15 @@ include 'includes/header.php';
     overflow-x: auto;
     margin: 36px 0;
     border-radius: 12px;
+    border: 1px solid #EDE7DB;
+    background: #FAF7F2;
     box-shadow: 0 4px 20px rgba(59, 42, 34, 0.08);
     -webkit-overflow-scrolling: touch;
 }
 table.blog-custom-table, #blog-article-content table {
     width: 100%;
+    min-width: 580px; /* Ensures clean layout without syllable fragmentation on mobile */
+    table-layout: auto !important;
     border-collapse: collapse;
     font-family: var(--font-sans, sans-serif);
     font-size: 14.5px;
@@ -730,26 +792,33 @@ table.blog-custom-table, #blog-article-content table {
 }
 table.blog-table-artisan, #blog-article-content table {
     background: #FAF7F2;
-    border: 1px solid #EDE7DB;
     border-radius: 10px;
     overflow: hidden;
 }
-table.blog-table-artisan th, #blog-article-content table th {
-    background: #3B2A22;
-    color: #C7A66A;
+#blog-article-content table.blog-table-artisan th,
+#blog-article-content table.blog-custom-table th,
+table.blog-table-artisan th, 
+#blog-article-content table th {
+    background: #1B2E23 !important; /* Deep forest green artisan header */
+    color: #F7E7CE !important;      /* Soft warm champagne gold high-contrast text */
     font-family: 'Cormorant Garamond', Georgia, serif;
     font-size: 17.5px;
     padding: 14px 18px;
     font-weight: 700;
     letter-spacing: 0.3px;
-    border-bottom: 2px solid #C7A66A;
+    border-bottom: 2px solid #C7A66A !important;
 }
-table.blog-table-artisan td, #blog-article-content table td {
+#blog-article-content table.blog-table-artisan td,
+#blog-article-content table.blog-custom-table td,
+table.blog-table-artisan td, 
+#blog-article-content table td {
     padding: 13px 18px;
     border-top: 1px solid rgba(199, 166, 106, 0.2);
     color: #1F2E25;
 }
-table.blog-table-artisan tr:nth-child(even) td, #blog-article-content table tr:nth-child(even) td {
+#blog-article-content table.blog-table-artisan tr:nth-child(even) td,
+table.blog-table-artisan tr:nth-child(even) td, 
+#blog-article-content table tr:nth-child(even) td {
     background: rgba(255, 255, 255, 0.65);
 }
 
@@ -768,46 +837,58 @@ table.blog-table-minimal td {
 .blog-article-section {
     max-width: 1140px;
     margin: 0 auto;
-    padding: 48px 24px 80px;
+    padding: 36px 24px 80px;
 }
 .article-layout-wrapper {
     display: flex;
-    gap: 48px;
+    gap: 44px;
     align-items: start;
     position: relative;
 }
 .article-main-body {
     flex: 1;
     min-width: 0;
-    max-width: 760px;
+    max-width: 740px;
 }
 
 /* Sidebar */
 .article-sidebar {
-    width: 280px;
+    width: 315px;
     position: sticky;
-    top: 100px;
+    top: 96px;
     flex-shrink: 0;
+    z-index: 10;
 }
 
+
+
+/* Table of Contents */
 .toc-box {
     background: #FEFDFB;
-    border: 1px solid #EDE7DB;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 4px 16px rgba(59,42,34,0.03);
+    border: 1px solid rgba(199, 166, 106, 0.35);
+    border-radius: 16px;
+    padding: 22px 20px;
+    box-shadow: 0 6px 20px rgba(59,42,34,0.03);
     margin-bottom: 24px;
 }
 .toc-title {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 18px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 16px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #3B2A22;
-    margin-bottom: 16px;
-    border-bottom: 1px solid #EDE7DB;
+    letter-spacing: 1.2px;
+    color: #122217;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #F0EAE1;
     padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.toc-title::before {
+    content: '✦';
+    color: var(--gold, #C7A66A);
+    font-size: 11px;
 }
 .toc-list {
     list-style: none;
@@ -836,11 +917,14 @@ table.blog-table-minimal td {
 
 /* Sidebar Callout Card */
 .exp-sidebar-callout {
-    background: #14251B;
+    background: linear-gradient(135deg, #14251B 0%, #1A3324 100%);
     color: #FAF6EF;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 10px 24px rgba(18, 34, 23, 0.15);
+    border-radius: 16px;
+    padding: 24px 22px;
+    box-shadow: 0 12px 30px rgba(18, 34, 23, 0.18);
+    border: 1px solid rgba(199, 166, 106, 0.25);
+    position: relative;
+    overflow: hidden;
 }
 .exp-sidebar-callout h4 {
     font-family: 'Playfair Display', Georgia, serif;
@@ -962,10 +1046,22 @@ table.blog-table-minimal td {
 }
 
 @media (max-width: 1024px) {
+    .article-layout-wrapper {
+        flex-direction: column !important;
+        gap: 40px !important;
+    }
+    .article-main-body {
+        max-width: 100% !important;
+    }
     .article-sidebar {
-        display: none !important;
+        width: 100% !important;
+        max-width: 640px !important;
+        margin: 12px auto 0 !important;
+        position: static !important;
+        top: auto !important;
     }
 }
+
 </style>
 
 <?php if ($isAdminPreview): ?>
@@ -982,184 +1078,172 @@ table.blog-table-minimal td {
     </div>
 <?php endif; ?>
 
-<!-- LUXURY EXPERIMENT EDITORIAL HERO -->
-<header class="exp-hero-section">
-  <div class="exp-hero-inner">
-    
-    <!-- Top Navigation Row: Back Button on Left, Breadcrumbs on Right -->
-    <div class="exp-nav-bar">
-      <a href="<?php echo $pathPrefix; ?>innovation-lab.php" class="exp-back-btn">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        <span>Back to Innovation Lab</span>
-      </a>
+<!-- --- LAB EXPERIMENT ARTICLE SECTION (Identical Architecture to blog-article.php) --- -->
+<div id="page-blog-article" class="page active">
 
-      <nav class="exp-breadcrumbs-nav" aria-label="Breadcrumb">
-        <a href="<?php echo $pathPrefix; ?>index.php">Home</a>
-        <span class="sep">&rsaquo;</span>
-        <a href="<?php echo $pathPrefix; ?>innovation-lab.php">Innovation Lab</a>
-        <span class="sep">&rsaquo;</span>
-        <span class="current"><?php echo htmlspecialchars($exp['title']); ?></span>
-      </nav>
-    </div>
-
-    <!-- Center Headline & Metadata -->
-    <div class="exp-hero-center">
-      <!-- Status Badge Pill -->
-      <div class="exp-status-pill">
-        <span><?php echo htmlspecialchars($exp['category']); ?></span>
-        <span class="exp-pill-dot">•</span>
-        <span class="exp-status-dot <?php echo $badgeColor; ?>"></span>
-        <span class="exp-status-name"><?php echo htmlspecialchars($exp['status_badge'] ?: 'IN PROGRESS'); ?></span>
-      </div>
+  <!-- 1. EDITORIAL HERO (1140px Aligned Grid, Clutter-Free) -->
+  <section class="exp-hero-section">
+    <div class="exp-hero-inner">
       
-      <h1 class="exp-main-title"><?php echo htmlspecialchars($exp['title']); ?></h1>
-      
-      <div class="exp-meta-bar">
-        <span><strong>Batch #<?php echo $batchCode; ?></strong></span>
-        <span class="sep">•</span>
-        <span>Logged <?php echo date('M Y', strtotime($exp['created_at'])); ?></span>
-        <span class="sep">•</span>
-        <span>5 min read</span>
-        <span class="sep">•</span>
-        <span>RT Chocos Kitchen Research</span>
-        <?php if ($isAdmin): ?>
-          <span class="sep">•</span>
-          <a href="<?php echo $pathPrefix; ?>admin/experiment-editor.php?id=<?php echo $exp['id']; ?>" class="exp-admin-edit-link">✏️ Edit in Admin</a>
-        <?php endif; ?>
-      </div>
-    </div>
-
-    <!-- High-Resolution Edge-to-Edge Cover Image Canvas (No beige letterboxing) -->
-    <?php if (!empty($rawImg)): ?>
-      <div class="exp-hero-cover-frame" onclick="openLightbox('<?php echo htmlspecialchars($resolvedImg); ?>')">
-        <img src="<?php echo htmlspecialchars($resolvedImg); ?>" alt="<?php echo htmlspecialchars($exp['title']); ?>" onerror="this.style.display='none';">
-        <div class="exp-cover-zoom-hint">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-          <span>Click to enlarge photo</span>
+      <!-- Top Utility Bar: Back Navigation (Left) + Badges (Right) -->
+      <div class="exp-nav-bar">
+        <a class="exp-back-btn" href="<?php echo $pathPrefix; ?>innovation-lab.php">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          <span>Back to Innovation Lab</span>
+        </a>
+        
+        <div class="exp-hero-badges">
+          <span class="exp-cat-badge"><?php echo htmlspecialchars($exp['category']); ?></span>
+          <span class="exp-status-pill <?php echo $badgeColor; ?>">
+            <span class="exp-status-dot <?php echo $badgeColor; ?>"></span>
+            <?php echo htmlspecialchars($exp['status_badge'] ?: 'IN PROGRESS'); ?>
+          </span>
         </div>
       </div>
+
+      <!-- Main Headline & Editorial Deck -->
+      <div class="exp-hero-text">
+        <h1 class="exp-main-title"><?php echo htmlspecialchars($exp['title']); ?></h1>
+        
+        <?php if (!empty($exp['description'])): ?>
+          <p class="exp-lead-deck"><?php echo htmlspecialchars($exp['description']); ?></p>
+        <?php endif; ?>
+
+        <!-- Streamlined Metadata Bar -->
+        <div class="exp-meta-strip">
+          <span class="exp-meta-batch">Batch #<?php echo htmlspecialchars($batchCode); ?></span>
+          <span class="exp-meta-sep">•</span>
+          <span>Logged <?php echo date('M Y', strtotime($exp['created_at'])); ?></span>
+          <span class="exp-meta-sep">•</span>
+          <span>5 min read</span>
+          <span class="exp-meta-sep">•</span>
+          <span>RT Chocos Kitchen Research</span>
+          <?php if ($isAdmin): ?>
+            <span class="exp-meta-sep">•</span>
+            <a href="<?php echo $pathPrefix; ?>admin/experiment-editor.php?id=<?php echo $exp['id']; ?>" class="exp-admin-link">✏️ Edit in Admin</a>
+          <?php endif; ?>
+        </div>
+      </div>
+
+      <!-- High-Resolution Cover Image (Full 1140px Grid Alignment) -->
+      <?php if (!empty($rawImg)): ?>
+        <div class="exp-hero-cover-frame" onclick="openLightbox('<?php echo htmlspecialchars($resolvedImg); ?>')">
+          <img id="blog-article-image" src="<?php echo htmlspecialchars($resolvedImg); ?>" alt="<?php echo htmlspecialchars($exp['title']); ?>" onerror="this.parentElement.style.display='none';" />
+          <div class="exp-cover-zoom-hint">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            <span>Click to expand visual</span>
+          </div>
+        </div>
+      <?php endif; ?>
+
+    </div>
+  </section>
+
+  <!-- 2. ARTICLE SECTION (Main Body + Sidebar) -->
+  <div class="section blog-article-section">
+    <div class="article-layout-wrapper">
+        
+        <!-- Main body text pane (Flows like a luxury blog article) -->
+        <main class="article-main-body">
+            
+            <!-- Article Body (HTML / Markdown formatted with luxury typography) -->
+            <div id="blog-article-content">
+                <?php echo $articleContent; ?>
+            </div>
+            
+            <!-- Social Share Bar (Exact blog share container) -->
+            <?php 
+                $articleUrl = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'rtchocos.com') . ($_SERVER['REQUEST_URI'] ?? '');
+                $shareTitle = $exp['title'] . ' | RT Chocos Innovation Lab';
+            ?>
+            <div class="share-container">
+                <span class="share-title">Share Dossier:</span>
+                <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode($articleUrl); ?>&text=<?php echo urlencode($shareTitle); ?>" target="_blank" class="share-btn tw" title="Share on Twitter">Twitter</a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn fb" title="Share on Facebook">Facebook</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn ln" title="Share on LinkedIn">LinkedIn</a>
+                <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($shareTitle . ' - ' . $articleUrl); ?>" target="_blank" class="share-btn wa" title="Share via WhatsApp">WhatsApp</a>
+                <button type="button" class="share-btn copy" onclick="copyArticleLink()" title="Copy Link">Copy Link</button>
+            </div>
+
+            <!-- Author / Lab Kitchen Bio Box (E-E-A-T) -->
+            <div style="background:#FAF7F2; border-radius:20px; padding:24px; margin-top:40px; margin-bottom:24px; box-shadow:0 4px 16px rgba(59,42,34,0.06); display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+                <img src="<?php echo $pathPrefix; ?>assets/myphoto.jpg" alt="Aarti Saluja Sahni — founder and expert chocolate educator at RT Chocos India" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #5C4033; flex-shrink:0;">
+                <div style="flex:1; min-width:240px;">
+                    <span style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--gold, #C7A66A); letter-spacing:0.08em; display:block; margin-bottom:4px;">Research &amp; Formulation</span>
+                    <h4 style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:#3B2A22; margin:0 0 8px;">Aarti Saluja Sahni &amp; The RT Chocos Kitchen</h4>
+                    <p style="font-family:var(--font-sans, sans-serif); font-size:13.5px; line-height:1.6; color:#5C4033; font-weight:300; margin:0 0 12px;">
+                        Certified chocolate educator and formulation researcher testing bean-to-bar boundaries, tropical fat structures, and indigenous Indian botanical pairings.
+                    </p>
+                    <a href="<?php echo $pathPrefix; ?>innovation-lab.php" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">Explore Innovation Lab</a>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Sticky Sidebar Panel (Specs, TOC, Shop Promo) -->
+        <aside class="article-sidebar" id="tocSidebar">
+            
+            <!-- 1. Table of Contents -->
+            <?php if (!empty($headings_list)): ?>
+                <div class="toc-box">
+                    <div class="toc-title">On this page</div>
+                    <ul class="toc-list" id="tocList">
+                        <?php foreach ($headings_list as $h): ?>
+                            <li class="toc-item <?php echo $h['level'] === 3 ? 'indent-h3' : ''; ?>">
+                                <a href="#<?php echo $h['slug']; ?>"><?php echo htmlspecialchars($h['text']); ?></a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+            <!-- 3. Chocolate Shop Callout Card -->
+            <div class="exp-sidebar-callout">
+                <h4>Curious About Our Chocolate?</h4>
+                <p>Every chocolate bar we craft starts with experiments right here in our Innovation Lab. Taste the outcome in our chocolate shop.</p>
+                <a href="<?php echo $pathPrefix; ?>shop.php">
+                    <span>Explore Chocolate Shop</span>
+                    <span>&rarr;</span>
+                </a>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- 3. Related Experiments Section (Matching Related Insights from blog-article.php) -->
+    <?php if (!empty($relatedExperiments)): ?>
+        <div style="margin-top:64px; border-top:1px solid #EDE7DB; padding-top:48px;">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:24px;">
+                <h3 style="font-family:'Cormorant Garamond', serif; font-size:28px; margin:0; color:#3B2A22; font-weight:700;">More Experiments From the Lab</h3>
+                <a href="<?php echo $pathPrefix; ?>innovation-lab.php#currently-in-lab" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold, #C7A66A); text-decoration:none;">View All Experiments &rarr;</a>
+            </div>
+            
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(265px, 1fr)); gap:24px;">
+                <?php foreach ($relatedExperiments as $rel): 
+                    $relRawImg = $rel['image_path'] ?: 'assets/images/placeholder.jpg';
+                    $relImgUrl = (strpos($relRawImg, 'http') === 0 || strpos($relRawImg, '/') === 0 || strpos($relRawImg, '../') === 0) ? $relRawImg : ($pathPrefix . $relRawImg);
+                    $relLink = $pathPrefix . "experiment/" . $rel['slug'];
+                ?>
+                    <a href="<?php echo htmlspecialchars($relLink); ?>" class="related-card">
+                        <div style="height:180px; overflow:hidden; background:linear-gradient(145deg, #FAF7F2 0%, #EDE7DB 100%); display:flex; align-items:center; justify-content:center;">
+                            <img src="<?php echo htmlspecialchars($relImgUrl); ?>" style="width:100%; height:100%; object-fit:cover;" loading="lazy" onerror="this.src='<?php echo $pathPrefix; ?>assets/images/placeholder.jpg';">
+                        </div>
+                        <div style="padding:18px; display:flex; flex-direction:column; flex:1;">
+                            <span style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--gold, #C7A66A); margin-bottom:6px;"><?php echo htmlspecialchars($rel['category']); ?></span>
+                            <h4 style="font-family:'Playfair Display', serif; font-size:17px; font-weight:700; color:#3B2A22; margin:0 0 8px; line-height:1.35;"><?php echo htmlspecialchars($rel['title']); ?></h4>
+                            <p style="font-family:var(--font-sans, sans-serif); font-size:12.5px; color:#5C4033; line-height:1.5; margin:0 0 14px; flex:1; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                                <?php echo htmlspecialchars($rel['description']); ?>
+                            </p>
+                            <span style="font-size:11px; font-weight:700; color:var(--gold, #C7A66A); text-transform:uppercase; letter-spacing:0.5px;">Read Dossier &rarr;</span>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
     <?php endif; ?>
 
   </div>
-</header>
-
-<!-- MAIN ARTICLE SECTION -->
-<div class="section blog-article-section">
-  <div class="article-layout-wrapper">
-      
-      <!-- Main body text pane (Flows like a luxury blog article) -->
-      <main class="article-main-body">
-          
-          <!-- Executive Research Brief Card -->
-          <?php if (!empty($exp['description'])): ?>
-              <div class="exp-brief-card" style="background:#FAF7F2; border:1px solid #EDE7DB; border-left:4px solid var(--gold, #C7A66A); border-radius:0 12px 12px 0; padding:24px 28px; margin-bottom:40px; box-shadow:0 4px 18px rgba(59, 42, 34, 0.04);">
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                      <span style="font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold, #C7A66A); font-family:var(--font-sans, sans-serif);">RESEARCH BRIEF &amp; HYPOTHESIS</span>
-                      <span style="font-family:monospace; font-size:11.5px; font-weight:700; color:#7D6B62;">BATCH #<?php echo htmlspecialchars($batchCode); ?></span>
-                  </div>
-                  <p style="font-family:'Playfair Display', Georgia, serif; font-size:19px; line-height:1.68; color:#1F2E25; font-style:italic; margin:0;">
-                      "<?php echo htmlspecialchars($exp['description']); ?>"
-                  </p>
-              </div>
-          <?php endif; ?>
-
-          <!-- Article Body (HTML / Markdown formatted with luxury typography) -->
-          <div id="blog-article-content">
-              <?php echo $articleContent; ?>
-          </div>
-          
-          <!-- Social Share Bar (Exact blog share container) -->
-          <?php 
-              $articleUrl = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'rtchocos.com') . ($_SERVER['REQUEST_URI'] ?? '');
-              $shareTitle = $exp['title'] . ' | RT Chocos Innovation Lab';
-          ?>
-          <div class="share-container">
-              <span class="share-title">Share Dossier:</span>
-              <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode($articleUrl); ?>&text=<?php echo urlencode($shareTitle); ?>" target="_blank" class="share-btn tw" title="Share on Twitter">Twitter</a>
-              <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn fb" title="Share on Facebook">Facebook</a>
-              <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn ln" title="Share on LinkedIn">LinkedIn</a>
-              <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($shareTitle . ' - ' . $articleUrl); ?>" target="_blank" class="share-btn wa" title="Share via WhatsApp">WhatsApp</a>
-              <button type="button" class="share-btn copy" onclick="copyArticleLink()" title="Copy Link">Copy Link</button>
-          </div>
-
-          <!-- Author / Lab Kitchen Bio Box (E-E-A-T) -->
-          <div style="background:#FAF7F2; border-radius:20px; padding:24px; margin-top:40px; margin-bottom:24px; box-shadow:0 4px 16px rgba(59,42,34,0.06); display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
-              <img src="<?php echo $pathPrefix; ?>assets/myphoto.jpg" alt="Aarti Saluja Sahni — founder and expert chocolate educator at RT Chocos India" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #5C4033; flex-shrink:0;">
-              <div style="flex:1; min-width:240px;">
-                  <span style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--gold, #C7A66A); letter-spacing:0.08em; display:block; margin-bottom:4px;">Research &amp; Formulation</span>
-                  <h4 style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:#3B2A22; margin:0 0 8px;">Aarti Saluja Sahni &amp; The RT Chocos Kitchen</h4>
-                  <p style="font-family:var(--font-sans, sans-serif); font-size:13.5px; line-height:1.6; color:#5C4033; font-weight:300; margin:0 0 12px;">
-                      Certified chocolate educator and formulation researcher testing bean-to-bar boundaries, tropical fat structures, and indigenous Indian botanical pairings.
-                  </p>
-                  <a href="<?php echo $pathPrefix; ?>innovation-lab.php" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">Explore Innovation Lab</a>
-              </div>
-          </div>
-
-      </main>
-
-      <!-- Sticky Sidebar Panel (Clean, Uncluttered: TOC & Chocolate Shop Callout) -->
-      <aside class="article-sidebar" id="tocSidebar">
-          
-          <!-- Table of Contents -->
-          <?php if (!empty($headings_list)): ?>
-              <div class="toc-box">
-                  <div class="toc-title">On this page</div>
-                  <ul class="toc-list" id="tocList">
-                      <?php foreach ($headings_list as $h): ?>
-                          <li class="toc-item <?php echo $h['level'] === 3 ? 'indent-h3' : ''; ?>">
-                              <a href="#<?php echo $h['slug']; ?>"><?php echo htmlspecialchars($h['text']); ?></a>
-                          </li>
-                      <?php endforeach; ?>
-                  </ul>
-              </div>
-          <?php endif; ?>
-
-          <!-- Callout Card -->
-          <div class="exp-sidebar-callout">
-              <h4>Curious About Our Chocolate?</h4>
-              <p>Every chocolate bar we craft starts with experiments right here in our Innovation Lab. Taste the outcome in our chocolate shop.</p>
-              <a href="<?php echo $pathPrefix; ?>shop.php">
-                  <span>Explore Chocolate Shop</span>
-                  <span>&rarr;</span>
-              </a>
-          </div>
-
-      </aside>
-
-  </div>
-
-  <!-- Related Experiments Section (Matching Related Insights from blog-article.php) -->
-  <?php if (!empty($relatedExperiments)): ?>
-      <div style="margin-top: 60px; border-top: 1px solid #EDE7DB; padding-top: 48px;">
-          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 24px;">
-              <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; margin:0; color: #3B2A22; font-weight: 700;">More Experiments From the Lab</h3>
-              <a href="<?php echo $pathPrefix; ?>innovation-lab.php#currently-in-lab" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold, #C7A66A); text-decoration:none;">View All Experiments &rarr;</a>
-          </div>
-          
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 24px;">
-              <?php foreach ($relatedExperiments as $rel): 
-                  $relRawImg = $rel['image_path'] ?: 'assets/images/placeholder.jpg';
-                  $relImgUrl = (strpos($relRawImg, 'http') === 0 || strpos($relRawImg, '/') === 0 || strpos($relRawImg, '../') === 0) ? $relRawImg : ($pathPrefix . $relRawImg);
-                  $relLink = $pathPrefix . "experiment/" . $rel['slug'];
-              ?>
-                  <a href="<?php echo htmlspecialchars($relLink); ?>" class="related-card">
-                      <div style="height:180px; overflow:hidden; background:linear-gradient(145deg, #FAF7F2 0%, #EDE7DB 100%); display:flex; align-items:center; justify-content:center;">
-                          <img src="<?php echo htmlspecialchars($relImgUrl); ?>" style="width:100%; height:100%; object-fit:cover;" loading="lazy" onerror="this.src='<?php echo $pathPrefix; ?>assets/images/placeholder.jpg';">
-                      </div>
-                      <div style="padding: 18px; display: flex; flex-direction: column; flex: 1;">
-                          <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gold, #C7A66A); margin-bottom: 6px;"><?php echo htmlspecialchars($rel['category']); ?></span>
-                          <h4 style="font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #3B2A22; margin: 0 0 8px; line-height: 1.35;"><?php echo htmlspecialchars($rel['title']); ?></h4>
-                          <p style="font-family: var(--font-sans, sans-serif); font-size: 12.5px; color: #5C4033; line-height: 1.5; margin: 0 0 14px; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                              <?php echo htmlspecialchars($rel['description']); ?>
-                          </p>
-                          <span style="font-size: 11px; font-weight: 700; color: var(--gold, #C7A66A); text-transform: uppercase; letter-spacing: 0.5px;">Read Dossier &rarr;</span>
-                      </div>
-                  </a>
-              <?php endforeach; ?>
-          </div>
-      </div>
-  <?php endif; ?>
-
 </div>
 
 <!-- Image Lightbox Modal -->

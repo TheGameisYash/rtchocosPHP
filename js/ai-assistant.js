@@ -68,7 +68,7 @@ async function callAiApi(message) {
   showAiTypingIndicator();
 
   try {
-    const isBlogSubfolder = window.location.pathname.includes('/blog/');
+    const isBlogSubfolder = window.location.pathname.includes('/blog/') || window.location.pathname.includes('/experiment/') || window.location.pathname.includes('/lab/');
     const prefix = isBlogSubfolder ? '../' : '';
 
     const response = await fetch(prefix + 'api_ai.php', {
@@ -148,7 +148,7 @@ async function loadDynamicAiInsight() {
     if (sessionStorage.getItem('ai_insight_triggered')) return;
     sessionStorage.setItem('ai_insight_triggered', 'true');
 
-    const isBlogSubfolder = window.location.pathname.includes('/blog/');
+    const isBlogSubfolder = window.location.pathname.includes('/blog/') || window.location.pathname.includes('/experiment/') || window.location.pathname.includes('/lab/');
     const prefix = isBlogSubfolder ? '../' : '';
 
     // Trigger background generation for the next visit
@@ -175,7 +175,7 @@ async function loadDynamicAiRecipe() {
   } catch (e) {}
 
   try {
-    const isBlogSubfolder = window.location.pathname.includes('/blog/');
+    const isBlogSubfolder = window.location.pathname.includes('/blog/') || window.location.pathname.includes('/experiment/') || window.location.pathname.includes('/lab/');
     const prefix = isBlogSubfolder ? '../' : '';
 
     const response = await fetch(prefix + 'api_ai.php', {
@@ -234,7 +234,7 @@ async function loadDynamicAiClassInsight() {
   } catch (e) {}
 
   try {
-    const isBlogSubfolder = window.location.pathname.includes('/blog/');
+    const isBlogSubfolder = window.location.pathname.includes('/blog/') || window.location.pathname.includes('/experiment/') || window.location.pathname.includes('/lab/');
     const prefix = isBlogSubfolder ? '../' : '';
 
     const response = await fetch(prefix + 'api_ai.php', {
@@ -391,7 +391,7 @@ Return ONLY valid JSON with no markdown block markers, matching this exact struc
 }`;
 
   try {
-    const isBlogSubfolder = window.location.pathname.includes('/blog/');
+    const isBlogSubfolder = window.location.pathname.includes('/blog/') || window.location.pathname.includes('/experiment/') || window.location.pathname.includes('/lab/');
     const prefix = isBlogSubfolder ? '../' : '';
 
     const controller = new AbortController();
@@ -829,7 +829,7 @@ async function askAboutAiCompanion(question) {
   loader.style.display = 'flex';
 
   try {
-    const isBlogSubfolder = window.location.pathname.includes('/blog/');
+    const isBlogSubfolder = window.location.pathname.includes('/blog/') || window.location.pathname.includes('/experiment/') || window.location.pathname.includes('/lab/');
     const prefix = isBlogSubfolder ? '../' : '';
 
     const promptText = `System Instructions: You are the AI companion of Aarti Saluja Sahni, the professional chocolate maker and recipe consultant. Respond in Aarti's systems-thinking, science-first educator voice (strictly under 45 words). If asked about recipes or techniques, focus on crystallisation chemistry, conching, or farm fermentation.

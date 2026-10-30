@@ -1,0 +1,15 @@
+# ----------------------------------------------------------------------
+# | Experiment Directory Rewrite Rules (Hostinger / LiteSpeed)         |
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /experiment/
+
+    # Route /experiment/ or empty slug to innovation lab listing
+    RewriteRule ^$ ../innovation-lab.php [L]
+
+    # Route clean experiment URLs (/experiment/{slug}) to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^([^/]+)/?$ index.php?slug=$1 [L,QSA]
+</IfModule>
