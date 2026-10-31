@@ -755,6 +755,169 @@
   transform: translateX(4px);
 }
 
+/* Failed Batch In-Card Switcher / Carousel */
+.lab-failed-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.lab-failed-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #FFFFFF;
+  border: 1px solid #E6DED2;
+  border-radius: 999px;
+  padding: 3px 6px 3px 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.lab-failed-counter {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #7A8B7E;
+  white-space: nowrap;
+}
+
+.lab-failed-nav-arrows {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lab-failed-nav-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid #E6DED2;
+  background: #FAF7F2;
+  color: #14251B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.lab-failed-nav-btn:hover {
+  background: #14251B;
+  border-color: #14251B;
+  color: #FFFFFF;
+}
+
+.lab-failed-pills-bar {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+
+.lab-failed-pills-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.lab-failed-pill {
+  background: transparent;
+  border: 1px solid #D8CFBF;
+  color: #556658;
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.lab-failed-pill:hover {
+  border-color: #14251B;
+  color: #14251B;
+  background: rgba(20, 37, 27, 0.03);
+}
+
+.lab-failed-pill.active {
+  background: #14251B;
+  border-color: #14251B;
+  color: #FFFFFF;
+}
+
+.lab-failed-pill .pill-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #C7A66A;
+  display: inline-block;
+  transition: background 0.2s ease;
+}
+
+.lab-failed-pill.active .pill-dot {
+  background: #4ADE80;
+  box-shadow: 0 0 5px rgba(74, 222, 128, 0.7);
+}
+
+.lab-failed-slides-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 280px;
+}
+
+.lab-failed-slide {
+  flex: 1;
+  display: none;
+  flex-direction: column;
+  width: 100%;
+}
+
+.lab-failed-slide.active {
+  display: flex;
+  animation: failedSlideFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes failedSlideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lab-failed-featured-pill {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(20, 37, 27, 0.88);
+  backdrop-filter: blur(6px);
+  color: #C7A66A;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(199, 166, 106, 0.4);
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
 /* ==========================================
    5. INGREDIENT INNOVATION SECTION
    ========================================== */

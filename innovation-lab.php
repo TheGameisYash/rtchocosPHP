@@ -312,51 +312,89 @@ include 'includes/header.php';
     <!-- RIGHT: FROM A FAILED BATCH TO A NEW INSIGHT CARD -->
     <div class="lab-failed-card" id="failed-experiments">
       <div class="lab-failed-header">
-        <h2 class="lab-failed-title"><?php echo htmlspecialchars($failedHeading); ?></h2>
-        <div class="lab-eyebrow" style="margin-top: 6px; margin-bottom: 0;">
-          <span><?php echo htmlspecialchars($failedEyebrow); ?></span>
+        <div class="lab-failed-header-top">
+          <div>
+            <h2 class="lab-failed-title"><?php echo htmlspecialchars($failedHeading); ?></h2>
+            <div class="lab-eyebrow" style="margin-top: 6px; margin-bottom: 0;">
+              <span><?php echo htmlspecialchars($failedEyebrow); ?></span>
+            </div>
+          </div>
+
+          <?php if (count($failedBatches) > 1): ?>
+            <div class="lab-failed-nav-controls">
+              <span class="lab-failed-counter" id="failedBatchCounter">1 / <?php echo count($failedBatches); ?></span>
+              <div class="lab-failed-nav-arrows">
+                <button type="button" class="lab-failed-nav-btn" onclick="switchFailedSlide(-1)" aria-label="Previous failed batch" title="Previous case study">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button type="button" class="lab-failed-nav-btn" onclick="switchFailedSlide(1)" aria-label="Next failed batch" title="Next case study">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+              </div>
+            </div>
+          <?php endif; ?>
         </div>
+
+        <?php if (count($failedBatches) > 1): ?>
+          <div class="lab-failed-pills-bar" id="failedPillsBar" role="tablist" aria-label="Failed batch case studies">
+            <?php foreach ($failedBatches as $idx => $fb): ?>
+              <button type="button" class="lab-failed-pill <?php echo $idx === 0 ? 'active' : ''; ?>" onclick="goToFailedSlide(<?php echo $idx; ?>)" data-pill-index="<?php echo $idx; ?>" role="tab" aria-selected="<?php echo $idx === 0 ? 'true' : 'false'; ?>" title="Switch to <?php echo htmlspecialchars($fb['title']); ?>">
+                <span class="pill-dot"></span>
+                <span class="pill-title"><?php echo htmlspecialchars($fb['title']); ?></span>
+              </button>
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
       </div>
 
-      <?php if ($primaryFailed): 
-        $failSlug = !empty($primaryFailed['slug']) ? $primaryFailed['slug'] : ('batch-' . $primaryFailed['id']);
-        $failUrl = 'failed-batch/' . rawurlencode($failSlug);
-      ?>
-      <div class="lab-failed-inner-box">
-        <a href="<?php echo htmlspecialchars($failUrl); ?>" class="lab-failed-img-wrap" style="display:block; text-decoration:none;" title="Read <?php echo htmlspecialchars($primaryFailed['title']); ?> case study">
-          <img src="<?php echo htmlspecialchars($primaryFailed['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" alt="<?php echo htmlspecialchars($primaryFailed['title']); ?>" loading="lazy" />
-        </a>
-        <div class="lab-failed-content">
-          <a href="<?php echo htmlspecialchars($failUrl); ?>" style="text-decoration:none; color:inherit;">
-            <div class="lab-failed-case-tag"><?php echo htmlspecialchars($primaryFailed['title']); ?></div>
-          </a>
-          
-          <div class="lab-failed-data-row">
-            <span class="label">1. What We Hoped For</span>
-            <span class="text"><?php echo getLabCardSnippet($primaryFailed['hypothesis']); ?></span>
-          </div>
+      <?php if (!empty($failedBatches)): ?>
+        <div class="lab-failed-slides-wrap" id="failedSlidesWrap">
+          <?php foreach ($failedBatches as $idx => $fb): 
+            $failSlug = !empty($fb['slug']) ? $fb['slug'] : ('batch-' . $fb['id']);
+            $failUrl = 'failed-batch/' . rawurlencode($failSlug);
+          ?>
+            <div class="lab-failed-slide <?php echo $idx === 0 ? 'active' : ''; ?>" data-slide-index="<?php echo $idx; ?>" role="tabpanel">
+              <div class="lab-failed-inner-box">
+                <a href="<?php echo htmlspecialchars($failUrl); ?>" class="lab-failed-img-wrap" style="display:block; text-decoration:none;" title="Read <?php echo htmlspecialchars($fb['title']); ?> case study">
+                  <img src="<?php echo htmlspecialchars($fb['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" alt="<?php echo htmlspecialchars($fb['title']); ?>" loading="lazy" />
+                  <?php if (!empty($fb['is_featured'])): ?>
+                    <span class="lab-failed-featured-pill">★ Featured Insight</span>
+                  <?php endif; ?>
+                </a>
+                <div class="lab-failed-content">
+                  <a href="<?php echo htmlspecialchars($failUrl); ?>" style="text-decoration:none; color:inherit;">
+                    <div class="lab-failed-case-tag"><?php echo htmlspecialchars($fb['title']); ?></div>
+                  </a>
+                  
+                  <div class="lab-failed-data-row">
+                    <span class="label">1. What We Hoped For</span>
+                    <span class="text"><?php echo getLabCardSnippet($fb['hypothesis']); ?></span>
+                  </div>
 
-          <div class="lab-failed-data-row">
-            <span class="label">2. What Went Wrong</span>
-            <span class="text"><?php echo getLabCardSnippet($primaryFailed['what_happened']); ?></span>
-          </div>
+                  <div class="lab-failed-data-row">
+                    <span class="label">2. What Went Wrong</span>
+                    <span class="text"><?php echo getLabCardSnippet($fb['what_happened']); ?></span>
+                  </div>
 
-          <div class="lab-failed-data-row">
-            <span class="label">3. Why It Happened</span>
-            <span class="text"><?php echo getLabCardSnippet($primaryFailed['why_it_happened']); ?></span>
-          </div>
+                  <div class="lab-failed-data-row">
+                    <span class="label">3. Why It Happened</span>
+                    <span class="text"><?php echo getLabCardSnippet($fb['why_it_happened']); ?></span>
+                  </div>
 
-          <div class="lab-failed-data-row">
-            <span class="label">4. What We Learned</span>
-            <span class="text"><?php echo getLabCardSnippet($primaryFailed['what_next']); ?></span>
-          </div>
+                  <div class="lab-failed-data-row">
+                    <span class="label">4. What We Learned</span>
+                    <span class="text"><?php echo getLabCardSnippet($fb['what_next']); ?></span>
+                  </div>
 
-          <a href="<?php echo htmlspecialchars($failUrl); ?>" class="lab-failed-btn" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:space-between;">
-            <span>READ FULL STORY</span>
-            <span>&rarr;</span>
-          </a>
+                  <a href="<?php echo htmlspecialchars($failUrl); ?>" class="lab-failed-btn" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:space-between;">
+                    <span>READ FULL STORY</span>
+                    <span>&rarr;</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
         </div>
-      </div>
       <?php else: ?>
         <div class="lab-failed-inner-box" style="padding: 24px; text-align: center; color: #666;">
           No failed batch case studies documented yet. All experiments are running smoothly!
@@ -1842,6 +1880,76 @@ window.addEventListener('DOMContentLoaded', function() {
       }
     }, 60);
   }, { passive: true });
+});
+
+// =========================================================================
+// In-Card Failed Batch Switcher / Carousel Controller (Option 1)
+// =========================================================================
+let currentFailedIndex = 0;
+const totalFailedSlides = <?php echo count($failedBatches); ?>;
+
+function goToFailedSlide(index) {
+  if (totalFailedSlides <= 1) return;
+  if (index < 0) index = totalFailedSlides - 1;
+  if (index >= totalFailedSlides) index = 0;
+  currentFailedIndex = index;
+
+  const slides = document.querySelectorAll('.lab-failed-slide');
+  slides.forEach((slide, idx) => {
+    slide.classList.toggle('active', idx === currentFailedIndex);
+  });
+
+  const pills = document.querySelectorAll('.lab-failed-pill');
+  pills.forEach((pill, idx) => {
+    const isActive = idx === currentFailedIndex;
+    pill.classList.toggle('active', isActive);
+    pill.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    if (isActive) {
+      pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  });
+
+  const counter = document.getElementById('failedBatchCounter');
+  if (counter) {
+    counter.innerText = (currentFailedIndex + 1) + ' / ' + totalFailedSlides;
+  }
+}
+
+function switchFailedSlide(direction) {
+  goToFailedSlide(currentFailedIndex + direction);
+}
+
+// Mobile swipe support for failed batch slides
+window.addEventListener('DOMContentLoaded', function() {
+  const container = document.getElementById('failedSlidesWrap');
+  if (container && totalFailedSlides > 1) {
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
+    container.addEventListener('touchstart', function(e) {
+      if (e.changedTouches && e.changedTouches[0]) {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      }
+    }, { passive: true });
+
+    container.addEventListener('touchend', function(e) {
+      if (e.changedTouches && e.changedTouches[0]) {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        const diffX = touchStartX - touchEndX;
+        const diffY = touchStartY - touchEndY;
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+          if (diffX > 0) {
+            switchFailedSlide(1);
+          } else {
+            switchFailedSlide(-1);
+          }
+        }
+      }
+    }, { passive: true });
+  }
 });
 </script>
 
