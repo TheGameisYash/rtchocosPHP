@@ -79,6 +79,20 @@ Options +FollowSymLinks -Indexes
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(?:experiment|lab)/([^/]+)/?$ /experiment.php?slug=$1 [L,QSA]
 
+    # Handle /failed-batch and /ingredient direct requests
+    RewriteRule ^failed-batch/?$ /innovation-lab.php#failed-experiments [L]
+    RewriteRule ^ingredient/?$ /innovation-lab.php#ingredient-innovation [L]
+
+    # Rewrite clean failed batch URLs (/failed-batch/slug) to failed-batch.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^failed-batch/([^/]+)/?$ /failed-batch.php?slug=$1 [L,QSA]
+
+    # Rewrite clean ingredient URLs (/ingredient/slug) to ingredient.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ingredient/([^/]+)/?$ /ingredient.php?slug=$1 [L,QSA]
+
     # Handle accidental nested /shop/shop/{slug} requests
     RewriteRule ^(?:shop|blog)/(?:shop|blog)/([^/]+)/?$ /shop/$1 [R=301,L]
 

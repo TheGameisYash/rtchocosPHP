@@ -1224,6 +1224,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                         <?php endif; ?>
                                     </td>
                                     <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
+                                        <a href="../failed-batch/<?php echo htmlspecialchars($fb['slug'] ?: $fb['id']); ?>" target="_blank" class="btn btn-sm btn-outline" style="padding: 3px 6px; font-size: 11px;" title="View on live page">↗</a>
                                         <button type="button" class="btn btn-sm btn-outline" onclick='editFailedBatch(<?php echo json_encode($fb, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
                                         <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this failed batch case study?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
@@ -1351,6 +1352,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                 </td>
                                 <td style="padding: 12px 18px;"><?php echo (int)$ing['sort_order']; ?></td>
                                 <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
+                                    <a href="../ingredient/<?php echo htmlspecialchars($ing['slug'] ?: $ing['id']); ?>" target="_blank" class="btn btn-sm btn-outline" style="padding: 3px 6px; font-size: 11px;" title="View on live page">↗</a>
                                     <button type="button" class="btn btn-sm btn-outline" onclick='editIngredient(<?php echo json_encode($ing, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
                                     <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this ingredient category?');">
                                         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">

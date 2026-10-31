@@ -442,7 +442,7 @@ function openSearch() {
       requestAnimationFrame(() => searchInput.focus());
     }
   } else {
-    const prefix = (window.location.pathname.includes('/blog/') || window.location.pathname.includes('/experiment/') || window.location.pathname.includes('/lab/')) ? '../' : '';
+    const prefix = (window.location.pathname.includes('/blog/') || window.location.pathname.includes('/experiment/') || window.location.pathname.includes('/lab/') || window.location.pathname.includes('/failed-batch/') || window.location.pathname.includes('/ingredient/')) ? '../' : '';
     window.location.href = prefix + 'blog.php?search=true';
   }
 }

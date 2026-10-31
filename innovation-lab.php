@@ -318,13 +318,18 @@ include 'includes/header.php';
         </div>
       </div>
 
-      <?php if ($primaryFailed): ?>
+      <?php if ($primaryFailed): 
+        $failSlug = !empty($primaryFailed['slug']) ? $primaryFailed['slug'] : ('batch-' . $primaryFailed['id']);
+        $failUrl = 'failed-batch/' . rawurlencode($failSlug);
+      ?>
       <div class="lab-failed-inner-box">
-        <div class="lab-failed-img-wrap">
+        <a href="<?php echo htmlspecialchars($failUrl); ?>" class="lab-failed-img-wrap" style="display:block; text-decoration:none;" title="Read <?php echo htmlspecialchars($primaryFailed['title']); ?> case study">
           <img src="<?php echo htmlspecialchars($primaryFailed['image_path'] ?: 'assets/images/lab-failed-batch.jpg'); ?>" alt="<?php echo htmlspecialchars($primaryFailed['title']); ?>" loading="lazy" />
-        </div>
+        </a>
         <div class="lab-failed-content">
-          <div class="lab-failed-case-tag"><?php echo htmlspecialchars($primaryFailed['title']); ?></div>
+          <a href="<?php echo htmlspecialchars($failUrl); ?>" style="text-decoration:none; color:inherit;">
+            <div class="lab-failed-case-tag"><?php echo htmlspecialchars($primaryFailed['title']); ?></div>
+          </a>
           
           <div class="lab-failed-data-row">
             <span class="label">1. What We Hoped For</span>
@@ -346,10 +351,10 @@ include 'includes/header.php';
             <span class="text"><?php echo getLabCardSnippet($primaryFailed['what_next']); ?></span>
           </div>
 
-          <button type="button" class="lab-failed-btn" onclick="openFailedBatchModal(<?php echo (int)$primaryFailed['id']; ?>)">
+          <a href="<?php echo htmlspecialchars($failUrl); ?>" class="lab-failed-btn" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:space-between;">
             <span>READ FULL STORY</span>
-            <span>→</span>
-          </button>
+            <span>&rarr;</span>
+          </a>
         </div>
       </div>
       <?php else: ?>
@@ -429,51 +434,55 @@ include 'includes/header.php';
           <div class="lab-carousel-track" id="ingredientCarouselTrack">
             <?php if (!empty($ingredientCategories)): ?>
               <!-- Primary Cards Set -->
-              <?php foreach ($ingredientCategories as $cat): ?>
-                <a href="javascript:void(0)" 
+              <?php foreach ($ingredientCategories as $cat): 
+                $ingSlug = !empty($cat['slug']) ? $cat['slug'] : ('ing-' . $cat['id']);
+                $ingUrl = 'ingredient/' . rawurlencode($ingSlug);
+              ?>
+                <a href="<?php echo htmlspecialchars($ingUrl); ?>" 
                    class="lab-ing-card" 
                    data-id="<?php echo (int)$cat['id']; ?>"
                    data-slug="<?php echo htmlspecialchars($cat['slug']); ?>"
+                   data-url="<?php echo htmlspecialchars($ingUrl); ?>"
                    data-title="<?php echo htmlspecialchars(strtolower($cat['title'])); ?>"
                    data-desc="<?php echo htmlspecialchars(strtolower($cat['description'] ?? '')); ?>"
                    data-varietals="<?php echo htmlspecialchars(strtolower($cat['key_varietals'] ?? '')); ?>"
                    data-science="<?php echo htmlspecialchars(strtolower($cat['science_behavior'] ?? '')); ?>"
                    data-apps="<?php echo htmlspecialchars(strtolower($cat['applications'] ?? '')); ?>"
-                   onclick="handleCardClick(<?php echo (int)$cat['id']; ?>, event)" 
-                   role="button" 
-                   aria-haspopup="dialog" 
+                   onclick="handleCardClick('<?php echo htmlspecialchars($ingUrl); ?>', event)" 
                    aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> dossier">
                   <div class="lab-ing-photo-wrap">
                     <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" />
                   </div>
                   <span class="lab-ing-label">
                     <span><?php echo htmlspecialchars($cat['title']); ?></span>
-                    <span>→</span>
+                    <span>&rarr;</span>
                   </span>
                 </a>
               <?php endforeach; ?>
 
               <!-- Cloned Cards Set for Seamless Infinite Floating Loop -->
-              <?php foreach ($ingredientCategories as $cat): ?>
-                <a href="javascript:void(0)" 
+              <?php foreach ($ingredientCategories as $cat): 
+                $ingSlug = !empty($cat['slug']) ? $cat['slug'] : ('ing-' . $cat['id']);
+                $ingUrl = 'ingredient/' . rawurlencode($ingSlug);
+              ?>
+                <a href="<?php echo htmlspecialchars($ingUrl); ?>" 
                    class="lab-ing-card is-clone" 
                    data-id="<?php echo (int)$cat['id']; ?>"
                    data-slug="<?php echo htmlspecialchars($cat['slug']); ?>"
+                   data-url="<?php echo htmlspecialchars($ingUrl); ?>"
                    data-title="<?php echo htmlspecialchars(strtolower($cat['title'])); ?>"
                    data-desc="<?php echo htmlspecialchars(strtolower($cat['description'] ?? '')); ?>"
                    data-varietals="<?php echo htmlspecialchars(strtolower($cat['key_varietals'] ?? '')); ?>"
                    data-science="<?php echo htmlspecialchars(strtolower($cat['science_behavior'] ?? '')); ?>"
                    data-apps="<?php echo htmlspecialchars(strtolower($cat['applications'] ?? '')); ?>"
-                   onclick="handleCardClick(<?php echo (int)$cat['id']; ?>, event)" 
-                   role="button" 
-                   aria-haspopup="dialog" 
+                   onclick="handleCardClick('<?php echo htmlspecialchars($ingUrl); ?>', event)" 
                    aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> dossier">
                   <div class="lab-ing-photo-wrap">
                     <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" />
                   </div>
                   <span class="lab-ing-label">
                     <span><?php echo htmlspecialchars($cat['title']); ?></span>
-                    <span>→</span>
+                    <span>&rarr;</span>
                   </span>
                 </a>
               <?php endforeach; ?>
@@ -1549,7 +1558,7 @@ let isIngHovered = false;
 let ingActiveCategory = 'all';
 let ingResumeTimer = null;
 
-function handleCardClick(id, e) {
+function handleCardClick(target, e) {
   if (ingDragDistance > 7) {
     if (e) {
       e.preventDefault();
@@ -1557,7 +1566,17 @@ function handleCardClick(id, e) {
     }
     return;
   }
-  openIngredientModal(id, e);
+  if (typeof target === 'string' && target && target !== 'javascript:void(0)') {
+    // Normal link navigation is allowed by browser, or navigate explicitly
+    window.location.href = target;
+  } else if (typeof target === 'number') {
+    const ing = (window.LAB_INGREDIENTS || []).find(item => Number(item.id) === Number(target));
+    if (ing && ing.slug) {
+      window.location.href = 'ingredient/' + encodeURIComponent(ing.slug);
+    } else {
+      openIngredientModal(target, e);
+    }
+  }
 }
 
 function updateFloatingStatus(text, isLive) {
