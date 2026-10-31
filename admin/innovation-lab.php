@@ -99,6 +99,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $slug = trim($_POST['slug'] ?? '');
                 if (empty($slug)) {
                     $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $title), '-'));
+                } else {
+                    $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $slug), '-'));
                 }
 
                 if (empty($title)) {
@@ -110,6 +112,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                         $checkCols = $q->fetchAll(PDO::FETCH_COLUMN);
                     } catch (Exception $e) {}
                     $hasTelemetry = in_array('origin', $checkCols);
+
+                    // Ensure unique slug
+                    $slugCheckSql = $id > 0 ? "SELECT id FROM lab_experiments WHERE slug = ? AND id != ?" : "SELECT id FROM lab_experiments WHERE slug = ?";
+                    $slugCheckParams = $id > 0 ? [$slug, $id] : [$slug];
+                    $checkSlug = $pdo->prepare($slugCheckSql);
+                    $checkSlug->execute($slugCheckParams);
+                    if ($checkSlug->fetch()) {
+                        $slug .= '-' . rand(10, 99);
+                    }
 
                     if ($id > 0) {
                         if ($hasTelemetry) {
@@ -140,12 +151,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                         }
                         $success = "Experiment '{$title}' updated successfully!";
                     } else {
-                        // Ensure unique slug
-                        $checkSlug = $pdo->prepare("SELECT COUNT(*) FROM lab_experiments WHERE slug = ?");
-                        $checkSlug->execute([$slug]);
-                        if ($checkSlug->fetchColumn() > 0) {
-                            $slug .= '-' . rand(10, 99);
-                        }
 
                         if ($hasTelemetry) {
                             $stmt = $pdo->prepare("INSERT INTO lab_experiments 
@@ -211,11 +216,22 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $slug = trim($_POST['slug'] ?? '');
                 if (empty($slug)) {
                     $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $title), '-'));
+                } else {
+                    $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $slug), '-'));
                 }
 
                 if (empty($title) || empty($hypothesis) || empty($whatHappened)) {
                     $error = 'Experiment title, hypothesis, and failure details are required.';
                 } else {
+                    // Ensure unique slug
+                    $slugCheckSql = $id > 0 ? "SELECT id FROM lab_failed_batches WHERE slug = ? AND id != ?" : "SELECT id FROM lab_failed_batches WHERE slug = ?";
+                    $slugCheckParams = $id > 0 ? [$slug, $id] : [$slug];
+                    $checkSlug = $pdo->prepare($slugCheckSql);
+                    $checkSlug->execute($slugCheckParams);
+                    if ($checkSlug->fetch()) {
+                        $slug .= '-' . rand(10, 99);
+                    }
+
                     if ($isFeatured === 1) {
                         $pdo->exec("UPDATE lab_failed_batches SET is_featured = 0");
                     }
@@ -232,12 +248,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                         ]);
                         $success = "Failed batch case study '{$title}' updated successfully!";
                     } else {
-                        $checkSlug = $pdo->prepare("SELECT COUNT(*) FROM lab_failed_batches WHERE slug = ?");
-                        $checkSlug->execute([$slug]);
-                        if ($checkSlug->fetchColumn() > 0) {
-                            $slug .= '-' . rand(10, 99);
-                        }
-
                         $stmt = $pdo->prepare("INSERT INTO lab_failed_batches 
                             (title, slug, badge_label, image_path, hypothesis, what_happened, why_it_happened, what_next, full_story, is_featured, sort_order, is_active) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -322,11 +332,25 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $uploadedImg = handle_lab_image_upload('ingredient_image');
                 $imagePath = $uploadedImg ?: trim(!empty($_POST['existing_image_path_text']) ? $_POST['existing_image_path_text'] : ($_POST['existing_image_path'] ?? 'assets/images/placeholder.jpg'));
 
-                $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $title), '-'));
+                $slug = trim($_POST['slug'] ?? '');
+                if (empty($slug)) {
+                    $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $title), '-'));
+                } else {
+                    $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $slug), '-'));
+                }
 
                 if (empty($title)) {
                     $error = 'Ingredient title cannot be empty.';
                 } else {
+                    // Ensure unique slug
+                    $slugCheckSql = $id > 0 ? "SELECT id FROM lab_ingredient_categories WHERE slug = ? AND id != ?" : "SELECT id FROM lab_ingredient_categories WHERE slug = ?";
+                    $slugCheckParams = $id > 0 ? [$slug, $id] : [$slug];
+                    $checkSlug = $pdo->prepare($slugCheckSql);
+                    $checkSlug->execute($slugCheckParams);
+                    if ($checkSlug->fetch()) {
+                        $slug .= '-' . rand(10, 99);
+                    }
+
                     if ($id > 0) {
                         $stmt = $pdo->prepare("UPDATE lab_ingredient_categories SET title = ?, slug = ?, image_path = ?, description = ?, link_url = ?, key_varietals = ?, science_behavior = ?, applications = ?, lab_notes = ?, sort_order = ?, is_active = ? WHERE id = ?");
                         $stmt->execute([$title, $slug, $imagePath, $description, $linkUrl, $keyVarietals, $scienceBehavior, $applications, $labNotes, $sortOrder, $isActive, $id]);
@@ -1106,6 +1130,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                     </td>
                                     <td style="padding: 12px 18px;">
                                         <div style="font-weight: 700; color: var(--text-main); font-size: 14px;"><?php echo htmlspecialchars($exp['title']); ?></div>
+                                        <div style="font-size: 11px; color: var(--gold, #C7A66A); font-family: monospace;">/experiment/<?php echo htmlspecialchars($exp['slug'] ?: $exp['id']); ?></div>
                                         <div style="font-size: 12px; color: var(--text-muted); max-width: 340px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                                             <?php echo htmlspecialchars($exp['description']); ?>
                                         </div>
@@ -1201,6 +1226,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                     <td style="padding: 12px 18px;">
                                         <div style="font-weight: 700; color: var(--text-main); font-size: 14px;"><?php echo htmlspecialchars($fb['title']); ?></div>
                                         <div style="font-size: 11px; color: #B45309; font-weight: 700; text-transform: uppercase;"><?php echo htmlspecialchars($fb['badge_label']); ?></div>
+                                        <div style="font-size: 11px; color: var(--gold, #C7A66A); font-family: monospace;">/failed-batch/<?php echo htmlspecialchars($fb['slug'] ?: $fb['id']); ?></div>
                                     </td>
                                     <td style="padding: 12px 18px; font-size: 12.5px; max-width: 200px; color: var(--text-muted);">
                                         <?php echo htmlspecialchars(strip_tags($fb['hypothesis'])); ?>
@@ -1342,7 +1368,8 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                     <img src="../<?php echo htmlspecialchars($ing['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="" onerror="this.src='../assets/images/placeholder.jpg'">
                                 </td>
                                 <td style="padding: 12px 18px; font-weight: 700; color: var(--text-main);">
-                                    <?php echo htmlspecialchars($ing['title']); ?>
+                                    <div><?php echo htmlspecialchars($ing['title']); ?></div>
+                                    <div style="font-size: 11px; color: var(--gold, #C7A66A); font-family: monospace; font-weight: 400;">/ingredient/<?php echo htmlspecialchars($ing['slug'] ?: $ing['id']); ?></div>
                                 </td>
                                 <td style="padding: 12px 18px; font-size: 12.5px; color: var(--text-muted);">
                                     <?php echo htmlspecialchars(strip_tags($ing['description'])); ?>
@@ -1613,6 +1640,21 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                 <option value="scale-applications">Scale &amp; Applications</option>
                                 <option value="future-of-chocolate">Future of Chocolate</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <!-- URL Slug & Live Permalink Preview -->
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                            <label style="font-size: 12px; font-weight: 700; color: var(--text-muted);">URL Slug &amp; Dedicated Article Link</label>
+                            <a id="exp_live_preview_link" href="../experiment/" target="_blank" style="font-size: 11px; color: var(--gold, #C7A66A); text-decoration: none; display: none;">View Live Article ↗</a>
+                        </div>
+                        <div style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); overflow: hidden;">
+                            <span style="padding: 8px 12px; background: var(--bg-subtle, rgba(0,0,0,0.04)); color: var(--text-muted); font-size: 12px; border-right: 1px solid var(--border-color); font-family: monospace; white-space: nowrap;">/experiment/</span>
+                            <input type="text" name="slug" id="exp_slug" placeholder="e.g. cbe-bean-to-bar" style="flex: 1; padding: 8px 12px; border: none; background: transparent; color: var(--text-main); font-family: monospace; font-size: 12.5px;" oninput="syncExpSlugPreview(this.value)">
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                            Permalink: <span style="color: var(--gold, #C7A66A); font-family: monospace;">https://www.rtchocos.com/experiment/<span id="exp_slug_text">cbe-bean-to-bar</span></span>
                         </div>
                     </div>
 
@@ -1926,6 +1968,21 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                         </div>
                     </div>
 
+                    <!-- URL Slug & Live Permalink Preview -->
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                            <label style="font-size: 12px; font-weight: 700; color: var(--text-muted);">URL Slug &amp; Dedicated Article Link</label>
+                            <a id="failed_live_preview_link" href="../failed-batch/" target="_blank" style="font-size: 11px; color: var(--gold, #C7A66A); text-decoration: none; display: none;">View Live Article ↗</a>
+                        </div>
+                        <div style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); overflow: hidden;">
+                            <span style="padding: 8px 12px; background: var(--bg-subtle, rgba(0,0,0,0.04)); color: var(--text-muted); font-size: 12px; border-right: 1px solid var(--border-color); font-family: monospace; white-space: nowrap;">/failed-batch/</span>
+                            <input type="text" name="slug" id="failed_slug" placeholder="e.g. the-guava-experiment" style="flex: 1; padding: 8px 12px; border: none; background: transparent; color: var(--text-main); font-family: monospace; font-size: 12.5px;" oninput="syncFailedSlugPreview(this.value)">
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                            Permalink: <span style="color: var(--gold, #C7A66A); font-family: monospace;">https://www.rtchocos.com/failed-batch/<span id="failed_slug_text">the-guava-experiment</span></span>
+                        </div>
+                    </div>
+
                     <!-- Photo with live preview & presets -->
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Case Study Photo</label>
@@ -2116,6 +2173,21 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                         </div>
                     </div>
 
+                    <!-- URL Slug & Live Permalink Preview -->
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                            <label style="font-size: 12px; font-weight: 700; color: var(--text-muted);">URL Slug &amp; Dedicated Article Link</label>
+                            <a id="ing_live_preview_link" href="../ingredient/" target="_blank" style="font-size: 11px; color: var(--gold, #C7A66A); text-decoration: none; display: none;">View Live Article ↗</a>
+                        </div>
+                        <div style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); overflow: hidden;">
+                            <span style="padding: 8px 12px; background: var(--bg-subtle, rgba(0,0,0,0.04)); color: var(--text-muted); font-size: 12px; border-right: 1px solid var(--border-color); font-family: monospace; white-space: nowrap;">/ingredient/</span>
+                            <input type="text" name="slug" id="ing_slug" placeholder="e.g. indian-fruits" style="flex: 1; padding: 8px 12px; border: none; background: transparent; color: var(--text-main); font-family: monospace; font-size: 12.5px;" oninput="syncIngSlugPreview(this.value)">
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                            Permalink: <span style="color: var(--gold, #C7A66A); font-family: monospace;">https://www.rtchocos.com/ingredient/<span id="ing_slug_text">indian-fruits</span></span>
+                        </div>
+                    </div>
+
                     <div style="margin-bottom: 14px;">
                         <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Link URL / Hash</label>
                         <input type="text" name="link_url" id="ing_link" value="#currently-in-lab" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-main);">
@@ -2130,6 +2202,13 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                 <input type="text" name="existing_image_path_text" id="ing_img_text" placeholder="Or enter image URL (e.g. assets/images/lab-fruits.jpg)" style="width: 100%; padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; background: var(--bg-card); color: var(--text-main);" oninput="updateImgPreview(this.value, 'ing_preview_thumb')">
                             </div>
                         </div>
+                    </div>
+
+                    <div style="margin-top: 14px;">
+                        <label style="display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer;">
+                            <input type="checkbox" name="is_active" id="ing_active" value="1" checked>
+                            <span>Publish live on Innovation Lab</span>
+                        </label>
                     </div>
                 </div>
 
@@ -2550,7 +2629,95 @@ document.addEventListener('DOMContentLoaded', function() {
             if (openModal) closeModal(openModal.id);
         }
     });
+
+    // Auto-slugify listeners from titles
+    const expTitle = document.getElementById('exp_title');
+    if (expTitle) {
+        expTitle.addEventListener('input', function() {
+            if (!isExpEdit || !document.getElementById('exp_slug').value) {
+                const clean = autoSlugify(expTitle.value);
+                document.getElementById('exp_slug').value = clean;
+                syncExpSlugPreview(clean);
+            }
+        });
+    }
+
+    const failedTitle = document.getElementById('failed_title');
+    if (failedTitle) {
+        failedTitle.addEventListener('input', function() {
+            if (!isFailedEdit || !document.getElementById('failed_slug').value) {
+                const clean = autoSlugify(failedTitle.value);
+                document.getElementById('failed_slug').value = clean;
+                syncFailedSlugPreview(clean);
+            }
+        });
+    }
+
+    const ingTitle = document.getElementById('ing_title');
+    if (ingTitle) {
+        ingTitle.addEventListener('input', function() {
+            if (!isIngEdit || !document.getElementById('ing_slug').value) {
+                const clean = autoSlugify(ingTitle.value);
+                document.getElementById('ing_slug').value = clean;
+                syncIngSlugPreview(clean);
+            }
+        });
+    }
 });
+
+let isExpEdit = false;
+let isFailedEdit = false;
+let isIngEdit = false;
+
+function autoSlugify(str) {
+    return (str || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-');
+}
+
+function syncExpSlugPreview(val) {
+    const text = document.getElementById('exp_slug_text');
+    if (text) text.innerText = val || 'slug-preview';
+    const link = document.getElementById('exp_live_preview_link');
+    if (link) {
+        if (val) {
+            link.href = '../experiment/' + encodeURIComponent(val);
+            link.style.display = 'inline-block';
+        } else {
+            link.style.display = 'none';
+        }
+    }
+}
+
+function syncFailedSlugPreview(val) {
+    const text = document.getElementById('failed_slug_text');
+    if (text) text.innerText = val || 'slug-preview';
+    const link = document.getElementById('failed_live_preview_link');
+    if (link) {
+        if (val) {
+            link.href = '../failed-batch/' + encodeURIComponent(val);
+            link.style.display = 'inline-block';
+        } else {
+            link.style.display = 'none';
+        }
+    }
+}
+
+function syncIngSlugPreview(val) {
+    const text = document.getElementById('ing_slug_text');
+    if (text) text.innerText = val || 'slug-preview';
+    const link = document.getElementById('ing_live_preview_link');
+    if (link) {
+        if (val) {
+            link.href = '../ingredient/' + encodeURIComponent(val);
+            link.style.display = 'inline-block';
+        } else {
+            link.style.display = 'none';
+        }
+    }
+}
 
 /* =========================================================================
    STEPPER NAVIGATION CONTROLLERS
@@ -2762,9 +2929,12 @@ function handleBackdropClick(e, id) {
 }
 
 function openNewExperimentModal() {
+    isExpEdit = false;
     document.getElementById('expModalTitle').innerText = 'New Experiment — Currently in the Lab';
     document.getElementById('exp_id').value = '0';
     document.getElementById('exp_title').value = '';
+    document.getElementById('exp_slug').value = '';
+    syncExpSlugPreview('');
     document.getElementById('exp_category').value = 'formulation-lab';
     document.getElementById('exp_status_badge').value = 'IN PROGRESS';
     document.getElementById('exp_status_color').value = 'green';
@@ -2794,9 +2964,12 @@ function openNewExperimentModal() {
 }
 
 function editExperiment(exp) {
+    isExpEdit = true;
     document.getElementById('expModalTitle').innerText = 'Edit Lab Experiment: ' + (exp.title || '');
     document.getElementById('exp_id').value = exp.id;
     document.getElementById('exp_title').value = exp.title || '';
+    document.getElementById('exp_slug').value = exp.slug || '';
+    syncExpSlugPreview(exp.slug || '');
     document.getElementById('exp_category').value = exp.category || 'formulation-lab';
     document.getElementById('exp_status_badge').value = exp.status_badge || 'IN PROGRESS';
     document.getElementById('exp_status_color').value = exp.status_color || 'green';
@@ -2829,17 +3002,24 @@ function editExperiment(exp) {
 
 function cloneExperiment(exp) {
     editExperiment(exp);
+    isExpEdit = false;
     document.getElementById('expModalTitle').innerText = 'Clone Experiment: ' + (exp.title || '') + ' (Copy)';
     document.getElementById('exp_id').value = '0';
     document.getElementById('exp_title').value = (exp.title || '') + ' (Copy)';
+    const copySlug = (exp.slug || 'experiment') + '-copy';
+    document.getElementById('exp_slug').value = copySlug;
+    syncExpSlugPreview(copySlug);
     switchExpStep(0);
     openModal('experimentModal');
 }
 
 function openNewFailedBatchModal() {
+    isFailedEdit = false;
     document.getElementById('failedModalTitle').innerText = 'Log Failed Batch — From a Failed Batch to a New Idea';
     document.getElementById('failed_id').value = '0';
     document.getElementById('failed_title').value = '';
+    document.getElementById('failed_slug').value = '';
+    syncFailedSlugPreview('');
     document.getElementById('failed_badge').value = 'BECAUSE FAILURE IS DATA.';
     document.getElementById('failed_existing_image').value = 'assets/images/lab-failed-batch.jpg';
     document.getElementById('failed_img_text').value = '';
@@ -2858,9 +3038,12 @@ function openNewFailedBatchModal() {
 }
 
 function editFailedBatch(fb) {
+    isFailedEdit = true;
     document.getElementById('failedModalTitle').innerText = 'Edit Failed Batch: ' + fb.title;
     document.getElementById('failed_id').value = fb.id;
     document.getElementById('failed_title').value = fb.title || '';
+    document.getElementById('failed_slug').value = fb.slug || '';
+    syncFailedSlugPreview(fb.slug || '');
     document.getElementById('failed_badge').value = fb.badge_label || 'BECAUSE FAILURE IS DATA.';
     document.getElementById('failed_existing_image').value = fb.image_path || '';
     document.getElementById('failed_img_text').value = fb.image_path || '';
@@ -2901,13 +3084,18 @@ function editWhatIf(q) {
 }
 
 function openNewIngredientModal() {
+    isIngEdit = false;
     document.getElementById('ingredientModalTitle').innerText = 'New Category — Ingredient Innovation';
     document.getElementById('ing_id').value = '0';
     document.getElementById('ing_title').value = '';
+    document.getElementById('ing_slug').value = '';
+    syncIngSlugPreview('');
     document.getElementById('ing_existing_image').value = 'assets/images/placeholder.jpg';
     document.getElementById('ing_img_text').value = '';
     document.getElementById('ing_link').value = '#currently-in-lab';
     document.getElementById('ing_order').value = (<?php echo count($ingredientsList); ?> + 1);
+    const activeEl = document.getElementById('ing_active');
+    if (activeEl) activeEl.checked = true;
     updateImgPreview('assets/images/placeholder.jpg', 'ing_preview_thumb');
 
     setRichEditorContent('ing_desc', '');
@@ -2920,13 +3108,18 @@ function openNewIngredientModal() {
 }
 
 function editIngredient(ing) {
+    isIngEdit = true;
     document.getElementById('ingredientModalTitle').innerText = 'Edit Ingredient: ' + ing.title;
     document.getElementById('ing_id').value = ing.id;
     document.getElementById('ing_title').value = ing.title || '';
+    document.getElementById('ing_slug').value = ing.slug || '';
+    syncIngSlugPreview(ing.slug || '');
     document.getElementById('ing_existing_image').value = ing.image_path || '';
     document.getElementById('ing_img_text').value = ing.image_path || '';
     document.getElementById('ing_link').value = ing.link_url || '#currently-in-lab';
     document.getElementById('ing_order').value = ing.sort_order || 0;
+    const activeEl = document.getElementById('ing_active');
+    if (activeEl) activeEl.checked = (ing.is_active === undefined || Number(ing.is_active) === 1);
     updateImgPreview(ing.image_path || '', 'ing_preview_thumb');
 
     setRichEditorContent('ing_desc', ing.description || '');
