@@ -1574,6 +1574,271 @@
   }
 }
 
+/* --- GUIDED SENSORY TASTING JOURNEY --- */
+#page-home #flavor-wheel-sec .journey {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  margin-top: clamp(38px, 5vh, 56px);
+  border-top: 1px solid var(--line);
+  padding-top: clamp(30px, 4.5vh, 44px);
+  scroll-margin-top: 104px;
+}
+
+#page-home #flavor-wheel-sec .journey .section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 clamp(16px, 2.5vh, 22px);
+  background: transparent !important;
+}
+
+#page-home #flavor-wheel-sec .journey .section-head .eyebrow {
+  color: var(--gold) !important;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 6px;
+}
+
+#page-home #flavor-wheel-sec .journey .section-head h2 {
+  font: 400 clamp(1.7rem, 2.6vw, 2.3rem)/1.15 'Playfair Display', Georgia, serif;
+  margin: 4px 0 0;
+  color: var(--ivory) !important;
+  letter-spacing: -0.02em;
+}
+
+#page-home #flavor-wheel-sec .journey .section-head h2 em {
+  font-style: normal;
+  color: var(--ivory);
+  font-weight: 400;
+}
+
+#page-home #flavor-wheel-sec .journey .section-head p {
+  color: #c0cfc4 !important;
+  margin: 0;
+  max-width: 520px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  font-family: 'Inter', sans-serif;
+}
+
+#page-home #flavor-wheel-sec .steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  background: transparent !important;
+}
+
+#page-home #flavor-wheel-sec .step {
+  padding: 22px 18px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(239, 219, 178, 0.2) !important;
+  background: rgba(4, 42, 34, 0.55) !important;
+  min-height: 180px;
+  position: relative;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+  user-select: none;
+}
+
+#page-home #flavor-wheel-sec .step:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold) !important;
+  background: rgba(4, 42, 34, 0.72) !important;
+}
+
+#page-home #flavor-wheel-sec .step.active {
+  border: 1px solid var(--gold) !important;
+  box-shadow: 0 0 18px rgba(199, 161, 90, 0.22) !important;
+  background: rgba(4, 42, 34, 0.85) !important;
+}
+
+#page-home #flavor-wheel-sec .step .number {
+  font: 400 1.55rem/1 'Playfair Display', Georgia, serif;
+  color: var(--gold) !important;
+  display: block;
+  margin-bottom: 14px;
+}
+
+#page-home #flavor-wheel-sec .step h3 {
+  font: 500 1.22rem/1.2 'Playfair Display', Georgia, serif;
+  margin: 0 0 8px;
+  color: var(--ivory) !important;
+}
+
+#page-home #flavor-wheel-sec .step p {
+  font-size: 0.85rem;
+  color: #c9d6cd !important;
+  line-height: 1.55;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  flex: 1;
+}
+
+#page-home #flavor-wheel-sec .step button {
+  border: 0;
+  background: none;
+  color: var(--gold-pale) !important;
+  padding: 14px 0 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s, transform 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+#page-home #flavor-wheel-sec .step:hover button {
+  color: #fff !important;
+  transform: translateX(2px);
+}
+
+#page-home #flavor-wheel-sec .guide-stage {
+  margin-top: 18px;
+  padding: clamp(20px, 2.8vw, 28px);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+  background: rgba(4, 42, 34, 0.82) !important;
+  border: 1px solid rgba(239, 219, 178, 0.24) !important;
+  border-radius: 18px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+#page-home #flavor-wheel-sec .guide-stage .eyebrow {
+  color: var(--gold) !important;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 4px;
+}
+
+#page-home #flavor-wheel-sec .guide-stage h3 {
+  font: 400 clamp(1.45rem, 2.4vw, 1.95rem)/1.2 'Playfair Display', Georgia, serif;
+  margin: 6px 0 8px;
+  color: var(--ivory) !important;
+}
+
+#page-home #flavor-wheel-sec .guide-stage p {
+  margin: 0;
+  color: #d2ddd5 !important;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  max-width: 680px;
+  font-family: 'Inter', sans-serif;
+}
+
+#page-home #flavor-wheel-sec .guide-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+#page-home #flavor-wheel-sec .guide-controls .subtle-btn {
+  padding: 10px 18px;
+  white-space: nowrap;
+  background: transparent !important;
+  border: 1px solid rgba(239, 219, 178, 0.28) !important;
+  color: var(--ivory) !important;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#page-home #flavor-wheel-sec .guide-controls .subtle-btn:hover {
+  background: rgba(239, 219, 178, 0.12) !important;
+  border-color: var(--gold-pale) !important;
+}
+
+#page-home #flavor-wheel-sec .guide-controls .subtle-btn:disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed;
+  pointer-events: none;
+  border-color: var(--line) !important;
+  color: var(--muted) !important;
+  background: transparent !important;
+}
+
+#page-home #flavor-wheel-sec .primary-btn {
+  border: 1px solid var(--gold-pale) !important;
+  background: var(--gold-pale) !important;
+  color: #18392d !important;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-weight: 650;
+  font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+#page-home #flavor-wheel-sec .primary-btn:hover {
+  background: #fff0cb !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(239, 219, 178, 0.3);
+}
+
+@media (max-width: 1080px) {
+  #page-home #flavor-wheel-sec .steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  #page-home #flavor-wheel-sec .steps {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  #page-home #flavor-wheel-sec .guide-stage {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  #page-home #flavor-wheel-sec .steps {
+    grid-template-columns: 1fr;
+  }
+  #page-home #flavor-wheel-sec .step {
+    min-height: auto;
+    padding: 15px;
+  }
+  #page-home #flavor-wheel-sec .journey .section-head {
+    display: block;
+  }
+  #page-home #flavor-wheel-sec .journey .section-head h2 {
+    margin: 3px 0 6px;
+  }
+  #page-home #flavor-wheel-sec .guide-controls {
+    width: 100%;
+  }
+  #page-home #flavor-wheel-sec .guide-controls button {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
 /* --------------------------------------------------------------------------
    10. JOURNAL & TECHNICAL DEEP DIVES EDITORIAL LUXURY
    -------------------------------------------------------------------------- */

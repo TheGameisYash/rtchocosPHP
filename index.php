@@ -62,6 +62,7 @@
 <!-- Luxury Landing Page Scoped Stylesheet -->
 <link rel="stylesheet" href="<?php echo $pathPrefix; ?>css/landing-luxury.css?v=<?php echo file_exists(__DIR__ . '/css/landing-luxury.css') ? filemtime(__DIR__ . '/css/landing-luxury.css') : time(); ?>">
 <link rel="stylesheet" href="<?php echo $pathPrefix; ?>css/landing-sections-upgrade.css?v=<?php echo file_exists(__DIR__ . '/css/landing-sections-upgrade.css') ? filemtime(__DIR__ . '/css/landing-sections-upgrade.css') : time(); ?>">
+<link rel="stylesheet" href="<?php echo $pathPrefix; ?>css/bean-to-bar.css?v=<?php echo file_exists(__DIR__ . '/css/bean-to-bar.css') ? filemtime(__DIR__ . '/css/bean-to-bar.css') : time(); ?>">
 
 <!-- --- HOME PAGE --- -->
 <div id="page-home" class="page active">
@@ -894,6 +895,62 @@
           <div class="reference">Your senses are the starting point. The descriptor is a tool, not a verdict.</div>
         </section>
       </div>
+
+      <!-- Section: Guided Chocolate Tasting Journey (One Step at a Time) -->
+      <div class="journey" id="journey" aria-label="Guided Chocolate Tasting Journey">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">02 / FOLLOW THE SENSES</div>
+            <h2>A tasting, one step at a time</h2>
+          </div>
+          <p>Move through the stages at your own pace. You can skip a step, revisit it, or stay with one sensation.</p>
+        </div>
+
+        <div class="steps">
+          <article class="step active" data-stage="0" tabindex="0" role="button" aria-label="Step 1: Prepare">
+            <span class="number">01</span>
+            <h3>Prepare</h3>
+            <p>Choose a small piece and a quiet space. Clear strong aromas and take a sip of water if useful.</p>
+            <button type="button" data-stage="0" tabindex="-1">Begin here ↗</button>
+          </article>
+          <article class="step" data-stage="1" tabindex="0" role="button" aria-label="Step 2: Observe">
+            <span class="number">02</span>
+            <h3>Observe</h3>
+            <p>Look at the surface and break. A shine or snap is a clue about physical properties, not a quality guarantee.</p>
+            <button type="button" data-stage="1" tabindex="-1">Look closer ↗</button>
+          </article>
+          <article class="step" data-stage="2" tabindex="0" role="button" aria-label="Step 3: Smell">
+            <span class="number">03</span>
+            <h3>Smell</h3>
+            <p>Notice the first aroma. Pause and smell again without trying to force a particular answer.</p>
+            <button type="button" data-stage="2" tabindex="-1">Take a moment ↗</button>
+          </article>
+          <article class="step" data-stage="3" tabindex="0" role="button" aria-label="Step 4: Taste">
+            <span class="number">04</span>
+            <h3>Taste</h3>
+            <p>Let a small piece melt naturally. Notice first impression, changing flavour, texture and finish.</p>
+            <button type="button" data-stage="3" tabindex="-1">Taste slowly ↗</button>
+          </article>
+          <article class="step" data-stage="4" tabindex="0" role="button" aria-label="Step 5: Reflect">
+            <span class="number">05</span>
+            <h3>Reflect</h3>
+            <p>Choose a descriptor if one helps. “I'm not sure yet” is a perfectly good observation.</p>
+            <button type="button" data-stage="4" tabindex="-1">Record a note ↗</button>
+          </article>
+        </div>
+
+        <div class="panel guide-stage" aria-live="polite">
+          <div>
+            <div class="eyebrow" id="stageEyebrow">STAGE 01 / PREPARE</div>
+            <h3 id="stageTitle">Make space to notice.</h3>
+            <p id="stageText">A clean, calm environment makes it easier to notice subtle differences. There is no need to rush.</p>
+          </div>
+          <div class="guide-controls">
+            <button type="button" class="subtle-btn" id="prevStage" disabled>← Previous</button>
+            <button type="button" class="primary-btn" id="nextStage">Next step →</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Flavor Wheel Interactive Script -->
@@ -1129,6 +1186,99 @@
         }
 
         buildWheel();
+
+        /* --- GUIDED TASTING JOURNEY CONTROLLER --- */
+        const stages = [
+          {
+            eyebrow: "STAGE 01 / PREPARE",
+            title: "Make space to notice.",
+            text: "A clean, calm environment makes it easier to notice subtle differences. Choose a small piece of chocolate, reduce strong surrounding aromas and take your time."
+          },
+          {
+            eyebrow: "STAGE 02 / OBSERVE",
+            title: "Look before you taste.",
+            text: "Notice colour and finish, then break the chocolate if appropriate. Shine and snap can tell you something about physical properties, but they do not guarantee flavour quality."
+          },
+          {
+            eyebrow: "STAGE 03 / SMELL",
+            title: "What comes to mind first?",
+            text: "Smell gently. Pause. Smell again. There is no need to force a descriptor. The first association—or uncertainty—is worth noticing."
+          },
+          {
+            eyebrow: "STAGE 04 / TASTE",
+            title: "Let the flavour unfold.",
+            text: "Let a small piece melt naturally. Notice the first impression, how the flavour changes, the texture in your mouth, and the sensation that remains."
+          },
+          {
+            eyebrow: "STAGE 05 / REFLECT",
+            title: "Find your own words.",
+            text: "Choose a descriptor if it helps. Separate aroma, taste and texture. If you are unsure, keep the observation open and explore another descriptor later."
+          }
+        ];
+
+        let stageIndex = 0;
+        const stageEyebrow = document.getElementById("stageEyebrow");
+        const stageTitle = document.getElementById("stageTitle");
+        const stageText = document.getElementById("stageText");
+        const prevStageBtn = document.getElementById("prevStage");
+        const nextStageBtn = document.getElementById("nextStage");
+        const stepCards = document.querySelectorAll("#flavor-wheel-sec .step");
+
+        function showStage(i, shouldScroll = false) {
+          stageIndex = Math.max(0, Math.min(stages.length - 1, i));
+          const s = stages[stageIndex];
+          if (!s) return;
+
+          if (stageEyebrow) stageEyebrow.textContent = s.eyebrow;
+          if (stageTitle) stageTitle.textContent = s.title;
+          if (stageText) stageText.textContent = s.text;
+
+          if (prevStageBtn) prevStageBtn.disabled = stageIndex === 0;
+          if (nextStageBtn) {
+            nextStageBtn.textContent = stageIndex === stages.length - 1 ? "Start again ↺" : "Next step →";
+          }
+
+          stepCards.forEach((card, idx) => {
+            if (idx === stageIndex) {
+              card.classList.add("active");
+            } else {
+              card.classList.remove("active");
+            }
+          });
+
+          if (shouldScroll) {
+            const guidePanel = document.querySelector("#flavor-wheel-sec .guide-stage");
+            if (guidePanel) {
+              guidePanel.scrollIntoView({
+                behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+                block: "nearest"
+              });
+            }
+          }
+        }
+
+        stepCards.forEach((card) => {
+          const sIdx = Number(card.getAttribute("data-stage"));
+          card.addEventListener("click", () => showStage(sIdx, true));
+          card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              showStage(sIdx, true);
+            }
+          });
+        });
+
+        if (prevStageBtn) {
+          prevStageBtn.addEventListener("click", () => showStage(stageIndex - 1, true));
+        }
+
+        if (nextStageBtn) {
+          nextStageBtn.addEventListener("click", () => {
+            showStage(stageIndex === stages.length - 1 ? 0 : stageIndex + 1, true);
+          });
+        }
+
+        showStage(0);
       })();
     </script>
   </section>
