@@ -538,35 +538,44 @@ if (!empty(trim($customHeadScripts))) {
       <a class="mobile-nav-sublink <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes &amp; Formulations</a>
     </div>
 
-    <a class="mobile-nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <a class="mobile-nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
       <span>THE CACAO JOURNAL</span>
     </a>
 
     <a class="mobile-nav-link <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" data-page="innovation-lab" href="<?php echo $pathPrefix; ?>innovation-lab.php">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="7" y1="14.5" x2="17" y2="14.5"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="7" y1="14.5" x2="17" y2="14.5"/></svg>
       <span>INNOVATION LAB</span>
     </a>
 
-
-    <button class="mobile-nav-link mobile-nav-ai-btn" onclick="toggleAiDrawer(); toggleMobileMenu();">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11a2 2 0 0 1-2 2h-1"/><path d="M9.5 4.5A3.5 3.5 0 0 0 6 8c0 1.4.8 2.6 2 3.1V12a2 2 0 0 0 2 2h1"/><circle cx="12" cy="6" r="1"/><path d="M12 13v8"/><path d="M8 17h8"/><circle cx="6" cy="8" r="1"/><circle cx="18" cy="8" r="1"/><circle cx="8" cy="17" r="1"/><circle cx="16" cy="17" r="1"/><circle cx="12" cy="21" r="1"/></svg>
-      <span>CHOCOLATE AI</span>
-    </button>
-
     <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       <span>CONTACT US</span>
     </a>
 
-    <div style="padding: 16px 20px;">
-      <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="mobile-menu-cta-btn">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+    <a class="mobile-nav-link <?php echo $activeNav === 'work-with-us' ? 'active' : ''; ?>" data-page="work-with-us" href="<?php echo $pathPrefix; ?>work-with-us.php">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+      <span>WORK WITH US</span>
+    </a>
+
+    <!-- Downside AI Action -->
+    <div class="mobile-menu-ai-dock">
+      <button class="mobile-menu-ai-pill" onclick="toggleAiDrawer(); toggleMobileMenu();">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8">
+          <path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11a2 2 0 0 1-2 2h-1"/>
+          <path d="M9.5 4.5A3.5 3.5 0 0 0 6 8c0 1.4.8 2.6 2 3.1V12a2 2 0 0 0 2 2h1"/>
+          <circle cx="12" cy="6" r="1"/>
+          <path d="M12 13v8"/>
+          <path d="M8 17h8"/>
+          <circle cx="6" cy="8" r="1"/>
+          <circle cx="18" cy="8" r="1"/>
+          <circle cx="8" cy="17" r="1"/>
+          <circle cx="16" cy="17" r="1"/>
+          <circle cx="12" cy="21" r="1"/>
         </svg>
-        <span>WORK WITH US</span>
-      </a>
+        <span>CHOCOLATE AI &mdash; COCOAGENIUS</span>
+        <span class="ai-sparkle-pill">✦</span>
+      </button>
     </div>
   </nav>
   <div id="mobile-menu-backdrop" class="mobile-menu-backdrop" onclick="toggleMobileMenu(true)"></div>
