@@ -515,19 +515,10 @@ if (!empty(trim($customHeadScripts))) {
       <a class="mobile-nav-sublink <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About RT Chocos</a>
     </div>
 
-    <!-- Mobile Products Group -->
-    <div class="mobile-nav-group">
-      <div class="mobile-nav-group-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
-        <span>BOUTIQUE &amp; PRODUCTS</span>
-      </div>
-      <a class="mobile-nav-sublink <?php echo ($activeNav === 'shop' && empty($_GET['category'])) ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php">All Products &amp; Boutique</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Chocolates">Bean-to-Bar Chocolate Bars</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Kits">Starter &amp; Tempering Kits</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Cacao">Single-Origin Cacao Nibs &amp; Butter</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=Bonbons">Hand-Painted Bonbons &amp; Truffles</a>
-      <a class="mobile-nav-sublink <?php echo $currentURI === '/cart.php' ? 'active' : ''; ?>" href="<?php echo $pathPrefix; ?>cart.php">Shopping Cart (<?php echo $cartCount; ?>)</a>
-    </div>
+    <a class="mobile-nav-link <?php echo $activeNav === 'shop' ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+      <span>PRODUCTS</span>
+    </a>
 
     <!-- Mobile Academy Group -->
     <div class="mobile-nav-group">
