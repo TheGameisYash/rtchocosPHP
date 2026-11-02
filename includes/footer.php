@@ -72,16 +72,25 @@
   </div>
 </footer>
 
-<!-- Mobile Floating Bottom Navigation Bar (Explore, Boutique, Academy, Lab, Menu) -->
+<!-- Mobile Floating Bottom Navigation Bar (Home, Boutique, Cart, Academy, Menu) -->
+<?php
+  $navRoot = (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix : '/';
+  $footerCartCount = (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) ? array_sum($_SESSION['cart']) : ($cartCount ?? 0);
+  $reqUri = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+  $isCartActive = (strpos($reqUri, 'cart') !== false);
+  $isShopActive = (preg_match('#/(?:shop|product)(?:\.php|/|$)#', $reqUri) === 1) && !$isCartActive;
+  $isAcademyActive = (preg_match('#/(?:workshops|gallery)(?:\.php|/|$)#', $reqUri) === 1);
+  $isHomeActive = (($activeNav ?? '') === 'home' || $reqUri === '/' || $reqUri === '/index.php') && !$isCartActive && !$isShopActive && !$isAcademyActive;
+?>
 <nav class="mobile-bottom-nav" aria-label="Mobile Quick Navigation">
-  <a href="<?php echo $pathPrefix ?: 'index.php'; ?>" class="mobile-bottom-item <?php echo (($activeNav ?? '') === 'home') ? 'active' : ''; ?>">
+  <a href="<?php echo $navRoot; ?>" class="mobile-bottom-item <?php echo $isHomeActive ? 'active' : ''; ?>">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
       <polyline points="9 22 9 12 15 12 15 22"></polyline>
     </svg>
-    <span>Explore</span>
+    <span>Home</span>
   </a>
-  <a href="<?php echo $pathPrefix; ?>shop.php" class="mobile-bottom-item <?php echo (($activeNav ?? '') === 'shop') ? 'active' : ''; ?>">
+  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'shop.php' : '/shop.php'; ?>" class="mobile-bottom-item <?php echo $isShopActive ? 'active' : ''; ?>">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="3" width="18" height="18" rx="2.5"></rect>
       <line x1="3" y1="9" x2="21" y2="9"></line>
@@ -91,20 +100,23 @@
     </svg>
     <span>Boutique</span>
   </a>
-  <a href="<?php echo $pathPrefix; ?>workshops.php" class="mobile-bottom-item <?php echo (($activeNav ?? '') === 'workshops') ? 'active' : ''; ?>">
+  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'cart.php' : '/cart.php'; ?>" class="mobile-bottom-item mobile-bottom-cart-item <?php echo $isCartActive ? 'active' : ''; ?>">
+    <div class="bottom-item-icon-wrap">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <path d="M16 10a4 4 0 0 1-8 0"></path>
+      </svg>
+      <span id="bottom-cart-count" class="cart-count-badge bottom-cart-badge" style="<?php echo ($footerCartCount > 0) ? '' : 'display:none;'; ?>"><?php echo (int)$footerCartCount; ?></span>
+    </div>
+    <span>Cart</span>
+  </a>
+  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'workshops.php' : '/workshops.php'; ?>" class="mobile-bottom-item <?php echo $isAcademyActive ? 'active' : ''; ?>">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
       <path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"></path>
     </svg>
     <span>Academy</span>
-  </a>
-  <a href="<?php echo $pathPrefix; ?>innovation-lab.php" class="mobile-bottom-item <?php echo (($activeNav ?? '') === 'innovation-lab') ? 'active' : ''; ?>">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"></path>
-      <line x1="8.5" y1="2" x2="15.5" y2="2"></line>
-      <line x1="7" y1="14.5" x2="17" y2="14.5"></line>
-    </svg>
-    <span>Lab</span>
   </a>
   <button type="button" class="mobile-bottom-item mobile-bottom-menu-trigger" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

@@ -1298,13 +1298,15 @@
         btn.innerHTML = '<span style="color:#74E291;">✓ Added!</span>';
         btn.classList.add('btn-added');
 
-        // Update Header Badge
-        const badge = document.getElementById('header-cart-count');
-        if (badge && typeof data.cart_count !== 'undefined') {
-          badge.textContent = data.cart_count;
-          badge.classList.remove('hidden');
-          badge.style.transform = 'scale(1.4)';
-          setTimeout(() => { badge.style.transform = ''; }, 300);
+        // Update All Cart Badges (Desktop Header & Mobile Bottom Dock)
+        if (typeof data.cart_count !== 'undefined') {
+          document.querySelectorAll('.cart-count-badge').forEach(function(b) {
+            b.textContent = data.cart_count;
+            b.style.display = (data.cart_count > 0) ? 'flex' : 'none';
+            b.classList.remove('hidden');
+            b.style.transform = 'scale(1.35)';
+            setTimeout(function() { b.style.transform = ''; }, 300);
+          });
         }
 
         // Show floating toast

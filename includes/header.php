@@ -363,6 +363,7 @@ if (!empty(trim($customHeadScripts))) {
   </div>
   <?php endif; ?>
   <div class="header-inner">
+    <div class="header-mobile-spacer" style="display: none;"></div>
     <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" title="RT CHOCOS — Artisanal Cacao Academy & Journal">
       <svg class="logo-svg-emblem" width="26" height="34" viewBox="0 0 40 50" fill="none" xmlns="http://www.w3.org/2000/svg">
         <!-- Top stem -->
@@ -514,11 +515,12 @@ if (!empty(trim($customHeadScripts))) {
   </div>
 
   <nav id="mobile-menu" aria-label="Mobile navigation">
+    <?php $navPrefix = (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix : '/'; ?>
     <!-- Mobile Drawer Top Bar with Close Button -->
     <div class="mobile-menu-header">
       <div class="mobile-menu-title-wrap">
-        <span class="mobile-menu-tag">RT CHOCOS</span>
-        <span class="mobile-menu-title">NAVIGATION</span>
+        <span class="mobile-menu-tag">ARTISANAL CACAO</span>
+        <span class="mobile-menu-title">RT CHOCOS</span>
       </div>
       <button type="button" class="mobile-menu-close-btn" onclick="toggleMobileMenu(true)" aria-label="Close navigation menu">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -527,62 +529,74 @@ if (!empty(trim($customHeadScripts))) {
         </svg>
       </button>
     </div>
-    <!-- Mobile Explore Group -->
-    <div class="mobile-nav-group">
-      <div class="mobile-nav-group-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-        <span>EXPLORE</span>
-      </div>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>">Explore Overview</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php">About RT Chocos</a>
+
+    <!-- Quick Search Row in Drawer -->
+    <div class="mobile-drawer-search-wrap">
+      <form action="<?php echo $navPrefix; ?>shop.php" method="GET" class="mobile-drawer-search-form">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="search" name="search" placeholder="Search chocolates, spreads, ingredients..." autocomplete="off">
+      </form>
     </div>
 
-    <!-- Mobile Products Group -->
+    <!-- Mobile Products / Boutique Group -->
     <div class="mobile-nav-group">
       <div class="mobile-nav-group-title">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
-        <span>BOUTIQUE &amp; PRODUCTS</span>
+        <span>BOUTIQUE &amp; CREATIONS</span>
       </div>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'shop' ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php">All Products &amp; Boutique</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=chocolates">Bean-to-Bar Chocolates</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=spreads">Spreads &amp; Nut Butters</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=ingredients">Natural Ingredients</a>
-      <a class="mobile-nav-sublink" href="<?php echo $pathPrefix; ?>shop.php?category=gifting">Corporate &amp; Gifting</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'shop' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>shop.php">All Products &amp; Boutique</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=chocolates">Bean-to-Bar Chocolates</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=spreads">Spreads &amp; Nut Butters</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=ingredients">Natural Ingredients</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=gifting">Corporate &amp; Festive Gifting</a>
     </div>
 
     <!-- Mobile Academy Group -->
     <div class="mobile-nav-group">
       <div class="mobile-nav-group-title">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"/></svg>
-        <span>ACADEMY</span>
+        <span>ACADEMY &amp; MASTERCLASSES</span>
       </div>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php">Workshops &amp; Masterclasses</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php">Recipes &amp; Formulations</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>workshops.php">Workshops &amp; Masterclasses</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>gallery.php">Tested Recipes &amp; Formulations</a>
     </div>
 
-        <a class="mobile-nav-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      <span>THE CACAO JOURNAL</span>
-    </a>
+    <!-- Mobile Explore Group -->
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span>EXPLORE &amp; KNOWLEDGE</span>
+      </div>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'home' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>">Home Overview</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'about' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>about.php">About Aarti &amp; RT Chocos</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>chocopedia.php">Chocopedia &mdash; Cocoa Encyclopedia</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>blog.php">The Cacao Journal</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>innovation-lab.php">Innovation &amp; R&amp;D Lab</a>
+    </div>
 
-    <a class="mobile-nav-link <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" data-page="innovation-lab" href="<?php echo $pathPrefix; ?>innovation-lab.php">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="7" y1="14.5" x2="17" y2="14.5"/></svg>
-      <span>INNOVATION LAB</span>
-    </a>
+    <!-- Mobile Direct Actions & Support -->
+    <div class="mobile-drawer-direct-links">
+      <a class="mobile-nav-link <?php echo $activeNav === 'work-with-us' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>work-with-us.php">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        <span>WORK WITH US &amp; B2B</span>
+      </a>
+      <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>contact.php">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span>CONTACT US</span>
+      </a>
+    </div>
 
-    <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      <span>CONTACT US</span>
-    </a>
-
-    <a class="mobile-nav-link <?php echo $activeNav === 'work-with-us' ? 'active' : ''; ?>" data-page="work-with-us" href="<?php echo $pathPrefix; ?>work-with-us.php">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-      <span>WORK WITH US</span>
-    </a>
-
-    <!-- Downside AI Action -->
+    <!-- Downside Concierge & AI Actions -->
     <div class="mobile-menu-ai-dock">
+      <a href="https://wa.me/919140238741?text=Hi%20RT%20Chocos,%20I%20have%20an%20inquiry%20regarding%20artisanal%20chocolates" target="_blank" rel="noopener noreferrer" class="mobile-menu-whatsapp-pill">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+        </svg>
+        <span>WhatsApp Chocolatier Concierge</span>
+      </a>
       <button class="mobile-menu-ai-pill" onclick="toggleAiDrawer(); toggleMobileMenu();">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8">
           <path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11a2 2 0 0 1-2 2h-1"/>
