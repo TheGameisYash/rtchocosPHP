@@ -151,6 +151,7 @@
    -------------------------------------------------------------------------- */
 #page-home #hero {
   position: relative;
+  overflow: hidden !important;
   background-color: #edd7bd !important;
   background-image: 
     radial-gradient(circle at 18% 30%, rgba(212, 175, 55, 0.12) 0%, transparent 45%),
@@ -606,6 +607,9 @@
 }
 
 @media (max-width: 768px) {
+  .parallax-leaf {
+    display: none !important;
+  }
   #page-home .trust-pillars-grid {
     grid-template-columns: repeat(3, 1fr) !important;
     row-gap: 16px !important;
@@ -1605,6 +1609,9 @@
 }
 
 @media (max-width: 960px) {
+  #page-home #flavor-wheel-sec .detail-panel:before {
+    display: none !important;
+  }
   #page-home #flavor-wheel-sec .workspace {
     grid-template-columns: 1fr;
     gap: 16px;

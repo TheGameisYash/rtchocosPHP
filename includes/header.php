@@ -566,14 +566,17 @@ if (!empty(trim($customHeadScripts))) {
     </button>
 
     <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" data-page="contact" href="<?php echo $pathPrefix; ?>contact.php">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="11" r="0.75" fill="currentColor"/><circle cx="17" cy="13" r="0.75" fill="currentColor"/><path d="M17.8 2a2 2 0 0 1 1.8 1.1l1.8 3.6a2 2 0 0 1 .6 2.3l-2.4 7.2a3 3 0 0 1-2.8 2.1h-9.6a3 3 0 0 1-2.8-2.1l-2.4-7.2a2 2 0 0 1 .6-2.3l1.8-3.6A2 2 0 0 1 6.2 2h11.6z"/></svg>
-      <span>FUNZONE</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span>CONTACT US</span>
     </a>
 
     <div style="padding: 16px 20px;">
-      <a href="<?php echo $pathPrefix; ?>admin/login.php" class="signin-join-btn" style="width: 100%; justify-content: center;">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>SIGN IN / JOIN</span>
+      <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="mobile-menu-cta-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        <span>WORK WITH US</span>
       </a>
     </div>
   </nav>

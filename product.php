@@ -523,7 +523,7 @@
                onerror="this.onerror=null;this.src='<?php echo $pathPrefix; ?>assets/premium_chocolate.png';">
           <div class="product-zoom-badge">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
-            <span>Hover to Inspect</span>
+            <span>Hover or Tap to Inspect</span>
           </div>
         </div>
         <?php if (count($allImages) > 1): ?>
@@ -588,9 +588,9 @@
         <?php if (!isset($product['stock_quantity']) || (int)$product['stock_quantity'] != 0): ?>
         <div class="product-action-row">
           <div class="product-qty-stepper" style="display:flex; align-items:center; gap:0; border:1px solid rgba(59,42,34,0.15); border-radius:8px; overflow:hidden;">
-            <button onclick="updateQty(-1)" style="width:38px; height:38px; border:none; background:var(--cream); cursor:pointer; font-size:18px; color:var(--brown);">−</button>
-            <input id="qty-input" type="number" value="<?php echo $defaultQty; ?>" min="<?php echo ($prodStoreMode === 'bulk') ? $numericMOQ : 1; ?>" max="<?php echo (!empty($product['stock_quantity']) && $product['stock_quantity'] > 0) ? $product['stock_quantity'] : 9999; ?>" style="width:56px; height:38px; border:none; text-align:center; font-family:'Jost',sans-serif; font-size:15px; color:var(--brown); outline:none;">
-            <button onclick="updateQty(1)" style="width:38px; height:38px; border:none; background:var(--cream); cursor:pointer; font-size:18px; color:var(--brown);">+</button>
+            <button onclick="updateQty(-1)" style="width:44px; height:44px; min-width:44px; min-height:44px; border:none; background:var(--cream); cursor:pointer; font-size:20px; font-weight:600; color:var(--brown); display:inline-flex; align-items:center; justify-content:center;">−</button>
+            <input id="qty-input" type="number" value="<?php echo $defaultQty; ?>" min="<?php echo ($prodStoreMode === 'bulk') ? $numericMOQ : 1; ?>" max="<?php echo (!empty($product['stock_quantity']) && $product['stock_quantity'] > 0) ? $product['stock_quantity'] : 9999; ?>" style="width:60px; height:44px; border:none; text-align:center; font-family:'Jost',sans-serif; font-size:16px; font-weight:600; color:var(--brown); outline:none;">
+            <button onclick="updateQty(1)" style="width:44px; height:44px; min-width:44px; min-height:44px; border:none; background:var(--cream); cursor:pointer; font-size:20px; font-weight:600; color:var(--brown); display:inline-flex; align-items:center; justify-content:center;">+</button>
           </div>
 
           <?php if ($prodStoreMode === 'bulk'): ?>

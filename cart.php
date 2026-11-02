@@ -168,9 +168,9 @@
         <!-- Quantity & Line Total & Actions -->
         <div class="cart-item-actions">
           <div style="display:flex; align-items:center; gap:0; border:1px solid rgba(59,42,34,0.15); border-radius:8px; overflow:hidden;">
-            <button onclick="updateCartQty(<?php echo $item['id']; ?>, -1)" style="width:32px; height:32px; border:none; background:white; cursor:pointer; font-size:16px; color:var(--brown);">−</button>
-            <span id="qty-<?php echo $item['id']; ?>" style="width:36px; text-align:center; font-family:'Jost',sans-serif; font-size:14px; color:var(--brown);"><?php echo $item['quantity']; ?></span>
-            <button onclick="updateCartQty(<?php echo $item['id']; ?>, 1)" style="width:32px; height:32px; border:none; background:white; cursor:pointer; font-size:16px; color:var(--brown);">+</button>
+            <button onclick="updateCartQty(<?php echo $item['id']; ?>, -1)" style="width:38px; height:38px; min-width:38px; min-height:38px; border:none; background:#FAF6F0; cursor:pointer; font-size:18px; font-weight:700; color:var(--brown); display:inline-flex; align-items:center; justify-content:center;">−</button>
+            <span id="qty-<?php echo $item['id']; ?>" style="width:38px; text-align:center; font-family:'Jost',sans-serif; font-size:15px; font-weight:600; color:var(--brown);"><?php echo $item['quantity']; ?></span>
+            <button onclick="updateCartQty(<?php echo $item['id']; ?>, 1)" style="width:38px; height:38px; min-width:38px; min-height:38px; border:none; background:#FAF6F0; cursor:pointer; font-size:18px; font-weight:700; color:var(--brown); display:inline-flex; align-items:center; justify-content:center;">+</button>
           </div>
 
           <div style="min-width:80px; text-align:right;">
@@ -178,7 +178,7 @@
           </div>
 
           <!-- Remove -->
-          <button onclick="removeFromCart(<?php echo $item['id']; ?>)" class="cart-item-remove" title="Remove">✕</button>
+          <button onclick="removeFromCart(<?php echo $item['id']; ?>)" class="cart-item-remove" title="Remove" aria-label="Remove item">✕</button>
         </div>
       </div>
       <?php endforeach; ?>

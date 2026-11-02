@@ -1481,6 +1481,39 @@ textarea.modal-input {
 }
 
 @media (max-width: 640px) {
+  /* Prevent product action button overflow in 2-col mobile grid */
+  .lux-card-actions {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  .lux-card-actions .lux-btn-bulk-enquiry {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    text-align: center;
+    min-height: 38px !important;
+    font-size: 11px !important;
+    padding: 8px 6px !important;
+  }
+  .lux-card-actions .lux-btn-add-cart {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    min-height: 38px !important;
+  }
+  .lux-card-actions .lux-btn-bulk-wa {
+    flex: 0 0 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+  }
+  .lux-card-actions .lux-view-details-link {
+    flex: 1 !important;
+    justify-content: flex-end !important;
+    font-size: 11px !important;
+    padding: 6px 2px !important;
+  }
+  .cta-banner-left {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
   .catalog-grid-lux {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 12px;
@@ -1501,12 +1534,33 @@ textarea.modal-input {
     grid-template-columns: 1fr;
   }
   .shop-cta-banner-lux {
-    margin: 30px 16px 50px;
-    padding: 28px 20px;
+    margin: 30px 12px 50px !important;
+    padding: 24px 16px !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 }
 
 @media (max-width: 480px) {
+  .shop-cta-banner-lux {
+    margin: 24px 8px 40px !important;
+    padding: 20px 14px !important;
+  }
+  .cta-banner-left h3 {
+    font-size: 20px !important;
+  }
+  .cta-banner-actions {
+    width: 100% !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .cta-banner-actions .btn-lux-primary,
+  .cta-banner-actions .btn-lux-secondary {
+    width: 100% !important;
+    text-align: center;
+    justify-content: center;
+  }
   .catalog-grid-lux {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 10px !important;
