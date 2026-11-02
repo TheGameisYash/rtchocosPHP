@@ -11,6 +11,7 @@ $csrfToken = generate_csrf();
 $activeTab = $_GET['tab'] ?? 'experiments';
 
 // Helper: Ensure specimen telemetry columns exist in lab_experiments table
+if (!function_exists('ensure_lab_columns')) {
 function ensure_lab_columns($pdo) {
     static $done = false;
     if ($done) return;
@@ -29,11 +30,19 @@ function ensure_lab_columns($pdo) {
             // Already exists or alter not permitted
         }
     }
+    try {
+        $pdo->exec("ALTER TABLE lab_failed_batches ADD COLUMN full_content LONGTEXT NULL");
+    } catch (Exception $e) {}
+    try {
+        $pdo->exec("ALTER TABLE lab_ingredient_categories ADD COLUMN full_content LONGTEXT NULL");
+    } catch (Exception $e) {}
     $done = true;
+}
 }
 ensure_lab_columns($pdo);
 
 // Helper: Handle file upload if present
+if (!function_exists('handle_lab_image_upload')) {
 function handle_lab_image_upload($fileKey) {
     if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] === UPLOAD_ERR_OK) {
         $tmp = $_FILES[$fileKey]['tmp_name'];
@@ -50,6 +59,7 @@ function handle_lab_image_upload($fileKey) {
         }
     }
     return null;
+}
 }
 
 // =========================================================================
@@ -1189,9 +1199,9 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">From a Failed Batch to a New Idea</h2>
                 <p style="font-size: 13px; color: var(--text-muted); margin: 0;">How we turn unexpected recipe mistakes into better, more delicious chocolate.</p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openNewFailedBatchModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
+            <a href="failed-batch-editor.php" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
                 <span style="font-size: 16px;">+</span> Log Failed Batch
-            </button>
+            </a>
         </div>
 
         <div class="lab-filter-bar">
@@ -1251,7 +1261,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                     </td>
                                     <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
                                         <a href="../failed-batch/<?php echo htmlspecialchars($fb['slug'] ?: $fb['id']); ?>" target="_blank" class="btn btn-sm btn-outline" style="padding: 3px 6px; font-size: 11px;" title="View on live page">↗</a>
-                                        <button type="button" class="btn btn-sm btn-outline" onclick='editFailedBatch(<?php echo json_encode($fb, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
+                                        <a href="failed-batch-editor.php?id=<?php echo (int)$fb['id']; ?>" class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 12px;">Edit</a>
                                         <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this failed batch case study?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                             <input type="hidden" name="action" value="delete_failed_batch">
@@ -1343,9 +1353,9 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 <h2 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin: 0 0 4px;">Ingredient Innovation</h2>
                 <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Discover local fruits, spices, and natural sweeteners we test in our kitchen.</p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openNewIngredientModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
+            <a href="ingredient-editor.php" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-weight: 700;">
                 <span style="font-size: 16px;">+</span> Add Ingredient Category
-            </button>
+            </a>
         </div>
 
         <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; margin-bottom: 30px;">
@@ -1380,7 +1390,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                                 <td style="padding: 12px 18px;"><?php echo (int)$ing['sort_order']; ?></td>
                                 <td style="padding: 12px 18px; text-align: right; white-space: nowrap;">
                                     <a href="../ingredient/<?php echo htmlspecialchars($ing['slug'] ?: $ing['id']); ?>" target="_blank" class="btn btn-sm btn-outline" style="padding: 3px 6px; font-size: 11px;" title="View on live page">↗</a>
-                                    <button type="button" class="btn btn-sm btn-outline" onclick='editIngredient(<?php echo json_encode($ing, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>Edit</button>
+                                    <a href="ingredient-editor.php?id=<?php echo (int)$ing['id']; ?>" class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 12px;">Edit</a>
                                     <form method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Delete this ingredient category?');">
                                         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                         <input type="hidden" name="action" value="delete_ingredient">

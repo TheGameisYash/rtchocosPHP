@@ -118,7 +118,7 @@ $relatedStmt = $pdo->prepare("SELECT id, title, slug, image_path, description FR
 $relatedStmt->execute([$ing['id']]);
 $relatedIngredients = $relatedStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Full Markdown / HTML Parser
+// Full Markdown / HTML Parser matching luxury experiment editorial standard
 $headings_list = [];
 
 function parse_ing_inline($text) {
@@ -148,102 +148,237 @@ function parse_ing_markdown($markdown) {
     
     $html = str_replace(["\r\n", "\r"], "\n", $markdown);
 
-    // Strip editor helper artifacts
+    // 1. YouTube embeds: {{youtube:ID}} or [youtube](url)
+    $html = preg_replace('/\{\{youtube:([a-zA-Z0-9_\-]+)\}\}/i', '<div class="blog-yt-embed" style="margin:36px 0; border-radius:12px; overflow:hidden; position:relative; padding-bottom:56.25%; height:0; box-shadow:0 10px 30px rgba(0,0,0,0.08);"><iframe src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"></iframe></div>', $html);
+    $html = preg_replace_callback('/\[youtube\]\((.*?)\)/i', function($m) {
+        $url = $m[1];
+        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $url, $yt)) {
+            return '<div class="blog-yt-embed" style="margin:36px 0; border-radius:12px; overflow:hidden; position:relative; padding-bottom:56.25%; height:0; box-shadow:0 10px 30px rgba(0,0,0,0.08);"><iframe src="https://www.youtube.com/embed/' . $yt[1] . '" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"></iframe></div>';
+        }
+        return '';
+    }, $html);
+
+    // 2. Strip editor helper artifacts
     $html = preg_replace('/<div class="editor-(?:table-topbar|figure-topbar|table-resize-handle|resize-handle|block-drag-handle|drop-line|col-guide|size-badge)"[^>]*>.*?<\/div>/is', '', $html);
     $html = preg_replace('/<div class="topbar-actions"[^>]*>.*?<\/div>/is', '', $html);
     $html = preg_replace('/<button\b[^>]*\b(?:data-action|topbar-btn)[^>]*>.*?<\/button>/is', '', $html);
+    $html = preg_replace('/<span class="topbar-sep"[^>]*>.*?<\/span>/is', '', $html);
     $html = preg_replace('/\s*contenteditable=[\'"][^\'"]*[\'"]/i', '', $html);
+    $html = preg_replace('/\s*data-controls-attached=[\'"][^\'"]*[\'"]/i', '', $html);
+    $html = preg_replace('/\s*class=[\'"]([^\'"]*)\b(is-selected|is-dragging|is-resizing|just-moved|drag-over)\b([^\'"]*)[\'"]/i', 'class="$1 $3"', $html);
 
-    // Process Headings and populate TOC
+    // 3. Process Markdown Pipe Tables
+    $html = preg_replace_callback('/(?:^|\n)(\|[^\n]+\|\n\|[\s:\-\|]+\|\n(?:\|[^\n]+\|\n?)+)/m', function($m) {
+        $lines = explode("\n", trim($m[1]));
+        $tHtml = "\n<div class=\"table-responsive-wrapper\"><table class=\"blog-custom-table blog-table-artisan\">\n";
+        $hasHeader = false;
+        foreach ($lines as $line) {
+            $trimmedLine = trim($line, "|\r\n ");
+            if (!$trimmedLine || preg_match('/^[:\-\s|]+$/', $trimmedLine)) continue;
+            $cols = explode('|', $trimmedLine);
+            $rowHtml = "  <tr>\n";
+            foreach ($cols as $col) {
+                $cellTag = !$hasHeader ? 'th' : 'td';
+                $rowHtml .= "    <{$cellTag}>" . parse_ing_inline(trim($col)) . "</{$cellTag}>\n";
+            }
+            $rowHtml .= "  </tr>\n";
+            if (!$hasHeader) {
+                $tHtml .= "<thead>\n{$rowHtml}</thead>\n<tbody>\n";
+                $hasHeader = true;
+            } else {
+                $tHtml .= $rowHtml;
+            }
+        }
+        if ($hasHeader) $tHtml .= "</tbody>\n";
+        $tHtml .= "</table></div>\n";
+        return $tHtml;
+    }, $html);
+
+    // 4. Ensure all HTML tables have luxury artisan styling & responsive wrapper
+    $html = preg_replace_callback('/<table\b([^>]*)>(.*?)<\/table>/is', function($m) {
+        $attrs = $m[1];
+        $inner = $m[2];
+        if (strpos($attrs, 'blog-custom-table') === false) {
+            if (preg_match('/class=[\'"]([^\'"]*)[\'"]/i', $attrs, $cm)) {
+                $attrs = preg_replace('/class=[\'"][^\'"]*[\'"]/i', 'class="' . trim($cm[1]) . ' blog-custom-table blog-table-artisan"', $attrs);
+            } else {
+                $attrs .= ' class="blog-custom-table blog-table-artisan"';
+            }
+        }
+        $attrs = preg_replace('/\s*(?:width|height)=[\'"][^\'"]*[\'"]/i', '', $attrs);
+        return '<table' . $attrs . '>' . $inner . '</table>';
+    }, $html);
+
+    $html = preg_replace('/<div class="table-responsive-wrapper">\s*<\/div>/is', '', $html);
+    $html = preg_replace('/<div class="table-responsive-wrapper">\s*(<table\b.*?<\/table>)\s*<\/div>/is', '$1', $html);
+    $html = preg_replace('/(<table\b.*?<\/table>)/is', "\n<div class=\"table-responsive-wrapper\">$1</div>\n", $html);
+    $html = preg_replace('/(<div class="table-responsive-wrapper">.*?<\/div>)\s*<\/div>/is', '$1', $html);
+
+    // 5. Convert Markdown Headings (# H1 -> H2, ## H2, etc.)
+    $html = preg_replace_callback('/^(#{1,6})\s+(.+)$/m', function($m) {
+        $level = min(4, max(2, strlen($m[1])));
+        $text = trim($m[2]);
+        $cleanHeading = html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $cleanHeading), '-'));
+        return "<h{$level} id=\"{$slug}\">" . parse_ing_inline($text) . "</h{$level}>";
+    }, $html);
+
+    // 6. Process HTML Headings and auto-populate TOC
     $html = preg_replace_callback('/<h([1-4])\b([^>]*)>(.*?)<\/h\1>/is', function($matches) use (&$headings_list) {
         $level = (int)$matches[1];
         $attrs = $matches[2];
-        $rawText = strip_tags($matches[3]);
-        $id = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $rawText), '-'));
-        $id = $id ?: ('sec-' . count($headings_list));
-        $headings_list[] = [
-            'id' => $id,
-            'title' => $rawText,
-            'level' => $level
-        ];
-        return "<h{$level} id=\"{$id}\"{$attrs}>{$matches[3]}</h{$level}>";
-    }, $html);
-
-    $html = preg_replace_callback('/^(#{1,4})\s+(.+)$/m', function($matches) use (&$headings_list) {
-        $level = strlen($matches[1]);
-        $rawText = strip_tags($matches[2]);
-        $id = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $rawText), '-'));
-        $id = $id ?: ('sec-' . count($headings_list));
-        $headings_list[] = [
-            'id' => $id,
-            'title' => $rawText,
-            'level' => $level
-        ];
-        $title = parse_ing_inline($matches[2]);
-        return "<h{$level} id=\"{$id}\">{$title}</h{$level}>";
-    }, $html);
-
-    // Convert paragraphs
-    $blocks = preg_split('/\n{2,}/', $html);
-    $parsedBlocks = [];
-    foreach ($blocks as $block) {
-        $b = trim($block);
-        if (!$b) continue;
-        if (preg_match('/^<(?:h[1-6]|div|table|blockquote|figure|ul|ol|p|hr)\b/i', $b)) {
-            $parsedBlocks[] = $b;
+        $content = $matches[3];
+        $rawText = html_entity_decode(trim(strip_tags($content)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        
+        $slug = '';
+        if (preg_match('/id=[\'"]([^\'"]+)[\'"]/i', $attrs, $idMatch)) {
+            $slug = $idMatch[1];
         } else {
-            $parsedBlocks[] = '<p>' . parse_ing_inline($b) . '</p>';
+            $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $rawText), '-'));
+            $slug = $slug ?: ('sec-' . count($headings_list));
+            $attrs = ' id="' . htmlspecialchars($slug) . '"' . $attrs;
+        }
+
+        if ($rawText) {
+            $headings_list[] = [
+                'id' => $slug,
+                'title' => $rawText,
+                'level' => $level
+            ];
+        }
+        return "<h{$level}{$attrs}>{$content}</h{$level}>";
+    }, $html);
+
+    // 7. Process Markdown blockquotes (> quote)
+    $html = preg_replace_callback('/(?:^|\n)((?:>\s?[^\n]+\n?)+)/', function($m) {
+        $lines = explode("\n", trim($m[1]));
+        $q = '';
+        foreach ($lines as $l) {
+            $q .= preg_replace('/^>\s?/', '', $l) . ' ';
+        }
+        $q = trim($q);
+        if (preg_match('/^\[!(NOTE|TIP|WARNING)\]\s*(.*)$/is', $q, $cm)) {
+            return "\n<blockquote class=\"callout\"><p>" . parse_ing_inline(trim($cm[2])) . "</p></blockquote>\n";
+        }
+        return "\n<blockquote><p>" . parse_ing_inline($q) . "</p></blockquote>\n";
+    }, $html);
+
+    // 8. Process Markdown lists
+    $html = preg_replace_callback('/(?:^|\n)((?:[*•\-]\s+[^\n]+\n?)+)/', function($m) {
+        $lines = explode("\n", trim($m[1]));
+        $lHtml = "\n<ul>\n";
+        foreach ($lines as $l) {
+            $t = trim(preg_replace('/^[*•\-]\s+/', '', trim($l)));
+            if ($t) $lHtml .= "  <li>" . parse_ing_inline($t) . "</li>\n";
+        }
+        $lHtml .= "</ul>\n";
+        return $lHtml;
+    }, $html);
+
+    $html = preg_replace_callback('/(?:^|\n)((?:\d+[\.\)]\s+[^\n]+\n?)+)/', function($m) {
+        $lines = explode("\n", trim($m[1]));
+        $lHtml = "\n<ol>\n";
+        foreach ($lines as $l) {
+            $t = trim(preg_replace('/^\d+[\.\)]\s+/', '', trim($l)));
+            if ($t) $lHtml .= "  <li>" . parse_ing_inline($t) . "</li>\n";
+        }
+        $lHtml .= "</ol>\n";
+        return $lHtml;
+    }, $html);
+
+    // 9. Convert loose paragraphs
+    $hasBlockTags = preg_match('/<(?:p|div|blockquote|ul|ol|table|figure)\b/i', $html);
+    if (!$hasBlockTags) {
+        $blocks = preg_split('/\n{2,}/', $html);
+        $parsedBlocks = [];
+        foreach ($blocks as $block) {
+            $b = trim($block);
+            if (!$b) continue;
+            if (preg_match('/^<(?:h[1-6]|div|table|blockquote|figure|ul|ol|p|hr)\b/i', $b)) {
+                $parsedBlocks[] = $b;
+            } else {
+                $parsedBlocks[] = '<p>' . parse_ing_inline($b) . '</p>';
+            }
+        }
+        $html = implode("\n\n", $parsedBlocks);
+    }
+
+    // Defensive guarantee: balance <div> tags
+    $openDivs = substr_count(strtolower($html), '<div');
+    $closeDivs = substr_count(strtolower($html), '</div>');
+    while ($closeDivs > $openDivs) {
+        $pos = strrpos($html, '</div>');
+        if ($pos !== false) {
+            $html = substr_replace($html, '', $pos, 6);
+            $closeDivs--;
+        } else {
+            break;
         }
     }
-    return implode("\n\n", $parsedBlocks);
-}
-
-// Assemble Structured Ingredient Article Content
-$fullMarkdown = '';
-
-$fullMarkdown .= "## Botanical Profile & Indian Terroir\n\n";
-$fullMarkdown .= !empty($ing['description']) ? $ing['description'] : "Exploring locally grown Indian crops, botanicals, and sweeteners to uncover how their natural volatile notes, moisture dynamics, and texture profile integrate with single-estate cocoa.";
-$fullMarkdown .= "\n\n";
-
-$fullMarkdown .= "## Key Varietals & Sourcing Regions\n\n";
-if (!empty($ing['key_varietals'])) {
-    $fullMarkdown .= $ing['key_varietals'] . "\n\n";
-} else {
-    $fullMarkdown .= "- **Cultivars:** " . $specs['taxonomy'] . "\n";
-    $fullMarkdown .= "- **Geographical Terroir:** " . $specs['origin'] . "\n\n";
-}
-
-$fullMarkdown .= "## Scientific Behavior & Lipid Interaction\n\n";
-if (!empty($ing['science_behavior'])) {
-    $fullMarkdown .= $ing['science_behavior'] . "\n\n";
-} else {
-    $fullMarkdown .= "When introduced to stone melangers alongside single-origin cocoa butter, this ingredient exhibits unique biochemical properties:\n\n";
-    $fullMarkdown .= "- **Natural Bio-actives & Flavor Volatiles:** " . $specs['chemistry'] . "\n";
-    $fullMarkdown .= "- **Tempering & Crystal Impact:** " . $specs['temperDelta'] . "\n\n";
-}
-
-$fullMarkdown .= "## Confectionery & Bean-to-Bar Applications\n\n";
-if (!empty($ing['applications'])) {
-    $fullMarkdown .= $ing['applications'] . "\n\n";
-} else {
-    $fullMarkdown .= "Ideal applications tested inside the RT Chocos research kitchen:\n\n";
-    $fullMarkdown .= "- Micro-batch single-origin chocolate inclusion bars\n";
-    $fullMarkdown .= "- Stone-ground dairy-free ganaches and silky bonbon fillings\n";
-    $fullMarkdown .= "- Artisanal spreads balancing natural lipid eutectic curves\n\n";
-}
-
-$fullMarkdown .= "## Kitchen Sensory Notes & Recommended Pairings\n\n";
-if (!empty($ing['lab_notes'])) {
-    $fullMarkdown .= $ing['lab_notes'] . "\n\n";
-} else {
-    $fullMarkdown .= "Our formulation educators recommend balancing this ingredient with:\n\n";
-    foreach ($specs['pairings'] as $pairing) {
-        $fullMarkdown .= "- **Recommended Pairing:** " . $pairing . "\n";
+    while ($openDivs > $closeDivs) {
+        $html .= "\n</div>\n";
+        $closeDivs++;
     }
-    $fullMarkdown .= "\n";
+
+    return trim($html);
 }
 
-$articleContent = parse_ing_markdown($fullMarkdown);
+// Build compiled article content:
+$articleContent = '';
+if (!empty($ing['full_content']) && trim($ing['full_content'])) {
+    $articleContent = parse_ing_markdown($ing['full_content']);
+} else {
+    // Assemble Structured Ingredient Article Content fallback
+    $fullMarkdown = '';
+
+    $fullMarkdown .= "## Botanical Profile & Indian Terroir\n\n";
+    $fullMarkdown .= !empty($ing['description']) ? $ing['description'] : "Exploring locally grown Indian crops, botanicals, and sweeteners to uncover how their natural volatile notes, moisture dynamics, and texture profile integrate with single-estate cocoa.";
+    $fullMarkdown .= "\n\n";
+
+    $fullMarkdown .= "## Key Varietals & Sourcing Regions\n\n";
+    if (!empty($ing['key_varietals'])) {
+        $fullMarkdown .= $ing['key_varietals'] . "\n\n";
+    } else {
+        $fullMarkdown .= "- **Cultivars:** " . ($specs['taxonomy'] ?? 'Artisanal Single-Origin') . "\n";
+        $fullMarkdown .= "- **Geographical Terroir:** " . ($specs['origin'] ?? 'Indian Estates') . "\n\n";
+    }
+
+    $fullMarkdown .= "## Scientific Behavior & Lipid Interaction\n\n";
+    if (!empty($ing['science_behavior'])) {
+        $fullMarkdown .= $ing['science_behavior'] . "\n\n";
+    } else {
+        $fullMarkdown .= "When introduced to stone melangers alongside single-origin cocoa butter, this ingredient exhibits unique biochemical properties:\n\n";
+        $fullMarkdown .= "- **Natural Bio-actives & Flavor Volatiles:** " . ($specs['chemistry'] ?? 'Lipid-soluble volatile aromatic compounds') . "\n";
+        $fullMarkdown .= "- **Tempering & Crystal Impact:** " . ($specs['temperDelta'] ?? 'Neutral to ±0.4°C tempering variance') . "\n\n";
+    }
+
+    $fullMarkdown .= "## Confectionery & Bean-to-Bar Applications\n\n";
+    if (!empty($ing['applications'])) {
+        $fullMarkdown .= $ing['applications'] . "\n\n";
+    } else {
+        $fullMarkdown .= "Ideal applications tested inside the RT Chocos research kitchen:\n\n";
+        $fullMarkdown .= "- Micro-batch single-origin chocolate inclusion bars\n";
+        $fullMarkdown .= "- Stone-ground dairy-free ganaches and silky bonbon fillings\n";
+        $fullMarkdown .= "- Artisanal spreads balancing natural lipid eutectic curves\n\n";
+    }
+
+    $fullMarkdown .= "## Kitchen Sensory Notes & Recommended Pairings\n\n";
+    if (!empty($ing['lab_notes'])) {
+        $fullMarkdown .= $ing['lab_notes'] . "\n\n";
+    } else {
+        $fullMarkdown .= "Our formulation educators recommend balancing this ingredient with:\n\n";
+        if (!empty($specs['pairings'])) {
+            foreach ($specs['pairings'] as $pairing) {
+                $fullMarkdown .= "- **Recommended Pairing:** " . $pairing . "\n";
+            }
+        } else {
+            $fullMarkdown .= "- **Recommended Pairing:** 68% Malabar Single Estate Dark Chocolate\n";
+        }
+        $fullMarkdown .= "\n";
+    }
+
+    $articleContent = parse_ing_markdown($fullMarkdown);
+}
 
 $rawImg = !empty($ing['image_path']) ? $ing['image_path'] : 'assets/images/placeholder.jpg';
 $resolvedImg = (strpos($rawImg, 'http') === 0 || strpos($rawImg, '/') === 0 || strpos($rawImg, '../') === 0) ? $rawImg : ($pathPrefix . $rawImg);
