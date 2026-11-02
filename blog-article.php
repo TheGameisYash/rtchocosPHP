@@ -1266,7 +1266,7 @@ function publishThisArticleNow(blogId) {
                     <span style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--gold); letter-spacing:0.08em; display:block; margin-bottom:4px;">Written By The Founder</span>
                     <h4 style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:var(--brown); margin:0 0 8px;">Aarti Saluja Sahni</h4>
                     <p style="font-family:var(--font-sans); font-size:13.5px; line-height:1.6; color:var(--brown-light); font-weight:300; margin:0 0 12px;">
-                        Aarti is India's first chocolate blogger and a certified chocolate educator with 10+ years of bean-to-bar and cocoa science expertise. She has trained 2,000+ students and consults for craft chocolate brands across India.
+                        Aarti is India's first chocolate blogger and a certified chocolate educator with 13+ years of bean-to-bar and cocoa science expertise. She has trained 2,000+ students and consults for craft chocolate brands across India.
                     </p>
                     <a href="<?php echo $pathPrefix; ?>about" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">About Aarti</a>
                 </div>

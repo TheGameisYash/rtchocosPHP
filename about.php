@@ -1,6 +1,6 @@
 <?php
   $pageTitle = "About Aarti Saluja Sahni — Chocolate Maker, Recipe Developer & Educator | RT Chocos";
-  $pageDescription = "Meet Aarti Saluja Sahni, founder of RT Chocos. Over a decade of bean-to-bar chocolate making, food science formulation, NPD, and cacao education in Mumbai, India.";
+  $pageDescription = "Meet Aarti Saluja Sahni, founder of RT Chocos. 13+ years of bean-to-bar chocolate making, food science formulation, NPD, and cacao education in Mumbai, India.";
   $pathPrefix = "";
   $canonicalUrl = "https://www.rtchocos.com/about.php";
   $schemaType = "ProfilePage";
@@ -21,7 +21,7 @@
     </div>
     <div class="page-hero-content">
       <h1 class="fade-up">About Me</h1>
-      <p class="fade-up-d1">A decade in bean-to-bar cacao craft, recipe development &amp; education.</p>
+      <p class="fade-up-d1">13+ years in bean-to-bar cacao craft, recipe development &amp; education.</p>
     </div>
   </div>
 
@@ -118,7 +118,7 @@
 
         <!-- Credentials Bar -->
         <div class="about-credentials-bar">
-          <span class="about-cred-pill"><span class="cred-dot"></span>10+ years in chocolate</span>
+          <span class="about-cred-pill"><span class="cred-dot"></span>13+ years in chocolate</span>
           <span class="about-cred-pill"><span class="cred-dot"></span>Chocolate Maker</span>
           <span class="about-cred-pill"><span class="cred-dot"></span>Recipe developer</span>
           <span class="about-cred-pill"><span class="cred-dot"></span>Educator</span>
@@ -145,7 +145,7 @@
               </li>
               <li class="about-fact-item">
                 <span class="about-fact-icon">🍫</span>
-                <span>10+ Years Artisan &amp; Bean-to-Bar Craft</span>
+                <span>13+ Years Artisan &amp; Bean-to-Bar Craft</span>
               </li>
               <li class="about-fact-item">
                 <span class="about-fact-icon">🏭</span>

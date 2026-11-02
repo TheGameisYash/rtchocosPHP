@@ -21,7 +21,6 @@
       $phone = trim($_POST['phone'] ?? '');
       $company = trim($_POST['company'] ?? '');
       $service = trim($_POST['service'] ?? '');
-      $budget = trim($_POST['budget'] ?? '');
       $message = trim($_POST['message'] ?? '');
 
       if (empty($name) || empty($email) || empty($message)) {
@@ -33,7 +32,7 @@
               $pdo = get_db();
               $stmt = $pdo->prepare("INSERT INTO contact_submissions (name, email, phone, subject, message, created_at) VALUES (:name, :email, :phone, :subject, :message, NOW())");
               $subjectLine = "B2B Consultation: " . ($service ?: "Work With Us") . ($company ? " ($company)" : "");
-              $fullMsg = "Company/Brand: " . ($company ?: "N/A") . "\nService Interested: " . ($service ?: "General Inquiry") . "\nTarget Budget: " . ($budget ?: "Not Specified") . "\n\nProject Details:\n" . $message;
+              $fullMsg = "Company/Brand: " . ($company ?: "N/A") . "\nService Interested: " . ($service ?: "General Inquiry") . "\n\nProject Details:\n" . $message;
               
               $stmt->execute([
                   ':name' => $name,
@@ -3052,27 +3051,16 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
                 <input type="text" name="company" placeholder="e.g. Artisan Cacao Ltd." />
               </div>
             </div>
-            <div class="form-row">
-              <div>
-                <label>Primary Area of Interest</label>
-                <select name="service" id="modal-service-select">
-                  <option value="R&D & Product Innovation">🔬 R&D &amp; Product Innovation</option>
-                  <option value="Chocolate Problem Solving">🧩 Chocolate Problem Solving</option>
-                  <option value="Ingredients & Application Lab">⚗️ Ingredients &amp; Application Lab</option>
-                  <option value="Education & Masterclasses">🎓 Education &amp; Masterclasses</option>
-                  <option value="Knowledge & Industry Collaboration">🤝 Knowledge &amp; Industry Collaboration</option>
-                  <option value="General Inquiry">✨ General Inquiry</option>
-                </select>
-              </div>
-              <div>
-                <label>Budget Range</label>
-                <select name="budget">
-                  <option value="₹50,000 - ₹1,50,000">₹50,000 – ₹1,50,000</option>
-                  <option value="₹1,50,000 - ₹3,50,000">₹1,50,000 – ₹3,50,000</option>
-                  <option value="₹3,50,000+">₹3,50,000+ (Enterprise)</option>
-                  <option value="Flexible / Undecided">Flexible / Undecided</option>
-                </select>
-              </div>
+            <div>
+              <label>Primary Area of Interest</label>
+              <select name="service" id="modal-service-select">
+                <option value="R&D & Product Innovation">🔬 R&D &amp; Product Innovation</option>
+                <option value="Chocolate Problem Solving">🧩 Chocolate Problem Solving</option>
+                <option value="Ingredients & Application Lab">⚗️ Ingredients &amp; Application Lab</option>
+                <option value="Education & Masterclasses">🎓 Education &amp; Masterclasses</option>
+                <option value="Knowledge & Industry Collaboration">🤝 Knowledge &amp; Industry Collaboration</option>
+                <option value="General Inquiry">✨ General Inquiry</option>
+              </select>
             </div>
             <div>
               <label>Describe Your Challenge or Question *</label>

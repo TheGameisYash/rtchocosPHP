@@ -196,11 +196,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
     $description = trim($_POST['description'] ?? '');
     $tags = trim($_POST['tags'] ?? '');
     $batchRef = trim($_POST['batch_ref'] ?? '');
-    $origin = trim($_POST['origin'] ?? '');
-    $polymorph = trim($_POST['polymorph'] ?? '');
-    $particleSize = trim($_POST['particle_size'] ?? '');
-    $conching = trim($_POST['conching'] ?? '');
-    $waterActivity = trim($_POST['water_activity'] ?? '');
+    $origin = trim($_POST['origin'] ?? $exp['origin'] ?? '');
+    $polymorph = trim($_POST['polymorph'] ?? $exp['polymorph'] ?? '');
+    $particleSize = trim($_POST['particle_size'] ?? $exp['particle_size'] ?? '');
+    $conching = trim($_POST['conching'] ?? $exp['conching'] ?? '');
+    $waterActivity = trim($_POST['water_activity'] ?? $exp['water_activity'] ?? '');
     $fullContent = trim($_POST['full_content'] ?? ($_POST['content'] ?? ''));
 
     // Server-side cleanup of any editor UI artifacts before saving
@@ -706,36 +706,6 @@ render_admin_header($isEdit ? "Edit Experiment — " . htmlspecialchars($exp['ti
                     </div>
                 </div>
 
-                <!-- Scientific & Kitchen Specifications (Optional) -->
-                <div style="border-top:1px solid var(--border-color); padding-top:16px; margin-top:16px;">
-                    <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--gold, #C7A66A); display:block; margin-bottom:12px;">Kitchen &amp; Scientific Specifications (Optional)</span>
-                    
-                    <div class="form-group">
-                        <label class="static-label" for="origin">Terroir Origin</label>
-                        <input type="text" id="origin" name="origin" value="<?php echo htmlspecialchars($exp['origin'] ?? ''); ?>" placeholder="e.g. Idukki Estate, Kerala">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="static-label" for="polymorph">Crystal Matrix</label>
-                        <input type="text" id="polymorph" name="polymorph" value="<?php echo htmlspecialchars($exp['polymorph'] ?? ''); ?>" placeholder="e.g. Beta-V Matrix">
-                    </div>
-
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;" class="form-group">
-                        <div>
-                            <label class="static-label" for="particle_size">Smoothness (Micron)</label>
-                            <input type="text" id="particle_size" name="particle_size" value="<?php echo htmlspecialchars($exp['particle_size'] ?? ''); ?>" placeholder="e.g. < 18.2 µm">
-                        </div>
-                        <div>
-                            <label class="static-label" for="water_activity">Moisture Level</label>
-                            <input type="text" id="water_activity" name="water_activity" value="<?php echo htmlspecialchars($exp['water_activity'] ?? ''); ?>" placeholder="e.g. 0.31 Aw">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="static-label" for="conching">Conching Protocol</label>
-                        <input type="text" id="conching" name="conching" value="<?php echo htmlspecialchars($exp['conching'] ?? ''); ?>" placeholder="e.g. 48h Longitudinal">
-                    </div>
-                </div>
 
                 <div class="form-group" style="margin-top:16px;">
                     <label class="static-label" for="sort_order">Display Order</label>
