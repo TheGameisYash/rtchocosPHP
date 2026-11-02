@@ -1168,8 +1168,8 @@
 
 #page-home #flavor-wheel-sec .workspace {
   display: grid;
-  grid-template-columns: minmax(440px, 500px) minmax(380px, 1fr);
-  gap: clamp(16px, 2vw, 24px);
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(18px, 2.5vw, 28px);
   align-items: stretch;
 }
 
@@ -1183,11 +1183,12 @@
 }
 
 #page-home #flavor-wheel-sec .wheel-panel {
-  padding: clamp(14px, 1.8vh, 18px) clamp(16px, 1.8vw, 20px);
+  padding: clamp(16px, 2.2vh, 22px) clamp(16px, 2vw, 24px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 100%;
 }
 
 #page-home #flavor-wheel-sec .wheel-toolbar {
@@ -1228,7 +1229,7 @@
 
 #page-home #flavor-wheel-sec .wheel-wrap {
   width: 100%;
-  max-width: clamp(380px, 51vh, 460px);
+  max-width: clamp(380px, 52vh, 480px);
   margin: 0 auto;
   position: relative;
   aspect-ratio: 1;
@@ -1244,7 +1245,14 @@
 
 #page-home #flavor-wheel-sec .wedge {
   cursor: pointer;
-  transition: opacity 0.22s ease, fill 0.22s ease, stroke-width 0.22s ease;
+  transition: opacity 0.25s ease, stroke 0.25s ease, stroke-width 0.25s ease, filter 0.25s ease;
+}
+
+#page-home #flavor-wheel-sec g:hover .wedge {
+  stroke: var(--gold-pale) !important;
+  stroke-width: 2.4 !important;
+  filter: drop-shadow(0 0 10px rgba(239, 219, 178, 0.75)) brightness(1.12);
+  opacity: 1 !important;
 }
 
 #page-home #flavor-wheel-sec .wedge:focus {
@@ -1253,24 +1261,65 @@
   stroke-width: 2.4;
 }
 
-#page-home #flavor-wheel-sec .wedge.selected {
-  stroke: var(--gold-pale);
-  stroke-width: 2.6;
-  filter: drop-shadow(0 0 6px rgba(239, 219, 178, 0.6));
+#page-home #flavor-wheel-sec .wedge.selected,
+#page-home #flavor-wheel-sec g.selected .wedge {
+  stroke: var(--gold-pale) !important;
+  stroke-width: 2.8 !important;
+  filter: drop-shadow(0 0 12px rgba(239, 219, 178, 0.85)) brightness(1.18);
+  opacity: 1 !important;
 }
 
 #page-home #flavor-wheel-sec .wheel-label {
-  fill: #fffaf0;
-  font-size: 11px;
+  fill: #ffffff !important;
+  font-size: 12.5px !important;
   text-anchor: middle;
-  dominant-baseline: middle;
+  dominant-baseline: central;
   pointer-events: none;
-  font-weight: 650;
-  paint-order: stroke;
-  stroke: rgba(18, 26, 22, 0.5);
-  stroke-width: 1.4px;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  paint-order: stroke fill;
+  stroke: rgba(5, 24, 18, 0.92) !important;
+  stroke-width: 2.8px !important;
   stroke-linejoin: round;
   font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+}
+
+#page-home #flavor-wheel-sec g:hover .wheel-label,
+#page-home #flavor-wheel-sec g.selected .wheel-label {
+  fill: #FFF0CB !important;
+  stroke: #031813 !important;
+  stroke-width: 3.2px !important;
+  font-size: 13.5px !important;
+}
+
+#page-home #flavor-wheel-sec .wheel-center-title {
+  fill: #f5f0e7;
+  text-anchor: middle;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+#page-home #flavor-wheel-sec .wheel-center-sub {
+  fill: #D8B96F;
+  text-anchor: middle;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.14em;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+}
+
+#page-home #flavor-wheel-sec .wheel-center-hint {
+  fill: #c0cfc4;
+  text-anchor: middle;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.08em;
+  font-size: 8.5px;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
 }
 
 #page-home #flavor-wheel-sec .wheel-center {
@@ -1291,9 +1340,9 @@
 
 #page-home #flavor-wheel-sec .legend {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
-  margin: 8px 0 0;
+  margin: 10px 0 0;
   justify-content: center;
 }
 
@@ -1305,6 +1354,20 @@
   color: #c9d5cd;
   font-family: 'Inter', sans-serif;
   letter-spacing: 0.02em;
+  cursor: pointer;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(239, 219, 178, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+#page-home #flavor-wheel-sec .legend span:hover,
+#page-home #flavor-wheel-sec .legend span.active {
+  background: rgba(239, 219, 178, 0.15);
+  border-color: var(--gold-pale);
+  color: var(--gold-pale);
 }
 
 #page-home #flavor-wheel-sec .swatch {
@@ -1315,13 +1378,15 @@
 }
 
 #page-home #flavor-wheel-sec .detail-panel {
-  padding: clamp(16px, 2vw, 24px);
+  padding: clamp(18px, 2.2vh, 26px) clamp(18px, 2vw, 26px);
   position: relative;
   overflow: hidden;
   background: var(--panel);
   display: flex;
   flex-direction: column;
-  max-height: clamp(470px, 59vh, 550px);
+  justify-content: space-between;
+  height: 100%;
+  max-height: none;
 }
 
 #page-home #flavor-wheel-sec .detail-panel:before {

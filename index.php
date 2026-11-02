@@ -873,10 +873,11 @@
             <svg id="wheel" viewBox="0 0 500 500" role="group" aria-label="Chocolate sensory wheel"></svg>
           </div>
           <div class="wheel-hint">Choose the word that comes closest to what you notice. You can return to the guide at any time.</div>
-          <div class="legend">
-            <span><i class="swatch" style="background:#B96870"></i>Flavor notes</span>
-            <span><i class="swatch" style="background:#C58B55"></i>Taste &amp; mouthfeel</span>
-            <span><i class="swatch" style="background:#7D9C72"></i>Process context</span>
+          <div class="legend" id="wheelLegend">
+            <span class="legend-filter active" data-group="all"><i class="swatch" style="background:#EFDBB2"></i>All (15)</span>
+            <span class="legend-filter" data-group="Flavor notes"><i class="swatch" style="background:#B96870"></i>Flavor notes (9)</span>
+            <span class="legend-filter" data-group="Taste profile"><i class="swatch" style="background:#C58B55"></i>Taste &amp; mouthfeel (5)</span>
+            <span class="legend-filter" data-group="Process"><i class="swatch" style="background:#7D9C72"></i>Process (1)</span>
           </div>
         </section>
 
@@ -964,22 +965,32 @@
           "Smoky":{group:"AROMA",color:"#28664e",meaning:"Smoky describes an aroma reminiscent of smoke, charred wood or a fire. It differs from the warmer smell of toasted foods.",cue:"Ask: does this remind me of a campfire, or more of toasted coffee and nuts?",try:"Compare the aroma before and after breaking the chocolate. Notice whether the smoke-like impression is distinct from roasted notes.",refs:"Wood smoke · Campfire · Charred wood",dist:"Roasted notes suggest heating or toasting; smoky notes suggest smoke or char. They can overlap.",science:"Volatile phenols such as guaiacol can contribute smoky impressions in foods. In cacao, drying conditions and smoke exposure can be relevant, but a smoky impression alone cannot identify its source or establish a defect.",insight:"A smoky note is an observation, not proof of poor processing. Its significance depends on intensity, balance and intended profile."},
           "Earthy":{group:"AROMA",color:"#28664e",meaning:"Earthy describes an aroma reminiscent of soil, forest floor or damp roots. It may be subtle or pronounced.",cue:"Look for a soil-like association and notice whether it feels clean and gentle or musty and stale.",try:"Take one gentle smell, pause and smell again. Distinguish earthy from woody or roasted.",refs:"Forest floor · Damp soil · Roots",dist:"Earthy is not automatically mouldy. Signs of spoilage should not be dismissed as a desirable flavour note.",science:"Geosmin and other volatile compounds can create earthy impressions in foods, but their presence in a particular chocolate must not be assumed without evidence. Handling and storage may affect unwanted aromas.",insight:"The same broad descriptor can feel pleasant or undesirable; context and intensity matter."},
           "Roasted":{group:"AROMA",color:"#28664e",meaning:"Roasted notes resemble foods that have been heated or toasted, such as coffee, toasted nuts or baked crust.",cue:"Look for warm, toasted, coffee-like or browned aromas rather than a fresh fruit or floral impression.",try:"Smell first, then taste. Notice whether the roasted impression becomes clearer as the chocolate melts.",refs:"Coffee · Toasted nuts · Baked crust",dist:"Roasted describes a sensory impression, not a direct measurement of roast temperature. Smoky suggests smoke or char.",science:"Roasting changes the volatile profile through reactions including Maillard chemistry and transformation of aroma precursors. Pyrazines and other compound families can contribute, depending on the specific compounds and concentrations.",insight:"Roasting can develop desirable aromas while transforming others. More roasting does not automatically mean better flavour."},
+          "Caramelized":{group:"AROMA",color:"#28664e",meaning:"Caramelized describes an aroma or flavour reminiscent of heated sugar, toffee or browned sweet foods.",cue:"Look for a warm, browned-sugar impression rather than straightforward sweetness alone.",try:"Notice whether the association is mainly aromatic, mainly sweet, or a combination.",refs:"Toffee · Caramel · Browned sugar",dist:"Caramel-like aroma does not prove that caramel is an ingredient or that caramelization alone produced the note.",science:"Caramelization and Maillard reactions are distinct pathways, though both can contribute to complex browned aromas. The profile depends on ingredients and processing.",insight:"A caramel-like impression can occur without added caramel."},
+          "Woody":{group:"AROMA",color:"#28664e",meaning:"Woody describes an aroma reminiscent of dry wood, cedar or pencil shavings.",cue:"Look for a dry, wood-like association distinct from earthy soil or smoky char.",try:"Smell again and choose the closest association: woody, earthy, smoky or roasted.",refs:"Cedar · Dry wood · Pencil shavings",dist:"Woody does not establish the use of wood in processing or prove a particular cacao origin.",science:"Woody aroma is a perceptual category that can reflect different volatile mixtures. Assigning it to a single compound or processing stage requires specific evidence.",insight:"Sensory categories describe what an aroma resembles; they do not automatically reveal its chemical source."},
           "Sweet":{group:"BASIC TASTE",color:"#476d72",meaning:"Sweetness is a basic taste often associated with sugars. A honey-like or caramel-like aroma is related, but not the same thing.",cue:"Notice the taste itself. Then ask whether a honey-like or caramel-like aroma adds to the overall impression.",try:"Let the chocolate melt and focus on sweetness separately from bitterness and aroma.",refs:"Sugar · Honey-like aroma · Ripe fruit",dist:"A sweet aroma is not proof of sugar content, and perceived sweetness does not reveal the precise amount of sugar.",science:"Sweet taste is mediated primarily by the T1R2/T1R3 receptor. Aroma, texture, bitterness and expectation can influence how sweet the whole experience seems.",insight:"Two chocolates with similar sugar levels may not seem equally sweet because their bitterness, aroma and formulation differ."},
           "Bittersweet":{group:"BOTH TASTE",color:"#476d72",meaning:"Bittersweet describes a combined impression of sweetness and bitterness. Their balance may shift as the chocolate melts.",cue:"Notice whether sweetness appears first and bitterness follows, or whether both are present together.",try:"Taste slowly and name sweetness and bitterness separately before describing their balance.",refs:"Dark cocoa · Sweetened espresso · Dark caramel",dist:"Bittersweet is a combined description, not a separate basic taste.",science:"Sweet and bitter sensations arise through different taste mechanisms. Cocoa solids, sugar, formulation and sensory context affect their perceived balance.",insight:"Separating the two sensations first makes a more useful note than simply calling chocolate 'strong'."},
           "Sour / Tart":{group:"TASTE",color:"#476d72",meaning:"Sourness is a taste associated with acids. Tartness is a broader everyday description of a bright, sharp or mouth-watering impression.",cue:"Notice whether the sensation resembles citrus-like sharpness, and whether it is a taste or a fruit-like aroma.",try:"Taste, then pause. Describe sourness separately from fruity aroma or drying sensation.",refs:"Lemon-like sharpness · Tart berries · Plain yoghurt",dist:"Fruity does not mean sour. A fruit-like aroma can occur without strong acidity.",science:"Acids influence sour taste through specialised taste-cell mechanisms. pH and titratable acidity are different chemical measurements and neither captures the entire sensory experience.",insight:"Perceived sourness cannot tell you the chocolate's pH."},
           "Salty":{group:"BASIC TASTE",color:"#476d72",meaning:"Salty is a basic taste associated with salts. In chocolate it may be subtle or more obvious in some formulations.",cue:"Focus on a salt-like taste rather than sharpness, bitterness or a mineral-like aroma.",try:"Taste a small piece and identify saltiness independently of sweetness and bitterness.",refs:"A tiny pinch of salt · Salted nuts",dist:"Salty is a taste. Mineral-like is an aroma or flavour association and does not prove a specific mineral is present.",science:"Salty taste involves ion-sensitive pathways, especially for sodium salts. Other ingredients and formulation influence how noticeable it is.",insight:"A chocolate may contain salt without tasting strongly salty; perception depends on concentration and context."},
-          "Creamy":{group:"MOUTHFEEL",color:"#476d72",meaning:"Creamy describes a rich, coating or soft sensation. It may occur in milk or dark chocolate and does not necessarily mean dairy is present.",cue:"Notice how the chocolate coats your mouth, how it melts, and whether it feels rich, smooth or waxy.",try:"Let a small piece melt naturally. Focus on the physical sensation rather than the flavour you smell.",refs:"Cream · Soft butter · Rich custard",dist:"Creamy is mouthfeel; milky is a flavour association; smooth describes the absence of noticeable graininess.",science:"Fat composition, particle size and distribution, moisture, emulsifiers and structure can influence mouthfeel. Cocoa butter matters, but creaminess is shaped by several interacting factors.",insight:"Dark chocolate can feel creamy without tasting milky."},
           "Astringent":{group:"MOUTHFEEL",color:"#476d72",meaning:"Astringency is a drying, rough or puckering sensation that may develop during tasting or linger afterwards.",cue:"Notice whether your tongue, gums or inner cheeks feel less lubricated, almost as if moisture has been drawn away.",try:"After the chocolate melts, pause. Distinguish drying or roughness from the bitter taste that may accompany it.",refs:"Strong black tea · Unripe banana · Dry red wine",dist:"Bitterness is a taste; astringency is mainly a tactile mouthfeel. You may experience either without the other.",science:"Cacao polyphenols, including flavan-3-ols and procyanidins, can interact with salivary proteins and contribute to reduced lubrication. Astringency is complex and cannot be predicted from one compound or bitterness alone.",insight:"A chocolate may seem less bitter without losing every drying sensation."},
-          "Fermented":{group:"PROCESS CONTEXT",color:"#927747",meaning:"Fermentation is a cacao-processing stage, not a single flavour. Its effects may be perceived as fruity, acidic, floral or wine-like, depending on the process.",cue:"Look for a specific sensory observation first. Treat the process as a hypothesis only when supporting information exists.",try:"Describe the actual aroma before exploring how fermentation might have contributed.",refs:"Fruit-like aroma · Wine-like impression · Tangy notes",dist:"A fermented impression is not proof of a particular fermentation method, duration or quality.",science:"Microbial activity changes sugars, acids and precursors that later influence aroma development. Drying and roasting further transform this chemistry; the final flavour reflects the whole process chain.",insight:"Ask what you perceive first, and what process information supports your interpretation."},
-          "Caramelized":{group:"AROMA",color:"#28664e",meaning:"Caramelized describes an aroma or flavour reminiscent of heated sugar, toffee or browned sweet foods.",cue:"Look for a warm, browned-sugar impression rather than straightforward sweetness alone.",try:"Notice whether the association is mainly aromatic, mainly sweet, or a combination.",refs:"Toffee · Caramel · Browned sugar",dist:"Caramel-like aroma does not prove that caramel is an ingredient or that caramelization alone produced the note.",science:"Caramelization and Maillard reactions are distinct pathways, though both can contribute to complex browned aromas. The profile depends on ingredients and processing.",insight:"A caramel-like impression can occur without added caramel."},
-          "Woody":{group:"AROMA",color:"#28664e",meaning:"Woody describes an aroma reminiscent of dry wood, cedar or pencil shavings.",cue:"Look for a dry, wood-like association distinct from earthy soil or smoky char.",try:"Smell again and choose the closest association: woody, earthy, smoky or roasted.",refs:"Cedar · Dry wood · Pencil shavings",dist:"Woody does not establish the use of wood in processing or prove a particular cacao origin.",science:"Woody aroma is a perceptual category that can reflect different volatile mixtures. Assigning it to a single compound or processing stage requires specific evidence.",insight:"Sensory categories describe what an aroma resembles; they do not automatically reveal its chemical source."},
-          "Malty":{group:"AROMA",color:"#28664e",meaning:"Malty describes an aroma reminiscent of cereal, malted grain or warm grain-based foods.",cue:"Look for a grain-like, warm, sometimes bread-like association rather than a straightforward roasted-nut note.",try:"Smell, then taste, and note whether the malty impression grows as the chocolate melts.",refs:"Malted cereal · Toasted grain · Bread crust",dist:"Malty is not identical to roasted, caramelized or sweet. These can overlap but describe different impressions.",science:"Malt-like aromas can involve multiple volatile compounds and processing reactions. Their specific origin in a chocolate cannot be established from the descriptor alone.",insight:"Several aroma families can coexist in one chocolate; the goal is to describe the dominant impression accurately."},
-          "Cocoa / Chocolate":{group:"AROMA",color:"#28664e",meaning:"This descriptor captures recognisable cocoa-like or chocolate-like aromas, from mild and rounded to intense and deep.",cue:"Notice whether the impression resembles cocoa powder, cocoa nibs or a deeper roasted cocoa aroma.",try:"Smell before tasting, then check whether the cocoa impression changes during melting or remains in the finish.",refs:"Cocoa powder · Cocoa nibs · Brownie-like cocoa",dist:"Cocoa intensity is not the same as bitterness, cocoa percentage or overall quality.",science:"Chocolate aroma comes from a complex mixture of volatile compounds shaped by cacao material, processing and formulation. No single compound explains the complete cocoa character.",insight:"A higher cocoa percentage does not guarantee a more intense or more pleasant cocoa aroma."}
+          "Fermented":{group:"PROCESS CONTEXT",color:"#927747",meaning:"Fermentation is a cacao-processing stage, not a single flavour. Its effects may be perceived as fruity, acidic, floral or wine-like, depending on the process.",cue:"Look for a specific sensory observation first. Treat the process as a hypothesis only when supporting information exists.",try:"Describe the actual aroma before exploring how fermentation might have contributed.",refs:"Fruit-like aroma · Wine-like impression · Tangy notes",dist:"A fermented impression is not proof of a particular fermentation method, duration or quality.",science:"Microbial activity changes sugars, acids and precursors that later influence aroma development. Drying and roasting further transform this chemistry; the final flavour reflects the whole process chain.",insight:"Ask what you perceive first, and what process information supports your interpretation."}
         };
 
         const categories = [
-          {name:"Floral",group:"Flavor notes"},{name:"Fruity",group:"Flavor notes"},{name:"Nutty",group:"Flavor notes"},{name:"Spicy",group:"Flavor notes"},{name:"Smoky",group:"Flavor notes"},{name:"Earthy",group:"Flavor notes"},{name:"Roasted",group:"Flavor notes"},{name:"Caramelized",group:"Flavor notes"},{name:"Woody",group:"Flavor notes"},{name:"Malty",group:"Flavor notes"},{name:"Cocoa / Chocolate",group:"Flavor notes"},
-          {name:"Sweet",group:"Taste profile"},{name:"Bittersweet",group:"Taste profile"},{name:"Sour / Tart",group:"Taste profile"},{name:"Salty",group:"Taste profile"},{name:"Creamy",group:"Taste profile"},{name:"Astringent",group:"Taste profile"},{name:"Fermented",group:"Process"}
+          {name:"Floral",group:"Flavor notes"},
+          {name:"Fruity",group:"Flavor notes"},
+          {name:"Nutty",group:"Flavor notes"},
+          {name:"Spicy",group:"Flavor notes"},
+          {name:"Smoky",group:"Flavor notes"},
+          {name:"Earthy",group:"Flavor notes"},
+          {name:"Roasted",group:"Flavor notes"},
+          {name:"Caramelized",group:"Flavor notes"},
+          {name:"Woody",group:"Flavor notes"},
+          {name:"Sweet",group:"Taste profile"},
+          {name:"Bittersweet",group:"Taste profile"},
+          {name:"Sour / Tart",group:"Taste profile"},
+          {name:"Salty",group:"Taste profile"},
+          {name:"Astringent",group:"Taste profile"},
+          {name:"Fermented",group:"Process"}
         ];
 
         const svgNS = "http://www.w3.org/2000/svg";
@@ -1006,48 +1017,94 @@
           return n;
         }
 
+        let selectedDescriptorName = null;
+
+        function previewHub(name) {
+          const cat = categories.find(c => c.name === name);
+          const title = document.getElementById("hubTitle");
+          const sub = document.getElementById("hubSub");
+          const hint = document.getElementById("hubHint");
+          if (title) {
+            title.textContent = name.toUpperCase();
+            title.setAttribute("font-size", name.length > 10 ? "14.5" : "17");
+            title.style.fill = "#FFF0CB";
+          }
+          if (sub) {
+            sub.textContent = cat ? cat.group.toUpperCase() : "DESCRIPTOR";
+            sub.style.fill = "#E8C87A";
+          }
+          if (hint) {
+            hint.textContent = "CLICK FOR SENSORY PROFILE";
+            hint.style.fill = "#EFDBB2";
+          }
+        }
+
+        function restoreHub() {
+          if (selectedDescriptorName && data[selectedDescriptorName]) {
+            previewHub(selectedDescriptorName);
+            return;
+          }
+          const title = document.getElementById("hubTitle");
+          const sub = document.getElementById("hubSub");
+          const hint = document.getElementById("hubHint");
+          if (title) {
+            title.textContent = "RT CHOCOS";
+            title.setAttribute("font-size", "17");
+            title.style.fill = "#f5f0e7";
+          }
+          if (sub) {
+            sub.textContent = "SENSORY EXPLORER";
+            sub.style.fill = "#D8B96F";
+          }
+          if (hint) {
+            hint.textContent = "CLICK ANY NOTE TO TASTE";
+            hint.style.fill = "#c0cfc4";
+          }
+        }
+
         function buildWheel() {
           svg.innerHTML = "";
           const palettes = {
-            "Flavor notes": ["#9B5D75","#B96870","#C67E70","#C38D58","#B8A05D","#81976C","#5F9A8B","#4F8C91","#6F83A8","#8B79A8","#A4779B"],
-            "Taste profile": ["#D0A35E","#C58B55","#B87955","#A96C5B","#8C8B65","#729A8B"],
-            "Process": ["#7D9C72"]
+            "Flavor notes": ["#A1536E","#B96870","#C87860","#BF8B50","#B29C52","#7E9B68","#509880","#47898F","#687DA8"],
+            "Taste profile": ["#D0A35E","#C58B55","#B87955","#A66858","#6D9487"],
+            "Process": ["#829E6B"]
           };
 
           const bg = el("circle", { cx: 250, cy: 250, r: 244, fill: "#06251F", stroke: "#D6B56F", "stroke-opacity": ".8", "stroke-width": "1.3" });
           svg.appendChild(bg);
 
-          const start = -90, step = 360 / categories.length;
+          const start = 0, step = 360 / categories.length;
           const counters = { "Flavor notes": 0, "Taste profile": 0, "Process": 0 };
 
           categories.forEach((item, i) => {
             const a = start + i * step;
-            const b = a + step - 0.8;
+            const b = a + step - 0.9;
             const palette = palettes[item.group];
             const color = palette[counters[item.group]++ % palette.length];
-            const g = el("g", { "data-name": item.name, tabindex: "0", role: "button", "aria-label": item.name + " descriptor" });
-            const path = el("path", { d: sectorPath(250, 250, 112, 235, a, b), fill: color, "fill-opacity": ".94", stroke: "#F3E7D0", "stroke-opacity": ".65", "stroke-width": "1.1", class: "wedge" });
+            const g = el("g", { "data-name": item.name, "data-group": item.group, tabindex: "0", role: "button", "aria-label": item.name + " descriptor" });
+            const path = el("path", { d: sectorPath(250, 250, 104, 236, a, b), fill: color, "fill-opacity": ".94", stroke: "#F3E7D0", "stroke-opacity": ".65", "stroke-width": "1.1", class: "wedge" });
             g.appendChild(path);
 
-            const mid = (a + b) / 2, radius = 177, [x, y] = polar(250, 250, radius, mid);
-            let rot = mid + 90;
-            if (mid > 90 && mid < 270) rot += 180;
-            const text = el("text", { x, y, class: "wheel-label", transform: `rotate(${rot} ${x} ${y})`, "font-size": item.name.length > 13 ? "10.2" : "11.5" });
-            
-            let label = item.name.replace(" / ", " / ");
-            if (label === "Cocoa / Chocolate") label = "Cocoa / Chocolate";
-            if (label.length > 14) {
-              let words = label.split(" ");
-              let cut = Math.ceil(words.length / 2);
-              const t1 = el("tspan", { x, y: y - 5 });
-              t1.textContent = words.slice(0, cut).join(" ");
-              const t2 = el("tspan", { x, y: y + 7 });
-              t2.textContent = words.slice(cut).join(" ");
-              text.append(t1, t2);
-            } else {
-              text.textContent = label;
-            }
+            const mid = (a + b) / 2;
+            const midNorm = ((mid % 360) + 360) % 360;
+            const [x, y] = polar(250, 250, 170, mid);
+            const rot = midNorm > 180 ? midNorm + 90 : midNorm - 90;
+            const text = el("text", {
+              x,
+              y,
+              class: "wheel-label",
+              transform: `rotate(${rot} ${x} ${y})`,
+              "text-anchor": "middle",
+              "dominant-baseline": "central"
+            });
+            text.textContent = item.name;
             g.appendChild(text);
+
+            // Hover & focus preview
+            g.addEventListener("mouseenter", () => previewHub(item.name));
+            g.addEventListener("mouseleave", restoreHub);
+            g.addEventListener("focus", () => previewHub(item.name));
+            g.addEventListener("blur", restoreHub);
 
             g.addEventListener("click", () => selectDescriptor(item.name));
             g.addEventListener("keydown", e => {
@@ -1059,18 +1116,18 @@
             svg.appendChild(g);
           });
 
-          // Center Hub
+          // Center Hub Magnifier
           const hubGroup = el("g", { id: "wheelCenterHub", style: "cursor: pointer;", role: "button", tabindex: "0", "aria-label": "Reset wheel view" });
-          const outer = el("circle", { cx: 250, cy: 250, r: 108, fill: "#07382D", stroke: "#D8B96F", "stroke-width": "2" });
-          const inner = el("circle", { cx: 250, cy: 250, r: 99, fill: "none", stroke: "#D8B96F", "stroke-opacity": ".35", "stroke-dasharray": "2 5", "stroke-width": "1" });
-          const c1 = el("text", { x: 250, y: 230, class: "wheel-center", "font-size": "17", "letter-spacing": "2", fill: "#f5f0e7" });
-          c1.textContent = "RT CHOCOS";
-          const c2 = el("text", { x: 250, y: 254, class: "wheel-center", "font-size": "12", "letter-spacing": "1.2", fill: "#f5f0e7" });
-          c2.textContent = "FLAVOR WHEEL";
-          const c3 = el("text", { x: 250, y: 275, class: "wheel-center", "font-size": "9", fill: "#E2C88B", "letter-spacing": "1" });
-          c3.textContent = "SMELL · TASTE · NOTICE";
+          const outer = el("circle", { cx: 250, cy: 250, r: 100, fill: "#07382D", stroke: "#D8B96F", "stroke-width": "2" });
+          const inner = el("circle", { cx: 250, cy: 250, r: 92, fill: "none", stroke: "#D8B96F", "stroke-opacity": ".35", "stroke-dasharray": "2 5", "stroke-width": "1" });
+          const cSub = el("text", { id: "hubSub", x: 250, y: 220, class: "wheel-center-sub" });
+          cSub.textContent = "SENSORY EXPLORER";
+          const cTitle = el("text", { id: "hubTitle", x: 250, y: 248, class: "wheel-center-title", "font-size": "17", "letter-spacing": "1.5" });
+          cTitle.textContent = "RT CHOCOS";
+          const cHint = el("text", { id: "hubHint", x: 250, y: 270, class: "wheel-center-hint" });
+          cHint.textContent = "CLICK ANY NOTE TO TASTE";
           
-          hubGroup.append(outer, inner, c1, c2, c3);
+          hubGroup.append(outer, inner, cSub, cTitle, cHint);
           hubGroup.addEventListener("click", resetWheel);
           hubGroup.addEventListener("keydown", e => {
             if (e.key === "Enter" || e.key === " ") {
@@ -1095,12 +1152,15 @@
           const d = data[name];
           if (!d) return;
 
+          selectedDescriptorName = name;
+          previewHub(name);
+
           document.querySelectorAll(".wedge").forEach(p => {
             p.classList.remove("selected");
             p.style.opacity = ".42";
           });
 
-          const group = [...svg.querySelectorAll("g")].find(g => g.dataset.name === name);
+          const group = [...svg.querySelectorAll("g[data-name]")].find(g => g.dataset.name === name);
           if (group) {
             const wedge = group.querySelector(".wedge");
             if (wedge) {
@@ -1158,9 +1218,21 @@
         }
 
         function resetWheel() {
+          selectedDescriptorName = null;
+          restoreHub();
+
           document.querySelectorAll(".wedge").forEach(p => {
             p.classList.remove("selected");
             p.style.opacity = "1";
+          });
+
+          // Reset legend active filter
+          document.querySelectorAll("#wheelLegend .legend-filter").forEach(p => {
+            if (p.dataset.group === "all") p.classList.add("active");
+            else p.classList.remove("active");
+          });
+          svg.querySelectorAll("g[data-group]").forEach(g => {
+            g.style.pointerEvents = "auto";
           });
 
           const groupEl = document.getElementById("detailGroup");
@@ -1184,6 +1256,27 @@
         if (resetBtn) {
           resetBtn.addEventListener("click", resetWheel);
         }
+
+        // Legend Click Filter
+        const legendFilters = document.querySelectorAll("#wheelLegend .legend-filter");
+        legendFilters.forEach(pill => {
+          pill.addEventListener("click", () => {
+            legendFilters.forEach(p => p.classList.remove("active"));
+            pill.classList.add("active");
+            const group = pill.dataset.group;
+            svg.querySelectorAll("g[data-group]").forEach(g => {
+              const wedge = g.querySelector(".wedge");
+              if (!wedge) return;
+              if (group === "all" || g.dataset.group === group) {
+                wedge.style.opacity = "1";
+                g.style.pointerEvents = "auto";
+              } else {
+                wedge.style.opacity = "0.2";
+                g.style.pointerEvents = "none";
+              }
+            });
+          });
+        });
 
         buildWheel();
 
