@@ -120,7 +120,7 @@
 
           <div class="spotlight-title-wrap">
             <h3 class="spotlight-title" id="homeSpotlightTitle"><?= htmlspecialchars($activeSpotlight['ingredient_name'] ?? 'Cocoa Butter') ?></h3>
-            <span class="spotlight-level-tag" id="homeSpotlightLevel"><?= !empty($activeSpotlight['level_number']) ? 'L' . (int)$activeSpotlight['level_number'] : 'L1' ?></span>
+            
           </div>
 
           <p class="spotlight-desc" id="homeSpotlightDesc"><?= htmlspecialchars($activeSpotlight['short_desc'] ?? 'The golden fat that gives chocolate its smoothness and soul.') ?></p>
@@ -141,7 +141,7 @@
               <span>Explore Scientific Profile</span>
               <span class="link-arrow">→</span>
             </a>
-            <span class="spotlight-dossier-pill">Formulation Dossier</span>
+            
           </div>
         </div>
       </div>
@@ -311,14 +311,6 @@
           </div>
         </div>
 
-        <!-- 5. Techniques → Palette knife, spatula & bench scraper (bottom-left) -->
-        <div class="table-hotspot" style="top: 82%; left: 28%;" onclick="openTableModal('techniques')">
-          <div class="hotspot-pin">
-            <span class="hotspot-dot" style="pointer-events: none;"></span>
-            <span style="pointer-events: none;">Techniques</span>
-          </div>
-        </div>
-
         <!-- 6. Work With Us → Collaboration & Consulting (far left) -->
         <div class="table-hotspot" style="top: 58%; left: 10%;" onclick="openTableModal('origins-atlas')">
           <div class="hotspot-pin">
@@ -462,13 +454,14 @@
       'chocolate-lab': {
         badge: '🧪 AI FORMULATION & R&D',
         title: 'The Cacao Lab',
+        highlightsTitle: "WHAT YOU'LL LEARN & CREATE",
         desc: 'Explore chocolate through hands-on masterclasses, recipe development and applied chocolate science.',
         highlights: [
           'Build practical skills, from chocolate-making fundamentals to specialised techniques.',
           'Understand ingredients, processing and the science behind chocolate’s behaviour.',
           'Develop, test and refine recipes into distinctive chocolate products.'
         ],
-        btn1Text: 'Launch Chocolab →',
+        btn1Text: 'Explore Chocolab →',
         btn1Href: 'workshops.php',
         btn2Text: 'Ask CocoaGenius AI',
         btn2Href: 'javascript:toggleAiDrawer()'
@@ -476,6 +469,7 @@
       'recipes-formulations': {
         badge: '🍫 PRO FORMULATIONS',
         title: 'Recipes & Formulations',
+        highlightsTitle: 'INSIDE THE STUDIO',
         desc: 'Explore chocolate recipes, understand ingredient behaviour and discover the techniques behind better results.',
         highlights: [
           'Recipes worth exploring',
@@ -547,7 +541,7 @@
 
       const highlightsHeading = document.getElementById('modal-table-highlights-title');
       if (highlightsHeading) {
-        highlightsHeading.innerText = data.highlightsTitle || '✨ KEY INSIGHTS & TAKEAWAYS';
+        highlightsHeading.innerText = data.highlightsTitle || "WHAT YOU'LL DISCOVER";
       }
 
       const listContainer = document.getElementById('modal-table-list');

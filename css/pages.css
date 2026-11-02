@@ -409,20 +409,24 @@
     min-height: 480px;
     padding: 40px 0 50px 0;
   }
+
   .blog-hero-lux-container {
     padding: 0 20px;
     justify-content: center;
   }
+
   .blog-hero-lux-left {
     max-width: 100%;
     align-items: center;
     text-align: center;
   }
+
   .blog-hero-lux-title {
     text-align: center !important;
     font-size: clamp(32px, 8vw, 44px) !important;
     margin-bottom: 14px !important;
   }
+
   .blog-hero-lux-desc {
     text-align: center !important;
     margin: 0 auto 24px auto !important;
@@ -519,14 +523,13 @@
    ========================================================================== */
 .workshop-hero-lux {
   background-color: #EBD6C3;
-  background-image: 
-    linear-gradient(to right, 
-      rgba(235, 214, 195, 0.84) 0%, 
-      rgba(235, 214, 195, 0.72) 28%, 
-      rgba(235, 214, 195, 0.40) 44%, 
-      rgba(235, 214, 195, 0.10) 56%, 
-      rgba(235, 214, 195, 0) 66%
-    ),
+  background-image:
+    linear-gradient(to right,
+      rgba(235, 214, 195, 0.84) 0%,
+      rgba(235, 214, 195, 0.72) 28%,
+      rgba(235, 214, 195, 0.40) 44%,
+      rgba(235, 214, 195, 0.10) 56%,
+      rgba(235, 214, 195, 0) 66%),
     url('../assets/workshop_hero.png');
   background-position: center bottom;
   background-repeat: no-repeat;
@@ -782,14 +785,13 @@
 html.theme-midnight-gold .workshop-hero-lux,
 [data-theme="dark"] .workshop-hero-lux {
   background-color: #0E0A08;
-  background-image: 
-    linear-gradient(to right, 
-      rgba(14, 10, 8, 0.85) 0%, 
-      rgba(14, 10, 8, 0.74) 28%, 
-      rgba(14, 10, 8, 0.42) 44%, 
-      rgba(14, 10, 8, 0.10) 56%, 
-      rgba(14, 10, 8, 0) 66%
-    ),
+  background-image:
+    linear-gradient(to right,
+      rgba(14, 10, 8, 0.85) 0%,
+      rgba(14, 10, 8, 0.74) 28%,
+      rgba(14, 10, 8, 0.42) 44%,
+      rgba(14, 10, 8, 0.10) 56%,
+      rgba(14, 10, 8, 0) 66%),
     url('../assets/workshop_hero.png');
   color: #FAF6EF;
   border-bottom: 1px solid rgba(199, 166, 106, 0.15);
@@ -868,32 +870,40 @@ html.theme-midnight-gold .stage-chip,
     padding: 48px 20px 40px;
     min-height: auto;
   }
+
   .workshop-hero-container {
     grid-template-columns: 1fr;
     gap: 28px;
   }
+
   .workshop-hero-left {
     max-width: 100%;
     text-align: center;
   }
+
   .workshop-hero-desc {
     margin: 0 auto 28px;
   }
+
   .workshop-hero-badges {
     max-width: 580px;
     margin: 0 auto 32px;
   }
+
   .workshop-badge-icon {
     justify-content: center;
   }
+
   .workshop-hero-actions {
     justify-content: center;
   }
+
   .workshop-hero-showcase-wrap {
     min-height: auto;
     pointer-events: auto;
     order: 2;
   }
+
   .workshop-hero-mobile-photo {
     display: block;
     width: 100%;
@@ -901,6 +911,7 @@ html.theme-midnight-gold .stage-chip,
     border-radius: 14px;
     box-shadow: 0 12px 30px rgba(11, 28, 18, 0.15);
   }
+
   .workshop-hero-roadmap-bar {
     border-radius: 20px;
     flex-direction: column;
@@ -910,6 +921,7 @@ html.theme-midnight-gold .stage-chip,
     padding: 16px;
     margin-top: 24px;
   }
+
   .workshops-stages-track {
     justify-content: center;
   }
@@ -919,26 +931,32 @@ html.theme-midnight-gold .stage-chip,
   .workshop-hero-lux {
     padding: 36px 16px 36px;
   }
+
   .workshop-hero-badges {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px 12px;
   }
+
   .workshop-badge-item {
     align-items: center;
     text-align: center;
   }
+
   .workshop-hero-actions {
     flex-direction: column;
     width: 100%;
   }
+
   .workshop-hero-actions a {
     width: 100%;
     justify-content: center;
   }
+
   .stage-chip {
     font-size: 10px;
     padding: 3px 7px;
   }
+
   .stage-arrow {
     display: none;
   }
@@ -1236,6 +1254,7 @@ html.theme-midnight-gold .stage-chip,
     grid-template-columns: 1fr;
     gap: 32px;
   }
+
   .about-sidebar-col {
     position: static;
     max-width: 360px;
@@ -1803,8 +1822,17 @@ html.theme-midnight-gold .stage-chip,
 }
 
 @keyframes spotlightPulseGlow {
-  0%, 100% { opacity: 0.5; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.25); }
+
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
 }
 
 .spotlight-title-wrap {
@@ -1914,13 +1942,7 @@ html.theme-midnight-gold .stage-chip,
   transform: translateX(4px);
 }
 
-.spotlight-dossier-pill {
-  font-size: 10px;
-  font-weight: 600;
-  color: #8c4c0b;
-  letter-spacing: 0.4px;
-  opacity: 0.85;
-}
+
 
 .split-hero-img-wrapper {
   position: relative;
@@ -3094,15 +3116,19 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
   .home-trust-inner {
     width: 96%;
   }
+
   .home-trust-card {
     padding: 16px 20px 14px;
   }
+
   .trust-col {
     padding: 2px 8px;
   }
+
   .trust-stat-title {
     font-size: 11.5px;
   }
+
   .trust-stat-subtitle {
     font-size: 7.5px;
     letter-spacing: 0.7px;
@@ -3114,16 +3140,20 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
     grid-template-columns: repeat(3, 1fr);
     row-gap: 16px;
   }
+
   .trust-col:not(:last-child)::after {
     display: none;
   }
+
   .trust-col {
     padding: 6px 8px;
     border-right: 1px solid rgba(184, 134, 11, 0.16);
   }
+
   .trust-col:nth-child(3n) {
     border-right: none;
   }
+
   .trust-col:nth-child(-n+3) {
     border-bottom: 1px solid rgba(184, 134, 11, 0.16);
     padding-bottom: 12px;
@@ -3134,27 +3164,33 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
   .home-trust-strip-sec {
     padding: 8px 12px 12px;
   }
+
   .home-trust-card {
     padding: 14px 12px 12px;
     border-radius: 12px;
   }
+
   .trust-pillars-grid {
     grid-template-columns: repeat(2, 1fr);
     row-gap: 12px;
   }
+
   .trust-col {
     border-right: none !important;
     border-bottom: 1px solid rgba(184, 134, 11, 0.14) !important;
     padding-bottom: 10px !important;
   }
+
   .trust-col:nth-child(odd) {
     border-right: 1px solid rgba(184, 134, 11, 0.14) !important;
   }
+
   .trust-col:last-child {
     grid-column: span 2;
     border-bottom: none !important;
     border-right: none !important;
   }
+
   .trust-stat-subtitle {
     white-space: normal;
     text-align: center;
