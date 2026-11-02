@@ -839,7 +839,11 @@
         </p>
       </div>
       
-      <div class="grid-3" id="home-workshops" style="margin-top: 40px;">
+      <div class="mobile-swipe-indicator">
+        <span>Swipe to explore workshops</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="grid-3" id="home-workshops" style="margin-top: 24px;">
         <?php
           require_once 'includes/workshops_data.php';
           foreach ($workshops as $w) {
@@ -905,6 +909,10 @@
             <h2>A tasting, one step at a time</h2>
           </div>
           <p>Move through the stages at your own pace. You can skip a step, revisit it, or stay with one sensation.</p>
+        </div>
+        <div class="mobile-swipe-indicator">
+          <span>Swipe to explore tasting steps</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
 
         <div class="steps">
@@ -1384,7 +1392,11 @@
       <div class="divider" style="margin:16px auto 32px;"></div>
       <p class="section-subtitle" style="max-width:560px; margin:0 auto 48px; color:var(--brown-light);">Deep-dives into cocoa powder pH, tempering crystal diagnostics, lecithin emulsion science, and bean-to-bar formulation.</p>
       
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:30px; text-align:left;">
+      <div class="mobile-swipe-indicator">
+        <span>Swipe to read articles</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="home-journal-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:30px; text-align:left;">
         <?php
           require_once __DIR__ . '/includes/db.php';
           require_once __DIR__ . '/includes/blog-cache.php';
