@@ -547,3 +547,69 @@ p {
   }
 }
 
+
+
+/* ==========================================================================
+   GLOBAL MOBILE SPACING NORMALIZATION & TEXT CLAMPING UTILITIES
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  /* Override double padding gaps on page containers */
+  #page-about,
+  #page-workshops,
+  #page-gallery,
+  #page-contact,
+  #page-faq {
+    padding-top: 54px !important;
+  }
+
+  /* Standardized section spacing on mobile */
+  .section {
+    padding: 32px 16px !important;
+  }
+
+  /* Compact divider lines */
+  .divider {
+    margin: 12px auto 20px !important;
+  }
+
+  /* Text hiding and progressive clamping utilities */
+  .mobile-hide-text {
+    display: none !important;
+  }
+
+  .mobile-clamp-1 {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .mobile-clamp-2 {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .mobile-clamp-3 {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .mobile-scroll-x {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  .mobile-scroll-x::-webkit-scrollbar {
+    display: none !important;
+  }
+}

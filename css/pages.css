@@ -3871,3 +3871,122 @@ textarea {
     max-width: 1560px;
   }
 }
+
+/* ==========================================================================
+   PAGES POLISH: ABOUT DISCLOSURE, WORKSHOPS & RECIPES
+   ========================================================================== */
+
+/* About Page Progressive Disclosure */
+.about-expand-btn-wrap {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* 1. About Layout: Place Profile Card right after the Lead */
+  .about-layout {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .about-story-col {
+    order: 1 !important;
+  }
+  .about-sidebar-col {
+    order: 2 !important;
+    margin: 20px 0 !important;
+  }
+  .about-story-expanded-wrapper {
+    order: 3 !important;
+  }
+
+  /* Collapsible 5 Chapters */
+  .about-story-collapsible {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  }
+  .about-story-collapsible.expanded {
+    max-height: 5000px;
+    opacity: 1;
+    margin-top: 16px;
+  }
+
+  .about-expand-btn-wrap {
+    display: flex !important;
+    justify-content: center !important;
+    margin: 16px 0 24px !important;
+  }
+  .about-expand-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: rgba(212, 175, 55, 0.12) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    color: var(--accent, #966020) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.6px !important;
+    padding: 10px 20px !important;
+    border-radius: 30px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+  .about-expand-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* 2. Workshops Cards: Clamp to 2 bullets on mobile */
+  .workshop-card-bullets li:nth-child(n+3) {
+    display: none !important;
+  }
+  .ai-class-insight {
+    padding: 12px 14px !important;
+    margin-bottom: 20px !important;
+  }
+  .workshop-hero-lux {
+    padding: 24px 16px 20px !important;
+    min-height: auto !important;
+  }
+  .workshop-hero-badges {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* 3. Recipes / Gallery Page Hero */
+  .page-hero.recipes-page-hero {
+    padding: 24px 16px 20px !important;
+  }
+  .ai-recipe-suggestion {
+    padding: 18px 16px !important;
+    margin-bottom: 24px !important;
+    border-radius: 16px !important;
+  }
+}
+
+
+/* Ensure #aboutStoryCollapsible is block on desktop */
+#aboutStoryCollapsible {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  /* Hide chapters by default on mobile so profile card is prominent */
+  #aboutStoryCollapsible {
+    display: none;
+  }
+  #aboutStoryCollapsible.expanded {
+    display: block !important;
+  }
+  .about-layout {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .about-sidebar-col {
+    order: 1 !important;
+    margin: 10px 0 24px !important;
+  }
+  .about-story-col {
+    order: 2 !important;
+  }
+}

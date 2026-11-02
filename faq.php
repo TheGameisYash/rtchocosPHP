@@ -49,11 +49,12 @@
           if (empty($faqs)) continue;
   ?>
   
-  <section style="background: <?php echo ($catKey === 'workshops' || $catKey === 'shipping') ? 'var(--green-50)' : 'var(--cream)'; ?>;">
-    <div class="section" style="text-align:center;">
-      <div class="section-label"><?php echo htmlspecialchars($catLabel); ?></div>
-      <h2 class="section-title"><?php echo htmlspecialchars($catLabel); ?></h2>
-      <div class="divider" style="margin:16px auto 32px;"></div>
+  <section class="faq-category-section" style="background: <?php echo ($catKey === 'workshops' || $catKey === 'shipping') ? 'var(--green-50)' : 'var(--cream)'; ?>; padding: 24px 0 20px;">
+    <div style="max-width:820px; margin:0 auto; padding: 0 16px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+        <span style="width:4px; height:20px; background:var(--accent); border-radius:2px; display:inline-block;"></span>
+        <h2 style="font-family:'Playfair Display',serif; font-size:clamp(19px, 4vw, 24px); margin:0; color:var(--text-heading);"><?php echo htmlspecialchars($catLabel); ?></h2>
+      </div>
       
       <div style="max-width:800px; margin:0 auto; text-align:left;">
         <?php foreach ($faqs as $faq): 

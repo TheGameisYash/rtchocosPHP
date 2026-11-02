@@ -589,20 +589,23 @@
         <div class="product-action-row">
           <div class="product-qty-stepper" style="display:flex; align-items:center; gap:0; border:1px solid rgba(59,42,34,0.15); border-radius:8px; overflow:hidden;">
             <button onclick="updateQty(-1)" style="width:44px; height:44px; min-width:44px; min-height:44px; border:none; background:var(--cream); cursor:pointer; font-size:20px; font-weight:600; color:var(--brown); display:inline-flex; align-items:center; justify-content:center;">−</button>
-            <input id="qty-input" type="number" value="<?php echo $defaultQty; ?>" min="<?php echo ($prodStoreMode === 'bulk') ? $numericMOQ : 1; ?>" max="<?php echo (!empty($product['stock_quantity']) && $product['stock_quantity'] > 0) ? $product['stock_quantity'] : 9999; ?>" style="width:60px; height:44px; border:none; text-align:center; font-family:'Jost',sans-serif; font-size:16px; font-weight:600; color:var(--brown); outline:none;">
+            <input id="qty-input" type="number" value="<?php echo $defaultQty; ?>" min="<?php echo ($prodStoreMode === 'bulk') ? $numericMOQ : 1; ?>" max="<?php echo max(5000, (int)($product['stock_quantity'] ?? 5000)); ?>" style="width:60px; height:44px; border:none; text-align:center; font-family:'Jost',sans-serif; font-size:16px; font-weight:600; color:var(--brown); outline:none;">
             <button onclick="updateQty(1)" style="width:44px; height:44px; min-width:44px; min-height:44px; border:none; background:var(--cream); cursor:pointer; font-size:20px; font-weight:600; color:var(--brown); display:inline-flex; align-items:center; justify-content:center;">+</button>
           </div>
 
           <?php if ($prodStoreMode === 'bulk'): ?>
-            <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $prodBulkPhone); ?>?text=Hello%20RT%20Chocos!%20I%20have%20a%20bulk%20enquiry%20for%20<?php echo urlencode($product['name']); ?>%20(Requested%20Qty:%20<?php echo $defaultQty; ?>%20Units)." target="_blank" class="btn-primary" style="text-decoration:none; padding:11px 22px; display:inline-flex; align-items:center; gap:6px; background:#25D366; border-color:#25D366; color:#FFFFFF; font-weight:700;">
-              💬 Instant WhatsApp Quote &rarr;
+            <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $prodBulkPhone); ?>?text=Hello%20RT%20Chocos!%20I%20have%20a%20bulk%20enquiry%20for%20<?php echo urlencode($product['name']); ?>%20(Requested%20Qty:%20<?php echo $defaultQty; ?>%20Units)." target="_blank" class="btn-primary product-primary-bulk-cta" style="text-decoration:none; padding:13px 22px; display:inline-flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg, #1b4d2e 0%, #0d2617 100%); border:1px solid #d4af37; color:#FFFFFF; font-weight:700; width:100%; border-radius:8px;">
+              <span>💬 Instant WhatsApp Quote</span>
+              <span>&rarr;</span>
             </a>
-            <button class="btn-outline" onclick="addToCart(<?php echo (int)($product['id'] ?? 0); ?>)" style="padding:11px 20px;">
-              Add Wholesale Qty to Cart
-            </button>
-            <a href="<?php echo $pathPrefix; ?>shop.php#bulk-enquiry" class="btn-outline" style="text-decoration:none; padding:11px 18px;">
-              Request Custom RFP Form &rarr;
-            </a>
+            <div class="product-secondary-actions-row" style="display:flex; gap:10px; width:100%;">
+              <button class="btn-outline product-secondary-bulk-btn" onclick="addToCart(<?php echo (int)($product['id'] ?? 0); ?>)" style="flex:1; padding:11px 10px; font-size:12px; font-weight:600; text-align:center;">
+                Add to Cart
+              </button>
+              <a href="<?php echo $pathPrefix; ?>shop.php#bulk-enquiry" class="btn-outline product-secondary-bulk-btn" style="flex:1; text-decoration:none; padding:11px 10px; font-size:12px; font-weight:600; text-align:center; display:inline-flex; align-items:center; justify-content:center;">
+                Custom RFP &rarr;
+              </a>
+            </div>
           <?php else: ?>
             <button class="btn-primary" onclick="addToCart(<?php echo (int)($product['id'] ?? 0); ?>)" style="padding:10px 28px;">
               Add to Cart
@@ -630,7 +633,7 @@
         <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(59,42,34,0.08);">
           <h3 style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; color:var(--brown); margin-bottom:12px;">About This Creation</h3>
           <div style="font-family:'Jost',sans-serif; font-size:14.5px; line-height:1.8; color:var(--brown-light); font-weight:300;">
-            <?php echo nl2br(htmlspecialchars($product['long_description'])); ?>
+            <?php $cleanDesc = preg_replace('/(\r?\n\s*){2,}/', "\n\n", trim($product['long_description'])); echo nl2br(htmlspecialchars($cleanDesc)); ?>
           </div>
         </div>
         <?php endif; ?>

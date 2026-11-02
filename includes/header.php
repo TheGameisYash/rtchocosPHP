@@ -488,8 +488,18 @@ if (!empty(trim($customHeadScripts))) {
         </svg>
       </button>
 
-      <!-- Work with Us CTA -->
-      <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="signin-join-btn work-with-us-btn" title="Work With RT Chocos — Consulting, R&D & Workshops">
+      <!-- Cart Button with Dynamic Badge -->
+      <a href="<?php echo $pathPrefix; ?>cart.php" class="nav-cart-btn" aria-label="Shopping Cart" title="View Cart">
+        <svg class="cart-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <span id="header-cart-count" class="cart-count-badge" style="<?php echo ($cartCount > 0) ? '' : 'display:none;'; ?>"><?php echo (int)$cartCount; ?></span>
+      </a>
+
+      <!-- Work with Us CTA (Desktop Only) -->
+      <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="signin-join-btn work-with-us-btn header-desktop-cta" title="Work With RT Chocos — Consulting, R&D & Workshops">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
           <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
@@ -504,6 +514,19 @@ if (!empty(trim($customHeadScripts))) {
   </div>
 
   <nav id="mobile-menu" aria-label="Mobile navigation">
+    <!-- Mobile Drawer Top Bar with Close Button -->
+    <div class="mobile-menu-header">
+      <div class="mobile-menu-title-wrap">
+        <span class="mobile-menu-tag">RT CHOCOS</span>
+        <span class="mobile-menu-title">NAVIGATION</span>
+      </div>
+      <button type="button" class="mobile-menu-close-btn" onclick="toggleMobileMenu(true)" aria-label="Close navigation menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
     <!-- Mobile Explore Group -->
     <div class="mobile-nav-group">
       <div class="mobile-nav-group-title">

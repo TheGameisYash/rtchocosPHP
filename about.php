@@ -30,7 +30,7 @@
       
       <!-- Main Story Column -->
       <div class="about-story-col">
-        <div class="section-label">About Me</div>
+        <div class="section-label about-section-label">Founder Story</div>
         <h2 class="about-title">
           I Never Planned to Fall<br>in Love with Chocolate.
         </h2>
@@ -52,6 +52,15 @@
           That little box of chocolates didn't just change my career — it changed how I see creativity, science, and what it means to build something meaningful.
         </blockquote>
 
+        <!-- Progressive Disclosure: 5 Chapters -->
+        <div class="about-expand-btn-wrap">
+          <button type="button" id="toggleStoryBtn" class="about-expand-btn" onclick="toggleAboutStory()">
+            <span class="btn-text">Read Aarti's Full 13-Year Journey (5 Chapters)</span>
+            <span class="btn-icon">▾</span>
+          </button>
+        </div>
+
+        <div id="aboutStoryCollapsible" class="about-story-collapsible">
         <!-- Chapter 1 -->
         <div class="about-chapter">
           <h3>The beginning — Ludhiana</h3>
@@ -108,6 +117,7 @@
             I share everything I know, openly and precisely. And I mean it when I say this is a two-way conversation — your questions, your experiments, your perspectives genuinely shape how I think and what I explore next. The best learning has always worked that way.
           </p>
         </div>
+        </div><!-- /about-story-collapsible -->
 
         <!-- Closing Philosophy Card -->
         <div class="about-philosophy-simple">
@@ -172,6 +182,30 @@
     </div>
   </div>
 </div>
+
+<script>
+function toggleAboutStory() {
+  var el = document.getElementById('aboutStoryCollapsible');
+  var btn = document.getElementById('toggleStoryBtn');
+  if (!el || !btn) return;
+  var isExpanded = el.classList.contains('expanded') || (el.style.display === 'block');
+  if (isExpanded) {
+    el.classList.remove('expanded');
+    el.style.display = 'none';
+    var textEl = btn.querySelector('.btn-text');
+    var iconEl = btn.querySelector('.btn-icon');
+    if (textEl) textEl.textContent = "Read Aarti's Full 13-Year Journey (5 Chapters)";
+    if (iconEl) iconEl.textContent = "▾";
+  } else {
+    el.classList.add('expanded');
+    el.style.display = 'block';
+    var textEl = btn.querySelector('.btn-text');
+    var iconEl = btn.querySelector('.btn-icon');
+    if (textEl) textEl.textContent = "Collapse Aarti's Story";
+    if (iconEl) iconEl.textContent = "▴";
+  }
+}
+</script>
 
 <?php
   include $pathPrefix . 'includes/footer.php';

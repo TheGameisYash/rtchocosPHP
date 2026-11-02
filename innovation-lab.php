@@ -51,7 +51,8 @@ try {
     $heroEyebrow = trim((string)get_site_setting('lab_hero_eyebrow', '')) ?: 'IDEAS · EXPERIMENTS · REAL TASTE';
     $heroTitle = trim((string)get_site_setting('lab_hero_title', '')) ?: 'Innovation Lab';
     $heroSubtitle = trim((string)get_site_setting('lab_hero_subtitle', '')) ?: 'Our creative kitchen where we test fresh ideas, local ingredients, and better ways to make honest chocolate.';
-    $heroCtaText = trim((string)get_site_setting('lab_hero_cta_text', '')) ?: 'STEP INTO THE LAB →';
+    $heroCtaText = trim((string)get_site_setting('lab_hero_cta_text', '')) ?: 'STEP INTO THE LAB';
+    $heroCtaText = preg_replace('/(\s*[→→]|\s*&rarr;)+$/u', '', $heroCtaText);
     $heroCtaLink = trim((string)get_site_setting('lab_hero_cta_link', '')) ?: '#currently-in-lab';
     $stickyNoteText = trim((string)get_site_setting('lab_sticky_note', '')) ?: "Better Ingredients\nBigger Questions\nBrighter Chocolate";
     $heroImage = getSafeLabImg(get_site_setting('lab_hero_image', ''), 'assets/images/lab-hero.jpg');
@@ -69,7 +70,8 @@ try {
     $futureEyebrow = trim((string)get_site_setting('lab_future_eyebrow', '')) ?: 'BIGGER DREAMS. BETTER CHOCOLATE.';
     $futureHeading = trim((string)get_site_setting('lab_future_heading', '')) ?: 'Future of Chocolate';
     $futureText = trim((string)get_site_setting('lab_future_text', '')) ?: 'Exploring sustainable ideas that support cocoa farmers, care for our soil, and bring clean, honest chocolate to everyone.';
-    $futureCtaText = trim((string)get_site_setting('lab_future_cta_text', '')) ?: 'EXPLORE FUTURE IDEAS →';
+    $futureCtaText = trim((string)get_site_setting('lab_future_cta_text', '')) ?: 'EXPLORE FUTURE IDEAS';
+    $futureCtaText = preg_replace('/(\s*[→→]|\s*&rarr;)+$/u', '', $futureCtaText);
     $futureCtaLink = trim((string)get_site_setting('lab_future_cta_link', '')) ?: '#future-ideas';
     $futureImage = getSafeLabImg(get_site_setting('lab_future_image', ''), 'assets/images/lab-future.jpg');
 

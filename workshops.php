@@ -73,7 +73,9 @@
           <div class="workshop-badge-item">
             <div class="workshop-badge-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                <path d="M4 11a8 8 0 0 0 16 0H4z"></path>
+                <path d="M12 2v4"></path>
+                <line x1="2" y1="20" x2="22" y2="20"></line>
               </svg>
             </div>
             <span class="workshop-badge-label">Hands-on<br>Studio Practice</span>

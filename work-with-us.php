@@ -2184,6 +2184,85 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
     padding: 60px 20px !important;
   }
 }
+
+/* --- WORK WITH US MOBILE CONTRAST & ORDER POLISH --- */
+@media (max-width: 768px) {
+  #page-wwu .wwu-hero {
+    padding: 40px 16px 30px !important;
+    min-height: auto !important;
+  }
+  /* High contrast dark backing card for hero text */
+  #page-wwu .wwu-hero-text {
+    background: rgba(14, 28, 20, 0.90) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    padding: 22px 18px !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+  }
+  #page-wwu .wwu-hero h1 {
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+    font-size: 32px !important;
+  }
+  #page-wwu .wwu-hero-sublead {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: none !important;
+    font-size: 13.5px !important;
+    margin-bottom: 16px !important;
+  }
+  /* Reorder: CTA buttons appear immediately below hero text */
+  #page-wwu .wwu-hero-actions-wrap {
+    order: 2 !important;
+    margin-bottom: 20px !important;
+    width: 100% !important;
+  }
+  #page-wwu .wwu-hero-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  #page-wwu .wwu-hero-pillars-grid {
+    order: 3 !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  #page-wwu .hero-pillar-card p {
+    display: none !important; /* Hide secondary text on mobile cards */
+  }
+
+  /* Eliminate awkward <br> inside client pill tags */
+  #page-wwu .wwu-eco-label br {
+    display: none !important;
+  }
+  #page-wwu .wwu-eco-label {
+    white-space: normal !important;
+    display: block !important;
+    line-height: 1.3 !important;
+  }
+}
+
+
+@media (max-width: 768px) {
+  #page-wwu .hero-pillar-card {
+    padding: 10px 8px !important;
+  }
+  #page-wwu .card-icon-tag {
+    font-size: 8px !important;
+    letter-spacing: 0.6px !important;
+    white-space: normal !important;
+    line-height: 1.2 !important;
+    word-break: break-word !important;
+  }
+  #page-wwu .hero-pillar-card strong {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+  #page-wwu .hero-pillar-card .card-arrow {
+    font-size: 11px !important;
+  }
+}
+
 </style>
 
 <!-- ================================================================
@@ -2383,203 +2462,6 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="wwuVidSoundIcon" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
         </button>
       </div>
-    </div>
-  </section>
-
-
-  <!-- ====== 2. HOW WE COLLABORATE & WHAT WE HELP WITH ====== -->
-  <section class="wwu-collab-section" id="how-we-collaborate">
-    <div class="wwu-collab-container">
-      
-      <!-- TOP PART: HOW WE COLLABORATE PROCESS JOURNEY -->
-      <div class="wwu-collab-top-row">
-        <!-- Left Side: Title & Statement -->
-        <div class="wwu-collab-intro">
-          <span class="wwu-collab-tag">HOW WE COLLABORATE</span>
-          <h2 class="wwu-collab-heading">A thoughtful journey<br>from question to impact.</h2>
-          <div class="wwu-collab-gold-dash"></div>
-          <p class="wwu-collab-subtext">Every collaboration is unique, but our approach is always rooted in curiosity, rigour and clarity.</p>
-        </div>
-
-        <!-- Right Side: 6-Step Horizontal Process Flow -->
-        <div class="wwu-process-track-wrap">
-          <div class="wwu-process-line"></div>
-          <div class="wwu-process-steps">
-            
-            <!-- Step 01 -->
-            <div class="wwu-step-node">
-              <span class="wwu-step-num">01</span>
-              <div class="wwu-step-badge">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-              </div>
-              <h4 class="wwu-step-title">CONNECT</h4>
-              <p class="wwu-step-desc">We understand your challenge, objectives and context.</p>
-            </div>
-
-            <!-- Step 02 -->
-            <div class="wwu-step-node">
-              <span class="wwu-step-num">02</span>
-              <div class="wwu-step-badge">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                </svg>
-              </div>
-              <h4 class="wwu-step-title">EXPLORE</h4>
-              <p class="wwu-step-desc">We dive deep into ingredients, data, formulations and constraints.</p>
-            </div>
-
-            <!-- Step 03 -->
-            <div class="wwu-step-node">
-              <span class="wwu-step-num">03</span>
-              <div class="wwu-step-badge">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/>
-                </svg>
-              </div>
-              <h4 class="wwu-step-title">EXPERIMENT</h4>
-              <p class="wwu-step-desc">We test ideas, challenge assumptions and create possibilities.</p>
-            </div>
-
-            <!-- Step 04 -->
-            <div class="wwu-step-node">
-              <span class="wwu-step-num">04</span>
-              <div class="wwu-step-badge">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
-                  <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
-                  <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
-                  <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
-                </svg>
-              </div>
-              <h4 class="wwu-step-title">REFINE</h4>
-              <p class="wwu-step-desc">We analyse results, refine approaches and improve what matters.</p>
-            </div>
-
-            <!-- Step 05 -->
-            <div class="wwu-step-node">
-              <span class="wwu-step-num">05</span>
-              <div class="wwu-step-badge">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-                  <path d="m9 14 2 2 4-4"/>
-                </svg>
-              </div>
-              <h4 class="wwu-step-title">APPLY</h4>
-              <p class="wwu-step-desc">We translate learning into practical, scalable solutions.</p>
-            </div>
-
-            <!-- Step 06 -->
-            <div class="wwu-step-node">
-              <span class="wwu-step-num">06</span>
-              <div class="wwu-step-badge">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-                </svg>
-              </div>
-              <h4 class="wwu-step-title">EVOLVE</h4>
-              <p class="wwu-step-desc">We continue learning together and create long-term impact.</p>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- MIDDLE DIVIDER: WHAT WE HELP WITH -->
-      <div class="wwu-help-divider-wrap">
-        <span class="wwu-help-rule-line"></span>
-        <span class="wwu-help-tag">WHAT WE HELP WITH</span>
-        <span class="wwu-help-rule-line"></span>
-      </div>
-
-      <!-- BOTTOM PART: 6 CAPABILITY CARDS WITH SLEEK VERTICAL DIVIDERS -->
-      <div class="wwu-help-grid">
-        
-        <!-- Cap 1: Product Development -->
-        <div class="wwu-help-col">
-          <div class="wwu-help-icon">
-            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 4C11 8 7 13.5 7 19c0 5 4 9 9 9s9-4 9-9c0-5.5-4-11-9-15z"/>
-              <path d="M16 4c-2.5 4-4 8.5-4 15 0 4.5 1.5 7.5 4 9"/>
-              <path d="M16 4c2.5 4 4 8.5 4 15 0 4.5-1.5 7.5-4 9"/>
-              <path d="M16 4V2"/>
-            </svg>
-          </div>
-          <h4>PRODUCT DEVELOPMENT</h4>
-          <p>Creating innovative chocolate products that are delightful, differentiated and market-ready.</p>
-        </div>
-
-        <!-- Cap 2: Formulation & Ingredient Innovation -->
-        <div class="wwu-help-col">
-          <div class="wwu-help-icon">
-            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="5" y="6" width="10" height="9" rx="1.5"/>
-              <rect x="17" y="6" width="10" height="9" rx="1.5"/>
-              <rect x="5" y="17" width="10" height="9" rx="1.5"/>
-              <rect x="17" y="17" width="10" height="9" rx="1.5"/>
-            </svg>
-          </div>
-          <h4>FORMULATION &amp; INGREDIENT INNOVATION</h4>
-          <p>Better ingredients. Better combinations. Better outcomes.</p>
-        </div>
-
-        <!-- Cap 3: Technology & Process -->
-        <div class="wwu-help-col">
-          <div class="wwu-help-icon">
-            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="16" cy="16" r="4"/>
-              <path d="M16 3v3M16 26v3M3 16h3M26 16h3M6.8 6.8l2.1 2.1M23.1 23.1l2.1 2.1M6.8 25.2l2.1-2.1M23.1 8.9l2.1-2.1"/>
-            </svg>
-          </div>
-          <h4>TECHNOLOGY &amp; PROCESS</h4>
-          <p>Improving processes for consistency, scalability and efficiency.</p>
-        </div>
-
-        <!-- Cap 4: Quality & Troubleshooting -->
-        <div class="wwu-help-col">
-          <div class="wwu-help-icon">
-            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 26V18M13 26V12M20 26V15M27 26V8"/>
-              <path d="M6 15l7-6 7 4 7-8"/>
-              <path d="M23 5h4v4"/>
-            </svg>
-          </div>
-          <h4>QUALITY &amp; TROUBLESHOOTING</h4>
-          <p>Solving challenges at every stage to ensure quality and stability.</p>
-        </div>
-
-        <!-- Cap 5: Research & Experimentation -->
-        <div class="wwu-help-col">
-          <div class="wwu-help-icon">
-            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 4h11l7 7v17H8z"/>
-              <polyline points="19 4 19 11 26 11"/>
-              <line x1="12" y1="16" x2="20" y2="16"/>
-              <line x1="12" y1="20" x2="20" y2="20"/>
-              <line x1="12" y1="24" x2="16" y2="24"/>
-            </svg>
-          </div>
-          <h4>RESEARCH &amp; EXPERIMENTATION</h4>
-          <p>Evidence-led exploration to answer questions that matter.</p>
-        </div>
-
-        <!-- Cap 6: Knowledge & Training -->
-        <div class="wwu-help-col">
-          <div class="wwu-help-icon">
-            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 4a9 9 0 0 0-9 9c0 3.2 1.7 6 4.3 7.5V23a2 2 0 0 0 2 2h5.4a2 2 0 0 0 2-2v-2.5C23.3 19 25 16.2 25 13a9 9 0 0 0-9-9z"/>
-              <line x1="13" y1="28" x2="19" y2="28"/>
-            </svg>
-          </div>
-          <h4>KNOWLEDGE &amp; TRAINING</h4>
-          <p>Workshops, training and knowledge sessions for teams who want to grow.</p>
-        </div>
-
-      </div>
-
     </div>
   </section>
 
@@ -2926,7 +2808,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
               <path d="M9 26v-4M15 26v-4M21 26v-4"/>
             </svg>
           </div>
-          <span class="wwu-eco-label">BRANDS &amp;<br>MANUFACTURERS</span>
+          <span class="wwu-eco-label">BRANDS &amp; MANUFACTURERS</span>
         </div>
 
         <!-- 2. Ingredient Companies -->
@@ -2937,7 +2819,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
               <path d="M6 26c4-6 10-12 16-15"/>
             </svg>
           </div>
-          <span class="wwu-eco-label">INGREDIENT<br>COMPANIES</span>
+          <span class="wwu-eco-label">INGREDIENT COMPANIES</span>
         </div>
 
         <!-- 3. R&D & Product Developers -->
@@ -2951,7 +2833,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
               <path d="M22 6l3-2M23 10l3 1"/>
             </svg>
           </div>
-          <span class="wwu-eco-label">R&amp;D &amp; PRODUCT<br>DEVELOPERS</span>
+          <span class="wwu-eco-label">R&amp;D &amp; PRODUCT DEVELOPERS</span>
         </div>
 
         <!-- 4. Chocolatiers & Chefs -->
@@ -2964,7 +2846,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
               <path d="M6 26l3-3"/>
             </svg>
           </div>
-          <span class="wwu-eco-label">CHOCOLATIERS &amp;<br>CHEFS</span>
+          <span class="wwu-eco-label">CHOCOLATIERS &amp; CHEFS</span>
         </div>
 
         <!-- 5. Startups & Founders -->
@@ -2976,7 +2858,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
               <circle cx="19" cy="13" r="1.5"/>
             </svg>
           </div>
-          <span class="wwu-eco-label">STARTUPS &amp;<br>FOUNDERS</span>
+          <span class="wwu-eco-label">STARTUPS &amp; FOUNDERS</span>
         </div>
 
         <!-- 6. Researchers & Academia -->
@@ -2988,7 +2870,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
               <path d="M28 12v9"/>
             </svg>
           </div>
-          <span class="wwu-eco-label">RESEARCHERS &amp;<br>ACADEMIA</span>
+          <span class="wwu-eco-label">RESEARCHERS &amp; ACADEMIA</span>
         </div>
 
         <!-- 7. Hotels & Horeca -->
@@ -3001,7 +2883,7 @@ html:not([class*="theme-"]) #page-wwu .wwu-hero-btn-gold {
               <line x1="4" y1="26" x2="28" y2="26"/>
             </svg>
           </div>
-          <span class="wwu-eco-label">HOTELS &amp;<br>HORECA</span>
+          <span class="wwu-eco-label">HOTELS &amp; HORECA</span>
         </div>
 
       </div>

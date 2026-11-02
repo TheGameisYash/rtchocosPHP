@@ -4270,3 +4270,46 @@ section.lab-ingredient-section:nth-of-type(even) {
     align-items: flex-start;
   }
 }
+
+
+/* ==========================================================================
+   INNOVATION LAB MOBILE REFINEMENTS: TIGHT PADDING & HORIZONTAL FILTER
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  /* 1. Tighten section paddings from 64px to 28px */
+  .lab-section {
+    padding: 28px 16px !important;
+  }
+  .lab-section-header-row {
+    margin-bottom: 18px !important;
+    padding-bottom: 12px !important;
+  }
+  .lab-hero {
+    padding: 30px 16px 24px !important;
+  }
+
+  /* 2. Swipeable Horizontal Ingredient Category Filter Bar */
+  .lab-ingredient-title-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+  .lab-ingredient-pills-wrap {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: calc(100% + 32px) !important;
+    margin: 0 -16px 12px !important;
+    padding: 4px 16px 8px !important;
+    scrollbar-width: none !important;
+  }
+  .lab-ingredient-pills-wrap::-webkit-scrollbar {
+    display: none !important;
+  }
+  .lab-ing-pill {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+}

@@ -72,6 +72,51 @@
   </div>
 </footer>
 
+<!-- Mobile Floating Bottom Navigation Bar (Explore, Boutique, Academy, Lab, Menu) -->
+<nav class="mobile-bottom-nav" aria-label="Mobile Quick Navigation">
+  <a href="<?php echo $pathPrefix ?: 'index.php'; ?>" class="mobile-bottom-item <?php echo (($activeNav ?? '') === 'home') ? 'active' : ''; ?>">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    <span>Explore</span>
+  </a>
+  <a href="<?php echo $pathPrefix; ?>shop.php" class="mobile-bottom-item <?php echo (($activeNav ?? '') === 'shop') ? 'active' : ''; ?>">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2.5"></rect>
+      <line x1="3" y1="9" x2="21" y2="9"></line>
+      <line x1="3" y1="15" x2="21" y2="15"></line>
+      <line x1="9" y1="3" x2="9" y2="21"></line>
+      <line x1="15" y1="3" x2="15" y2="21"></line>
+    </svg>
+    <span>Boutique</span>
+  </a>
+  <a href="<?php echo $pathPrefix; ?>workshops.php" class="mobile-bottom-item <?php echo (($activeNav ?? '') === 'workshops') ? 'active' : ''; ?>">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+      <path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"></path>
+    </svg>
+    <span>Academy</span>
+  </a>
+  <a href="<?php echo $pathPrefix; ?>innovation-lab.php" class="mobile-bottom-item <?php echo (($activeNav ?? '') === 'innovation-lab') ? 'active' : ''; ?>">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"></path>
+      <line x1="8.5" y1="2" x2="15.5" y2="2"></line>
+      <line x1="7" y1="14.5" x2="17" y2="14.5"></line>
+    </svg>
+    <span>Lab</span>
+  </a>
+  <button type="button" class="mobile-bottom-item mobile-bottom-menu-trigger" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+    <span>Menu</span>
+  </button>
+</nav>
+
+
 
 <?php if (get_site_setting('show_theme_tester', '0') === '1'): ?>
 <!-- Theme Switcher Widget -->
