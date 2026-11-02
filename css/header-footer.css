@@ -1926,16 +1926,13 @@ footer.footer-links-section {
   /* Spacer for Perfectly Centered Logo */
   .header-mobile-spacer {
     display: block !important;
-    width: 38px !important;
-    height: 38px !important;
+    width: 78px !important;
+    height: 36px !important;
     flex-shrink: 0 !important;
   }
 
-  /* STRICTLY HIDE Upper Hamburger, Upper Cart, and Desktop CTA on Mobile */
+  /* STRICTLY HIDE Upper Hamburger and Desktop CTA on Mobile */
   .hamburger {
-    display: none !important;
-  }
-  .header-actions .nav-cart-btn {
     display: none !important;
   }
   .header-actions .header-desktop-cta,
@@ -1944,18 +1941,19 @@ footer.footer-links-section {
     display: none !important;
   }
 
-  /* Header Actions on Mobile: Search Button Only */
+  /* Header Actions on Mobile: Search & Cart Button */
   .header-actions {
     display: flex !important;
     align-items: center !important;
-    gap: 0 !important;
+    gap: 6px !important;
   }
-  .search-btn {
+  .search-btn,
+  .nav-cart-btn {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 38px !important;
-    height: 38px !important;
+    width: 36px !important;
+    height: 36px !important;
     border-radius: 50% !important;
     background: rgba(212, 175, 55, 0.08) !important;
     border: 1px solid rgba(212, 175, 55, 0.22) !important;
@@ -1963,10 +1961,17 @@ footer.footer-links-section {
     cursor: pointer !important;
     transition: all 0.2s ease !important;
     padding: 0 !important;
+    position: relative !important;
   }
-  .search-btn:active {
+  .search-btn:active,
+  .nav-cart-btn:active {
     transform: scale(0.92) !important;
     background: rgba(212, 175, 55, 0.22) !important;
+  }
+  .nav-cart-btn svg {
+    stroke: #D4AF37 !important;
+    width: 17px !important;
+    height: 17px !important;
   }
 }
 

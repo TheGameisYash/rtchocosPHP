@@ -364,7 +364,7 @@ if (!empty(trim($customHeadScripts))) {
   <?php endif; ?>
   <div class="header-inner">
     <div class="header-mobile-spacer" style="display: none;"></div>
-    <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" title="RT CHOCOS — Artisanal Cacao Academy & Journal">
+    <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix : '/'; ?>" class="logo" title="RT CHOCOS — Artisanal Cacao Academy & Journal">
       <svg class="logo-svg-emblem" width="26" height="34" viewBox="0 0 40 50" fill="none" xmlns="http://www.w3.org/2000/svg">
         <!-- Top stem -->
         <path d="M19 1.5C19 0.7 21 0.7 21 1.5V7.5H19V1.5Z" fill="#D4AF37"/>
@@ -490,7 +490,7 @@ if (!empty(trim($customHeadScripts))) {
       </button>
 
       <!-- Cart Button with Dynamic Badge -->
-      <a href="<?php echo $pathPrefix; ?>cart.php" class="nav-cart-btn" aria-label="Shopping Cart" title="View Cart">
+      <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'cart.php' : '/cart.php'; ?>" class="nav-cart-btn" aria-label="Shopping Cart" title="View Cart">
         <svg class="cart-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
           <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -579,6 +579,10 @@ if (!empty(trim($customHeadScripts))) {
 
     <!-- Mobile Direct Actions & Support -->
     <div class="mobile-drawer-direct-links">
+      <a class="mobile-nav-link" href="<?php echo $navPrefix; ?>cart.php">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+        <span>SHOPPING CART (<span class="cart-count-badge-inline"><?php echo (int)$cartCount; ?></span>)</span>
+      </a>
       <a class="mobile-nav-link <?php echo $activeNav === 'work-with-us' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>work-with-us.php">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
         <span>WORK WITH US &amp; B2B</span>

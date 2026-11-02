@@ -3990,3 +3990,224 @@ textarea {
     order: 2 !important;
   }
 }
+
+/* ==========================================================================
+   MOBILE-ONLY TEXT REDUCTION & SLEEK CLAMPING SYSTEM (<= 768px)
+   Hides overly verbose text walls on mobile view while preserving 100% desktop copy.
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* 1. Global Clamping Utilities */
+  .mobile-clamp-1 {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .mobile-clamp-2 {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .mobile-clamp-3 {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* 2. Homepage Hero & Text Reduction */
+  #hero .split-hero-content p.fade-up-d2 {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 13.5px !important;
+    line-height: 1.45 !important;
+    margin-bottom: 18px !important;
+  }
+  .spotlight-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+  .chocolate-table-subtitle {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12.5px !important;
+    margin-bottom: 12px !important;
+  }
+  .table-modal-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 13px !important;
+  }
+  .modal-beantobar-lede {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12.5px !important;
+  }
+
+  /* 3. Homepage Trust Strip: Keep stats bold and concise */
+  .trust-main-heading {
+    font-size: 15px !important;
+    letter-spacing: 1px !important;
+  }
+  .trust-stat-title {
+    font-size: 13px !important;
+  }
+  .trust-stat-subtitle {
+    font-size: 9px !important;
+    letter-spacing: 0.8px !important;
+  }
+
+  /* 4. Homepage Journal Article Excerpt Reduction */
+  .home-journal-sec .section-subtitle {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12.5px !important;
+    margin-bottom: 20px !important;
+  }
+  .home-journal-card p {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12.5px !important;
+    line-height: 1.4 !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* 5. Workshops / Academy Page Text Reduction */
+  .workshop-hero-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+    margin-bottom: 16px !important;
+  }
+  .seo-learning-intro {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+  .seo-topic-card p {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+  .workshop-card-desc,
+  .workshop-item-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12.5px !important;
+  }
+
+  /* 6. The Cacao Journal / Blog Text Reduction */
+  .blog-hero-lux-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+    margin-bottom: 14px !important;
+  }
+  .blog-seo-intro {
+    display: none !important;
+  }
+  .blog-excerpt {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12.5px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* 7. Shop & Boutique Text Reduction */
+  .catalog-subtitle-lux {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12.5px !important;
+    margin-bottom: 16px !important;
+  }
+  .b2b-subtext-lux,
+  .cta-banner-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12.5px !important;
+  }
+
+  /* 8. Innovation Lab & Chocopedia Text Reduction */
+  .lab-hero-desc,
+  .chocopedia-hero-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+  }
+  .chocopedia-card p,
+  .lab-card p {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12.5px !important;
+  }
+
+  /* 9. Product Page Tasting & Technical Notes Clamping */
+  .product-overview-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 13.5px !important;
+  }
+
+  /* 10. Work With Us Page Text Clamping */
+  .work-hero-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 13px !important;
+  }
+  .work-offering-card p {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 12.5px !important;
+  }
+}
