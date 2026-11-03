@@ -2362,3 +2362,24 @@ footer.footer-links-section {
     display: none !important;
   }
 }
+
+
+/* ==========================================================================
+   CART REMOVED ACROSS RT CHOCOS — STRICT SUPPRESSION RULE
+   ========================================================================== */
+.nav-cart-btn,
+.cart-icon-svg,
+.cart-count-badge,
+.cart-count-badge-inline,
+.cart-badge,
+.bottom-cart-badge,
+.lux-btn-add-cart,
+[href*="cart.php"],
+[href*="checkout.php"],
+.toast-link-cart,
+.toast-link-checkout,
+#cart-feedback,
+#prodCartToast,
+#luxCartToast {
+  display: none !important;
+}

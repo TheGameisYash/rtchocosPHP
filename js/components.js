@@ -1,11 +1,6 @@
-// --- CART -------------------------------------------------------
+// --- CART (DEPRECATED - REMOVED ACROSS RT CHOCOS) ----------------
 function addToCart() {
-  cartCount++;
-  const badge = document.getElementById('cart-badge');
-  if (badge) {
-    badge.textContent = cartCount;
-    badge.classList.remove('hidden');
-  }
+  // Cart removed across site
 }
 
 // --- WORKSHOP CARD ----------------------------------------------
@@ -22,7 +17,7 @@ function workshopCardHTML(w) {
   const buttonLabel = w.status === 'coming-soon' ? 'Notify Me When Open' : 'Book Now';
   const buttonOnClick = w.status === 'coming-soon'
     ? `onclick="triggerNewsletterAlert()"`
-    : `onclick="addToCart()"`;
+    : `onclick="window.open('https://wa.me/919140238741?text=' + encodeURIComponent('Hello RT Chocos! I would like to register for ' + '${w.title.replace(/'/g, "\\'")}'), '_blank')"`;
 
   const imageTag = w.image && w.image.includes('/')
     ? `<img src="${getCorrectedPath(w.image)}" alt="${w.title}">`

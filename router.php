@@ -98,17 +98,13 @@ if (preg_match('#^/(?:shop|blog|experiment|lab|failed-batch|ingredient)/((?:api_
     }
 }
 
-// Route clean /cart and /checkout URLs
-if ($uri === '/cart' || $uri === '/cart/') {
-    include __DIR__ . '/cart.php';
-    return true;
-}
-if ($uri === '/checkout' || $uri === '/checkout/') {
-    include __DIR__ . '/checkout.php';
+// Route clean /cart and /checkout URLs -> redirect to /shop.php
+if ($uri === '/cart' || $uri === '/cart/' || $uri === '/checkout' || $uri === '/checkout/') {
+    header('Location: /shop.php', true, 302);
     return true;
 }
 if (preg_match('#^/(?:shop|blog)/(cart|checkout)\.php$#', $uri, $m)) {
-    include __DIR__ . '/' . $m[1] . '.php';
+    header('Location: /shop.php', true, 302);
     return true;
 }
 

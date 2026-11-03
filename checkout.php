@@ -1,4 +1,8 @@
 <?php
+// Checkout disabled across RT Chocos - redirecting to shop catalog
+header("Location: shop.php", true, 302);
+exit;
+
   session_start();
   $pageTitle = "Checkout — RT Chocos India | Secure Order";
   $pageDescription = "Complete your order at RT Chocos. Secure checkout for artisan bean-to-bar chocolate and professional tools.";

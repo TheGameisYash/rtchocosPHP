@@ -5,7 +5,8 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/maintenance_check.php';
 
-$cartCount = (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) ? array_sum($_SESSION['cart']) : 0;
+// Cart disabled across website
+$cartCount = 0;
 
 // Canonicals always point to the public HTTPS URL, dynamically resolved from site_settings
 $siteUrl = rtrim(get_site_setting('site_url', 'https://www.rtchocos.com'), '/');
@@ -491,15 +492,7 @@ if (!empty(trim($customHeadScripts))) {
         </svg>
       </button>
 
-      <!-- Cart Button with Dynamic Badge -->
-      <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'cart.php' : '/cart.php'; ?>" class="nav-cart-btn" aria-label="Shopping Cart" title="View Cart">
-        <svg class="cart-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <path d="M16 10a4 4 0 0 1-8 0"></path>
-        </svg>
-        <span id="header-cart-count" class="cart-count-badge" style="<?php echo ($cartCount > 0) ? '' : 'display:none;'; ?>"><?php echo (int)$cartCount; ?></span>
-      </a>
+<!-- Cart option completely removed from website -->
 
       <!-- Work with Us CTA (Desktop Only) -->
       <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="signin-join-btn work-with-us-btn header-desktop-cta" title="Work With RT Chocos — Consulting, R&D & Workshops">
@@ -581,10 +574,7 @@ if (!empty(trim($customHeadScripts))) {
 
     <!-- Mobile Direct Actions & Support -->
     <div class="mobile-drawer-direct-links">
-      <a class="mobile-nav-link" href="<?php echo $navPrefix; ?>cart.php">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-        <span>SHOPPING CART (<span class="cart-count-badge-inline"><?php echo (int)$cartCount; ?></span>)</span>
-      </a>
+
       <a class="mobile-nav-link <?php echo $activeNav === 'work-with-us' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>work-with-us.php">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
         <span>WORK WITH US &amp; B2B</span>

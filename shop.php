@@ -464,16 +464,14 @@
             <span style="font-size: 11.5px; font-weight: 500; color: var(--lux-text-muted);">From ₹<?php echo number_format($prodPrice, 0); ?>/unit</span>
           </div>
 
-          <!-- Actions Retail: Add to Cart + Details Link -->
+          <!-- Actions Retail: Order via WhatsApp + Details Link -->
           <div class="lux-card-actions mode-section-retail <?php echo ($storeMode === 'bulk') ? 'mode-hidden' : ''; ?>">
-            <button type="button" class="lux-btn-add-cart" onclick="quickAddToCart(<?php echo (int)($prod['id'] ?? 0); ?>, '<?php echo addslashes($prod['name']); ?>', this, event)">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <path d="M16 10a4 4 0 0 1-8 0"></path>
+            <a href="https://wa.me/919140238741?text=Hello%20RT%20Chocos!%20I%20would%20like%20to%20order%20<?php echo urlencode($prod['name']); ?>%20(%E2%82%B9<?php echo number_format($prodPrice, 0); ?>)." target="_blank" rel="noopener" class="lux-btn-order-wa" title="Order via WhatsApp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
               </svg>
-              <span>Add to Cart</span>
-            </button>
+              <span>Order via WhatsApp</span>
+            </a>
             <a href="<?php echo $prodUrl; ?>" class="lux-view-details-link">
               Details &rarr;
             </a>
@@ -1275,100 +1273,7 @@
     }
   }
 
-  // Quick Add to Cart from Shop Catalog
-  function quickAddToCart(productId, productName, btn, event) {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    if (!productId) return;
-    
-    const originalContent = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin-icon"><circle cx="12" cy="12" r="10" stroke-opacity="0.3"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg> <span>Adding...</span>';
-
-    fetch('/api_cart.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'add', product_id: productId, quantity: 1 })
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (data.success) {
-        btn.innerHTML = '<span style="color:#74E291;">✓ Added!</span>';
-        btn.classList.add('btn-added');
-
-        // Update All Cart Badges (Desktop Header & Mobile Bottom Dock)
-        if (typeof data.cart_count !== 'undefined') {
-          document.querySelectorAll('.cart-count-badge').forEach(function(b) {
-            b.textContent = data.cart_count;
-            b.style.display = (data.cart_count > 0) ? 'flex' : 'none';
-            b.classList.remove('hidden');
-            b.style.transform = 'scale(1.35)';
-            setTimeout(function() { b.style.transform = ''; }, 300);
-          });
-        }
-
-        // Show floating toast
-        showCartToast(productName, data.cart_count);
-
-        setTimeout(function() {
-          btn.innerHTML = originalContent;
-          btn.classList.remove('btn-added');
-          btn.disabled = false;
-        }, 2200);
-      } else {
-        btn.innerHTML = '<span style="color:#FF8080;">✗ ' + (data.error || 'Error') + '</span>';
-        setTimeout(function() {
-          btn.innerHTML = originalContent;
-          btn.disabled = false;
-        }, 2500);
-      }
-    })
-    .catch(function(err) {
-      btn.innerHTML = '<span style="color:#FF8080;">✗ Error</span>';
-      setTimeout(function() {
-        btn.innerHTML = originalContent;
-        btn.disabled = false;
-      }, 2500);
-    });
-  }
-
-  // Floating Toast Notification
-  function showCartToast(productName, count) {
-    let existingToast = document.getElementById('luxCartToast');
-    if (existingToast) existingToast.remove();
-
-    const toast = document.createElement('div');
-    toast.id = 'luxCartToast';
-    toast.className = 'lux-cart-toast';
-    toast.innerHTML = `
-      <div class="toast-icon-wrap">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#74E291" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
-      </div>
-      <div class="toast-content">
-        <div class="toast-title">Added to Shopping Cart</div>
-        <div class="toast-prod-name">${escapeHtml(productName)}</div>
-      </div>
-      <div class="toast-btns">
-        <a href="/cart.php" class="toast-link-cart">View Cart (${count})</a>
-        <a href="/checkout.php" class="toast-link-checkout">Checkout &rarr;</a>
-      </div>
-      <button type="button" class="toast-close-btn" onclick="this.parentElement.remove()" aria-label="Close">&times;</button>
-    `;
-
-    document.body.appendChild(toast);
-    setTimeout(() => { toast.classList.add('show'); }, 10);
-
-    setTimeout(() => {
-      if (toast && toast.parentElement) {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 400);
-      }
-    }, 5500);
-  }
+  // Cart functionality removed - direct WhatsApp order enabled
 
   function escapeHtml(str) {
     if (!str) return '';

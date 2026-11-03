@@ -53,10 +53,11 @@ $workshops = [
 ];
 
 function renderWorkshopCard($w, $pathPrefix = "") {
-    $buttonLabel = $w['status'] === 'coming-soon' ? 'Notify Me When Open' : 'Book Now';
+    $buttonLabel = $w['status'] === 'coming-soon' ? 'Notify Me When Open' : 'Book Workshop';
+    $waText = urlencode("Hello RT Chocos! I would like to register for the workshop: " . $w['title'] . " (" . $w['duration'] . ").");
     $buttonOnClick = $w['status'] === 'coming-soon'
         ? 'onclick="triggerNewsletterAlert()"'
-        : 'onclick="addToCart()"';
+        : "onclick=\"window.open('https://wa.me/919140238741?text={$waText}', '_blank')\"";
 
     $imageSrc = $pathPrefix . $w['image'];
     $imageTag = ($w['image'] && strpos($w['image'], '/') !== false)

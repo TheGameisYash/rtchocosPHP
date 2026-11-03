@@ -1,4 +1,8 @@
 <?php
+// Cart option completely disabled across RT Chocos - redirecting to shop catalog
+header("Location: shop.php", true, 302);
+exit;
+
   session_start();
   $pageTitle = "Shopping Cart — RT Chocos India | Bean-to-Bar Chocolate Shop";
   $pageDescription = "Review your shopping cart at RT Chocos. Artisan bean-to-bar chocolate, cacao nibs, and professional chocolate tools. Free shipping on orders above ₹999.";
