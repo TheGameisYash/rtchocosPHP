@@ -115,7 +115,7 @@
     </div>
   </section>
   <div class="section">
-    <div style="text-align:center;margin-bottom:48px; display: flex; flex-direction: column; align-items: center;">
+    <div class="blog-subhead-desktop" style="text-align:center;margin-bottom:48px; display: flex; flex-direction: column; align-items: center;">
       <div class="section-label">The Cacao Journal</div>
       <h1 class="section-title">Articles &amp; Insights</h1>
       <p class="section-subtitle">Science, craft, and stories from the world of bean-to-bar chocolate</p>

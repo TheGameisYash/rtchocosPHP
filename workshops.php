@@ -22,21 +22,6 @@
       ['name' => 'Workshops', 'item' => $canonicalUrl]
   ];
   
-  $faqItems = [
-      [
-          'question' => 'Who are RT Chocos chocolate workshops for?',
-          'answer' => 'The planned sessions are designed for home bakers, culinary students, working chocolatiers and founders who want a clearer technical understanding of chocolate.'
-      ],
-      [
-          'question' => 'Will bean-to-bar chocolate making be covered?',
-          'answer' => 'Yes. The learning roadmap includes cacao selection, roasting, winnowing, refining, conching, tempering and evaluating a finished chocolate bar.'
-      ],
-      [
-          'question' => 'Are workshops available online?',
-          'answer' => 'RT Chocos plans both Mumbai-based and online learning formats. Dates, format and fees will be published before registration opens.'
-      ]
-  ];
-  
   include $pathPrefix . 'includes/header.php';
 ?>
 
@@ -108,8 +93,8 @@
           <a href="#workshops-grid" class="btn-gold-lux">
             Explore Masterclasses &darr;
           </a>
-          <a href="#workshop-faq" class="btn-outline-lux">
-            Curriculum &amp; FAQ &rarr;
+          <a href="#learning-roadmap-title" class="btn-outline-lux">
+            Learning Roadmap &rarr;
           </a>
         </div>
       </div>
@@ -164,16 +149,7 @@
       </div>
     </section>
 
-    <section class="seo-faq" id="workshop-faq" aria-labelledby="workshop-faq-title">
-      <div class="section-label">Frequently Asked Questions</div>
-      <h2 id="workshop-faq-title" class="section-title">Chocolate workshop FAQs</h2>
-      <?php foreach ($faqItems as $faq): ?>
-        <details>
-          <summary><?php echo htmlspecialchars($faq['question']); ?></summary>
-          <p><?php echo htmlspecialchars($faq['answer']); ?></p>
-        </details>
-      <?php endforeach; ?>
-    </section>
+    
   </div>
 </div>
 

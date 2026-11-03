@@ -125,34 +125,13 @@
     </div>
   </section>
 
-  <?php
-  // Embed general FAQs
-  $faqCategory = 'general';
-  $faqLimit = 4;
-  include __DIR__ . '/includes/faq-block.php';
-  ?>
+  
 
 </div>
 </main>
 
 <?php
-// FAQPage schema for embedded FAQs
-if (!empty($GLOBALS['faqSchemaItems'])) {
-    $faqEntities = [];
-    foreach ($GLOBALS['faqSchemaItems'] as $item) {
-        $faqEntities[] = [
-            "@type" => "Question",
-            "name" => $item['question'],
-            "acceptedAnswer" => [
-                "@type" => "Answer",
-                "text" => $item['answer']
-            ]
-        ];
-    }
-    echo '<script type="application/ld+json">' . "\n";
-    echo json_encode(["@context" => "https://schema.org", "@type" => "FAQPage", "mainEntity" => $faqEntities], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-    echo "\n" . '</script>' . "\n";
-}
+
 
 include $pathPrefix . 'includes/footer.php';
 ?>

@@ -478,5 +478,10 @@
     border-color: var(--border-accent);
   }
 
+  .mobile-shelf-bar,
+  .mobile-workbench-cards {
+    display: none !important;
+  }
+
 } /* End Desktop Presentation Layer */
 

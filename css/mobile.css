@@ -684,4 +684,273 @@
     align-items: center !important;
   }
 
+
+  /* =========================================================================
+     11. DEDICATED MOBILE HERO SYSTEM ACROSS ALL PAGES
+     ========================================================================= */
+  #page-workshops,
+  #page-blog,
+  #page-about,
+  #page-contact,
+  #page-recipes,
+  #page-chocopedia {
+    padding-top: 54px !important;
+  }
+
+  /* Universal Mobile Page Hero Container */
+  .page-hero,
+  .contact-page-hero,
+  .about-page-hero, {
+    padding: 30px 18px 22px !important;
+    min-height: auto !important;
+    height: auto !important;
+    background: linear-gradient(180deg, #FAF6EF 0%, #F5ECE2 100%) !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
+    text-align: center !important;
+  }
+
+  .about-page-hero-image {
+    display: none !important;
+  }
+
+  .page-hero-content,
+  .about-page-hero .page-hero-content,
+  .contact-page-hero .page-hero-content {
+    position: static !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .page-hero h1,
+  .about-page-hero h1,
+  .contact-page-hero h1, h1 {
+    font-family: 'DM Serif Display', Georgia, serif !important;
+    font-size: clamp(26px, 7vw, 34px) !important;
+    line-height: 1.18 !important;
+    color: #1A0F08 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .page-hero p,
+  .about-page-hero p,
+  .contact-page-hero p, p {
+    font-size: 14px !important;
+    line-height: 1.55 !important;
+    color: #523624 !important;
+    max-width: 95% !important;
+    margin: 0 auto !important;
+  }
+
+  .mobile-hero-tag {
+    display: inline-flex !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.4px !important;
+    text-transform: uppercase !important;
+    padding: 4px 12px !important;
+    border-radius: 20px !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    color: #523624 !important;
+    margin-bottom: 10px !important;
+    box-shadow: 0 2px 6px rgba(212, 175, 55, 0.08) !important;
+  }
+
+  .mobile-contact-hero-actions {
+    display: flex !important;
+    gap: 10px !important;
+    margin-top: 16px !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .mobile-wa-btn,
+  .mobile-call-btn {
+    flex: 1 !important;
+    height: 46px !important;
+    min-height: 46px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    border-radius: 24px !important;
+    text-decoration: none !important;
+  }
+
+  /* Hide duplicate blog heading below video hero on mobile */
+  .blog-subhead-desktop {
+    display: none !important;
+  }
+
+  /* Workshops Mobile Hero */
+  .workshop-hero-lux {
+    padding: 30px 18px 24px !important;
+    min-height: auto !important;
+    background: linear-gradient(180deg, #1A0F08 0%, #28160B 100%) !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
+    text-align: center !important;
+  }
+  .workshop-hero-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 14px !important;
+    padding: 0 !important;
+  }
+  .workshop-hero-left {
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+  .workshop-hero-tag {
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.4px !important;
+    text-transform: uppercase !important;
+    padding: 5px 14px !important;
+    border-radius: 20px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    color: #D4AF37 !important;
+    display: inline-flex !important;
+    margin-bottom: 10px !important;
+  }
+  .workshop-hero-title {
+    font-family: 'DM Serif Display', Georgia, serif !important;
+    font-size: clamp(26px, 7vw, 34px) !important;
+    line-height: 1.18 !important;
+    color: #FAF6EF !important;
+    margin-bottom: 8px !important;
+  }
+  .workshop-hero-desc {
+    font-size: 14px !important;
+    line-height: 1.55 !important;
+    color: #D5C2B1 !important;
+    max-width: 95% !important;
+    margin: 0 auto 16px !important;
+  }
+  .workshop-hero-badges {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 8px !important;
+    padding: 4px 16px 12px !important;
+    margin: 0 -18px 16px !important;
+    scrollbar-width: none !important;
+    justify-content: flex-start !important;
+  }
+  .workshop-hero-badges::-webkit-scrollbar {
+    display: none !important;
+  }
+  .workshop-badge-item {
+    flex: 0 0 auto !important;
+    scroll-snap-align: start !important;
+    padding: 7px 14px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    border-radius: 20px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  .workshop-badge-icon {
+    width: 18px !important;
+    height: 18px !important;
+    margin-bottom: 0 !important;
+    color: #D4AF37 !important;
+  }
+  .workshop-badge-icon svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  .workshop-badge-label {
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    color: #FAF6EF !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+  }
+  .workshop-hero-showcase-wrap {
+    display: none !important;
+  }
+  .workshop-hero-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+  .workshop-hero-actions .btn-workshop-lux,
+  .workshop-hero-actions .btn-outline-lux {
+    width: 100% !important;
+    height: 46px !important;
+    min-height: 46px !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    border-radius: 24px !important;
+    justify-content: center !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+
+  /* Blog Mobile Hero */
+  .blog-hero-lux {
+    min-height: 270px !important;
+    height: auto !important;
+    padding: 34px 18px 26px !important;
+    position: relative !important;
+    background: #140C07 !important;
+    overflow: hidden !important;
+    text-align: center !important;
+  }
+  .blog-hero-fullscreen-video {
+    opacity: 0.38 !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  .blog-hero-lux-container {
+    padding: 0 !important;
+    position: relative !important;
+    z-index: 2 !important;
+  }
+  .blog-hero-lux-title {
+    font-family: 'DM Serif Display', Georgia, serif !important;
+    font-size: clamp(28px, 7.5vw, 36px) !important;
+    line-height: 1.15 !important;
+    color: #FAF6EF !important;
+    margin-bottom: 8px !important;
+  }
+  .blog-hero-lux-desc {
+    font-size: 14px !important;
+    line-height: 1.55 !important;
+    color: #D5C2B1 !important;
+    max-width: 95% !important;
+    margin: 0 auto 16px !important;
+  }
+  .btn-blog-lux-explore {
+    height: 46px !important;
+    min-height: 46px !important;
+    padding: 10px 24px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    border-radius: 24px !important;
+    margin: 0 auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
 } /* End Mobile Presentation Layer */

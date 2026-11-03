@@ -415,7 +415,16 @@
       <button type="button" class="cat-tab-lux" data-cat="gifting">Corporate &amp; Gifting</button>
     </div>
 
-    <!-- Product Grid: 10 Curated Products (5 columns) -->
+    <!-- Mobile Horizontal Shelf Status Bar (Active on Mobile Touchscreens) -->
+    <div class="mobile-shelf-bar" id="mobileShelfBar" aria-label="Horizontal Product Runway">
+      <div class="shelf-pill-indicator">
+        <span class="shelf-sparkle">✦</span>
+        <span id="shelf-status-text">Swipe creations</span>
+      </div>
+      <div class="shelf-counter-badge" id="shelf-counter-badge">1 / <?php echo count($curatedCatalog); ?></div>
+    </div>
+
+    <!-- Product Grid: 10 Curated Products (Horizontal Swipe Runway on Mobile) -->
     <div class="catalog-grid-lux" id="catalog-products-grid">
       <?php foreach ($curatedCatalog as $prod): 
         $prodPrice = (!empty($prod['sale_price']) && $prod['sale_price'] > 0) ? $prod['sale_price'] : ($prod['price'] ?? 0);
@@ -925,14 +934,7 @@
     </div>
   </section>
 
-  <?php
-  // Embed shop FAQs if available
-  $faqCategory = 'shop';
-  $faqLimit = 4;
-  if (file_exists(__DIR__ . '/includes/faq-block.php')) {
-      include __DIR__ . '/includes/faq-block.php';
-  }
-  ?>
+  
 
 </main>
 
@@ -1023,6 +1025,46 @@
     function renderCatalog(page, smoothScroll = false) {
       const matching = getMatchingCards();
       const totalCount = matching.length;
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile) {
+        // Mobile Mode: show ALL matching products in smooth horizontal swipe runway!
+        allCards.forEach(card => {
+          card.style.display = 'none';
+          card.style.opacity = '0';
+        });
+
+        matching.forEach(card => {
+          card.style.display = 'flex';
+          card.style.opacity = '1';
+        });
+
+        // Reset runway scroll to beginning
+        const grid = document.getElementById('catalog-products-grid');
+        if (grid) {
+          grid.scrollTo({ left: 0, behavior: smoothScroll ? 'smooth' : 'auto' });
+        }
+
+        // Update counter & status badge
+        const counter = document.getElementById('shelf-counter-badge');
+        if (counter) {
+          counter.textContent = totalCount > 0 ? `1 / ${totalCount}` : '0 / 0';
+        }
+        const shelfStatus = document.getElementById('shelf-status-text');
+        if (shelfStatus) {
+          shelfStatus.textContent = totalCount > 1 ? `Swipe ${totalCount} creations` : `${totalCount} creation`;
+        }
+
+        // Hide pagination controls on mobile swipe view
+        if (paginationButtons) paginationButtons.style.display = 'none';
+        if (paginationInfo) paginationInfo.style.display = 'none';
+        return;
+      }
+
+      // Desktop Mode: Paginated (6 per page)
+      if (paginationButtons) paginationButtons.style.display = '';
+      if (paginationInfo) paginationInfo.style.display = '';
+
       const totalPages = Math.max(1, Math.ceil(totalCount / PRODUCTS_PER_PAGE));
 
       if (page < 1) page = 1;
@@ -1090,6 +1132,42 @@
         }
       }
     }
+
+    // Attach horizontal scroll tracker for active card counter
+    const prodGrid = document.getElementById('catalog-products-grid');
+    const counterBadge = document.getElementById('shelf-counter-badge');
+    if (prodGrid && counterBadge) {
+      let scrollTimer;
+      prodGrid.addEventListener('scroll', function() {
+        if (window.innerWidth > 768) return;
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function() {
+          const visibleCards = Array.from(prodGrid.querySelectorAll('.lux-product-card')).filter(c => c.style.display !== 'none');
+          if (visibleCards.length === 0) return;
+          const center = prodGrid.scrollLeft + prodGrid.offsetWidth / 2;
+          let activeIdx = 0;
+          let minDiff = Infinity;
+          visibleCards.forEach((c, i) => {
+            const cardCenter = c.offsetLeft + c.offsetWidth / 2;
+            const diff = Math.abs(center - cardCenter);
+            if (diff < minDiff) {
+              minDiff = diff;
+              activeIdx = i;
+            }
+          });
+          counterBadge.textContent = `${activeIdx + 1} / ${visibleCards.length}`;
+        }, 25);
+      }, { passive: true });
+    }
+
+    // Handle viewport resize between mobile swipe runway and desktop paginated grid
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        renderCatalog(currentPage, false);
+      }, 150);
+    });
 
     window.catalogGoToPage = function(p) {
       renderCatalog(p, true);

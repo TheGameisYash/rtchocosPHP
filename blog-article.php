@@ -1272,15 +1272,7 @@ function publishThisArticleNow(blogId) {
                 </div>
             </div>
 
-            <!-- Contextual FAQ Block -->
-            <?php
-            $faqCategory = 'general';
-            if (stripos($post['category'], 'Beginner') !== false || stripos($post['category'], 'Business') !== false) {
-                $faqCategory = 'courses';
-            }
-            $faqLimit = 3;
-            include __DIR__ . '/includes/faq-block.php';
-            ?>
+            
             
             <!-- Comments Section -->
             <?php include __DIR__ . '/includes/comments.php'; ?>

@@ -18,7 +18,6 @@ $staticPages = [
     "blog" => ["priority" => "0.9", "changefreq" => "daily", "lastmod" => $today],
     "chocopedia" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
     "gallery" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
-    "faq" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
     "indian-chocolate-brands" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
     "contact" => ["priority" => "0.7", "changefreq" => "monthly", "lastmod" => $today]
 ];

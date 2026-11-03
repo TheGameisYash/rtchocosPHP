@@ -185,18 +185,6 @@ if (!empty($itemList)) {
     ];
 }
 
-if (!empty($faqItems)) {
-    $graph[] = [
-        "@type" => "FAQPage",
-        "mainEntity" => array_map(function($faq) {
-            return [
-                "@type" => "Question",
-                "name" => $faq['question'],
-                "acceptedAnswer" => ["@type" => "Answer", "text" => $faq['answer']]
-            ];
-        }, $faqItems)
-    ];
-}
 
 if (!empty($breadcrumbs)) {
     $elements = [];

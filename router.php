@@ -22,6 +22,13 @@ if ($uri === '/login' || $uri === '/login.php') {
     return true;
 }
 
+// Redirect legacy /faq and /faq.php routes to contact concierge
+if ($uri === '/faq' || $uri === '/faq.php' || $uri === '/faq/') {
+    header('Location: /contact.php', true, 302);
+    return true;
+}
+
+
 // Route clean /maintenance URL
 if ($uri === '/maintenance' || $uri === '/maintenance/') {
     include __DIR__ . '/maintenance.php';

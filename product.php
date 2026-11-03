@@ -656,9 +656,7 @@
             📖 Related Article: <a href="<?php echo $pathPrefix; ?>blog/<?php echo htmlspecialchars($relatedBlog['slug']); ?>" style="color:var(--brown); font-weight:500;"><?php echo htmlspecialchars($relatedBlog['title']); ?></a>
           </p>
           <?php endif; ?>
-          <p style="font-size:13px; color:var(--brown-light);">
-            ❓ Have questions? See our <a href="<?php echo $pathPrefix; ?>faq.php" style="color:var(--brown); font-weight:500;">Shipping & Delivery FAQ</a>
-          </p>
+          <p style="font-size:13px; color:var(--brown-light);">💬 Have questions? <a href="<?php echo $pathPrefix; ?>contact.php" style="color:var(--brown); font-weight:500;">Inquire with our Chocolatier Team</a></p>
         </div>
       </div>
     </div>
@@ -698,12 +696,7 @@
   </section>
   <?php endif; ?>
 
-  <?php
-  // Embed shop FAQs
-  $faqCategory = 'shop';
-  $faqLimit = 3;
-  include __DIR__ . '/includes/faq-block.php';
-  ?>
+  
 
 </div>
 </main>
@@ -807,23 +800,7 @@ echo '<script type="application/ld+json">' . "\n";
 echo json_encode($productSchemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 echo "\n" . '</script>' . "\n";
 
-// FAQPage schema for embedded FAQs
-if (!empty($GLOBALS['faqSchemaItems'])) {
-    $faqEntities = [];
-    foreach ($GLOBALS['faqSchemaItems'] as $item) {
-        $faqEntities[] = [
-            "@type" => "Question",
-            "name" => $item['question'],
-            "acceptedAnswer" => [
-                "@type" => "Answer",
-                "text" => $item['answer']
-            ]
-        ];
-    }
-    echo '<script type="application/ld+json">' . "\n";
-    echo json_encode(["@context" => "https://schema.org", "@type" => "FAQPage", "mainEntity" => $faqEntities], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-    echo "\n" . '</script>' . "\n";
-}
+
 
 include __DIR__ . '/includes/footer.php';
 ?>

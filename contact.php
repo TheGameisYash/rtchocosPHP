@@ -17,8 +17,17 @@
 <div id="page-contact" class="page active" style="padding-top:80px;">
   <div class="page-hero contact-page-hero">
     <div class="page-hero-content">
+      <span class="section-label mobile-hero-tag" style="margin-bottom:8px;">Direct Channels</span>
       <h1 class="fade-up">Get in Touch</h1>
-      <p class="fade-up-d1">Questions about workshops, wholesale enquiries, or just want to talk chocolate? We'd love to hear from you.</p>
+      <p class="fade-up-d1">Questions about workshops, wholesale enquiries, or custom recipe formulation? We'd love to hear from you.</p>
+      <div class="mobile-contact-hero-actions">
+        <a href="https://wa.me/919140238741?text=Hello%20RT%20Chocos!%20I%20would%20like%20to%20connect." target="_blank" rel="noopener" class="btn-primary mobile-wa-btn">
+          💬 WhatsApp Us
+        </a>
+        <a href="tel:+919140238741" class="btn-outline mobile-call-btn">
+          📞 Call Direct
+        </a>
+      </div>
     </div>
   </div>
   <div class="section">

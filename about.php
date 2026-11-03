@@ -20,8 +20,9 @@
       <img src="assets/about_banner.png" alt="Botanical eucalyptus and cacao pod banner layout" />
     </div>
     <div class="page-hero-content">
-      <h1 class="fade-up">About Me</h1>
-      <p class="fade-up-d1">13+ years in bean-to-bar cacao craft, recipe development &amp; education.</p>
+      <span class="section-label mobile-hero-tag" style="margin-bottom:8px;">Meet The Founder</span>
+      <h1 class="fade-up">Aarti Saluja Sahni</h1>
+      <p class="fade-up-d1">13+ years in bean-to-bar cacao craft, recipe development &amp; chocolate education in Mumbai, India.</p>
     </div>
   </div>
 
