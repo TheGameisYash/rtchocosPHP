@@ -1,1202 +1,2830 @@
-/* ==========================================================================
-   RT CHOCOS — PRESENTATION LAYER B: MOBILE EXPERIENCE (mobile.css)
-   Exclusively scoped to @media (max-width: 768px)
-   Designed specifically for touchscreens:
-   - Ergonomic touch-first controls (minimum 44x44px touch targets)
-   - Single-column & carefully balanced mobile layouts
-   - Horizontal swipeable collections with momentum scrolling
-   - Mobile-optimized navigation (ergonomic bottom dock + slide-over drawer)
-   - Legible typography (>= 11.5px metadata, >= 14px body)
-   - Balanced whitespace and minimal scrolling fatigue
-   ========================================================================== */
-
-@media (max-width: 768px) {
-
-  /* --------------------------------------------------------------------------
-     1. GLOBAL MOBILE TOUCH ERGONOMICS & PADDING NORMALIZATION
-     -------------------------------------------------------------------------- */
-  body {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .section {
-    padding: 38px 18px !important;
-  }
-
-  .section-label {
-    font-size: 12px !important;
-    padding: 6px 14px !important;
-    letter-spacing: 1.2px !important;
-    margin-bottom: 10px !important;
-  }
-
-  .section-title {
-    font-size: clamp(24px, 5.8vw, 32px) !important;
-    line-height: 1.22 !important;
-    margin-bottom: 10px !important;
-  }
-
-  .section-subtitle {
-    font-size: 14.5px !important;
-    line-height: 1.6 !important;
-    margin-bottom: 24px !important;
-    padding: 0 4px !important;
-  }
-
-  /* --------------------------------------------------------------------------
-     2. MOBILE HERO SECTION (STACKED & THUMB-FRIENDLY)
-     -------------------------------------------------------------------------- */
-  #page-home #hero {
-    min-height: auto !important;
-    padding: 42px 18px 36px !important;
-    text-align: center !important;
-    background: linear-gradient(180deg, #FAF6EF 0%, #F5EFEB 100%) !important;
-  }
-
-  #page-home #hero .split-hero-container {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 20px !important;
-  }
-
-  #page-home #hero .split-hero-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-  }
-
-  #page-home #hero h1 {
-    font-size: clamp(26px, 6.8vw, 36px) !important;
-    line-height: 1.18 !important;
-    margin: 12px auto 16px !important;
-    max-width: 95% !important;
-  }
-
-  #page-home #hero p {
-    font-size: 14.5px !important;
-    line-height: 1.6 !important;
-    margin: 0 auto 24px !important;
-    max-width: 92% !important;
-  }
-
-  #page-home #hero .hero-btns {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    width: 100% !important;
-    align-items: center !important;
-    margin-bottom: 20px !important;
-  }
-
-  #page-home #hero .btn-hero-primary,
-  #page-home #hero .btn-hero-outline {
-    width: 100% !important;
-    max-width: 320px !important;
-    min-height: 48px !important;
-    padding: 13px 24px !important;
-    font-size: 13.5px !important;
-    font-weight: 700 !important;
-    justify-content: center !important;
-    border-radius: var(--radius-full) !important;
-    box-shadow: 0 4px 14px rgba(24, 12, 6, 0.18) !important;
-  }
-
-  /* Compact Hero Ingredient Spotlight on Mobile */
-  .hero-ingredient-spotlight-card {
-    display: none !important;
-  }
-
-  /* --------------------------------------------------------------------------
-     3. MOBILE TRUST STRIP (2x2 BALANCED GRID + 1 FULL-WIDTH)
-     -------------------------------------------------------------------------- */
-  .home-trust-strip-sec {
-    padding: 28px 16px !important;
-    background: var(--bg-surface) !important;
-  }
-
-  .trust-pillars-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
-  }
-
-  .trust-pillars-grid .trust-col:nth-child(5) {
-    grid-column: span 2 !important;
-  }
-
-  .trust-col {
-    padding: 16px 12px !important;
-    border-radius: var(--radius-sm) !important;
-    min-height: 92px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-  }
-
-  .trust-stat-title {
-    font-size: 20px !important;
-    font-weight: 700 !important;
-    color: var(--accent-gold) !important;
-    margin-bottom: 4px !important;
-  }
-
-  .trust-stat-subtitle {
-    font-size: 11px !important;
-    letter-spacing: 0.8px !important;
-    line-height: 1.35 !important;
-    color: var(--text-secondary) !important;
-    font-weight: 600 !important;
-  }
-
-  /* --------------------------------------------------------------------------
-     4. MOBILE INTERACTIVE CHOCOLATE TABLE (TOUCH WORKBENCH EXPLORER)
-     -------------------------------------------------------------------------- */
-  .chocolate-table-sec {
-    padding: 38px 16px !important;
-  }
-
-  .chocolate-table-wrapper {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--radius-md) !important;
-    box-shadow: 0 8px 24px rgba(26, 15, 8, 0.12) !important;
-  }
-
-  /* Hide desktop absolute pins on mobile touchscreens */
-  .chocolate-table-wrapper .table-hotspot {
-    display: none !important;
-  }
-
-  /* Mobile Touch Workbench Grid */
-  .mobile-workbench-cards {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
-    margin-top: 18px !important;
-  }
-
-  @media (max-width: 370px) {
-    .mobile-workbench-cards {
-      grid-template-columns: 1fr !important;
-    }
-  }
-
-  .mobile-workbench-card {
-    background: var(--bg-card) !important;
-    border: 1px solid var(--border-accent) !important;
-    border-radius: 12px !important;
-    padding: 12px 10px !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    min-height: 52px !important;
-    text-align: left !important;
-    cursor: pointer !important;
-    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease !important;
-    box-shadow: 0 2px 8px rgba(26, 15, 8, 0.05) !important;
-  }
-
-  .mobile-workbench-card:active {
-    transform: scale(0.97) !important;
-    background: var(--bg-surface) !important;
-    border-color: var(--accent-gold) !important;
-  }
-
-  .mwb-icon {
-    font-size: 20px !important;
-    flex-shrink: 0 !important;
-  }
-
-  .mwb-text {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 2px !important;
-    flex: 1 !important;
-    min-width: 0 !important;
-  }
-
-  .mwb-text strong {
-    font-family: 'DM Serif Display', Georgia, serif !important;
-    font-size: 13.5px !important;
-    font-weight: 600 !important;
-    color: var(--text-heading) !important;
-    line-height: 1.2 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }
-
-  .mwb-text span {
-    font-family: 'Inter', -apple-system, sans-serif !important;
-    font-size: 11.5px !important;
-    color: var(--text-muted) !important;
-    line-height: 1.2 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }
-
-  .mwb-arrow {
-    color: var(--accent-gold) !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    flex-shrink: 0 !important;
-  }
-
-  /* --------------------------------------------------------------------------
-     5. MOBILE TEMPERING LAB (ERGONOMIC 2x2 TOUCH GRID & METRIC STATS)
-     -------------------------------------------------------------------------- */
-  .tempering-lab-sec {
-    padding: 38px 16px !important;
-  }
-
-  .tempering-lab-container {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 22px !important;
-  }
-
-  .tempering-lab-card {
-    padding: 20px 16px !important;
-    border-radius: var(--radius-md) !important;
-  }
-
-  .chocolate-type-pills {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
-    margin-bottom: 18px !important;
-  }
-
-  .choco-pill-btn {
-    min-height: 46px !important;
-    height: 46px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 10px 14px !important;
-    font-size: 12.5px !important;
-    font-weight: 700 !important;
-    border-radius: 24px !important;
-    text-align: center !important;
-    border: 1px solid var(--border-accent) !important;
-    background: var(--bg-card) !important;
-    color: var(--text-primary) !important;
-    transition: all 0.2s ease !important;
-  }
-
-  .choco-pill-btn.active,
-  .choco-pill-btn:active {
-    background: var(--bg-dark) !important;
-    color: var(--accent-gold) !important;
-    border-color: var(--accent-gold) !important;
-    box-shadow: 0 4px 14px rgba(26, 15, 8, 0.25) !important;
-  }
-
-  .tempering-metrics-row {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 8px !important;
-    margin: 16px 0 !important;
-  }
-
-  .tempering-metric-box {
-    padding: 12px 6px !important;
-    background: rgba(26, 15, 8, 0.5) !important;
-    border: 1px solid rgba(212, 175, 55, 0.2) !important;
-    border-radius: 10px !important;
-    text-align: center !important;
-  }
-
-  .metric-deg-val {
-    font-size: 24px !important;
-    font-weight: 800 !important;
-    color: var(--accent-gold) !important;
-    line-height: 1.1 !important;
-    margin-bottom: 4px !important;
-  }
-
-  .metric-deg-sub {
-    font-size: 11.5px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.6px !important;
-    color: #D4AF37 !important;
-    text-transform: uppercase !important;
-    line-height: 1.25 !important;
-  }
-
-  .tempering-science-callout {
-    padding: 14px 16px !important;
-    border-left: 3px solid var(--accent-gold) !important;
-    background: rgba(26, 15, 8, 0.4) !important;
-    border-radius: 0 8px 8px 0 !important;
-    margin-bottom: 18px !important;
-  }
-
-  .science-callout-text {
-    font-size: 13.5px !important;
-    line-height: 1.6 !important;
-    color: #E6D7C8 !important;
-  }
-
-  .tempering-svg-chart .chart-gridlines text {
-    display: none !important;
-  }
-
-  .tempering-svg-chart .grid-line {
-    stroke: rgba(255, 255, 255, 0.08) !important;
-  }
-
-  /* --------------------------------------------------------------------------
-     6. MOBILE WORKSHOPS (HORIZONTAL SWIPE CAROUSEL WITH BALANCED HEIGHT)
-     -------------------------------------------------------------------------- */
-  #featured-workshops {
-    padding: 38px 16px !important;
-    overflow-x: hidden !important;
-  }
-
-  .workshops-swipe-hint {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-size: 12px !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1.2px;
-    color: var(--accent);
-    margin-bottom: 16px;
-  }
-
-  .workshops-grid {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 14px !important;
-    padding: 6px 4px 18px !important;
-    margin: 0 -16px !important;
-    padding-left: 18px !important;
-    padding-right: 18px !important;
-    scrollbar-width: none !important;
-  }
-
-  .workshops-grid::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  .workshop-card {
-    flex: 0 0 85% !important;
-    max-width: 320px !important;
-    min-width: 260px !important;
-    min-height: 430px !important;
-    scroll-snap-align: center !important;
-    border-radius: var(--radius-md) !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  .workshop-card-img {
-    height: 155px !important;
-  }
-
-  .workshop-card-body {
-    padding: 16px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 !important;
-  }
-
-  .workshop-card h3 {
-    font-size: 18px !important;
-    line-height: 1.25 !important;
-    margin-bottom: 8px !important;
-  }
-
-  .workshop-meta {
-    font-size: 13px !important;
-    margin-bottom: 10px !important;
-  }
-
-  .workshop-outcomes {
-    margin-bottom: 16px !important;
-    font-size: 12.5px !important;
-    line-height: 1.5 !important;
-    flex: 1 !important;
-  }
-
-  .workshop-outcomes li {
-    margin-bottom: 4px !important;
-  }
-
-  .workshop-card .btn-primary {
-    min-height: 46px !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    margin-top: auto !important;
-  }
-
-  /* --------------------------------------------------------------------------
-     7. MOBILE SENSORY FLAVOR WHEEL (STACKED SENSORY LAB)
-     -------------------------------------------------------------------------- */
-  .luxury-flavor-wheel-sec {
-    padding: 38px 16px !important;
-  }
-
-  .flavor-wheel-split-container {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 24px !important;
-  }
-
-  .wheel-panel,
-  .detail-panel {
-    width: 100% !important;
-  }
-
-  #page-home #flavor-wheel-sec .steps {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 12px !important;
-    padding: 8px 16px 18px !important;
-    margin: 12px -16px 0 !important;
-  }
-
-  #page-home #flavor-wheel-sec .step {
-    flex: 0 0 78vw !important;
-    max-width: 270px !important;
-    min-height: 160px !important;
-    scroll-snap-align: start !important;
-    padding: 18px 16px !important;
-    border-radius: 14px !important;
-  }
-
-  #page-home #flavor-wheel-sec .step button {
-    min-height: 44px !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 10px 16px !important;
-    border-radius: 8px !important;
-  }
-
-  #page-home #flavor-wheel-sec .guide-controls button {
-    min-height: 48px !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    border-radius: 8px !important;
-  }
-
-  /* --------------------------------------------------------------------------
-     8. MOBILE CACAO JOURNAL (SWIPEABLE HORIZONTAL ARTICLE RAIL)
-     -------------------------------------------------------------------------- */
-  .home-journal-sec {
-    padding: 38px 16px !important;
-    overflow-x: hidden !important;
-  }
-
-  .journal-articles-grid {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 14px !important;
-    margin: 0 -16px !important;
-    padding: 8px 18px 18px !important;
-    scrollbar-width: none !important;
-  }
-
-  .journal-articles-grid::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  .journal-card {
-    flex: 0 0 85% !important;
-    max-width: 310px !important;
-    min-width: 250px !important;
-    scroll-snap-align: center !important;
-    border-radius: var(--radius-md) !important;
-  }
-
-  /* --------------------------------------------------------------------------
-     9. MOBILE BOTTOM NAVIGATION DOCK (ERGONOMIC THUMB DOCK)
-     -------------------------------------------------------------------------- */
-  .mobile-bottom-nav {
-    display: flex !important;
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    max-width: 520px !important;
-    margin: 0 auto !important;
-    height: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
-    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
-    background: rgba(18, 10, 5, 0.97) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border-top: 1px solid rgba(212, 175, 55, 0.3) !important;
-    border-radius: 18px 18px 0 0 !important;
-    box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.45) !important;
-    z-index: 9999 !important;
-    align-items: center !important;
-    justify-content: space-around !important;
-  }
-
-  .mobile-bottom-item {
-    flex: 1 !important;
-    height: 100% !important;
-    min-height: 48px !important;
-    min-width: 48px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 3px !important;
-    color: rgba(250, 246, 239, 0.7) !important;
-    text-decoration: none !important;
-    font-size: 11.5px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.3px !important;
-    background: transparent !important;
-    border: none !important;
-    cursor: pointer !important;
-    transition: color 0.2s ease, transform 0.2s ease !important;
-  }
-
-  .mobile-bottom-item svg {
-    width: 20px !important;
-    height: 20px !important;
-    stroke: rgba(250, 246, 239, 0.7) !important;
-  }
-
-  .mobile-bottom-item:active,
-  .mobile-bottom-item.active {
-    color: var(--accent-gold) !important;
-    transform: scale(0.96);
-  }
-
-  .mobile-bottom-item.active svg,
-  .mobile-bottom-item:active svg {
-    stroke: var(--accent-gold) !important;
-  }
-
-  .mobile-bottom-item.active::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 3px !important;
-    width: 20px !important;
-    height: 3px !important;
-    background: var(--accent-gold) !important;
-    border-radius: 2px !important;
-  }
-
-
-  /* 10. MOBILE TOUCH TARGETS & ACCESSIBILITY POLISH */
-  .ai-drawer-close {
-    min-width: 44px !important;
-    min-height: 44px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 24px !important;
-    cursor: pointer !important;
-  }
-
-  .table-modal-close {
-    min-width: 44px !important;
-    min-height: 44px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 24px !important;
-    cursor: pointer !important;
-  }
-
-  .ai-chip {
-    min-height: 42px !important;
-    padding: 10px 16px !important;
-    font-size: 13px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .subtle-btn {
-    min-height: 42px !important;
-    padding: 10px 18px !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .footer-link {
-    display: flex !important;
-    align-items: center !important;
-    padding: 10px 0 !important;
-    min-height: 44px !important;
-    font-size: 14.5px !important;
-    line-height: 1.5 !important;
-  }
-
-  .footer-newsletter-btn {
-    min-height: 44px !important;
-    min-width: 48px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* Micro text prevention: ensure badges, tags, and notes are >= 11.5px */
-  .level-tag,
-  .workshop-tag,
-  .cat-badge,
-  .home-journal-card .cat-badge,
-  .detail-top .micro,
-  #page-home #flavor-wheel-sec .detail-top .micro,
-  .interactive-tempering-card .card-badge {
-    font-size: 11.5px !important;
-  }
-
-
-  #flavor-wheel-sec #detailGroup,
-  #flavor-wheel-sec .detail-top .tag,
-  .home-journal-cat {
-    font-size: 12px !important;
-  }
-
-  .logo {
-    min-height: 44px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-  }
-
-
-  /* =========================================================================
-     11. DEDICATED MOBILE HERO SYSTEM ACROSS ALL PAGES
-     ========================================================================= */
-  #page-workshops,
-  #page-blog,
-  #page-about,
-  #page-contact,
-  #page-recipes,
-  #page-chocopedia {
-    padding-top: 54px !important;
-  }
-
-    /* Universal Mobile Page Hero Container */
-  .page-hero,
-  .contact-page-hero,
-  .about-page-hero {
-    padding: 34px 18px 26px !important;
-    min-height: auto !important;
-    height: auto !important;
-    max-height: none !important;
-    background: linear-gradient(180deg, #FAF6EF 0%, #F5ECE2 100%) !important;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
-    text-align: center !important;
-    overflow: visible !important;
-  }
-
-  .about-page-hero-image {
-    display: none !important;
-  }
-
-  .page-hero-content,
-  .about-page-hero .page-hero-content,
-  .contact-page-hero .page-hero-content {
-    position: static !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-    width: 100% !important;
-    height: auto !important;
-    max-height: none !important;
-    padding: 0 !important;
-    overflow: visible !important;
-  }
-
-  .page-hero h1,
-  .about-page-hero h1,
-  .contact-page-hero h1 {
-    font-family: 'DM Serif Display', Georgia, serif !important;
-    font-size: clamp(26px, 7vw, 34px) !important;
-    line-height: 1.18 !important;
-    color: #1A0F08 !important;
-    margin-bottom: 8px !important;
-  }
-
-  .page-hero p,
-  .about-page-hero p,
-  .contact-page-hero p {
-    font-size: 14px !important;
-    line-height: 1.6 !important;
-    color: #523624 !important;
-    max-width: 95% !important;
-    margin: 0 auto !important;
-    overflow: visible !important;
-    max-height: none !important;
-    -webkit-line-clamp: unset !important;
-  }
-
-  .mobile-hero-tag {
-    display: inline-flex !important;
-    font-size: 11.5px !important;
-    font-weight: 700 !important;
-    letter-spacing: 1.4px !important;
-    text-transform: uppercase !important;
-    padding: 4px 12px !important;
-    border-radius: 20px !important;
-    background: rgba(255, 255, 255, 0.85) !important;
-    border: 1px solid rgba(212, 175, 55, 0.35) !important;
-    color: #523624 !important;
-    margin-bottom: 10px !important;
-    box-shadow: 0 2px 6px rgba(212, 175, 55, 0.08) !important;
-  }
-
-  .mobile-contact-hero-actions {
-    display: flex !important;
-    gap: 10px !important;
-    margin-top: 16px !important;
-    justify-content: center !important;
-    width: 100% !important;
-    max-width: 320px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-
-  .mobile-wa-btn,
-  .mobile-call-btn {
-    flex: 1 !important;
-    height: 46px !important;
-    min-height: 46px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 13.5px !important;
-    font-weight: 700 !important;
-    border-radius: 24px !important;
-    text-decoration: none !important;
-  }
-
-  /* Hide duplicate blog heading below video hero on mobile */
-  .blog-subhead-desktop {
-    display: none !important;
-  }
-
-    /* Workshops Mobile Hero */
-  .workshop-hero-lux {
-    padding: 34px 18px 26px !important;
-    min-height: auto !important;
-    background: linear-gradient(180deg, #140C07 0%, #23140B 100%) !important;
-    background-color: #140C07 !important;
-    background-image: none !important;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
-    text-align: center !important;
-  }
-  .workshop-hero-container {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 14px !important;
-    padding: 0 !important;
-  }
-  .workshop-hero-left {
-    max-width: 100% !important;
-    text-align: center !important;
-  }
-  .workshop-hero-tag {
-    font-size: 11.5px !important;
-    font-weight: 700 !important;
-    letter-spacing: 1.4px !important;
-    text-transform: uppercase !important;
-    padding: 5px 14px !important;
-    border-radius: 20px !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(212, 175, 55, 0.35) !important;
-    color: #D4AF37 !important;
-    display: inline-flex !important;
-    margin-bottom: 10px !important;
-  }
-  .workshop-hero-title {
-    font-family: 'DM Serif Display', Georgia, serif !important;
-    font-size: clamp(26px, 7vw, 34px) !important;
-    line-height: 1.18 !important;
-    color: #FAF6EF !important;
-    margin-bottom: 8px !important;
-  }
-  .workshop-hero-desc {
-    font-size: 14px !important;
-    line-height: 1.6 !important;
-    color: #D5C2B1 !important;
-    max-width: 95% !important;
-    margin: 0 auto 16px !important;
-    overflow: visible !important;
-    max-height: none !important;
-    -webkit-line-clamp: unset !important;
-  }
-  .workshop-hero-badges {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 8px !important;
-    padding: 4px 16px 12px !important;
-    margin: 0 -18px 16px !important;
-    scrollbar-width: none !important;
-    justify-content: flex-start !important;
-  }
-  .workshop-hero-badges::-webkit-scrollbar {
-    display: none !important;
-  }
-  .workshop-badge-item {
-    flex: 0 0 auto !important;
-    scroll-snap-align: start !important;
-    padding: 7px 14px !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(212, 175, 55, 0.25) !important;
-    border-radius: 20px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-  }
-  .workshop-badge-icon {
-    width: 18px !important;
-    height: 18px !important;
-    margin-bottom: 0 !important;
-    color: #D4AF37 !important;
-  }
-  .workshop-badge-icon svg {
-    width: 14px !important;
-    height: 14px !important;
-  }
-  .workshop-badge-label {
-    font-size: 11.5px !important;
-    font-weight: 700 !important;
-    color: #FAF6EF !important;
-    white-space: nowrap !important;
-    line-height: 1.2 !important;
-  }
-  .workshop-hero-showcase-wrap {
-    display: none !important;
-  }
-  .workshop-hero-actions {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
-    width: 100% !important;
-    max-width: 320px !important;
-    margin: 0 auto !important;
-  }
-  .workshop-hero-actions .btn-gold-lux,
-  .workshop-hero-actions .btn-workshop-lux,
-  .workshop-hero-actions .btn-outline-lux,
-  .workshop-hero-actions a {
-    width: 100% !important;
-    height: 48px !important;
-    min-height: 48px !important;
-    font-size: 13.5px !important;
-    font-weight: 700 !important;
-    border-radius: 24px !important;
-    justify-content: center !important;
-    display: inline-flex !important;
-    align-items: center !important;
-  }
-
-  /* Blog Mobile Hero */
-  .blog-hero-lux {
-    min-height: 270px !important;
-    height: auto !important;
-    padding: 34px 18px 26px !important;
-    position: relative !important;
-    background: #140C07 !important;
-    overflow: hidden !important;
-    text-align: center !important;
-  }
-  .blog-hero-fullscreen-video {
-    opacity: 0.38 !important;
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-  }
-  .blog-hero-lux-container {
-    padding: 0 !important;
-    position: relative !important;
-    z-index: 2 !important;
-  }
-  .blog-hero-lux-title {
-    font-family: 'DM Serif Display', Georgia, serif !important;
-    font-size: clamp(28px, 7.5vw, 36px) !important;
-    line-height: 1.15 !important;
-    color: #FAF6EF !important;
-    margin-bottom: 8px !important;
-  }
-  .blog-hero-lux-desc {
-    font-size: 14px !important;
-    line-height: 1.55 !important;
-    color: #D5C2B1 !important;
-    max-width: 95% !important;
-    margin: 0 auto 16px !important;
-  }
-  .btn-blog-lux-explore {
-    height: 46px !important;
-    min-height: 46px !important;
-    padding: 10px 24px !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    border-radius: 24px !important;
-    margin: 0 auto !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-
-  /* --------------------------------------------------------------------------
-     12. SYSTEMIC MOBILE UI REFINEMENTS (TOUCH, DOCK, CONTRAST & TYPOGRAPHY)
-     -------------------------------------------------------------------------- */
-  /* Prevent iOS Safari / Android WebView auto-zoom on input focus */
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="search"],
-  input[type="number"],
-  textarea,
-  select,
-  .footer-newsletter-input,
-  .blog-search,
-  #chocopedia-search-input {
-    font-size: 16px !important;
-  }
-
-  /* Safe Bottom Dock Clearance Across All Pages */
-  body {
-    padding-bottom: calc(72px + env(safe-area-inset-bottom, 20px)) !important;
-  }
-  footer#site-footer,
-  .footer-links-section,
-  footer {
-    padding-bottom: calc(76px + env(safe-area-inset-bottom, 20px) + 24px) !important;
-  }
-  .footer-bottom {
-    margin-bottom: 20px !important;
-  }
-  .social-icon {
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* Sensory Flavor Wheel High Contrast Overrides (WCAG AA Compliant) */
-  #flavor-wheel-sec,
-  .luxury-flavor-wheel-sec {
-    color: #FAF6EF !important;
-  }
-  #flavor-wheel-sec .section-head p,
-  #flavor-wheel-sec p,
-  .luxury-flavor-wheel-sec p,
-  #flavor-wheel-sec .detail-panel p,
-  #flavor-wheel-sec .detail-lead,
-  #flavor-wheel-sec .wheel-hint {
-    color: #D5C2B1 !important;
-  }
-  #flavor-wheel-sec .section-head h2,
-  #flavor-wheel-sec .detail-panel h3 {
-    color: #FAF6EF !important;
-  }
-
-  /* Blog Edge-to-Edge Pure Video Background on Mobile */
-  .blog-hero-lux {
-    position: relative !important;
-    overflow: hidden !important;
-    background: #140C07 !important;
-  }
-  .blog-hero-video-bg {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    overflow: hidden !important;
-    z-index: 1 !important;
-  }
-  .blog-hero-fullscreen-video {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-width: 100% !important;
-    min-height: 100% !important;
-    object-fit: cover !important;
-    transform: none !important;
-    opacity: 0.38 !important;
-  }
-  .blog-hero-lux-desc {
-    -webkit-line-clamp: unset !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-
-  /* Mobile Category Filter Pills */
-  .filter-btn,
-  .blog-filters-wrapper .filter-btn,
-  .cat-tab-lux {
-    min-height: 44px !important;
-    padding: 8px 18px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* Social Share Pills on Article Detail */
-  .share-container {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    align-items: center !important;
-  }
-  .share-btn {
-    min-height: 44px !important;
-    padding: 10px 16px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 13px !important;
-  }
-
-  /* Mobile Drawer Fullscreen Overlay & Safe-Area */
-  #mobile-menu {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    bottom: 0 !important;
-    z-index: 99999 !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-
-
-  /* --------------------------------------------------------------------------
-     13. MOBILE IMAGE CARD ALIGNMENT & PROPORTIONAL HARMONY
-     -------------------------------------------------------------------------- */
-  .grid-blog {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 24px !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto 36px auto !important;
-    padding: 0 !important;
-  }
-
-  .grid-blog > * {
-    flex: 0 0 100% !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  .blog-card-link {
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    border-radius: 20px !important;
-    background: #FAF6EF !important;
-    border: 1px solid rgba(212, 175, 55, 0.22) !important;
-  }
-
-  .blog-card-img {
-    width: 100% !important;
-    max-width: 100% !important;
-    aspect-ratio: 16 / 9 !important;
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-    display: block !important;
-    position: relative !important;
-    overflow: hidden !important;
-    flex-shrink: 0 !important;
-    border-radius: 19px 19px 0 0 !important;
-    background: #140C07 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  .blog-card-img img {
-    width: 100% !important;
-    height: 100% !important;
-    min-width: 100% !important;
-    min-height: 100% !important;
-    max-width: 100% !important;
-    object-fit: cover !important;
-    object-position: center !important;
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    border-radius: 19px 19px 0 0 !important;
-  }
-
-  .blog-card-body {
-    width: 100% !important;
-    box-sizing: border-box !important;
-    padding: 22px 20px 24px !important;
-    background: #FAF6EF !important;
-    display: flex !important;
-    flex-direction: column !important;
-    flex-grow: 1 !important;
-  }
-
-  /* Universal Image Card Consistency */
-  .home-journal-img-wrap,
-  .workshop-card-img,
-  .why-card-img-wrapper,
-  .recipe-card > div:first-child {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-    position: relative !important;
-    display: block !important;
-  }
-
-  .home-journal-img-wrap img,
-  .workshop-card-img img,
-  .why-card-img-wrapper img,
-  .recipe-card > div:first-child img {
-    width: 100% !important;
-    height: 100% !important;
-    min-width: 100% !important;
-    min-height: 100% !important;
-    max-width: 100% !important;
-    object-fit: cover !important;
-    object-position: center !important;
-    display: block !important;
-  }
-
+/* ==========================================================================
+
+   RT CHOCOS — PRESENTATION LAYER B: MOBILE EXPERIENCE (mobile.css)
+
+   Exclusively scoped to @media (max-width: 768px)
+
+   Designed specifically for touchscreens:
+
+   - Ergonomic touch-first controls (minimum 44x44px touch targets)
+
+   - Single-column & carefully balanced mobile layouts
+
+   - Horizontal swipeable collections with momentum scrolling
+
+   - Mobile-optimized navigation (ergonomic bottom dock + slide-over drawer)
+
+   - Legible typography (>= 11.5px metadata, >= 14px body)
+
+   - Balanced whitespace and minimal scrolling fatigue
+
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+  /* --------------------------------------------------------------------------
+
+     1. GLOBAL MOBILE TOUCH ERGONOMICS & PADDING NORMALIZATION
+
+     -------------------------------------------------------------------------- */
+
+  body {
+
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+
+    -webkit-tap-highlight-color: transparent;
+
+  }
+
+  .section {
+
+    padding: 38px 18px !important;
+
+  }
+
+  .section-label {
+
+    font-size: 12px !important;
+
+    padding: 6px 14px !important;
+
+    letter-spacing: 1.2px !important;
+
+    margin-bottom: 10px !important;
+
+  }
+
+  .section-title {
+
+    font-size: clamp(24px, 5.8vw, 32px) !important;
+
+    line-height: 1.22 !important;
+
+    margin-bottom: 10px !important;
+
+  }
+
+  .section-subtitle {
+
+    font-size: 14.5px !important;
+
+    line-height: 1.6 !important;
+
+    margin-bottom: 24px !important;
+
+    padding: 0 4px !important;
+
+  }
+
+  /* --------------------------------------------------------------------------
+
+     2. MOBILE HERO SECTION (STACKED & THUMB-FRIENDLY)
+
+     -------------------------------------------------------------------------- */
+
+  #page-home #hero {
+
+    min-height: auto !important;
+
+    padding: 42px 18px 36px !important;
+
+    text-align: center !important;
+
+    background: linear-gradient(180deg, #FAF6EF 0%, #F5EFEB 100%) !important;
+
+  }
+
+  #page-home #hero .split-hero-container {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    gap: 20px !important;
+
+  }
+
+  #page-home #hero .split-hero-content {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    padding: 0 !important;
+
+  }
+
+  #page-home #hero h1 {
+
+    font-size: clamp(26px, 6.8vw, 36px) !important;
+
+    line-height: 1.18 !important;
+
+    margin: 12px auto 16px !important;
+
+    max-width: 95% !important;
+
+  }
+
+  #page-home #hero p {
+
+    font-size: 14.5px !important;
+
+    line-height: 1.6 !important;
+
+    margin: 0 auto 24px !important;
+
+    max-width: 92% !important;
+
+  }
+
+  #page-home #hero .hero-btns {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 12px !important;
+
+    width: 100% !important;
+
+    align-items: center !important;
+
+    margin-bottom: 20px !important;
+
+  }
+
+  #page-home #hero .btn-hero-primary,
+
+  #page-home #hero .btn-hero-outline {
+
+    width: 100% !important;
+
+    max-width: 320px !important;
+
+    min-height: 48px !important;
+
+    padding: 13px 24px !important;
+
+    font-size: 13.5px !important;
+
+    font-weight: 700 !important;
+
+    justify-content: center !important;
+
+    border-radius: var(--radius-full) !important;
+
+    box-shadow: 0 4px 14px rgba(24, 12, 6, 0.18) !important;
+
+  }
+
+  /* Compact Hero Ingredient Spotlight on Mobile */
+
+  .hero-ingredient-spotlight-card {
+
+    display: none !important;
+
+  }
+
+  /* --------------------------------------------------------------------------
+
+     3. MOBILE TRUST STRIP (2x2 BALANCED GRID + 1 FULL-WIDTH)
+
+     -------------------------------------------------------------------------- */
+
+  .home-trust-strip-sec {
+
+    padding: 28px 16px !important;
+
+    background: var(--bg-surface) !important;
+
+  }
+
+  .trust-pillars-grid {
+
+    display: grid !important;
+
+    grid-template-columns: repeat(2, 1fr) !important;
+
+    gap: 10px !important;
+
+  }
+
+  .trust-pillars-grid .trust-col:nth-child(5) {
+
+    grid-column: span 2 !important;
+
+  }
+
+  .trust-col {
+
+    padding: 16px 12px !important;
+
+    border-radius: var(--radius-sm) !important;
+
+    min-height: 92px !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    justify-content: center !important;
+
+  }
+
+  .trust-stat-title {
+
+    font-size: 20px !important;
+
+    font-weight: 700 !important;
+
+    color: var(--accent-gold) !important;
+
+    margin-bottom: 4px !important;
+
+  }
+
+  .trust-stat-subtitle {
+
+    font-size: 11px !important;
+
+    letter-spacing: 0.8px !important;
+
+    line-height: 1.35 !important;
+
+    color: var(--text-secondary) !important;
+
+    font-weight: 600 !important;
+
+  }
+
+  /* --------------------------------------------------------------------------
+
+     4. MOBILE INTERACTIVE CHOCOLATE TABLE (TOUCH WORKBENCH EXPLORER)
+
+     -------------------------------------------------------------------------- */
+
+  .chocolate-table-sec {
+
+    padding: 38px 16px !important;
+
+  }
+
+  .chocolate-table-wrapper {
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: var(--radius-md) !important;
+
+    box-shadow: 0 8px 24px rgba(26, 15, 8, 0.12) !important;
+
+  }
+
+  /* Hide desktop absolute pins on mobile touchscreens */
+
+  .chocolate-table-wrapper .table-hotspot {
+
+    display: none !important;
+
+  }
+
+  /* Mobile Touch Workbench Grid */
+
+  .mobile-workbench-cards {
+
+    display: grid !important;
+
+    grid-template-columns: repeat(2, 1fr) !important;
+
+    gap: 10px !important;
+
+    margin-top: 18px !important;
+
+  }
+
+  @media (max-width: 370px) {
+
+    .mobile-workbench-cards {
+
+      grid-template-columns: 1fr !important;
+
+    }
+
+  }
+
+  .mobile-workbench-card {
+
+    background: var(--bg-card) !important;
+
+    border: 1px solid var(--border-accent) !important;
+
+    border-radius: 12px !important;
+
+    padding: 12px 10px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 10px !important;
+
+    min-height: 52px !important;
+
+    text-align: left !important;
+
+    cursor: pointer !important;
+
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease !important;
+
+    box-shadow: 0 2px 8px rgba(26, 15, 8, 0.05) !important;
+
+  }
+
+  .mobile-workbench-card:active {
+
+    transform: scale(0.97) !important;
+
+    background: var(--bg-surface) !important;
+
+    border-color: var(--accent-gold) !important;
+
+  }
+
+  .mwb-icon {
+
+    font-size: 20px !important;
+
+    flex-shrink: 0 !important;
+
+  }
+
+  .mwb-text {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 2px !important;
+
+    flex: 1 !important;
+
+    min-width: 0 !important;
+
+  }
+
+  .mwb-text strong {
+
+    font-family: 'DM Serif Display', Georgia, serif !important;
+
+    font-size: 13.5px !important;
+
+    font-weight: 600 !important;
+
+    color: var(--text-heading) !important;
+
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+
+  }
+
+  .mwb-text span {
+
+    font-family: 'Inter', -apple-system, sans-serif !important;
+
+    font-size: 11.5px !important;
+
+    color: var(--text-muted) !important;
+
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+
+  }
+
+  .mwb-arrow {
+
+    color: var(--accent-gold) !important;
+
+    font-size: 13px !important;
+
+    font-weight: 700 !important;
+
+    flex-shrink: 0 !important;
+
+  }
+
+  /* --------------------------------------------------------------------------
+
+     5. MOBILE TEMPERING LAB (ERGONOMIC 2x2 TOUCH GRID & METRIC STATS)
+
+     -------------------------------------------------------------------------- */
+
+  .tempering-lab-sec {
+
+    padding: 38px 16px !important;
+
+  }
+
+  .tempering-lab-container {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 22px !important;
+
+  }
+
+  .tempering-lab-card {
+
+    padding: 20px 16px !important;
+
+    border-radius: var(--radius-md) !important;
+
+  }
+
+  .chocolate-type-pills {
+
+    display: grid !important;
+
+    grid-template-columns: 1fr 1fr !important;
+
+    gap: 10px !important;
+
+    margin-bottom: 18px !important;
+
+  }
+
+  .choco-pill-btn {
+
+    min-height: 46px !important;
+
+    height: 46px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    padding: 10px 14px !important;
+
+    font-size: 12.5px !important;
+
+    font-weight: 700 !important;
+
+    border-radius: 24px !important;
+
+    text-align: center !important;
+
+    border: 1px solid var(--border-accent) !important;
+
+    background: var(--bg-card) !important;
+
+    color: var(--text-primary) !important;
+
+    transition: all 0.2s ease !important;
+
+  }
+
+  .choco-pill-btn.active,
+
+  .choco-pill-btn:active {
+
+    background: var(--bg-dark) !important;
+
+    color: var(--accent-gold) !important;
+
+    border-color: var(--accent-gold) !important;
+
+    box-shadow: 0 4px 14px rgba(26, 15, 8, 0.25) !important;
+
+  }
+
+  .tempering-metrics-row {
+
+    display: grid !important;
+
+    grid-template-columns: repeat(3, 1fr) !important;
+
+    gap: 8px !important;
+
+    margin: 16px 0 !important;
+
+  }
+
+  .tempering-metric-box {
+
+    padding: 12px 6px !important;
+
+    background: rgba(26, 15, 8, 0.5) !important;
+
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+
+    border-radius: 10px !important;
+
+    text-align: center !important;
+
+  }
+
+  .metric-deg-val {
+
+    font-size: 24px !important;
+
+    font-weight: 800 !important;
+
+    color: var(--accent-gold) !important;
+
+    line-height: 1.1 !important;
+
+    margin-bottom: 4px !important;
+
+  }
+
+  .metric-deg-sub {
+
+    font-size: 11.5px !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing: 0.6px !important;
+
+    color: #D4AF37 !important;
+
+    text-transform: uppercase !important;
+
+    line-height: 1.25 !important;
+
+  }
+
+  .tempering-science-callout {
+
+    padding: 14px 16px !important;
+
+    border-left: 3px solid var(--accent-gold) !important;
+
+    background: rgba(26, 15, 8, 0.4) !important;
+
+    border-radius: 0 8px 8px 0 !important;
+
+    margin-bottom: 18px !important;
+
+  }
+
+  .science-callout-text {
+
+    font-size: 13.5px !important;
+
+    line-height: 1.6 !important;
+
+    color: #E6D7C8 !important;
+
+  }
+
+  .tempering-svg-chart .chart-gridlines text {
+
+    display: none !important;
+
+  }
+
+  .tempering-svg-chart .grid-line {
+
+    stroke: rgba(255, 255, 255, 0.08) !important;
+
+  }
+
+  /* --------------------------------------------------------------------------
+
+     6. MOBILE WORKSHOPS (HORIZONTAL SWIPE CAROUSEL WITH BALANCED HEIGHT)
+
+     -------------------------------------------------------------------------- */
+
+  #featured-workshops {
+
+    padding: 38px 16px !important;
+
+    overflow-x: hidden !important;
+
+  }
+
+  .workshops-swipe-hint {
+
+    display: flex !important;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    font-size: 12px !important;
+
+    font-weight: 700 !important;
+
+    text-transform: uppercase !important;
+
+    letter-spacing: 1.2px;
+
+    color: var(--accent);
+
+    margin-bottom: 16px;
+
+  }
+
+  .workshops-grid {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    flex-wrap: nowrap !important;
+
+    overflow-x: auto !important;
+
+    scroll-snap-type: x mandatory !important;
+
+    -webkit-overflow-scrolling: touch !important;
+
+    gap: 14px !important;
+
+    padding: 6px 4px 18px !important;
+
+    margin: 0 -16px !important;
+
+    padding-left: 18px !important;
+
+    padding-right: 18px !important;
+
+    scrollbar-width: none !important;
+
+  }
+
+  .workshops-grid::-webkit-scrollbar {
+
+    display: none !important;
+
+  }
+
+  .workshop-card {
+
+    flex: 0 0 85% !important;
+
+    max-width: 320px !important;
+
+    min-width: 260px !important;
+
+    min-height: 430px !important;
+
+    scroll-snap-align: center !important;
+
+    border-radius: var(--radius-md) !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+  }
+
+  .workshop-card-img {
+
+    height: 155px !important;
+
+  }
+
+  .workshop-card-body {
+
+    padding: 16px !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    flex: 1 !important;
+
+  }
+
+  .workshop-card h3 {
+
+    font-size: 18px !important;
+
+    line-height: 1.25 !important;
+
+    margin-bottom: 8px !important;
+
+  }
+
+  .workshop-meta {
+
+    font-size: 13px !important;
+
+    margin-bottom: 10px !important;
+
+  }
+
+  .workshop-outcomes {
+
+    margin-bottom: 16px !important;
+
+    font-size: 12.5px !important;
+
+    line-height: 1.5 !important;
+
+    flex: 1 !important;
+
+  }
+
+  .workshop-outcomes li {
+
+    margin-bottom: 4px !important;
+
+  }
+
+  .workshop-card .btn-primary {
+
+    min-height: 46px !important;
+
+    font-size: 13px !important;
+
+    font-weight: 700 !important;
+
+    margin-top: auto !important;
+
+  }
+
+  /* --------------------------------------------------------------------------
+
+     7. MOBILE SENSORY FLAVOR WHEEL (STACKED SENSORY LAB)
+
+     -------------------------------------------------------------------------- */
+
+  .luxury-flavor-wheel-sec {
+
+    padding: 38px 16px !important;
+
+  }
+
+  .flavor-wheel-split-container {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 24px !important;
+
+  }
+
+  .wheel-panel,
+
+  .detail-panel {
+
+    width: 100% !important;
+
+  }
+
+  #page-home #flavor-wheel-sec .steps {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    flex-wrap: nowrap !important;
+
+    overflow-x: auto !important;
+
+    scroll-snap-type: x mandatory !important;
+
+    -webkit-overflow-scrolling: touch !important;
+
+    gap: 12px !important;
+
+    padding: 8px 16px 18px !important;
+
+    margin: 12px -16px 0 !important;
+
+  }
+
+  #page-home #flavor-wheel-sec .step {
+
+    flex: 0 0 78vw !important;
+
+    max-width: 270px !important;
+
+    min-height: 160px !important;
+
+    scroll-snap-align: start !important;
+
+    padding: 18px 16px !important;
+
+    border-radius: 14px !important;
+
+  }
+
+  #page-home #flavor-wheel-sec .step button {
+
+    min-height: 44px !important;
+
+    font-size: 13px !important;
+
+    font-weight: 600 !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    padding: 10px 16px !important;
+
+    border-radius: 8px !important;
+
+  }
+
+  #page-home #flavor-wheel-sec .guide-controls button {
+
+    min-height: 48px !important;
+
+    font-size: 14px !important;
+
+    font-weight: 600 !important;
+
+    border-radius: 8px !important;
+
+  }
+
+  /* --------------------------------------------------------------------------
+
+     8. MOBILE CACAO JOURNAL (SWIPEABLE HORIZONTAL ARTICLE RAIL)
+
+     -------------------------------------------------------------------------- */
+
+  .home-journal-sec {
+
+    padding: 38px 16px !important;
+
+    overflow-x: hidden !important;
+
+  }
+
+  .journal-articles-grid {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    flex-wrap: nowrap !important;
+
+    overflow-x: auto !important;
+
+    scroll-snap-type: x mandatory !important;
+
+    -webkit-overflow-scrolling: touch !important;
+
+    gap: 14px !important;
+
+    margin: 0 -16px !important;
+
+    padding: 8px 18px 18px !important;
+
+    scrollbar-width: none !important;
+
+  }
+
+  .journal-articles-grid::-webkit-scrollbar {
+
+    display: none !important;
+
+  }
+
+  .journal-card {
+
+    flex: 0 0 85% !important;
+
+    max-width: 310px !important;
+
+    min-width: 250px !important;
+
+    scroll-snap-align: center !important;
+
+    border-radius: var(--radius-md) !important;
+
+  }
+
+  /* --------------------------------------------------------------------------
+
+     9. MOBILE BOTTOM NAVIGATION DOCK (ERGONOMIC THUMB DOCK)
+
+     -------------------------------------------------------------------------- */
+
+  .mobile-bottom-nav {
+
+    display: flex !important;
+
+    position: fixed !important;
+
+    bottom: 0 !important;
+
+    left: 0 !important;
+
+    right: 0 !important;
+
+    max-width: 520px !important;
+
+    margin: 0 auto !important;
+
+    height: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+
+    background: rgba(18, 10, 5, 0.97) !important;
+
+    backdrop-filter: blur(20px) !important;
+
+    -webkit-backdrop-filter: blur(20px) !important;
+
+    border-top: 1px solid rgba(212, 175, 55, 0.3) !important;
+
+    border-radius: 18px 18px 0 0 !important;
+
+    box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.45) !important;
+
+    z-index: 9999 !important;
+
+    align-items: center !important;
+
+    justify-content: space-around !important;
+
+  }
+
+  .mobile-bottom-item {
+
+    flex: 1 !important;
+
+    height: 100% !important;
+
+    min-height: 48px !important;
+
+    min-width: 48px !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    gap: 3px !important;
+
+    color: rgba(250, 246, 239, 0.7) !important;
+
+    text-decoration: none !important;
+
+    font-size: 11.5px !important;
+
+    font-weight: 600 !important;
+
+    letter-spacing: 0.3px !important;
+
+    background: transparent !important;
+
+    border: none !important;
+
+    cursor: pointer !important;
+
+    transition: color 0.2s ease, transform 0.2s ease !important;
+
+  }
+
+  .mobile-bottom-item svg {
+
+    width: 20px !important;
+
+    height: 20px !important;
+
+    stroke: rgba(250, 246, 239, 0.7) !important;
+
+  }
+
+  .mobile-bottom-item:active,
+
+  .mobile-bottom-item.active {
+
+    color: var(--accent-gold) !important;
+
+    transform: scale(0.96);
+
+  }
+
+  .mobile-bottom-item.active svg,
+
+  .mobile-bottom-item:active svg {
+
+    stroke: var(--accent-gold) !important;
+
+  }
+
+  .mobile-bottom-item.active::after {
+
+    content: '' !important;
+
+    position: absolute !important;
+
+    top: 3px !important;
+
+    width: 20px !important;
+
+    height: 3px !important;
+
+    background: var(--accent-gold) !important;
+
+    border-radius: 2px !important;
+
+  }
+
+  /* 10. MOBILE TOUCH TARGETS & ACCESSIBILITY POLISH */
+
+  .ai-drawer-close {
+
+    min-width: 44px !important;
+
+    min-height: 44px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    font-size: 24px !important;
+
+    cursor: pointer !important;
+
+  }
+
+  .table-modal-close {
+
+    min-width: 44px !important;
+
+    min-height: 44px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    font-size: 24px !important;
+
+    cursor: pointer !important;
+
+  }
+
+  .ai-chip {
+
+    min-height: 42px !important;
+
+    padding: 10px 16px !important;
+
+    font-size: 13px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+  }
+
+  .subtle-btn {
+
+    min-height: 42px !important;
+
+    padding: 10px 18px !important;
+
+    font-size: 13px !important;
+
+    font-weight: 600 !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+  }
+
+  .footer-link {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    padding: 10px 0 !important;
+
+    min-height: 44px !important;
+
+    font-size: 14.5px !important;
+
+    line-height: 1.5 !important;
+
+  }
+
+  .footer-newsletter-btn {
+
+    min-height: 44px !important;
+
+    min-width: 48px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+  }
+
+  /* Micro text prevention: ensure badges, tags, and notes are >= 11.5px */
+
+  .level-tag,
+
+  .workshop-tag,
+
+  .cat-badge,
+
+  .home-journal-card .cat-badge,
+
+  .detail-top .micro,
+
+  #page-home #flavor-wheel-sec .detail-top .micro,
+
+  .interactive-tempering-card .card-badge {
+
+    font-size: 11.5px !important;
+
+  }
+
+  #flavor-wheel-sec #detailGroup,
+
+  #flavor-wheel-sec .detail-top .tag,
+
+  .home-journal-cat {
+
+    font-size: 12px !important;
+
+  }
+
+  .logo {
+
+    min-height: 44px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+  }
+
+  /* =========================================================================
+
+     11. DEDICATED MOBILE HERO SYSTEM ACROSS ALL PAGES
+
+     ========================================================================= */
+
+  #page-workshops,
+
+  #page-blog,
+
+  #page-about,
+
+  #page-contact,
+
+  #page-recipes,
+
+  #page-chocopedia {
+
+    padding-top: 54px !important;
+
+  }
+
+    /* Universal Mobile Page Hero Container */
+
+  .page-hero,
+
+  .contact-page-hero,
+
+  .about-page-hero {
+
+    padding: 34px 18px 26px !important;
+
+    min-height: auto !important;
+
+    height: auto !important;
+
+    max-height: none !important;
+
+    background: linear-gradient(180deg, #FAF6EF 0%, #F5ECE2 100%) !important;
+
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
+
+    text-align: center !important;
+
+    overflow: visible !important;
+
+  }
+
+  .about-page-hero-image {
+
+    display: none !important;
+
+  }
+
+  .page-hero-content,
+
+  .about-page-hero .page-hero-content,
+
+  .contact-page-hero .page-hero-content {
+
+    position: static !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    text-align: center !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    max-height: none !important;
+
+    padding: 0 !important;
+
+    overflow: visible !important;
+
+  }
+
+  .page-hero h1,
+
+  .about-page-hero h1,
+
+  .contact-page-hero h1 {
+
+    font-family: 'DM Serif Display', Georgia, serif !important;
+
+    font-size: clamp(26px, 7vw, 34px) !important;
+
+    line-height: 1.18 !important;
+
+    color: #1A0F08 !important;
+
+    margin-bottom: 8px !important;
+
+  }
+
+  .page-hero p,
+
+  .about-page-hero p,
+
+  .contact-page-hero p {
+
+    font-size: 14px !important;
+
+    line-height: 1.6 !important;
+
+    color: #523624 !important;
+
+    max-width: 95% !important;
+
+    margin: 0 auto !important;
+
+    overflow: visible !important;
+
+    max-height: none !important;
+
+    -webkit-line-clamp: unset !important;
+
+  }
+
+  .mobile-hero-tag {
+
+    display: inline-flex !important;
+
+    font-size: 11.5px !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing: 1.4px !important;
+
+    text-transform: uppercase !important;
+
+    padding: 4px 12px !important;
+
+    border-radius: 20px !important;
+
+    background: rgba(255, 255, 255, 0.85) !important;
+
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+
+    color: #523624 !important;
+
+    margin-bottom: 10px !important;
+
+    box-shadow: 0 2px 6px rgba(212, 175, 55, 0.08) !important;
+
+  }
+
+  .mobile-contact-hero-actions {
+
+    display: flex !important;
+
+    gap: 10px !important;
+
+    margin-top: 16px !important;
+
+    justify-content: center !important;
+
+    width: 100% !important;
+
+    max-width: 320px !important;
+
+    margin-left: auto !important;
+
+    margin-right: auto !important;
+
+  }
+
+  .mobile-wa-btn,
+
+  .mobile-call-btn {
+
+    flex: 1 !important;
+
+    height: 46px !important;
+
+    min-height: 46px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    font-size: 13.5px !important;
+
+    font-weight: 700 !important;
+
+    border-radius: 24px !important;
+
+    text-decoration: none !important;
+
+  }
+
+  /* Hide duplicate blog heading below video hero on mobile */
+
+  .blog-subhead-desktop {
+
+    display: none !important;
+
+  }
+
+    /* Workshops Mobile Hero (Independent Mobile Presentation Layer) */
+
+  .workshop-hero-lux {
+    padding: 58px 18px 28px !important;
+    margin-top: 0 !important;
+    min-height: auto !important;
+    background: linear-gradient(180deg, #140C07 0%, #23140B 100%) !important;
+    background-color: #140C07 !important;
+    background-image: none !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
+    text-align: center !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .workshop-hero-container {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    gap: 14px !important;
+
+    padding: 0 !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+  }
+
+  .workshop-hero-left {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    text-align: center !important;
+
+  }
+
+  .workshop-hero-tag {
+
+    font-size: 11px !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing: 1.2px !important;
+
+    text-transform: uppercase !important;
+
+    padding: 5px 12px !important;
+
+    border-radius: 20px !important;
+
+    background: rgba(255, 255, 255, 0.08) !important;
+
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+
+    color: #D4AF37 !important;
+
+    display: inline-flex !important;
+
+    margin-bottom: 10px !important;
+
+    max-width: 95% !important;
+
+    white-space: normal !important;
+
+    text-align: center !important;
+
+  }
+
+  .workshop-hero-title {
+
+    font-family: 'DM Serif Display', Georgia, serif !important;
+
+    font-size: clamp(23px, 6.2vw, 29px) !important;
+
+    line-height: 1.2 !important;
+
+    color: #FAF6EF !important;
+
+    margin-bottom: 10px !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: break-word !important;
+
+  }
+
+  .workshop-hero-desc {
+
+    font-size: 13.5px !important;
+
+    line-height: 1.55 !important;
+
+    color: #D5C2B1 !important;
+
+    max-width: 100% !important;
+
+    margin: 0 auto 16px !important;
+
+    overflow: visible !important;
+
+    max-height: none !important;
+
+    -webkit-line-clamp: unset !important;
+
+  }
+
+  .workshop-hero-badges {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    flex-wrap: nowrap !important;
+
+    overflow-x: auto !important;
+
+    scroll-snap-type: x mandatory !important;
+
+    -webkit-overflow-scrolling: touch !important;
+
+    gap: 8px !important;
+
+    padding: 6px 18px 14px !important;
+
+    margin: 0 -18px 16px !important;
+
+    scrollbar-width: none !important;
+
+    justify-content: flex-start !important;
+
+  }
+
+  .workshop-hero-badges::-webkit-scrollbar {
+
+    display: none !important;
+
+  }
+
+  .workshop-badge-item {
+
+    flex: 0 0 auto !important;
+
+    scroll-snap-align: start !important;
+
+    padding: 7px 13px !important;
+
+    background: rgba(255, 255, 255, 0.08) !important;
+
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+
+    border-radius: 20px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    gap: 6px !important;
+
+  }
+
+  .workshop-badge-icon {
+
+    width: 16px !important;
+
+    height: 16px !important;
+
+    margin-bottom: 0 !important;
+
+    color: #D4AF37 !important;
+
+  }
+
+  .workshop-badge-icon svg {
+
+    width: 14px !important;
+
+    height: 14px !important;
+
+  }
+
+  .workshop-badge-label {
+
+    font-size: 11px !important;
+
+    font-weight: 700 !important;
+
+    color: #FAF6EF !important;
+
+    white-space: nowrap !important;
+
+    line-height: 1.2 !important;
+
+  }
+
+  .workshop-hero-actions {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 10px !important;
+
+    width: 100% !important;
+
+    max-width: 320px !important;
+
+    margin: 0 auto !important;
+
+  }
+
+  .workshop-hero-actions .btn-gold-lux {
+
+    background: linear-gradient(135deg, #D4AF37 0%, #AA820A 100%) !important;
+
+    color: #140C07 !important;
+
+    width: 100% !important;
+
+    height: 48px !important;
+
+    min-height: 48px !important;
+
+    font-size: 13px !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing: 0.8px !important;
+
+    text-transform: uppercase !important;
+
+    border-radius: 24px !important;
+
+    border: none !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    text-decoration: none !important;
+
+    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35) !important;
+
+  }
+
+  .workshop-hero-actions .btn-outline-lux {
+
+    background: rgba(255, 255, 255, 0.08) !important;
+
+    color: #FAF6EF !important;
+
+    border: 1.5px solid rgba(212, 175, 55, 0.45) !important;
+
+    width: 100% !important;
+
+    height: 48px !important;
+
+    min-height: 48px !important;
+
+    font-size: 13px !important;
+
+    font-weight: 600 !important;
+
+    letter-spacing: 0.8px !important;
+
+    text-transform: uppercase !important;
+
+    border-radius: 24px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    text-decoration: none !important;
+
+  }
+
+  /* Mobile Feature Showcase */
+
+  .workshop-hero-showcase-wrap {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    margin-top: 14px !important;
+
+  }
+
+  .workshop-hero-photo-card {
+
+    border-radius: 14px !important;
+
+    overflow: hidden !important;
+
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+
+    background: #140C07 !important;
+
+  }
+
+  .workshop-hero-mobile-photo {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    aspect-ratio: 16 / 9 !important;
+
+    object-fit: cover !important;
+
+  }
+
+  .workshop-photo-caption {
+
+    background: rgba(20, 12, 7, 0.95) !important;
+
+    color: #D5C2B1 !important;
+
+    font-size: 11px !important;
+
+    font-weight: 600 !important;
+
+    padding: 7px 12px !important;
+
+    text-align: center !important;
+
+    border-top: 1px solid rgba(212, 175, 55, 0.2) !important;
+
+  }
+
+  /* --- Mobile AI Class Insight Card --- */
+
+  .ai-class-insight-card {
+
+    padding: 16px !important;
+
+    margin-bottom: 28px !important;
+
+    border-radius: 12px !important;
+
+    border-left: 4px solid #D4AF37 !important;
+
+    box-shadow: 0 4px 14px rgba(20, 12, 7, 0.05) !important;
+
+  }
+
+  .insight-badge-row {
+
+    flex-direction: column !important;
+
+    align-items: flex-start !important;
+
+    gap: 6px !important;
+
+    margin-bottom: 8px !important;
+
+  }
+
+  .insight-pill {
+
+    font-size: 10.5px !important;
+
+    padding: 3px 10px !important;
+
+  }
+
+  .insight-curator {
+
+    font-size: 11px !important;
+
+  }
+
+  .insight-quote {
+
+    font-size: 13.5px !important;
+
+    line-height: 1.55 !important;
+
+  }
+
+  /* --- Mobile Masterclasses Horizontal Runway --- */
+
+  .workshops-catalog-header {
+
+    margin-bottom: 16px !important;
+
+    text-align: center !important;
+
+    padding: 0 4px !important;
+
+  }
+
+  .workshops-catalog-header .section-title {
+
+    font-size: clamp(22px, 5.5vw, 26px) !important;
+
+    margin-bottom: 8px !important;
+
+  }
+
+  .workshops-catalog-header .section-subtitle {
+
+    font-size: 13.5px !important;
+
+    line-height: 1.5 !important;
+
+    margin-bottom: 12px !important;
+
+  }
+
+  .mobile-swipe-indicator {
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    gap: 6px !important;
+
+    font-size: 10.5px !important;
+
+    font-weight: 700 !important;
+
+    text-transform: uppercase !important;
+
+    letter-spacing: 0.8px !important;
+
+    color: #8C531B !important;
+
+    background: rgba(212, 175, 55, 0.12) !important;
+
+    border: 1px solid rgba(212, 175, 55, 0.28) !important;
+
+    padding: 4px 12px !important;
+
+    border-radius: 20px !important;
+
+  }
+
+  .mobile-swipe-indicator .swipe-arrow {
+
+    color: #D4AF37 !important;
+
+    font-weight: 800 !important;
+
+  }
+
+  #workshops-grid,
+
+  .workshops-grid,
+
+  .workshops-grid-track {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    flex-wrap: nowrap !important;
+
+    overflow-x: auto !important;
+
+    scroll-snap-type: x mandatory !important;
+
+    -webkit-overflow-scrolling: touch !important;
+
+    gap: 16px !important;
+
+    padding: 6px 18px 24px !important;
+
+    margin: 0 -18px 32px !important;
+
+    scrollbar-width: none !important;
+
+  }
+
+  #workshops-grid::-webkit-scrollbar,
+
+  .workshops-grid-track::-webkit-scrollbar {
+
+    display: none !important;
+
+  }
+
+  #workshops-grid .workshop-card,
+
+  .workshops-grid-track .workshop-card {
+
+    flex: 0 0 86% !important;
+
+    max-width: 325px !important;
+
+    min-width: 270px !important;
+
+    scroll-snap-align: center !important;
+
+    border-radius: 16px !important;
+
+    box-shadow: 0 6px 22px rgba(20, 12, 7, 0.08) !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    height: auto !important;
+
+  }
+
+  .workshop-card-img {
+
+    width: 100% !important;
+
+    aspect-ratio: 16 / 10 !important;
+
+    border-radius: 16px 16px 0 0 !important;
+
+    overflow: hidden !important;
+
+    position: relative !important;
+
+    background: #140C07 !important;
+
+  }
+
+  .workshop-card-img img {
+
+    width: 100% !important;
+
+    height: 100% !important;
+
+    object-fit: cover !important;
+
+    display: block !important;
+
+  }
+
+  .workshop-card-tag {
+    position: absolute !important;
+    top: 10px !important;
+    left: 10px !important;
+    bottom: auto !important;
+    right: auto !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: calc(100% - 20px) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    background: rgba(18, 12, 7, 0.85) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(212, 175, 55, 0.55) !important;
+    color: #F7E7CE !important;
+    font-size: 9.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    padding: 3px 10px !important;
+    border-radius: 20px !important;
+    z-index: 2 !important;
+  }
+
+  .workshop-card-format-tag {
+
+    font-size: 9.5px !important;
+
+    padding: 3px 8px !important;
+
+    top: 10px !important;
+
+    right: 10px !important;
+
+  }
+
+  .workshop-card-body {
+
+    padding: 18px 16px 20px !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    flex: 1 !important;
+
+    text-align: left !important;
+
+  }
+
+  .workshop-card-title {
+
+    font-size: 18px !important;
+
+    line-height: 1.25 !important;
+
+    margin: 0 0 10px 0 !important;
+
+  }
+
+  .workshop-meta-bar {
+
+    padding: 8px 10px !important;
+
+    margin-bottom: 12px !important;
+
+    border-radius: 8px !important;
+
+  }
+
+  .workshop-meta-item.duration {
+
+    font-size: 11.5px !important;
+
+  }
+
+  .workshop-price-badge {
+
+    font-size: 11px !important;
+
+    padding: 2px 8px !important;
+
+  }
+
+  .workshop-takehome-highlight {
+
+    font-size: 11.5px !important;
+
+    padding: 6px 10px !important;
+
+    margin-bottom: 12px !important;
+
+  }
+
+  .workshop-curriculum-heading {
+
+    font-size: 10.5px !important;
+
+    margin-bottom: 6px !important;
+
+  }
+
+  .workshop-outcomes {
+
+    margin: 0 0 18px 0 !important;
+
+    gap: 6px !important;
+
+  }
+
+  .workshop-outcomes li {
+
+    font-size: 12px !important;
+
+    line-height: 1.45 !important;
+
+    padding-left: 18px !important;
+
+  }
+
+  .workshop-card-actions {
+
+    margin-top: auto !important;
+
+    padding-top: 12px !important;
+
+    gap: 8px !important;
+
+  }
+
+  .btn-workshop-primary {
+
+    height: 46px !important;
+
+    min-height: 46px !important;
+
+    font-size: 12px !important;
+
+    border-radius: 23px !important;
+
+  }
+
+  .btn-workshop-whatsapp svg {
+    width: 14px !important;
+    height: 14px !important;
+    max-width: 14px !important;
+    max-height: 14px !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+  }
+  .btn-workshop-whatsapp {
+
+    font-size: 12px !important;
+
+    padding: 6px 0 !important;
+
+  }
+
+  /* --- Mobile Academic Curriculum Roadmap --- */
+
+  .seo-learning-section {
+
+    margin: 36px auto 20px auto !important;
+
+    padding: 0 !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    text-align: center !important;
+
+  }
+
+  .seo-learning-section .section-title {
+
+    font-size: clamp(22px, 5.5vw, 26px) !important;
+
+    margin-bottom: 10px !important;
+
+  }
+
+  .seo-learning-intro {
+
+    font-size: 13.5px !important;
+
+    line-height: 1.6 !important;
+
+    color: #4A3E38 !important;
+
+    margin: 0 auto 24px auto !important;
+
+    padding: 0 4px !important;
+
+    display: block !important;
+
+    -webkit-line-clamp: unset !important;
+
+    overflow: visible !important;
+
+  }
+
+  .seo-topic-grid {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 16px !important;
+
+    width: 100% !important;
+
+    margin: 0 auto 32px auto !important;
+
+  }
+
+  .seo-topic-card {
+
+    width: 100% !important;
+
+    padding: 22px 18px !important;
+
+    border-radius: 14px !important;
+
+    box-sizing: border-box !important;
+
+    text-align: left !important;
+
+  }
+
+  .topic-card-top {
+
+    margin-bottom: 8px !important;
+
+  }
+
+  .topic-module-badge {
+
+    font-size: 13.5px !important;
+
+  }
+
+  .topic-stage-label {
+
+    font-size: 10px !important;
+
+    padding: 2px 8px !important;
+
+  }
+
+  .topic-title {
+
+    font-size: 18px !important;
+
+    line-height: 1.25 !important;
+
+    margin: 0 0 10px 0 !important;
+
+  }
+
+  .topic-desc {
+
+    font-size: 13px !important;
+
+    line-height: 1.55 !important;
+
+    margin: 0 0 14px 0 !important;
+
+    display: block !important;
+
+    -webkit-line-clamp: unset !important;
+
+    overflow: visible !important;
+
+  }
+
+  .topic-skills-list {
+
+    padding-top: 10px !important;
+
+    gap: 5px !important;
+
+  }
+
+  .topic-skills-list li {
+
+    font-size: 11.5px !important;
+
+  }
+
+  /* Mobile Consultation Card */
+
+  .academy-consultation-card {
+
+    flex-direction: column !important;
+
+    align-items: flex-start !important;
+
+    padding: 26px 18px !important;
+
+    gap: 18px !important;
+
+    border-radius: 16px !important;
+
+    width: 100% !important;
+
+    box-sizing: border-box !important;
+
+  }
+
+  .consultation-title {
+
+    font-size: 19px !important;
+
+    line-height: 1.25 !important;
+
+    margin: 0 0 8px 0 !important;
+
+  }
+
+  .consultation-desc {
+
+    font-size: 13px !important;
+
+    line-height: 1.55 !important;
+
+  }
+
+  .consultation-actions {
+
+    width: 100% !important;
+
+    min-width: 100% !important;
+
+    gap: 10px !important;
+
+  }
+
+  .consultation-actions .btn-gold-lux,
+
+  .consultation-actions .btn-outline-lux {
+
+    width: 100% !important;
+
+    height: 48px !important;
+
+    font-size: 12px !important;
+
+  }
+
+  /* Blog Mobile Hero */
+
+  .blog-hero-lux {
+
+    min-height: 270px !important;
+
+    height: auto !important;
+
+    padding: 34px 18px 26px !important;
+
+    position: relative !important;
+
+    background: #140C07 !important;
+
+    overflow: hidden !important;
+
+    text-align: center !important;
+
+  }
+
+  .blog-hero-fullscreen-video {
+
+    opacity: 0.38 !important;
+
+    position: absolute !important;
+
+    inset: 0 !important;
+
+    width: 100% !important;
+
+    height: 100% !important;
+
+    object-fit: cover !important;
+
+  }
+
+  .blog-hero-lux-container {
+
+    padding: 0 !important;
+
+    position: relative !important;
+
+    z-index: 2 !important;
+
+  }
+
+  .blog-hero-lux-title {
+
+    font-family: 'DM Serif Display', Georgia, serif !important;
+
+    font-size: clamp(28px, 7.5vw, 36px) !important;
+
+    line-height: 1.15 !important;
+
+    color: #FAF6EF !important;
+
+    margin-bottom: 8px !important;
+
+  }
+
+  .blog-hero-lux-desc {
+
+    font-size: 14px !important;
+
+    line-height: 1.55 !important;
+
+    color: #D5C2B1 !important;
+
+    max-width: 95% !important;
+
+    margin: 0 auto 16px !important;
+
+  }
+
+  .btn-blog-lux-explore {
+
+    height: 46px !important;
+
+    min-height: 46px !important;
+
+    padding: 10px 24px !important;
+
+    font-size: 13px !important;
+
+    font-weight: 700 !important;
+
+    border-radius: 24px !important;
+
+    margin: 0 auto !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+  }
+
+  /* --------------------------------------------------------------------------
+
+     12. SYSTEMIC MOBILE UI REFINEMENTS (TOUCH, DOCK, CONTRAST & TYPOGRAPHY)
+
+     -------------------------------------------------------------------------- */
+
+  /* Prevent iOS Safari / Android WebView auto-zoom on input focus */
+
+  input[type="text"],
+
+  input[type="email"],
+
+  input[type="tel"],
+
+  input[type="search"],
+
+  input[type="number"],
+
+  textarea,
+
+  select,
+
+  .footer-newsletter-input,
+
+  .blog-search,
+
+  #chocopedia-search-input {
+
+    font-size: 16px !important;
+
+  }
+
+  /* Safe Bottom Dock Clearance Across All Pages */
+
+  body {
+
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 20px)) !important;
+
+  }
+
+  footer#site-footer,
+
+  .footer-links-section,
+
+  footer {
+
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 20px) + 24px) !important;
+
+  }
+
+  .footer-bottom {
+
+    margin-bottom: 20px !important;
+
+  }
+
+  .social-icon {
+
+    width: 44px !important;
+
+    height: 44px !important;
+
+    min-width: 44px !important;
+
+    min-height: 44px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+  }
+
+  /* Sensory Flavor Wheel High Contrast Overrides (WCAG AA Compliant) */
+
+  #flavor-wheel-sec,
+
+  .luxury-flavor-wheel-sec {
+
+    color: #FAF6EF !important;
+
+  }
+
+  #flavor-wheel-sec .section-head p,
+
+  #flavor-wheel-sec p,
+
+  .luxury-flavor-wheel-sec p,
+
+  #flavor-wheel-sec .detail-panel p,
+
+  #flavor-wheel-sec .detail-lead,
+
+  #flavor-wheel-sec .wheel-hint {
+
+    color: #D5C2B1 !important;
+
+  }
+
+  #flavor-wheel-sec .section-head h2,
+
+  #flavor-wheel-sec .detail-panel h3 {
+
+    color: #FAF6EF !important;
+
+  }
+
+  /* Blog Edge-to-Edge Pure Video Background on Mobile */
+
+  .blog-hero-lux {
+
+    position: relative !important;
+
+    overflow: hidden !important;
+
+    background: #140C07 !important;
+
+  }
+
+  .blog-hero-video-bg {
+
+    position: absolute !important;
+
+    inset: 0 !important;
+
+    width: 100% !important;
+
+    height: 100% !important;
+
+    overflow: hidden !important;
+
+    z-index: 1 !important;
+
+  }
+
+  .blog-hero-fullscreen-video {
+
+    position: absolute !important;
+
+    inset: 0 !important;
+
+    width: 100% !important;
+
+    height: 100% !important;
+
+    min-width: 100% !important;
+
+    min-height: 100% !important;
+
+    object-fit: cover !important;
+
+    transform: none !important;
+
+    opacity: 0.38 !important;
+
+  }
+
+  .blog-hero-lux-desc {
+
+    -webkit-line-clamp: unset !important;
+
+    max-height: none !important;
+
+    overflow: visible !important;
+
+  }
+
+  /* Mobile Category Filter Pills */
+
+  .filter-btn,
+
+  .blog-filters-wrapper .filter-btn,
+
+  .cat-tab-lux {
+
+    min-height: 44px !important;
+
+    padding: 8px 18px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+  }
+
+  /* Social Share Pills on Article Detail */
+
+  .share-container {
+
+    display: flex !important;
+
+    flex-wrap: wrap !important;
+
+    gap: 8px !important;
+
+    align-items: center !important;
+
+  }
+
+  .share-btn {
+
+    min-height: 44px !important;
+
+    padding: 10px 16px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    font-size: 13px !important;
+
+  }
+
+  /* Mobile Drawer Fullscreen Overlay & Safe-Area */
+
+  #mobile-menu {
+
+    position: fixed !important;
+
+    top: 0 !important;
+
+    left: 0 !important;
+
+    width: 100vw !important;
+
+    height: 100vh !important;
+
+    max-height: 100vh !important;
+
+    bottom: 0 !important;
+
+    z-index: 99999 !important;
+
+    overflow-y: auto !important;
+
+    -webkit-overflow-scrolling: touch !important;
+
+  }
+
+  /* --------------------------------------------------------------------------
+
+     13. MOBILE IMAGE CARD ALIGNMENT & PROPORTIONAL HARMONY
+
+     -------------------------------------------------------------------------- */
+
+  .grid-blog {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    gap: 24px !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    margin: 0 auto 36px auto !important;
+
+    padding: 0 !important;
+
+  }
+
+  .grid-blog > * {
+
+    flex: 0 0 100% !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+
+  }
+
+  .blog-card-link {
+
+    width: 100% !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    overflow: hidden !important;
+
+    border-radius: 20px !important;
+
+    background: #FAF6EF !important;
+
+    border: 1px solid rgba(212, 175, 55, 0.22) !important;
+
+  }
+
+  .blog-card-img {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    aspect-ratio: 16 / 9 !important;
+
+    height: auto !important;
+
+    min-height: auto !important;
+
+    max-height: none !important;
+
+    display: block !important;
+
+    position: relative !important;
+
+    overflow: hidden !important;
+
+    flex-shrink: 0 !important;
+
+    border-radius: 19px 19px 0 0 !important;
+
+    background: #140C07 !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+  }
+
+  .blog-card-img img {
+
+    width: 100% !important;
+
+    height: 100% !important;
+
+    min-width: 100% !important;
+
+    min-height: 100% !important;
+
+    max-width: 100% !important;
+
+    object-fit: cover !important;
+
+    object-position: center !important;
+
+    display: block !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    border: none !important;
+
+    border-radius: 19px 19px 0 0 !important;
+
+  }
+
+  .blog-card-body {
+
+    width: 100% !important;
+
+    box-sizing: border-box !important;
+
+    padding: 22px 20px 24px !important;
+
+    background: #FAF6EF !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    flex-grow: 1 !important;
+
+  }
+
+  /* Universal Image Card Consistency */
+
+  .home-journal-img-wrap,
+
+  .workshop-card-img,
+
+  .why-card-img-wrapper,
+
+  .recipe-card > div:first-child {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    overflow: hidden !important;
+
+    position: relative !important;
+
+    display: block !important;
+
+  }
+
+  .home-journal-img-wrap img,
+
+  .workshop-card-img img,
+
+  .why-card-img-wrapper img,
+
+  .recipe-card > div:first-child img {
+
+    width: 100% !important;
+
+    height: 100% !important;
+
+    min-width: 100% !important;
+
+    min-height: 100% !important;
+
+    max-width: 100% !important;
+
+    object-fit: cover !important;
+
+    object-position: center !important;
+
+    display: block !important;
+
+  }
+
 } /* End Mobile Presentation Layer */
