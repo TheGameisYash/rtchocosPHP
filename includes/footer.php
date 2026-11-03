@@ -8,7 +8,7 @@
           <path d="M20 8C24 12.5 28 15.5 28 21.5C28 26 24.5 30 20 32C15.5 30 12 26 12 21.5C12 15.5 16 12.5 20 8Z" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
           <circle cx="20" cy="20" r="2" fill="var(--accent)"/>
         </svg>
-        <span class="logo-text"><span class="footer-logo-rt" style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text-heading);font-weight:400;">RT</span><span class="footer-logo-chocos" style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.25em;color:var(--accent);"> CHOCOS</span></span>
+        <span class="logo-text"><span class="footer-logo-rt" style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text-heading);font-weight:400;">RT</span><span class="footer-logo-chocos" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.25em;color:var(--accent);"> CHOCOS</span></span>
       </a>
       <p style="color:var(--text-secondary);font-size:13.5px;line-height:1.75;font-weight:400;max-width:260px;">India's chocolate learning platform for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
     </div>

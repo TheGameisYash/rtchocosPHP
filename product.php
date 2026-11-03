@@ -487,21 +487,33 @@
     .product-action-row {
       flex-direction: column !important;
       align-items: stretch !important;
-      gap: 10px !important;
+      gap: 12px !important;
     }
     .product-action-row .btn-primary,
     .product-action-row .btn-outline {
       width: 100% !important;
       justify-content: center !important;
       text-align: center !important;
-      padding: 13px 20px !important;
+      padding: 14px 20px !important;
+      min-height: 48px !important;
+      font-size: 14.5px !important;
+      font-weight: 700 !important;
+      border-radius: 10px !important;
     }
     .product-qty-stepper {
       width: 100% !important;
       justify-content: center !important;
+      height: 48px !important;
     }
     .product-thumb-strip {
       flex-wrap: nowrap !important;
+      gap: 10px !important;
+    }
+    .product-thumb-item {
+      width: 60px !important;
+      height: 60px !important;
+      min-width: 50px !important;
+      min-height: 50px !important;
     }
   }
 </style>
@@ -523,7 +535,7 @@
                onerror="this.onerror=null;this.src='<?php echo $pathPrefix; ?>assets/premium_chocolate.png';">
           <div class="product-zoom-badge">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
-            <span>Hover or Tap to Inspect</span>
+            <span>Tap to Inspect</span>
           </div>
         </div>
         <?php if (count($allImages) > 1): ?>

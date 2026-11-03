@@ -328,6 +328,59 @@
           </div>
         </div>
       </div>
+
+      <!-- Dedicated Mobile Interactive Explorer Cards (Active on Mobile Touchscreens) -->
+      <div class="mobile-workbench-cards" aria-label="Artisan Workbench Destinations">
+        <button type="button" class="mobile-workbench-card" onclick="openTableModal('bean-to-bar')">
+          <span class="mwb-icon">🌰</span>
+          <div class="mwb-text">
+            <strong>Bean to Bar</strong>
+            <span>Terroir, Roasting &amp; Conching</span>
+          </div>
+          <span class="mwb-arrow">&rarr;</span>
+        </button>
+        <button type="button" class="mobile-workbench-card" onclick="openTableModal('knowledge-hub')">
+          <span class="mwb-icon">📖</span>
+          <div class="mwb-text">
+            <strong>Cacao Journal</strong>
+            <span>Articles, Chemistry &amp; Research</span>
+          </div>
+          <span class="mwb-arrow">&rarr;</span>
+        </button>
+        <button type="button" class="mobile-workbench-card" onclick="openTableModal('chocolate-lab')">
+          <span class="mwb-icon">🔬</span>
+          <div class="mwb-text">
+            <strong>Cacao Lab</strong>
+            <span>pH Science, Emulsions &amp; Bloom</span>
+          </div>
+          <span class="mwb-arrow">&rarr;</span>
+        </button>
+        <button type="button" class="mobile-workbench-card" onclick="openTableModal('recipes-formulations')">
+          <span class="mwb-icon">🍫</span>
+          <div class="mwb-text">
+            <strong>Formulations</strong>
+            <span>Tested Ratios &amp; Ganaches</span>
+          </div>
+          <span class="mwb-arrow">&rarr;</span>
+        </button>
+        <button type="button" class="mobile-workbench-card" onclick="openTableModal('origins-atlas')">
+          <span class="mwb-icon">🤝</span>
+          <div class="mwb-text">
+            <strong>Work With Us</strong>
+            <span>B2B Consulting &amp; Private Label</span>
+          </div>
+          <span class="mwb-arrow">&rarr;</span>
+        </button>
+        <button type="button" class="mobile-workbench-card" onclick="openTableModal('workshops-academy')">
+          <span class="mwb-icon">🎓</span>
+          <div class="mwb-text">
+            <strong>Innovation Lab</strong>
+            <span>Masterclasses &amp; Machinery</span>
+          </div>
+          <span class="mwb-arrow">&rarr;</span>
+        </button>
+      </div>
+
     </div>
   </section>
 
