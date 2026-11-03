@@ -1,15 +1,16 @@
 /* ==========================================================================
    RT CHOCOS MASTER STYLESHEET (MODULAR HUB)
-   Updated: 2026-10-02 - Enhanced wider luxury trust strip alignment
+   Updated: 2026-11-03 - Independent Desktop & Mobile Presentation Architecture
    ========================================================================== */
 
 @import url('css/variables.css');
 @import url('css/base.css');
 @import url('css/header-footer.css');
 @import url('css/components.css');
+@import url('css/desktop.css');
+@import url('css/mobile.css');
 @import url('css/pages.css');
 @import url('css/chocopedia.css');
 @import url('css/ai-assistant.css');
 @import url('css/bean-to-bar.css');
 @import url('css/innovation-lab.css');
-

@@ -60,7 +60,7 @@ function renderWorkshopCard($w, $pathPrefix = "") {
 
     $imageSrc = $pathPrefix . $w['image'];
     $imageTag = ($w['image'] && strpos($w['image'], '/') !== false)
-        ? "<img src=\"{$imageSrc}\" alt=\"{$w['title']}\">"
+        ? "<img src=\"{$imageSrc}\" alt=\"{$w['title']}\" width=\"400\" height=\"250\" loading=\"lazy\">"
         : "<span>🍫</span>";
 
     $outcomesHtml = "";

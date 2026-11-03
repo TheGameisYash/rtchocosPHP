@@ -32,7 +32,7 @@
       <div class="footer-heading">Newsletter</div>
       <p style="margin-bottom:14px; color:var(--text-secondary); font-size:13.5px; line-height:1.6; font-weight:400; max-width:280px;">Recipes, science &amp; exclusive workshop updates.</p>
       <form class="footer-newsletter-row" id="newsletter-footer-form" novalidate>
-        <input class="footer-newsletter-input" type="email" placeholder="Email" required />
+        <input class="footer-newsletter-input" id="footer-newsletter-email" name="email" type="email" autocomplete="email" placeholder="Enter your email" required aria-label="Email address for newsletter updates" />
         <button class="footer-newsletter-btn" type="submit" aria-label="Subscribe">→</button>
       </form>
       <div id="newsletter-footer-feedback" style="margin-top: 10px; display: none; font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--accent); animation: fadeIn 0.3s ease;"></div>

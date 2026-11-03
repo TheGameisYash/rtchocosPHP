@@ -1,0 +1,395 @@
+/* ==========================================================================
+   RT CHOCOS — PRESENTATION LAYER B: MOBILE EXPERIENCE (mobile.css)
+   Exclusively scoped to @media (max-width: 768px)
+   Designed specifically for touchscreens:
+   - Ergonomic touch-first controls (minimum 44x44px touch targets)
+   - Single-column & carefully balanced 2-column layouts
+   - Horizontal swipeable collections with momentum scrolling
+   - Mobile-optimized navigation (ergonomic bottom dock + slide-over drawer)
+   - Bottom sheets & full-screen touch dialogs
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+  /* --------------------------------------------------------------------------
+     1. GLOBAL MOBILE TOUCH ERGONOMICS & PADDING NORMALIZATION
+     -------------------------------------------------------------------------- */
+  body {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .section {
+    padding: 56px 20px !important;
+  }
+
+  .section-label {
+    font-size: 10px !important;
+    padding: 5px 14px !important;
+    letter-spacing: 1.5px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .section-title {
+    font-size: clamp(24px, 6vw, 34px) !important;
+    line-height: 1.2 !important;
+    margin-bottom: 12px !important;
+  }
+
+  .section-subtitle {
+    font-size: 14.5px !important;
+    line-height: 1.65 !important;
+    margin-bottom: 32px !important;
+    padding: 0 4px !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     2. MOBILE HERO SECTION (STACKED & THUMB-FRIENDLY)
+     -------------------------------------------------------------------------- */
+  #page-home #hero {
+    min-height: auto !important;
+    padding: 48px 18px 42px !important;
+    text-align: center !important;
+    background: linear-gradient(180deg, #FAF6EF 0%, #F5EFEB 100%) !important;
+  }
+
+  #page-home #hero .split-hero-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 24px !important;
+  }
+
+  #page-home #hero .split-hero-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  #page-home #hero h1 {
+    font-size: clamp(26px, 6.8vw, 36px) !important;
+    line-height: 1.18 !important;
+    margin: 16px auto 18px !important;
+    max-width: 95% !important;
+  }
+
+  #page-home #hero p {
+    font-size: 14.5px !important;
+    line-height: 1.65 !important;
+    margin: 0 auto 28px !important;
+    max-width: 92% !important;
+  }
+
+  #page-home #hero .hero-btns {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    align-items: center !important;
+    margin-bottom: 24px !important;
+  }
+
+  #page-home #hero .btn-hero-primary,
+  #page-home #hero .btn-hero-outline {
+    width: 100% !important;
+    max-width: 320px !important;
+    min-height: 48px !important;
+    padding: 13px 24px !important;
+    font-size: 13px !important;
+    justify-content: center !important;
+    border-radius: var(--radius-full) !important;
+    box-shadow: 0 4px 14px rgba(24, 12, 6, 0.18) !important;
+  }
+
+  /* Compact Hero Ingredient Spotlight on Mobile */
+  .hero-ingredient-spotlight-card {
+    display: none !important; /* Preserves initial screen space above the fold */
+  }
+
+  /* --------------------------------------------------------------------------
+     3. MOBILE TRUST STRIP (2x2 BALANCED GRID + 1 FULL-WIDTH)
+     -------------------------------------------------------------------------- */
+  .home-trust-strip-sec {
+    padding: 32px 16px !important;
+    background: var(--bg-surface) !important;
+  }
+
+  .trust-pillars-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .trust-pillars-grid .trust-col:nth-child(5) {
+    grid-column: span 2 !important;
+  }
+
+  .trust-col {
+    padding: 18px 12px !important;
+    border-radius: var(--radius-sm) !important;
+    min-height: 100px !important;
+  }
+
+  .trust-stat-title {
+    font-size: 18px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .trust-stat-subtitle {
+    font-size: 9.5px !important;
+    letter-spacing: 1px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     4. MOBILE INTERACTIVE CHOCOLATE TABLE (TOUCH PIN WORKBENCH)
+     -------------------------------------------------------------------------- */
+  .chocolate-table-sec {
+    padding: 56px 16px !important;
+  }
+
+  .chocolate-table-wrapper {
+    border-radius: var(--radius-md) !important;
+    box-shadow: 0 10px 30px rgba(26, 15, 8, 0.14) !important;
+  }
+
+  .table-hotspot {
+    /* Touch-friendly hotspot bounds */
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hotspot-pin {
+    padding: 6px 12px !important;
+    font-size: 10.5px !important;
+  }
+
+  /* Hide detailed desktop hover cards on mobile */
+  .hotspot-peek-card {
+    display: none !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     5. MOBILE TEMPERING LAB (2x2 ERGONOMIC TOUCH GRID)
+     -------------------------------------------------------------------------- */
+  .tempering-lab-sec {
+    padding: 56px 16px !important;
+  }
+
+  .tempering-lab-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 32px !important;
+  }
+
+  .tempering-tabs-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 24px !important;
+  }
+
+  .tempering-tab-btn {
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 10px 14px !important;
+    font-size: 11.5px !important;
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-accent) !important;
+    border-radius: var(--radius-sm) !important;
+    text-align: center !important;
+  }
+
+  .tempering-tab-btn.active {
+    background: var(--bg-dark) !important;
+    color: var(--accent-gold) !important;
+    border-color: var(--accent-gold) !important;
+  }
+
+  .tempering-tab-btn.active::after {
+    display: none !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     6. MOBILE WORKSHOPS (HORIZONTAL SWIPE CAROUSEL WITH VISIBLE PEEK)
+     -------------------------------------------------------------------------- */
+  #featured-workshops {
+    padding: 56px 16px !important;
+    overflow-x: hidden !important;
+  }
+
+  .workshops-swipe-hint {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .workshops-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    padding: 10px 4px 20px !important;
+    margin: 0 -16px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    scrollbar-width: none !important;
+  }
+
+  .workshops-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .workshop-card {
+    flex: 0 0 82% !important;
+    max-width: 320px !important;
+    min-width: 260px !important;
+    scroll-snap-align: center !important;
+    border-radius: var(--radius-md) !important;
+  }
+
+  .workshop-card-img {
+    height: 180px !important;
+  }
+
+  .workshop-card-body {
+    padding: 20px !important;
+  }
+
+  .workshop-card-title {
+    font-size: 18px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .workshop-card .btn-primary,
+  .workshop-card .btn-gold {
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    padding: 12px 18px !important;
+    border-radius: var(--radius-full) !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     7. MOBILE SENSORY FLAVOR WHEEL (STACKED SENSORY LAB)
+     -------------------------------------------------------------------------- */
+  .luxury-flavor-wheel-sec {
+    padding: 56px 16px !important;
+  }
+
+  .flavor-wheel-split-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 28px !important;
+  }
+
+  .wheel-panel,
+  .detail-panel {
+    width: 100% !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     8. MOBILE CACAO JOURNAL (SWIPEABLE HORIZONTAL ARTICLE RAIL)
+     -------------------------------------------------------------------------- */
+  .home-journal-sec {
+    padding: 56px 16px !important;
+    overflow-x: hidden !important;
+  }
+
+  .journal-articles-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    margin: 0 -16px !important;
+    padding: 10px 20px 20px !important;
+    scrollbar-width: none !important;
+  }
+
+  .journal-articles-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .journal-card {
+    flex: 0 0 82% !important;
+    max-width: 310px !important;
+    min-width: 250px !important;
+    scroll-snap-align: center !important;
+    border-radius: var(--radius-md) !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     9. MOBILE BOTTOM NAVIGATION DOCK (ERGONOMIC THUMB DOCK)
+     -------------------------------------------------------------------------- */
+  .mobile-bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-width: 520px !important;
+    margin: 0 auto !important;
+    height: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    background: rgba(18, 10, 5, 0.96) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.28) !important;
+    border-radius: 18px 18px 0 0 !important;
+    box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.45) !important;
+    z-index: 9999 !important;
+    align-items: center !important;
+    justify-content: space-around !important;
+  }
+
+  .mobile-bottom-item {
+    flex: 1 !important;
+    height: 100% !important;
+    min-height: 48px !important;
+    min-width: 48px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    color: rgba(250, 246, 239, 0.65) !important;
+    text-decoration: none !important;
+    font-size: 9.5px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.4px !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: color 0.2s ease, transform 0.2s ease !important;
+  }
+
+  .mobile-bottom-item:active,
+  .mobile-bottom-item.active {
+    color: var(--accent-gold) !important;
+    transform: scale(0.95);
+  }
+
+} /* End Mobile Presentation Layer */

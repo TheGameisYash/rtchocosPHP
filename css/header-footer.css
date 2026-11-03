@@ -1887,7 +1887,7 @@ footer.footer-links-section {
   #site-header {
     position: sticky !important;
     top: 0 !important;
-    background: rgba(7, 21, 14, 0.96) !important;
+    background: rgba(18, 10, 5, 0.96) !important;
     backdrop-filter: blur(18px) !important;
     -webkit-backdrop-filter: blur(18px) !important;
     border-bottom: 1px solid rgba(212, 175, 55, 0.18) !important;
@@ -1923,18 +1923,27 @@ footer.footer-links-section {
     color: #D4AF37 !important;
   }
 
-  /* Spacer for Perfectly Centered Logo */
+  /* Adaptive Header Balance: Spacer on small phones, Hamburger on tablets & phablets */
   .header-mobile-spacer {
-    display: block !important;
-    width: 78px !important;
-    height: 36px !important;
-    flex-shrink: 0 !important;
-  }
-
-  /* STRICTLY HIDE Upper Hamburger and Desktop CTA on Mobile */
-  .hamburger {
     display: none !important;
   }
+  @media (max-width: 640px) {
+    .header-mobile-spacer {
+      display: block !important;
+      width: 78px !important;
+      height: 36px !important;
+      flex-shrink: 0 !important;
+    }
+    .hamburger {
+      display: none !important;
+    }
+  }
+  @media (min-width: 641px) and (max-width: 1080px) {
+    .hamburger {
+      display: flex !important;
+    }
+  }
+
   .header-actions .header-desktop-cta,
   .header-actions .signin-join-btn.work-with-us-btn,
   .header-actions .work-with-us-btn {
@@ -2232,7 +2241,7 @@ footer.footer-links-section {
     right: 0 !important;
     height: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
     padding-bottom: env(safe-area-inset-bottom, 0px) !important;
-    background: rgba(8, 21, 14, 0.96) !important;
+    background: rgba(18, 10, 5, 0.96) !important;
     backdrop-filter: blur(18px) !important;
     -webkit-backdrop-filter: blur(18px) !important;
     border-top: 1px solid rgba(212, 175, 55, 0.25) !important;

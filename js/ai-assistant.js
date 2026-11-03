@@ -1,21 +1,36 @@
 // --- AI CHAT DRAWER STATE & FUNCTIONS ---
 let aiChatHistory = [];
 
-function toggleAiDrawer() {
+let lastAiDrawerTrigger = null;
+
+function toggleAiDrawer(triggerEl) {
   const drawer = document.getElementById('ai-chat-drawer');
   const overlay = document.getElementById('ai-drawer-overlay');
   if (drawer && overlay) {
-    const isOpen = drawer.classList.toggle('open');
-    drawer.setAttribute('aria-hidden', !isOpen);
-    document.querySelectorAll('.ai-drawer-trigger').forEach(btn => btn.setAttribute('aria-expanded', isOpen));
-    if (isOpen) {
+    const willOpen = !drawer.classList.contains('open');
+    if (willOpen) {
+      lastAiDrawerTrigger = triggerEl || document.activeElement;
+      drawer.classList.add('open');
+      drawer.removeAttribute('aria-hidden');
+      drawer.removeAttribute('inert');
       overlay.classList.add('visible');
       document.body.style.overflow = 'hidden';
+      document.querySelectorAll('.ai-drawer-trigger').forEach(btn => btn.setAttribute('aria-expanded', 'true'));
       const input = document.getElementById('ai-chat-input');
       if (input) setTimeout(() => input.focus(), 150);
     } else {
+      // Accessible focus restoration before setting aria-hidden
+      if (lastAiDrawerTrigger && typeof lastAiDrawerTrigger.focus === 'function') {
+        try { lastAiDrawerTrigger.focus(); } catch (e) {}
+      } else if (document.activeElement && drawer.contains(document.activeElement)) {
+        document.activeElement.blur();
+      }
+      drawer.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+      drawer.setAttribute('inert', '');
       overlay.classList.remove('visible');
       document.body.style.overflow = '';
+      document.querySelectorAll('.ai-drawer-trigger').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
     }
   }
 }

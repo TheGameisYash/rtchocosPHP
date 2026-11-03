@@ -277,7 +277,7 @@
       </div>
 
       <div class="chocolate-table-wrapper">
-        <img src="assets/chocolate_table_interactive.png" alt="Artisan Chocolate Workbench with cocoa beans, notebook, chocolate bar, and tools" class="chocolate-table-bg-img">
+        <img src="assets/chocolate_table_interactive.png" alt="Artisan Chocolate Workbench with cocoa beans, notebook, chocolate bar, and tools" class="chocolate-table-bg-img" width="1200" height="675">
 
         <!-- Interactive Hotspot Pins — positions match the generated image exactly -->
         <!-- 1. Bean to Bar → Wooden bowl of cacao beans (top-center-left) -->

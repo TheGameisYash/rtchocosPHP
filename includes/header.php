@@ -25,7 +25,7 @@ if (strpos($ogImage, 'http') !== 0) {
 $ogTitle = !empty($pageTitle) ? $pageTitle : "RT Chocos | India's Chocolate Blog & Learning";
 $ogType = !empty($pageType) ? $pageType : "website";
 
-$adminSiteTheme = get_site_setting('default_site_theme', 'theme-cream-forest');
+$adminSiteTheme = get_site_setting('default_site_theme', 'theme-artisanal-cacao');
 ?>
 <!DOCTYPE html>
 <html lang="en-IN" class="<?php echo htmlspecialchars($adminSiteTheme, ENT_QUOTES, 'UTF-8'); ?>">
@@ -34,8 +34,10 @@ $adminSiteTheme = get_site_setting('default_site_theme', 'theme-cream-forest');
   var pathPrefix = "<?php echo isset($pathPrefix) ? addslashes($pathPrefix) : ''; ?>";
   (function() {
     const savedTheme = localStorage.getItem('rtchocos-color-theme');
-    if (savedTheme) {
+    if (savedTheme && savedTheme.startsWith('theme-') && savedTheme !== 'theme-teal-sage' && savedTheme !== 'theme-cream-forest') {
       document.documentElement.className = savedTheme;
+    } else {
+      document.documentElement.className = 'theme-artisanal-cacao';
     }
   })();
 </script>
