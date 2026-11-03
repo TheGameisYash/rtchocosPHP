@@ -594,7 +594,7 @@
           </div>
 
           <?php if ($prodStoreMode === 'bulk'): ?>
-            <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $prodBulkPhone); ?>?text=Hello%20RT%20Chocos!%20I%20have%20a%20bulk%20enquiry%20for%20<?php echo urlencode($product['name']); ?>%20(Requested%20Qty:%20<?php echo $defaultQty; ?>%20Units)." target="_blank" class="btn-primary product-primary-bulk-cta" style="text-decoration:none; padding:13px 22px; display:inline-flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg, #1b4d2e 0%, #0d2617 100%); border:1px solid #d4af37; color:#FFFFFF; font-weight:700; width:100%; border-radius:8px;">
+            <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $prodBulkPhone); ?>?text=Hello%20RT%20Chocos!%20I%20have%20a%20bulk%20enquiry%20for%20<?php echo urlencode($product['name']); ?>%20(Requested%20Qty:%20<?php echo $defaultQty; ?>%20Units)." target="_blank" id="btn-order-wa" class="btn-primary product-primary-bulk-cta" style="text-decoration:none; padding:13px 22px; display:inline-flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg, #1b4d2e 0%, #0d2617 100%); border:1px solid #d4af37; color:#FFFFFF; font-weight:700; width:100%; border-radius:8px;">
               <span>💬 Instant WhatsApp Quote</span>
               <span>&rarr;</span>
             </a>
@@ -749,7 +749,13 @@ function updateQty(delta) {
   var waBtn = document.getElementById('btn-order-wa');
   if (waBtn) {
     var prodName = <?php echo json_encode($product['name']); ?>;
-    waBtn.href = 'https://wa.me/919140238741?text=' + encodeURIComponent('Hello RT Chocos! I would like to order ' + prodName + ' (Qty: ' + val + ').');
+    var isBulk = <?php echo json_encode($prodStoreMode === 'bulk'); ?>;
+    if (isBulk) {
+      var phone = <?php echo json_encode(preg_replace('/[^0-9]/', '', $prodBulkPhone)); ?>;
+      waBtn.href = 'https://wa.me/' + phone + '?text=' + encodeURIComponent('Hello RT Chocos! I have a bulk enquiry for ' + prodName + ' (Requested Qty: ' + val + ' Units).');
+    } else {
+      waBtn.href = 'https://wa.me/919140238741?text=' + encodeURIComponent('Hello RT Chocos! I would like to order ' + prodName + ' (Qty: ' + val + ').');
+    }
   }
 }
 </script>
