@@ -1540,10 +1540,19 @@ textarea.modal-input {
     min-width: 34px !important;
   }
   .lux-card-actions .lux-view-details-link {
-    flex: 1 !important;
-    justify-content: flex-end !important;
-    font-size: 11px !important;
-    padding: 6px 2px !important;
+    width: 100% !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    flex: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    color: #1A0F08 !important;
+    border: 1px solid rgba(26, 15, 8, 0.18) !important;
+    border-radius: 8px !important;
   }
   .cta-banner-left {
     min-width: 0 !important;
@@ -2039,13 +2048,33 @@ textarea.modal-input {
     color: #B87333 !important;
   }
 
-  .lux-card-actions {
+  .lux-card-actions.mode-hidden,
+  .mode-hidden,
+  .mode-section-retail.mode-hidden,
+  .mode-section-bulk.mode-hidden {
+    display: none !important;
+  }
+
+  .lux-card-actions:not(.mode-hidden) {
     display: flex !important;
     flex-direction: column !important;
     gap: 8px !important;
     border-top: 1px solid rgba(212, 175, 55, 0.15) !important;
     padding-top: 12px !important;
     margin-top: auto !important;
+  }
+
+  .cat-tab-lux {
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px 18px !important;
+  }
+
+  .lux-btn-bulk-wa {
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
 
   .lux-card-actions .lux-btn-order-wa,
@@ -2064,17 +2093,17 @@ textarea.modal-input {
 
   .lux-card-actions .lux-view-details-link {
     width: 100% !important;
-    height: 40px !important;
-    min-height: 40px !important;
-    max-height: 40px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
     flex: none !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 13px !important;
+    font-size: 13.5px !important;
     font-weight: 600 !important;
     color: #1A0F08 !important;
-    border: 1px solid rgba(26, 15, 8, 0.15) !important;
+    border: 1px solid rgba(26, 15, 8, 0.18) !important;
     border-radius: 8px !important;
   }
 

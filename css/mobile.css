@@ -697,16 +697,18 @@
     padding-top: 54px !important;
   }
 
-  /* Universal Mobile Page Hero Container */
+    /* Universal Mobile Page Hero Container */
   .page-hero,
   .contact-page-hero,
-  .about-page-hero, {
-    padding: 30px 18px 22px !important;
+  .about-page-hero {
+    padding: 34px 18px 26px !important;
     min-height: auto !important;
     height: auto !important;
+    max-height: none !important;
     background: linear-gradient(180deg, #FAF6EF 0%, #F5ECE2 100%) !important;
     border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
     text-align: center !important;
+    overflow: visible !important;
   }
 
   .about-page-hero-image {
@@ -722,11 +724,15 @@
     align-items: center !important;
     text-align: center !important;
     width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 0 !important;
+    overflow: visible !important;
   }
 
   .page-hero h1,
   .about-page-hero h1,
-  .contact-page-hero h1, h1 {
+  .contact-page-hero h1 {
     font-family: 'DM Serif Display', Georgia, serif !important;
     font-size: clamp(26px, 7vw, 34px) !important;
     line-height: 1.18 !important;
@@ -736,12 +742,15 @@
 
   .page-hero p,
   .about-page-hero p,
-  .contact-page-hero p, p {
+  .contact-page-hero p {
     font-size: 14px !important;
-    line-height: 1.55 !important;
+    line-height: 1.6 !important;
     color: #523624 !important;
     max-width: 95% !important;
     margin: 0 auto !important;
+    overflow: visible !important;
+    max-height: none !important;
+    -webkit-line-clamp: unset !important;
   }
 
   .mobile-hero-tag {
@@ -789,11 +798,13 @@
     display: none !important;
   }
 
-  /* Workshops Mobile Hero */
+    /* Workshops Mobile Hero */
   .workshop-hero-lux {
-    padding: 30px 18px 24px !important;
+    padding: 34px 18px 26px !important;
     min-height: auto !important;
-    background: linear-gradient(180deg, #1A0F08 0%, #28160B 100%) !important;
+    background: linear-gradient(180deg, #140C07 0%, #23140B 100%) !important;
+    background-color: #140C07 !important;
+    background-image: none !important;
     border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
     text-align: center !important;
   }
@@ -830,10 +841,13 @@
   }
   .workshop-hero-desc {
     font-size: 14px !important;
-    line-height: 1.55 !important;
+    line-height: 1.6 !important;
     color: #D5C2B1 !important;
     max-width: 95% !important;
     margin: 0 auto 16px !important;
+    overflow: visible !important;
+    max-height: none !important;
+    -webkit-line-clamp: unset !important;
   }
   .workshop-hero-badges {
     display: flex !important;
@@ -885,16 +899,18 @@
   .workshop-hero-actions {
     display: flex !important;
     flex-direction: column !important;
-    gap: 8px !important;
+    gap: 10px !important;
     width: 100% !important;
     max-width: 320px !important;
     margin: 0 auto !important;
   }
+  .workshop-hero-actions .btn-gold-lux,
   .workshop-hero-actions .btn-workshop-lux,
-  .workshop-hero-actions .btn-outline-lux {
+  .workshop-hero-actions .btn-outline-lux,
+  .workshop-hero-actions a {
     width: 100% !important;
-    height: 46px !important;
-    min-height: 46px !important;
+    height: 48px !important;
+    min-height: 48px !important;
     font-size: 13.5px !important;
     font-weight: 700 !important;
     border-radius: 24px !important;
@@ -951,6 +967,136 @@
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
+  }
+
+
+  /* --------------------------------------------------------------------------
+     12. SYSTEMIC MOBILE UI REFINEMENTS (TOUCH, DOCK, CONTRAST & TYPOGRAPHY)
+     -------------------------------------------------------------------------- */
+  /* Prevent iOS Safari / Android WebView auto-zoom on input focus */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="search"],
+  input[type="number"],
+  textarea,
+  select,
+  .footer-newsletter-input,
+  .blog-search,
+  #chocopedia-search-input {
+    font-size: 16px !important;
+  }
+
+  /* Safe Bottom Dock Clearance Across All Pages */
+  body {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 20px)) !important;
+  }
+  footer#site-footer,
+  .footer-links-section,
+  footer {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 20px) + 24px) !important;
+  }
+  .footer-bottom {
+    margin-bottom: 20px !important;
+  }
+  .social-icon {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Sensory Flavor Wheel High Contrast Overrides (WCAG AA Compliant) */
+  #flavor-wheel-sec,
+  .luxury-flavor-wheel-sec {
+    color: #FAF6EF !important;
+  }
+  #flavor-wheel-sec .section-head p,
+  #flavor-wheel-sec p,
+  .luxury-flavor-wheel-sec p,
+  #flavor-wheel-sec .detail-panel p,
+  #flavor-wheel-sec .detail-lead,
+  #flavor-wheel-sec .wheel-hint {
+    color: #D5C2B1 !important;
+  }
+  #flavor-wheel-sec .section-head h2,
+  #flavor-wheel-sec .detail-panel h3 {
+    color: #FAF6EF !important;
+  }
+
+  /* Blog Edge-to-Edge Pure Video Background on Mobile */
+  .blog-hero-lux {
+    position: relative !important;
+    overflow: hidden !important;
+    background: #140C07 !important;
+  }
+  .blog-hero-video-bg {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    z-index: 1 !important;
+  }
+  .blog-hero-fullscreen-video {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    object-fit: cover !important;
+    transform: none !important;
+    opacity: 0.38 !important;
+  }
+  .blog-hero-lux-desc {
+    -webkit-line-clamp: unset !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Mobile Category Filter Pills */
+  .filter-btn,
+  .blog-filters-wrapper .filter-btn,
+  .cat-tab-lux {
+    min-height: 44px !important;
+    padding: 8px 18px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Social Share Pills on Article Detail */
+  .share-container {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    align-items: center !important;
+  }
+  .share-btn {
+    min-height: 44px !important;
+    padding: 10px 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+  }
+
+  /* Mobile Drawer Fullscreen Overlay & Safe-Area */
+  #mobile-menu {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    bottom: 0 !important;
+    z-index: 99999 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
 } /* End Mobile Presentation Layer */

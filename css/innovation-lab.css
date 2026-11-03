@@ -4313,3 +4313,28 @@ section.lab-ingredient-section:nth-of-type(even) {
     white-space: nowrap !important;
   }
 }
+
+/* Innovation Lab Mobile Touch Ergonomics */
+@media (max-width: 768px) {
+  .lab-failed-nav-btn {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    font-size: 16px !important;
+  }
+  .lab-ing-pill {
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px 18px !important;
+    font-size: 12px !important;
+  }
+  .lab-carousel-arrow {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+}

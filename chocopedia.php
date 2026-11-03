@@ -1022,7 +1022,7 @@ include 'includes/header.php';
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </span>
-      <input type="text" id="chocopedia-search-input" placeholder="Search terms (e.g. acidity, conching, criollo, tempering)..." oninput="handleSearchInput(this.value)" autocomplete="off">
+      <input type="text" id="chocopedia-search-input" placeholder="Search terms (e.g. conching, tempering)..." oninput="handleSearchInput(this.value)" autocomplete="off">
       <button type="button" id="search-clear-btn" class="search-clear-btn" onclick="clearSearchInput()" aria-label="Clear Search">✕</button>
     </div>
   </section>
