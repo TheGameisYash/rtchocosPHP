@@ -1099,4 +1099,104 @@
     -webkit-overflow-scrolling: touch !important;
   }
 
+
+  /* --------------------------------------------------------------------------
+     13. MOBILE IMAGE CARD ALIGNMENT & PROPORTIONAL HARMONY
+     -------------------------------------------------------------------------- */
+  .grid-blog {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 24px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto 36px auto !important;
+    padding: 0 !important;
+  }
+
+  .grid-blog > * {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .blog-card-link {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    border-radius: 20px !important;
+    background: #FAF6EF !important;
+    border: 1px solid rgba(212, 175, 55, 0.22) !important;
+  }
+
+  .blog-card-img {
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    display: block !important;
+    position: relative !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    border-radius: 19px 19px 0 0 !important;
+    background: #140C07 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .blog-card-img img {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    max-width: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 19px 19px 0 0 !important;
+  }
+
+  .blog-card-body {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 22px 20px 24px !important;
+    background: #FAF6EF !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+  }
+
+  /* Universal Image Card Consistency */
+  .home-journal-img-wrap,
+  .workshop-card-img,
+  .why-card-img-wrapper,
+  .recipe-card > div:first-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    position: relative !important;
+    display: block !important;
+  }
+
+  .home-journal-img-wrap img,
+  .workshop-card-img img,
+  .why-card-img-wrapper img,
+  .recipe-card > div:first-child img {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    max-width: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+  }
+
 } /* End Mobile Presentation Layer */

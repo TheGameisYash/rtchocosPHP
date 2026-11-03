@@ -2812,9 +2812,7 @@
 }
 
 @media (max-width: 480px) {
-  .blog-card-img {
-    height: 180px;
-  }
+  .blog-card-img { width: 100% !important; aspect-ratio: 16 / 9 !important; height: auto !important; }
 
   .blog-card-body {
     padding: 18px 18px 22px;
