@@ -5,37 +5,11 @@
   $canonicalUrl = "https://www.rtchocos.com/workshops";
   $schemaType = "CollectionPage";
   
-  // Load database connection and fetch the latest class fact for server-side pre-rendering
-  require_once $pathPrefix . 'includes/db.php';
-  try {
-      $pdo = get_db();
-      $factStmt = $pdo->query("SELECT fact_text FROM ai_class_facts ORDER BY id DESC LIMIT 1");
-      $latestClassFact = $factStmt->fetchColumn();
-  } catch (Exception $e) {
-      $latestClassFact = "Tempering cocoa butter requires precisely forming Type V crystals for that satisfying snap and glossy finish.";
-  }
-  if (!$latestClassFact) {
-      $latestClassFact = "Tempering cocoa butter requires precisely forming Type V crystals for that satisfying snap and glossy finish.";
-  }
   $breadcrumbs = [
       ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
       ['name' => 'Workshops', 'item' => $canonicalUrl]
   ];
   
-  $faqItems = [
-      [
-          'question' => 'Who are RT Chocos chocolate workshops for?',
-          'answer' => 'The planned sessions are designed for home bakers, culinary students, working chocolatiers and founders who want a clearer technical understanding of chocolate.'
-      ],
-      [
-          'question' => 'Will bean-to-bar chocolate making be covered?',
-          'answer' => 'Yes. The learning roadmap includes cacao selection, roasting, winnowing, refining, conching, tempering and evaluating a finished chocolate bar.'
-      ],
-      [
-          'question' => 'Are workshops available online?',
-          'answer' => 'RT Chocos plans both Mumbai-based and online learning formats. Dates, format and fees will be published before registration opens.'
-      ]
-  ];
   
   include $pathPrefix . 'includes/header.php';
 ?>
@@ -108,8 +82,8 @@
           <a href="#workshops-grid" class="btn-gold-lux">
             Explore Masterclasses &darr;
           </a>
-          <a href="#workshop-faq" class="btn-outline-lux">
-            Curriculum &amp; FAQ &rarr;
+          <a href="#learning-roadmap-title" class="btn-outline-lux">
+            Learning Roadmap &rarr;
           </a>
         </div>
       </div>
@@ -122,11 +96,6 @@
   </section>
   <div class="section">
 
-    <!-- AI Class Insight -->
-    <div class="ai-class-insight" style="background: rgba(201,149,107,0.06); border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 4px; margin-bottom: 32px; text-align: left;">
-      <h4 style="font-family:'Playfair Display', serif; font-size: 16px; color: var(--accent-dark); margin-bottom: 6px;">💡 AI Class Fact of the Moment</h4>
-      <p id="ai-dynamic-class-insight" style="font-size: 14px; color: var(--brown-light); line-height: 1.6; margin: 0; font-style: italic;"><?php echo htmlspecialchars($latestClassFact, ENT_QUOTES, 'UTF-8'); ?></p>
-    </div>
 
     <div class="grid-3" id="workshops-grid">
       <?php
@@ -164,16 +133,7 @@
       </div>
     </section>
 
-    <section class="seo-faq" id="workshop-faq" aria-labelledby="workshop-faq-title">
-      <div class="section-label">Frequently Asked Questions</div>
-      <h2 id="workshop-faq-title" class="section-title">Chocolate workshop FAQs</h2>
-      <?php foreach ($faqItems as $faq): ?>
-        <details>
-          <summary><?php echo htmlspecialchars($faq['question']); ?></summary>
-          <p><?php echo htmlspecialchars($faq['answer']); ?></p>
-        </details>
-      <?php endforeach; ?>
-    </section>
+
   </div>
 </div>
 

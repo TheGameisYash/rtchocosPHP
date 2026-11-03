@@ -328,6 +328,51 @@
           </div>
         </div>
       </div>
+      <!-- Mobile-Only Interactive Workbench Cards (Ergonomic 2-Column Grid) -->
+      <div class="mobile-only-grid mobile-workbench-cards">
+        <button type="button" class="workbench-mob-card" onclick="openTableModal('bean-to-bar')" aria-label="Open Bean to Bar modal">
+          <span class="wb-card-icon">🌱</span>
+          <div class="wb-card-info">
+            <span class="wb-card-tag">CRAFT PROCESS</span>
+            <span class="wb-card-title">Bean to Bar &rarr;</span>
+          </div>
+        </button>
+        <button type="button" class="workbench-mob-card" onclick="openTableModal('cacao-journal')" aria-label="Open Cacao Journal modal">
+          <span class="wb-card-icon">📖</span>
+          <div class="wb-card-info">
+            <span class="wb-card-tag">KNOWLEDGE HUB</span>
+            <span class="wb-card-title">Cacao Journal &rarr;</span>
+          </div>
+        </button>
+        <button type="button" class="workbench-mob-card" onclick="openTableModal('cacao-lab')" aria-label="Open Cacao Lab modal">
+          <span class="wb-card-icon">🧪</span>
+          <div class="wb-card-info">
+            <span class="wb-card-tag">AI &amp; R&amp;D</span>
+            <span class="wb-card-title">Cacao Lab &rarr;</span>
+          </div>
+        </button>
+        <button type="button" class="workbench-mob-card" onclick="openTableModal('formulations')" aria-label="Open Formulations modal">
+          <span class="wb-card-icon">🍫</span>
+          <div class="wb-card-info">
+            <span class="wb-card-tag">PRO SPECS</span>
+            <span class="wb-card-title">Formulations &rarr;</span>
+          </div>
+        </button>
+        <button type="button" class="workbench-mob-card" onclick="openTableModal('work-with-us')" aria-label="Open Work With Us modal">
+          <span class="wb-card-icon">🤝</span>
+          <div class="wb-card-info">
+            <span class="wb-card-tag">CONSULTING</span>
+            <span class="wb-card-title">Work With Us &rarr;</span>
+          </div>
+        </button>
+        <button type="button" class="workbench-mob-card" onclick="openTableModal('workshops-academy')" aria-label="Open Innovation Lab modal">
+          <span class="wb-card-icon">💡</span>
+          <div class="wb-card-info">
+            <span class="wb-card-tag">EXPERIMENTS</span>
+            <span class="wb-card-title">Innovation Lab &rarr;</span>
+          </div>
+        </button>
+      </div>
     </div>
   </section>
 

@@ -1,0 +1,1313 @@
+/* ==========================================================================
+   RT CHOCOS - MOBILE PRESENTATION LAYER (css/mobile.css)
+   STRICT DESKTOP ISOLATION: Scoped ONLY to screens <= 768px.
+   Rules in this file CANNOT affect Desktop / PC screens (> 768px).
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+  /* --------------------------------------------------------------------------
+     1. GLOBAL MOBILE VIEWPORT, SAFE AREAS & GUTTER SYSTEM
+     -------------------------------------------------------------------------- */
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+
+  body {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Universal 18px Luxury Gutter Guide Rails */
+  .section,
+  .chocolate-table-inner,
+  .tempering-lab-container,
+  .wheel-shell,
+  .home-trust-inner,
+  #hero .split-hero-container {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+    box-sizing: border-box !important;
+    max-width: 100vw !important;
+  }
+
+  /* Prevent Mobile Scroll-Reveal Lag / White Flash Glitches */
+  .chocolate-table-sec,
+  #featured-workshops,
+  .workshop-card,
+  .card.workshop-card,
+  .luxury-flavor-wheel-sec,
+  .home-journal-sec,
+  .home-journal-card,
+  .tempering-lab-sec,
+  .home-trust-strip-sec {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     2. ERGONOMIC TOUCH TARGETS & FORM CONTROLS (PREVENT IOS AUTO-ZOOM)
+     -------------------------------------------------------------------------- */
+  button, 
+  a.btn-primary, 
+  a.btn-outline,
+  a.btn-hero-primary,
+  a.btn-hero-outline,
+  .mobile-bottom-item,
+  .mobile-nav-link {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     3. MOBILE FLOATING BOTTOM DOCK NAVIGATION
+     -------------------------------------------------------------------------- */
+  .mobile-bottom-nav {
+    display: flex !important;
+    visibility: visible !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    background: rgba(10, 24, 16, 0.96) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.28) !important;
+    z-index: 9999 !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  .mobile-bottom-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    text-decoration: none !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    gap: 3px !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 4px 0 !important;
+    transition: color 0.2s ease !important;
+  }
+
+  .mobile-bottom-item.active,
+  .mobile-bottom-item:hover {
+    color: #D4AF37 !important;
+  }
+
+  .mobile-bottom-item svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     4. MOBILE HAMBURGER & DRAWER MENU (PATTERN 1: CLEAN HEADER DOCK)
+     -------------------------------------------------------------------------- */
+  /* Hide redundant top hamburger on mobile — bottom dock handles menu trigger */
+  #hamburger,
+  .hamburger {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Refined circular luxury search button in top header */
+  .header-actions .search-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    background: rgba(212, 175, 55, 0.1) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    color: #D4AF37 !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease, background 0.2s ease !important;
+  }
+
+  .header-actions .search-btn:active {
+    transform: scale(0.92) !important;
+    background: rgba(212, 175, 55, 0.24) !important;
+  }
+
+  /* Mobile slide-out drawer active state */
+  #mobile-menu.open {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* Single clean close button and brand badge inside the opened drawer */
+  .mobile-menu-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 16px 20px !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
+    background: rgba(7, 21, 14, 0.98) !important;
+  }
+
+  .mobile-menu-close-btn {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    color: #D4AF37 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: transform 0.15s ease, background 0.15s ease !important;
+  }
+
+  .mobile-menu-close-btn:active {
+    transform: scale(0.92) !important;
+    background: rgba(212, 175, 55, 0.2) !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     5. HERO VIEWPORT (EDITORIAL LUXURY ON MOBILE)
+     -------------------------------------------------------------------------- */
+  #hero {
+    min-height: 520px !important;
+    padding: 68px 18px 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  #hero .split-hero-container {
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  #hero .split-hero-content {
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  #hero .hero-tag {
+    display: inline-block !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.2px !important;
+    text-transform: uppercase !important;
+    color: #102A1C !important;
+    background: rgba(255, 248, 235, 0.92) !important;
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    padding: 6px 14px !important;
+    border-radius: 20px !important;
+    margin-bottom: 14px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  #hero h1 {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 28px !important;
+    line-height: 1.2 !important;
+    color: #0E291C !important;
+    margin-bottom: 12px !important;
+  }
+
+  #hero h1 em {
+    font-style: italic !important;
+    color: #B8860B !important;
+  }
+
+  #hero p {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    color: #4A4036 !important;
+    max-width: 320px !important;
+    margin: 0 auto 22px !important;
+  }
+
+  #hero .hero-btns {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+
+  #hero .btn-hero-primary {
+    width: 100% !important;
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    background: #143322 !important;
+    color: #FFFFFF !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    border-radius: 24px !important;
+    border: 1px solid #D4AF37 !important;
+    box-shadow: 0 8px 24px rgba(20, 51, 34, 0.25) !important;
+    text-decoration: none !important;
+  }
+
+  #hero .btn-hero-outline {
+    width: 100% !important;
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #143322 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    border-radius: 24px !important;
+    border: 1px solid rgba(212, 175, 55, 0.45) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     6. TRUST STRIP (SYMMETRICAL BALANCED 2x2 + 1 FULL ANCHOR)
+     -------------------------------------------------------------------------- */
+  .home-trust-strip-sec {
+    padding: 34px 0 38px !important;
+    background: #FDFBF7 !important;
+  }
+
+  .home-trust-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 18px !important;
+    padding: 22px 14px !important;
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  .trust-main-heading {
+    font-size: 14px !important;
+    letter-spacing: 1.2px !important;
+    text-align: center !important;
+    color: #143322 !important;
+    margin: 8px 0 !important;
+  }
+
+  .trust-pillars-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin-top: 18px !important;
+    padding: 0 !important;
+  }
+
+  .trust-col {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(184, 134, 11, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 14px 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+  }
+
+  .trust-icon-badge {
+    width: 38px !important;
+    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 8px !important;
+  }
+
+  .trust-stat-title {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    color: #143322 !important;
+    margin-bottom: 3px !important;
+  }
+
+  .trust-stat-subtitle {
+    font-size: 8.5px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    color: #7C6E65 !important;
+  }
+
+  /* 5th Pillar: Beautiful Anchored Full-Width Banner */
+  .trust-col:last-child {
+    grid-column: 1 / -1 !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 18px !important;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(20, 51, 34, 0.04) 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  }
+
+  .trust-col:last-child .trust-icon-badge {
+    margin-bottom: 0 !important;
+  }
+
+  .trust-col:last-child .trust-stat-title {
+    margin-bottom: 0 !important;
+    display: inline !important;
+  }
+
+  .trust-col:last-child .trust-stat-subtitle {
+    display: inline !important;
+    margin-left: 4px !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     7. INTERACTIVE CHOCOLATE TABLE & MOBILE WORKBENCH CARDS
+     -------------------------------------------------------------------------- */
+  .chocolate-table-sec {
+    padding: 38px 0 42px !important;
+    background: #FBF8F3 !important;
+  }
+
+  .chocolate-table-header {
+    text-align: center !important;
+    margin-bottom: 20px !important;
+  }
+
+  .chocolate-table-label {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.2px !important;
+    text-transform: uppercase !important;
+    color: #B8860B !important;
+    margin-bottom: 6px !important;
+  }
+
+  .chocolate-table-title {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 25px !important;
+    line-height: 1.25 !important;
+    color: #143322 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .chocolate-table-subtitle {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    color: #6B5E55 !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+
+  .chocolate-table-wrapper {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1) !important;
+    margin-top: 14px !important;
+  }
+
+  /* Mobile-Only Workbench 2-Column Luxury Touch Cards */
+  .mobile-workbench-cards {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin-top: 18px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .workbench-mob-card {
+    min-height: 52px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+    background: #FFFFFF !important;
+    border: 1px solid rgba(184, 134, 11, 0.28) !important;
+    border-radius: 14px !important;
+    text-align: left !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  .workbench-mob-card:active {
+    transform: scale(0.97) !important;
+    border-color: #D4AF37 !important;
+    background: #FFFDF9 !important;
+  }
+
+  .wb-card-icon {
+    font-size: 19px !important;
+    flex-shrink: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .wb-card-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .wb-card-tag {
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.6px !important;
+    color: #B8860B !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .wb-card-title {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #143322 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Table Modal Bottom Sheet Adaptation */
+  .table-modal-box {
+    max-width: 92vw !important;
+    max-height: 85vh !important;
+    border-radius: 20px !important;
+    padding: 24px 20px !important;
+    overflow-y: auto !important;
+  }
+
+  .table-modal-actions {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .table-modal-btn-primary,
+  .table-modal-btn-secondary {
+    width: 100% !important;
+    min-height: 46px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     8. THE TEMPERING LAB (MOLECULAR CRYSTALLIZATION CONSOLE)
+     -------------------------------------------------------------------------- */
+  .tempering-lab-sec {
+    padding: 40px 0 44px !important;
+    background: #081B12 !important;
+  }
+
+  .tempering-lab-header {
+    text-align: center !important;
+    margin-bottom: 22px !important;
+  }
+
+  .tempering-lab-badge {
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.2px !important;
+    color: #D4AF37 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .tempering-lab-title {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 25px !important;
+    line-height: 1.25 !important;
+    color: #FFFFFF !important;
+    margin-bottom: 10px !important;
+  }
+
+  .tempering-lab-title em {
+    font-style: italic !important;
+    color: #E8C87A !important;
+  }
+
+  .tempering-lab-desc {
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    max-width: 330px !important;
+    margin: 0 auto !important;
+  }
+
+  .tempering-lab-card {
+    background: rgba(14, 38, 26, 0.85) !important;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    border-radius: 18px !important;
+    padding: 20px 16px !important;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  .chocolate-type-pills {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .choco-pill-btn {
+    min-height: 42px !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #FFFFFF !important;
+  }
+
+  .choco-pill-btn.active {
+    background: #FFF0CB !important;
+    color: #072C21 !important;
+    border-color: #E8C87A !important;
+    font-weight: 700 !important;
+  }
+
+  .tempering-metrics-row {
+    display: flex !important;
+    gap: 8px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .tempering-metric-box {
+    flex: 1 !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(212, 175, 55, 0.18) !important;
+    border-radius: 10px !important;
+    padding: 10px 4px !important;
+    text-align: center !important;
+  }
+
+  .metric-deg-val {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #D4AF37 !important;
+    display: block !important;
+  }
+
+  .metric-deg-sub {
+    font-size: 8px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.6px !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+    display: block !important;
+    margin-top: 2px !important;
+  }
+
+  .tempering-science-callout {
+    border-left: 3px solid #D4AF37 !important;
+    background: rgba(212, 175, 55, 0.06) !important;
+    border-radius: 0 10px 10px 0 !important;
+    padding: 12px 14px !important;
+    font-size: 12.5px !important;
+    line-height: 1.55 !important;
+    color: #E8EDE9 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     9. AI INSIGHTS TICKER (SLEEK COMPACT HORIZONTAL RIBBON)
+     -------------------------------------------------------------------------- */
+  #page-home .ticker-wrap,
+  .ticker-wrap {
+    height: auto !important;
+    min-height: 64px !important;
+    padding: 10px 0 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    background: linear-gradient(90deg, #071911 0%, #0d261a 100%) !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.22) !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.22) !important;
+    margin: 22px 0 !important;
+    overflow: hidden !important;
+  }
+
+  #page-home .ticker-title,
+  .ticker-title {
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    color: #102A1C !important;
+    background: #D4AF37 !important;
+    padding: 3px 12px !important;
+    border-radius: 12px !important;
+    margin: 0 auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3) !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  #page-home .ticker-track,
+  .ticker-track {
+    width: 100% !important;
+    height: 22px !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  #page-home .ticker-content,
+  .ticker-content {
+    display: flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    gap: 28px !important;
+    padding-right: 28px !important;
+  }
+
+  #page-home .ticker-item,
+  .ticker-item {
+    font-size: 12px !important;
+    color: #E8EDE9 !important;
+    white-space: nowrap !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     10. SECTION 01: FEATURED WORKSHOPS LOOKBOOK RUNWAY
+     -------------------------------------------------------------------------- */
+  #featured-workshops {
+    padding: 40px 0 44px !important;
+    background: #FFFFFF !important;
+  }
+
+  .workshops-section-header {
+    text-align: center !important;
+    margin-bottom: 16px !important;
+  }
+
+  #featured-workshops .section-label {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.2px !important;
+    color: #B8860B !important;
+    text-transform: uppercase !important;
+    margin-bottom: 6px !important;
+  }
+
+  #featured-workshops .section-title {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 25px !important;
+    line-height: 1.25 !important;
+    color: #143322 !important;
+    margin-bottom: 8px !important;
+  }
+
+  #featured-workshops .section-subtitle {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    color: #6B5E55 !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+
+  #featured-workshops #home-workshops {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 14px !important;
+    padding: 0 18px 16px !important;
+    margin-top: 18px !important;
+  }
+
+  #featured-workshops .workshop-card {
+    flex: 0 0 calc(100vw - 64px) !important;
+    max-width: 326px !important;
+    scroll-snap-align: start !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(212, 175, 55, 0.22) !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05) !important;
+    overflow: hidden !important;
+  }
+
+  #featured-workshops .workshop-card .btn-primary,
+  #featured-workshops .workshop-card button.btn-primary,
+  #featured-workshops .workshop-card .btn-outline {
+    background: #143322 !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    border-radius: 24px !important;
+    min-height: 46px !important;
+    border: 1px solid #D4AF37 !important;
+    box-shadow: 0 4px 14px rgba(20, 51, 34, 0.25) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     11. SECTION 02: SENSORY LAB & FLAVOR WHEEL
+     -------------------------------------------------------------------------- */
+  .luxury-flavor-wheel-sec {
+    padding: 40px 0 44px !important;
+    background: #0B2419 !important;
+  }
+
+  .luxury-flavor-wheel-sec .section-head {
+    text-align: center !important;
+    margin-bottom: 20px !important;
+  }
+
+  .luxury-flavor-wheel-sec .eyebrow {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.2px !important;
+    color: #D4AF37 !important;
+    text-transform: uppercase !important;
+  }
+
+  .luxury-flavor-wheel-sec h2 {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 25px !important;
+    color: #FFFFFF !important;
+    margin-bottom: 8px !important;
+  }
+
+  .luxury-flavor-wheel-sec p {
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+
+  .luxury-flavor-wheel-sec .wheel-wrap {
+    max-width: 320px !important;
+    margin: 0 auto 16px !important;
+  }
+
+  #detailPanel {
+    background: rgba(14, 38, 26, 0.95) !important;
+    border: 1px solid rgba(212, 175, 55, 0.28) !important;
+    border-radius: 18px !important;
+    padding: 20px 16px !important;
+    color: #F5F0E7 !important;
+  }
+
+  #detailPanel .observations {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  #detailPanel .observations button {
+    min-height: 44px !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+  }
+
+  /* Tasting Journey Steps Horizontal Runway */
+  .journey .steps {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 12px !important;
+    padding: 0 4px 14px !important;
+  }
+
+  .journey .step {
+    flex: 0 0 220px !important;
+    scroll-snap-align: start !important;
+    border-radius: 14px !important;
+    padding: 16px 14px !important;
+  }
+
+  .guide-controls {
+    display: flex !important;
+    gap: 10px !important;
+  }
+
+  .guide-controls button {
+    min-height: 44px !important;
+    flex: 1 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     12. SECTION 03: THE CACAO JOURNAL LOOKBOOK RUNWAY
+     -------------------------------------------------------------------------- */
+  .home-journal-sec {
+    padding: 40px 0 48px !important;
+    background: #FDFBF7 !important;
+  }
+
+  .home-journal-sec .section-label {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.2px !important;
+    color: #B8860B !important;
+    text-transform: uppercase !important;
+    margin-bottom: 6px !important;
+  }
+
+  .home-journal-sec .section-title {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 25px !important;
+    line-height: 1.25 !important;
+    color: #143322 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .home-journal-sec .section-subtitle {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    color: #6B5E55 !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+
+  .home-journal-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 14px !important;
+    padding: 0 18px 16px !important;
+    margin-top: 18px !important;
+  }
+
+  .home-journal-card {
+    flex: 0 0 calc(100vw - 64px) !important;
+    max-width: 326px !important;
+    scroll-snap-align: start !important;
+    border-radius: 18px !important;
+    background: #FFFFFF !important;
+    border: 1px solid rgba(212, 175, 55, 0.22) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    text-decoration: none !important;
+  }
+
+  .home-journal-img-wrap {
+    height: 175px !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .home-journal-img-wrap img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     13. LUXURY ATELIER FOOTER & SAFE AREA SPACING
+     -------------------------------------------------------------------------- */
+  body #site-footer,
+  body #page-home ~ footer,
+  body #page-home + footer,
+  #site-footer.footer-links-section {
+    background: linear-gradient(180deg, #091D13 0%, #040E08 100%) !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.35) !important;
+    padding: 48px 18px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+    color: #E8EDE9 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* Shimmering Gold Top Light Line */
+  #site-footer::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 260px !important;
+    height: 1.5px !important;
+    background: linear-gradient(90deg, transparent, #D4AF37, transparent) !important;
+  }
+
+  .footer-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 32px !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  /* 1. Brand Atelier Presentation */
+  .footer-grid > .footer-brand-col {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .footer-brand-col .logo {
+    justify-content: center !important;
+    margin-bottom: 12px !important;
+  }
+
+  .footer-brand-col .logo-svg-emblem rect {
+    fill: rgba(212, 175, 55, 0.12) !important;
+    stroke: #D4AF37 !important;
+  }
+
+  .footer-brand-col .logo-svg-emblem path {
+    stroke: #D4AF37 !important;
+  }
+
+  .footer-brand-col .logo-svg-emblem circle {
+    fill: #D4AF37 !important;
+  }
+
+  .footer-logo-rt {
+    color: #FFFFFF !important;
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 26px !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  .footer-logo-chocos {
+    color: #D4AF37 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.28em !important;
+  }
+
+  .footer-brand-col p {
+    color: #A3B8AD !important;
+    font-size: 13px !important;
+    line-height: 1.65 !important;
+    max-width: 320px !important;
+    margin: 0 auto 14px !important;
+    text-align: center !important;
+  }
+
+  /* Refined Single Row Luxury Credential Pills */
+  .footer-trust-pills {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-top: 10px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .footer-trust-pill {
+    background: rgba(212, 175, 55, 0.08) !important;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    border-radius: 14px !important;
+    padding: 4px 10px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.4px !important;
+    color: #D4AF37 !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+  }
+
+  .footer-trust-pill:not(:last-child)::after {
+    display: none !important;
+  }
+
+  /* 2. Navigation & Explore: Airy Symmetrical 2-Column Grid (No heavy box) */
+  .footer-links-wrap {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 6px 4px !important;
+    box-shadow: none !important;
+  }
+
+  .footer-heading {
+    color: #D4AF37 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    margin-bottom: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .footer-heading::after {
+    content: '' !important;
+    flex: 1 !important;
+    height: 1px !important;
+    background: rgba(212, 175, 55, 0.22) !important;
+  }
+
+  .footer-link {
+    color: #C5D0C9 !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    margin-bottom: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    min-height: 30px !important;
+    transition: color 0.2s ease, transform 0.2s ease !important;
+  }
+
+  .footer-link:active {
+    color: #D4AF37 !important;
+    transform: translateX(4px) !important;
+  }
+
+  /* 3. The Cacao Dispatch Box (Single Standout Hero Card) */
+  .footer-grid > .footer-dispatch-col {
+    background: linear-gradient(135deg, rgba(20, 51, 34, 0.6) 0%, rgba(8, 24, 16, 0.85) 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 20px !important;
+    padding: 24px 18px !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+
+  .footer-dispatch-col .footer-heading:first-child {
+    color: #F5DEB3 !important;
+    font-size: 11px !important;
+    letter-spacing: 1.6px !important;
+  }
+
+  .footer-dispatch-col p {
+    color: #D0DBD5 !important;
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+    margin-bottom: 16px !important;
+  }
+
+  .footer-newsletter-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    max-width: 100% !important;
+  }
+
+  .footer-newsletter-input {
+    width: 100% !important;
+    height: 48px !important;
+    background: rgba(0, 0, 0, 0.45) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 24px !important;
+    padding: 0 18px !important;
+    color: #FFFFFF !important;
+    font-size: 14px !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+  }
+
+  .footer-newsletter-input:focus {
+    border-color: #D4AF37 !important;
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.3) !important;
+  }
+
+  /* Primary Solid Gold Button */
+  .footer-newsletter-btn {
+    width: 100% !important;
+    height: 48px !important;
+    background: linear-gradient(135deg, #D4AF37 0%, #AA820A 100%) !important;
+    color: #0A1C12 !important;
+    font-weight: 700 !important;
+    font-size: 12.5px !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    border: none !important;
+    border-radius: 24px !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    transition: transform 0.15s ease, filter 0.15s ease !important;
+  }
+
+  .footer-newsletter-btn:active {
+    transform: scale(0.98) !important;
+    filter: brightness(1.1) !important;
+  }
+
+  /* Secondary Refined Concierge Pill (Clear Visual Hierarchy) */
+  .footer-wa-concierge {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    margin-top: 14px !important;
+    padding: 10px 16px !important;
+    border-radius: 22px !important;
+    background: rgba(37, 211, 102, 0.08) !important;
+    border: 1px solid rgba(37, 211, 102, 0.3) !important;
+    color: #74E291 !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    letter-spacing: 0.3px !important;
+    transition: background 0.2s ease !important;
+  }
+
+  .footer-wa-concierge:active {
+    background: rgba(37, 211, 102, 0.16) !important;
+  }
+
+  /* Social Icons */
+  .social-icons {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 14px !important;
+    margin-top: 14px !important;
+  }
+
+  .social-icon {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    color: #D4AF37 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease !important;
+  }
+
+  .social-icon:active {
+    transform: scale(0.92) !important;
+    background: rgba(212, 175, 55, 0.15) !important;
+    border-color: #D4AF37 !important;
+  }
+
+  /* Footer Legal & Bottom Bar */
+  .footer-legal-links {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin-bottom: 12px !important;
+    font-size: 11px !important;
+    color: #8C9E94 !important;
+  }
+
+  .footer-legal-links a {
+    color: #A3B8AD !important;
+    text-decoration: none !important;
+  }
+
+  .footer-legal-links a:active {
+    color: #D4AF37 !important;
+  }
+
+  .footer-bottom {
+    margin-top: 36px !important;
+    padding-top: 22px !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.18) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    text-align: center !important;
+    font-size: 11.5px !important;
+    color: #8C9E94 !important;
+    padding-bottom: 12px !important;
+  }
+
+  .footer-bottom span {
+    display: block !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     14. SWIPE INDICATOR REFINEMENT
+     -------------------------------------------------------------------------- */
+  .mobile-swipe-indicator {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    color: #B8860B !important;
+    background: rgba(212, 175, 55, 0.08) !important;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    padding: 6px 14px !important;
+    border-radius: 20px !important;
+    margin: 8px auto 14px !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     15. UTILITIES: MOBILE-ONLY & DESKTOP-ONLY ACTIVATION
+     -------------------------------------------------------------------------- */
+  .mobile-only {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .mobile-only-flex {
+    display: flex !important;
+    visibility: visible !important;
+  }
+
+  .mobile-only-grid {
+    display: grid !important;
+    visibility: visible !important;
+  }
+
+  .desktop-only,
+  .desktop-only-flex,
+  .desktop-only-grid {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}

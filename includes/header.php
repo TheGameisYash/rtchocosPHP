@@ -285,6 +285,8 @@ if (!empty(trim($customHeadScripts))) {
     echo "\n<!-- Developer Custom Head Scripts -->\n" . $customHeadScripts . "\n";
 }
 ?>
+<!-- Dedicated Mobile Isolated Presentation Layer -->
+<link rel="stylesheet" href="<?php echo $pathPrefix; ?>css/mobile.css?v=<?php echo file_exists(__DIR__ . '/../css/mobile.css') ? filemtime(__DIR__ . '/../css/mobile.css') : time(); ?>">
 </head>
 <body<?php echo !empty($bodyClass) ? ' class="' . $bodyClass . '"' : ''; ?>>
 
@@ -489,15 +491,7 @@ if (!empty(trim($customHeadScripts))) {
         </svg>
       </button>
 
-      <!-- Cart Button with Dynamic Badge -->
-      <a href="<?php echo $pathPrefix; ?>cart.php" class="nav-cart-btn" aria-label="Shopping Cart" title="View Cart">
-        <svg class="cart-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <path d="M16 10a4 4 0 0 1-8 0"></path>
-        </svg>
-        <span id="header-cart-count" class="cart-count-badge" style="<?php echo ($cartCount > 0) ? '' : 'display:none;'; ?>"><?php echo (int)$cartCount; ?></span>
-      </a>
+<!-- Cart option completely removed from website -->
 
       <!-- Work with Us CTA (Desktop Only) -->
       <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="signin-join-btn work-with-us-btn header-desktop-cta" title="Work With RT Chocos — Consulting, R&D & Workshops">

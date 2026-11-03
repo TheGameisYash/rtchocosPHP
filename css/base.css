@@ -549,6 +549,44 @@ p {
 
 
 
+/* Footer Desktop Wrapper Normalization */
+.footer-links-wrap {
+  display: contents;
+}
+
+/* ==========================================================================
+   DESKTOP ISOLATION SYSTEM
+   Guarantees 100% separation between Desktop (PC) and Mobile presentation layers.
+   Mobile elements CANNOT render or affect Desktop screens (width >= 769px).
+   Desktop elements CANNOT disrupt Mobile layouts (width <= 768px).
+   ========================================================================== */
+
+/* --- 1. DEFAULT DESKTOP STATE (PC: min-width: 769px) --- */
+.mobile-only,
+.mobile-only-flex,
+.mobile-only-grid,
+.mobile-bottom-nav,
+.mobile-shelf-bar,
+.mobile-workbench-cards,
+.mobile-swipe-indicator,
+.mobile-menu-backdrop,
+.mobile-contact-hero-actions,
+#mobile-menu,
+#hamburger {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.desktop-only {
+  display: block !important;
+}
+.desktop-only-flex {
+  display: flex !important;
+}
+.desktop-only-grid {
+  display: grid !important;
+}
+
 /* ==========================================================================
    GLOBAL MOBILE SPACING NORMALIZATION & TEXT CLAMPING UTILITIES
    ========================================================================== */

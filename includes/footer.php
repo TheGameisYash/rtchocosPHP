@@ -1,7 +1,7 @@
 <!-- --- FOOTER --- -->
 <footer id="site-footer" class="footer-links-section">
   <div class="footer-grid">
-    <div>
+    <div class="footer-brand-col">
       <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" style="text-decoration:none;display:inline-flex;align-items:center;gap:12px;margin-bottom:16px;">
         <svg class="logo-svg-emblem" width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="40" height="40" rx="10" fill="var(--accent-glow)" stroke="var(--border-accent)" stroke-width="1.2"/>
@@ -11,31 +11,44 @@
         <span class="logo-text"><span class="footer-logo-rt" style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text-heading);font-weight:400;">RT</span><span class="footer-logo-chocos" style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.25em;color:var(--accent);"> CHOCOS</span></span>
       </a>
       <p style="color:var(--text-secondary);font-size:13.5px;line-height:1.75;font-weight:400;max-width:260px;">India's chocolate learning platform for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
+      <div class="footer-trust-pills mobile-only-flex">
+        <span class="footer-trust-pill">Single-Origin</span>
+        <span class="footer-trust-pill">R&amp;D Lab</span>
+        <span class="footer-trust-pill">Mumbai Atelier</span>
+      </div>
     </div>
-    <div>
-      <div class="footer-heading">Navigation</div>
-      <a class="footer-link" href="<?php echo $pathPrefix ?: 'index.php'; ?>">Home</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About Us</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy India">Chocolate Academy India</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>work-with-us.php" title="Work With Us — B2B & Consulting">Work With Us</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact Us</a>
+    <div class="footer-links-wrap">
+      <div class="footer-nav-col">
+        <div class="footer-heading">Navigation</div>
+        <a class="footer-link" href="<?php echo $pathPrefix ?: 'index.php'; ?>">Home</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About Us</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy India">Chocolate Academy India</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>work-with-us.php" title="Work With Us — B2B & Consulting">Work With Us</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact Us</a>
+      </div>
+      <div class="footer-explore-col">
+        <div class="footer-heading">Explore</div>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php" title="Chocolate Blog India">Chocolate Blog India</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>innovation-lab.php" title="Chocolate Innovation Lab">Innovation Lab</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>indian-chocolate-brands.php" title="Indian Chocolate Brands Directory">Indian Chocolate Brands</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes & Formulations</a>
+      </div>
     </div>
-    <div>
-      <div class="footer-heading">Explore</div>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php" title="Chocolate Blog India">Chocolate Blog India</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>innovation-lab.php" title="Chocolate Innovation Lab">Innovation Lab</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>indian-chocolate-brands.php" title="Indian Chocolate Brands Directory">Indian Chocolate Brands</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
-      <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes & Formulations</a>
-    </div>
-    <div>
+    <div class="footer-dispatch-col">
       <div class="footer-heading">Newsletter</div>
       <p style="margin-bottom:14px; color:var(--text-secondary); font-size:13.5px; line-height:1.6; font-weight:400; max-width:280px;">Recipes, science &amp; exclusive workshop updates.</p>
       <form class="footer-newsletter-row" id="newsletter-footer-form" novalidate>
         <input class="footer-newsletter-input" type="email" placeholder="Email" required />
-        <button class="footer-newsletter-btn" type="submit" aria-label="Subscribe">→</button>
+        <button class="footer-newsletter-btn" type="submit" aria-label="Subscribe"><span class="desktop-only">&rarr;</span><span class="mobile-only">Subscribe &rarr;</span></button>
       </form>
       <div id="newsletter-footer-feedback" style="margin-top: 10px; display: none; font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--accent); animation: fadeIn 0.3s ease;"></div>
+      <a href="https://wa.me/919140238741?text=Hello%20RT%20Chocos!%20I%20would%20like%20to%20connect%20with%20the%20atelier." target="_blank" rel="noopener" class="footer-wa-concierge mobile-only-flex" title="Chat on WhatsApp">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+        </svg>
+        <span>Direct WhatsApp Concierge &rarr;</span>
+      </a>
       <div class="footer-heading" style="margin-top: 26px;">Connect With Us</div>
       <div class="social-icons">
         <a class="social-icon" href="https://www.instagram.com/rt.chocos/?hl=en" target="_blank" rel="noopener" aria-label="Instagram">
@@ -67,12 +80,19 @@
     </div>
   </div>
   <div class="footer-bottom">
+    <div class="footer-legal-links mobile-only-flex">
+      <a href="<?php echo $pathPrefix; ?>about.php#sourcing">Sourcing Standards</a>
+      <span class="sep">&bull;</span>
+      <a href="<?php echo $pathPrefix; ?>contact.php">Atelier Inquiry</a>
+      <span class="sep">&bull;</span>
+      <a href="<?php echo $pathPrefix; ?>chocopedia.php">Cacao Glossary</a>
+    </div>
     <span>&copy; <?php echo date('Y'); ?> RT Chocos. All rights reserved.</span>
-    <span>Crafted with ♥ from Mumbai</span>
+    <span>Crafted with &hearts; from Mumbai</span>
   </div>
 </footer>
 
-<!-- Mobile Floating Bottom Navigation Bar (Home, Boutique, Cart, Academy, Menu) -->
+<!-- Mobile Floating Bottom Navigation Bar (Home, Boutique, Journal, Academy, Menu) -->
 <?php
   $navRoot = (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix : '/';
   $footerCartCount = (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) ? array_sum($_SESSION['cart']) : ($cartCount ?? 0);
@@ -100,16 +120,12 @@
     </svg>
     <span>Boutique</span>
   </a>
-  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'cart.php' : '/cart.php'; ?>" class="mobile-bottom-item mobile-bottom-cart-item <?php echo $isCartActive ? 'active' : ''; ?>">
-    <div class="bottom-item-icon-wrap">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <path d="M16 10a4 4 0 0 1-8 0"></path>
-      </svg>
-      <span id="bottom-cart-count" class="cart-count-badge bottom-cart-badge" style="<?php echo ($footerCartCount > 0) ? '' : 'display:none;'; ?>"><?php echo (int)$footerCartCount; ?></span>
-    </div>
-    <span>Cart</span>
+  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'blog.php' : '/blog.php'; ?>" class="mobile-bottom-item <?php echo $isJournalActive ? 'active' : ''; ?>" title="The Cacao Journal">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+    </svg>
+    <span>Journal</span>
   </a>
   <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'workshops.php' : '/workshops.php'; ?>" class="mobile-bottom-item <?php echo $isAcademyActive ? 'active' : ''; ?>">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
