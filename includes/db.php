@@ -84,4 +84,8 @@ function clear_site_settings_cache() {
     }
     get_site_setting('', '', true);
 }
+
+// Global Beta Lockdown Interceptor (protects all API endpoints and public scripts that load db.php)
+require_once __DIR__ . '/beta_lock.php';
+check_beta_lock();
 ?>

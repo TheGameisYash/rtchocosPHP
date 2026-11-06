@@ -6,6 +6,10 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/beta_lock.php';
+
+// First enforce Beta Environment Lock (if on beta site)
+check_beta_lock();
 
 // Check if maintenance mode is enabled
 $maintenanceActive = (get_site_setting('maintenance_mode', '0') === '1');

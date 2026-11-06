@@ -22,6 +22,11 @@ if ($uri === '/login' || $uri === '/login.php') {
     return true;
 }
 
+// Check Beta Website Lockdown
+require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/beta_lock.php';
+check_beta_lock();
+
 // Route clean /maintenance URL
 if ($uri === '/maintenance' || $uri === '/maintenance/') {
     include __DIR__ . '/maintenance.php';

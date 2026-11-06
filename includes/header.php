@@ -299,6 +299,14 @@ if (!empty(trim($customHeadScripts))) {
       <a href="/admin/dashboard.php" style="background: #fff; color: #991b1b; padding: 3px 10px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 700;">Admin CMS &rarr;</a>
     <?php endif; ?>
   </div>
+<?php elseif (function_exists('is_beta_environment') && is_beta_environment() && function_exists('is_beta_lock_enabled') && is_beta_lock_enabled()): ?>
+  <div style="background: linear-gradient(90deg, #161009, #26170d); color: #fcf8f2; border-bottom: 1px solid rgba(212, 175, 55, 0.45); text-align: center; padding: 8px 16px; font-size: 12.5px; font-weight: 500; position: sticky; top: 0; z-index: 999998; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <span>🔒 <strong>BETA STAGING LOCKED:</strong> Public visitors cannot access this platform. You are viewing via authorized session.</span>
+    <a href="?lock_beta=1" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.6); color: #fca5a5; padding: 2px 8px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 600;" title="Lock this browser session again to view the lock screen">Lock Again</a>
+    <?php if (!empty($_SESSION['dev_logged_in'])): ?>
+      <a href="/dev/urls.php" style="background: #d4af37; color: #000; padding: 2px 9px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 700;">Beta Controls &rarr;</a>
+    <?php endif; ?>
+  </div>
 <?php endif; ?>
 
 <!-- --- HEADER --- -->

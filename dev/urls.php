@@ -30,6 +30,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $successMsg = 'Site URLs updated successfully! Canonical URLs and sitemaps will now use this base domain.';
                 }
+            } elseif ($action === 'toggle_beta_lock') {
+                $currLock = get_site_setting('beta_locked', '1');
+                $newLock = ($currLock === '1') ? '0' : '1';
+                $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES ('beta_locked', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+                $stmt->execute([$newLock, $newLock]);
+                clear_site_settings_cache();
+                $successMsg = ($newLock === '1')
+                    ? 'Beta Staging Lockdown is now ACTIVE! Public visitors are strictly blocked by the 403 lock screen.'
+                    : 'Beta Staging Lockdown is now DEACTIVATED. Beta website is open for public testing.';
+            } elseif ($action === 'update_beta_settings') {
+                $betaCode = trim($_POST['beta_access_code'] ?? 'rtbeta2026');
+                $betaLock = isset($_POST['beta_locked']) ? '1' : '0';
+                $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+                $stmt->execute(['beta_access_code', $betaCode, $betaCode]);
+                $stmt->execute(['beta_locked', $betaLock, $betaLock]);
+                clear_site_settings_cache();
+                $successMsg = 'Beta access security parameters updated successfully!';
             } elseif ($action === 'flush_cache') {
                 $cacheDir = __DIR__ . '/../data/cache';
                 $cleared = 0;
@@ -52,6 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $siteUrl = get_site_setting('site_url', 'https://www.rtchocos.com');
 $betaUrl = get_site_setting('beta_url', 'https://www.rtchocos.com/beta');
+$betaLocked = get_site_setting('beta_locked', '1');
+$betaAccessCode = get_site_setting('beta_access_code', 'rtbeta2026');
+require_once __DIR__ . '/../includes/beta_lock.php';
+$isBetaEnv = is_beta_environment();
 
 // Route inspection list
 $routes = [
@@ -125,6 +146,91 @@ render_dev_header("URL & Route Control", "urls");
                 <span>Save Site URLs</span>
             </button>
         </form>
+    </div>
+
+    <!-- Beta Staging Environment Lockdown Control -->
+    <div class="dev-card" style="border-color: rgba(212, 175, 55, 0.35);">
+        <div class="dev-card-header" style="justify-content: space-between;">
+            <h3>
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>
+                <span>Beta Staging Lockdown &amp; Privacy Shield</span>
+            </h3>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <?php if ($isBetaEnv): ?>
+                    <span class="dev-pill dev-pill-cyan" title="Currently running inside Beta Staging host/path">Active on Beta</span>
+                <?php else: ?>
+                    <span class="dev-pill dev-pill-purple" title="Currently on Production environment">Production Host</span>
+                <?php endif; ?>
+
+                <?php if ($betaLocked === '1'): ?>
+                    <span class="dev-pill dev-pill-crimson" style="font-weight: 700;">LOCKED (403 Shield)</span>
+                <?php else: ?>
+                    <span class="dev-pill dev-pill-emerald" style="font-weight: 700;">PUBLIC UNLOCKED</span>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <p style="font-size: 13px; color: var(--dev-text-sub); line-height: 1.5; margin-bottom: 18px;">
+            Enforces strict access isolation on the Beta staging site (<code>beta.rtchocos.com</code> / subfolder <code>/beta</code>). When locked, any unauthorized visitor sees an ultra-luxury lock screen with HTTP 403 and <code>noindex</code> headers. Only people with the passcode or Admin/Dev login can access the beta platform.
+        </p>
+
+        <!-- Quick Lockdown Toggle Form -->
+        <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--dev-border-subtle); border-radius: 12px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <div>
+                <strong style="display: block; font-size: 14px; color: #fff;">Lockdown Status: <?php echo ($betaLocked === '1') ? '<span style="color: var(--dev-crimson);">LOCKED (No Public Access)</span>' : '<span style="color: var(--dev-emerald);">OPEN (Public Accessible)</span>'; ?></strong>
+                <span style="font-size: 12px; color: var(--dev-text-muted);">
+                    <?php echo ($betaLocked === '1') ? 'Visitors are stopped by the private passcode screen.' : 'Anyone with the beta URL can view unfinished staging features.'; ?>
+                </span>
+            </div>
+            <form action="urls.php" method="POST" style="margin: 0;">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+                <input type="hidden" name="action" value="toggle_beta_lock">
+                <?php if ($betaLocked === '1'): ?>
+                    <button type="submit" class="dev-btn dev-btn-danger">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+                        <span>Deactivate Beta Lock (Make Public)</span>
+                    </button>
+                <?php else: ?>
+                    <button type="submit" class="dev-btn dev-btn-primary" style="background: linear-gradient(135deg, #d4af37, #996515); color: #000; font-weight: 700;">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>
+                        <span>Activate Beta Lock (Lock Website Now)</span>
+                    </button>
+                <?php endif; ?>
+            </form>
+        </div>
+
+        <!-- Detailed Configuration Form -->
+        <form action="urls.php" method="POST">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+            <input type="hidden" name="action" value="update_beta_settings">
+
+            <div class="dev-form-group">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" name="beta_locked" value="1" <?php echo ($betaLocked === '1') ? 'checked' : ''; ?> style="accent-color: var(--dev-cyan); width: 16px; height: 16px;">
+                    <span style="font-weight: 600; font-size: 13.5px; color: #fff;">Enable Beta Staging Lockdown Shield</span>
+                </label>
+                <div class="help-text">When checked, all unauthenticated visits to beta will be intercepted.</div>
+            </div>
+
+            <div class="dev-form-group">
+                <label for="beta_access_code">Beta Team Access Passcode</label>
+                <div style="display: flex; gap: 10px; max-width: 460px;">
+                    <input type="text" id="beta_access_code" name="beta_access_code" class="dev-input" value="<?php echo htmlspecialchars($betaAccessCode); ?>" required placeholder="e.g. rtbeta2026">
+                    <button type="submit" class="dev-btn dev-btn-outline" style="white-space: nowrap;">Save Passcode</button>
+                </div>
+                <div class="help-text">Team members or client reviewers type this passcode on the lock screen to enter.</div>
+            </div>
+        </form>
+
+        <!-- Direct Instant-Unlock Link for Testers -->
+        <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--dev-border-subtle);">
+            <label style="font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--dev-text-sub); display: block; margin-bottom: 6px;">Direct One-Click Bypass URL (Share with Client / Testers)</label>
+            <div style="display: flex; gap: 10px; align-items: center; max-width: 580px;">
+                <input type="text" readonly class="dev-input" value="<?php echo htmlspecialchars(rtrim($betaUrl, '/') . '/?unlock=' . $betaAccessCode); ?>" style="font-family: monospace; font-size: 12px; color: var(--dev-cyan); background: rgba(0,0,0,0.4);" id="directBypassInput">
+                <button type="button" class="dev-btn dev-btn-outline dev-btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('directBypassInput').value); this.innerText = 'Copied!'; setTimeout(() => this.innerText = 'Copy Link', 2000);">Copy Link</button>
+                <a href="<?php echo htmlspecialchars(rtrim($betaUrl, '/') . '/?lock_beta=1'); ?>" target="_blank" class="dev-btn dev-btn-outline dev-btn-sm" title="Open lock screen in new tab">Test Lock Screen &rarr;</a>
+            </div>
+        </div>
     </div>
 
     <!-- Active Route Inspector -->

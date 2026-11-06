@@ -22,6 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = 'maintenance_mode'");
                 $stmt->execute([$newMode]);
                 $successMsg = ($newMode === '1') ? 'Maintenance Mode is now ACTIVE. Public visitors will see the maintenance page.' : 'Maintenance Mode is now DEACTIVATED. The website is LIVE.';
+            } elseif ($action === 'toggle_beta_lock') {
+                $currLock = get_site_setting('beta_locked', '1');
+                $newLock = ($currLock === '1') ? '0' : '1';
+                $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES ('beta_locked', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+                $stmt->execute([$newLock, $newLock]);
+                clear_site_settings_cache();
+                $successMsg = ($newLock === '1') ? 'Beta Staging Lockdown is now ACTIVE! Public visitors cannot access the beta website.' : 'Beta Staging Lockdown is now DEACTIVATED. Beta website is open for public testing.';
             } elseif ($action === 'toggle_store_mode') {
                 $currStore = get_site_setting('store_mode', 'retail');
                 $newStore = ($currStore === 'bulk') ? 'retail' : 'bulk';
@@ -62,6 +69,7 @@ $maintImage = get_site_setting('maintenance_image', 'assets/ph.png');
 $maintVideo = get_site_setting('maintenance_video', 'https://www.youtube.com/watch?v=kY3Pvdq0YpY');
 $siteUrl = get_site_setting('site_url', 'https://www.rtchocos.com');
 $betaUrl = get_site_setting('beta_url', 'https://www.rtchocos.com/beta');
+$betaLocked = get_site_setting('beta_locked', '1');
 $bypassKey = get_site_setting('maintenance_bypass_key', 'rtdev2026');
 
 // Admins summary
@@ -138,6 +146,23 @@ render_dev_header("Master Dashboard", "dashboard");
                 <button type="submit" class="dev-btn dev-btn-warning">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     <span>Turn Maintenance ON</span>
+                </button>
+            <?php endif; ?>
+        </form>
+
+        <!-- Instant Beta Lockdown Toggle Button -->
+        <form action="index.php" method="POST" style="margin: 0;">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+            <input type="hidden" name="action" value="toggle_beta_lock">
+            <?php if ($betaLocked === '1'): ?>
+                <button type="submit" class="dev-btn dev-btn-danger" style="border-color: rgba(212, 175, 55, 0.4);" title="Click to unlock Beta website for public">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>
+                    <span>Beta: <strong style="color: #fca5a5;">LOCKED</strong></span>
+                </button>
+            <?php else: ?>
+                <button type="submit" class="dev-btn dev-btn-outline" title="Click to lock Beta website from public">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 019.9-1"></path></svg>
+                    <span>Beta: <strong style="color: var(--dev-emerald);">OPEN</strong></span>
                 </button>
             <?php endif; ?>
         </form>
@@ -249,6 +274,10 @@ render_dev_header("Master Dashboard", "dashboard");
         <a href="maintenance.php" class="dev-btn dev-btn-outline" style="justify-content: flex-start; padding: 12px 14px;">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color: #fca5a5;"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
             <span>Maintenance Studio</span>
+        </a>
+        <a href="urls.php" class="dev-btn dev-btn-outline" style="justify-content: flex-start; padding: 12px 14px;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color: #d4af37;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>
+            <span>Beta Lockdown Shield</span>
         </a>
     </div>
 </div>
