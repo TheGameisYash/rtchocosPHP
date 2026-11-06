@@ -1907,22 +1907,13 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
   }
   #page-home #flavor-wheel-sec .guide-stage {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    display: none !important;
   }
   #page-home #flavor-wheel-sec .journey .section-head {
     display: block;
   }
   #page-home #flavor-wheel-sec .journey .section-head h2 {
     margin: 3px 0 6px;
-  }
-  #page-home #flavor-wheel-sec .guide-controls {
-    width: 100%;
-  }
-  #page-home #flavor-wheel-sec .guide-controls button {
-    flex: 1;
-    text-align: center;
-    justify-content: center;
   }
 }
 

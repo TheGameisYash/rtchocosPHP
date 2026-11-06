@@ -914,14 +914,11 @@
     padding: 16px 14px !important;
   }
 
-  .guide-controls {
-    display: flex !important;
-    gap: 10px !important;
-  }
-
-  .guide-controls button {
-    min-height: 44px !important;
-    flex: 1 !important;
+  /* Completely remove the redundant guided tasting stage box on mobile view */
+  .panel.guide-stage,
+  .guide-stage,
+  #page-home #flavor-wheel-sec .guide-stage {
+    display: none !important;
   }
 
   /* --------------------------------------------------------------------------
@@ -1155,15 +1152,10 @@
     transform: translateX(4px) !important;
   }
 
-  /* 3. The Cacao Dispatch Box (Single Standout Hero Card) */
-  .footer-grid > .footer-dispatch-col {
-    background: linear-gradient(135deg, rgba(20, 51, 34, 0.6) 0%, rgba(8, 24, 16, 0.85) 100%) !important;
-    border: 1px solid rgba(212, 175, 55, 0.3) !important;
-    border-radius: 20px !important;
-    padding: 24px 18px !important;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
+  /* 3. The Cacao Dispatch Box (Newsletter Card) - Hidden on Mobile View */
+  .footer-grid > .footer-dispatch-col,
+  .footer-dispatch-col {
+    display: none !important;
   }
 
   .footer-dispatch-col .footer-heading:first-child {
