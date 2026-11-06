@@ -2491,40 +2491,99 @@
   }
 }
 
-/* 3. Trust Pillars Compact Side-by-Side Strip */
-@media (max-width: 640px) {
+/* 3. Trust Pillars Luxury Horizontal Swipe Runway */
+@media (max-width: 768px) {
+  #page-home .home-trust-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+
   #page-home .trust-pillars-grid {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
+    overflow-y: hidden !important;
     scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
     scrollbar-width: none !important;
-    gap: 12px !important;
-    padding: 8px 16px 14px !important;
-    margin: 10px -16px 0 !important;
+    -ms-overflow-style: none !important;
+    gap: 10px !important;
+    padding: 6px 16px 14px !important;
+    margin: 12px -16px 0 !important;
+    border: none !important;
   }
 
   #page-home .trust-pillars-grid::-webkit-scrollbar {
     display: none !important;
   }
 
+  #page-home .trust-col:not(:last-child)::after {
+    display: none !important;
+  }
+
   #page-home .trust-col {
-    flex: 0 0 145px !important;
-    width: 145px !important;
+    flex: 0 0 138px !important;
+    width: 138px !important;
+    min-width: 138px !important;
+    max-width: 138px !important;
+    height: 116px !important;
+    min-height: 116px !important;
     scroll-snap-align: start !important;
     border-right: none !important;
     border-bottom: none !important;
-    background: rgba(255, 255, 255, 0.03) !important;
-    border: 1px solid rgba(212, 175, 55, 0.18) !important;
-    border-radius: 12px !important;
-    padding: 12px 10px !important;
+    background: #FFFFFF !important;
+    border: 1px solid rgba(184, 134, 11, 0.22) !important;
+    border-radius: 14px !important;
+    padding: 12px 6px !important;
     box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-shadow: 0 3px 12px rgba(20, 51, 34, 0.04) !important;
   }
 
   #page-home .trust-col:last-child {
     grid-column: auto !important;
+    flex: 0 0 138px !important;
+    width: 138px !important;
+    min-width: 138px !important;
+    max-width: 138px !important;
+    height: 116px !important;
+    min-height: 116px !important;
+    background: #FFFFFF !important;
+    border: 1px solid rgba(184, 134, 11, 0.22) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 3px 12px rgba(20, 51, 34, 0.04) !important;
+  }
+
+  #page-home .trust-stat-title,
+  #page-home .trust-col:hover .trust-stat-title,
+  #page-home .trust-col:last-child .trust-stat-title {
+    color: #143322 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    margin: 0 0 2px !important;
+    height: auto !important;
+    display: block !important;
+  }
+
+  #page-home .trust-stat-subtitle,
+  #page-home .trust-col:last-child .trust-stat-subtitle {
+    font-size: 8px !important;
+    color: #7C6E65 !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    line-height: 1.25 !important;
+    display: block !important;
+    text-align: center !important;
   }
 }
 
@@ -2617,32 +2676,6 @@
     display: none !important;
   }
 
-  /* 2. Format Trust Pillars into Clean 2-Column Grid (No 3rd Card Cutoff) */
-  #page-home .trust-pillars-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px !important;
-    padding: 0 !important;
-    margin: 16px 0 0 !important;
-    overflow-x: visible !important;
-  }
-  #page-home .trust-col {
-    flex: auto !important;
-    width: auto !important;
-    padding: 12px 8px !important;
-    background: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(212, 175, 55, 0.18) !important;
-    border-radius: 10px !important;
-  }
-  #page-home .trust-col:last-child {
-    grid-column: 1 / -1 !important; /* Balanced 5th card */
-  }
-  #page-home .trust-stat-title {
-    font-size: 14px !important;
-  }
-  #page-home .trust-stat-subtitle {
-    font-size: 8.5px !important;
-  }
 
   /* 3. Fix Tasting Notebook Clipping & Wheel Tab Wraps */
   #page-home #flavor-wheel-sec .detail-top {
