@@ -502,25 +502,10 @@
     display: none !important;
   }
 
-  /* Sleek floating indicator badge over the workbench photo */
-  .chocolate-table-wrapper::after {
-    content: '✨ 6 Interactive Craft Zones' !important;
-    position: absolute !important;
-    bottom: 12px !important;
-    right: 12px !important;
-    background: rgba(10, 28, 18, 0.85) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(212, 175, 55, 0.4) !important;
-    color: #F5E6C8 !important;
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.6px !important;
-    text-transform: uppercase !important;
-    padding: 5px 12px !important;
-    border-radius: 20px !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
-    pointer-events: none !important;
+  /* Ensure no green tint overlay on mobile - keep table natural & clear */
+  .chocolate-table-wrapper::after,
+  .chocolate-table-wrapper::before {
+    display: none !important;
   }
 
   /* Mobile-Only Workbench 2-Column Luxury Touch Cards */
@@ -558,9 +543,22 @@
   }
 
   .wb-card-icon {
-    font-size: 19px !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    background: rgba(184, 134, 11, 0.08) !important;
+    border: 1px solid rgba(184, 134, 11, 0.22) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     flex-shrink: 0 !important;
-    line-height: 1 !important;
+  }
+
+  .wb-card-svg {
+    width: 17px !important;
+    height: 17px !important;
+    stroke: #B8860B !important;
+    display: block !important;
   }
 
   .wb-card-info {

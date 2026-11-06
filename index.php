@@ -270,7 +270,7 @@
   <section class="chocolate-table-sec">
     <div class="chocolate-table-inner">
       <div class="chocolate-table-header">
-        <div class="chocolate-table-label">🌿 INTERACTIVE EXPERIENCE</div>
+        <div class="chocolate-table-label">INTERACTIVE EXPERIENCE</div>
         <h2 class="chocolate-table-title">Explore the Chocolate Table</h2>
         <p class="chocolate-table-subtitle">Click any object on the artisan workbench to explore a world of chocolate knowledge, techniques, and science.</p>
         <div class="chocolate-table-divider"></div>
@@ -331,42 +331,82 @@
       <!-- Mobile-Only Interactive Workbench Cards (Ergonomic 2-Column Grid) -->
       <div class="mobile-only-grid mobile-workbench-cards">
         <button type="button" class="workbench-mob-card" onclick="openTableModal('bean-to-bar')" aria-label="Open Bean to Bar modal">
-          <span class="wb-card-icon">🌱</span>
+          <span class="wb-card-icon">
+            <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C6.5 2 3 7 3 13c0 5 4 9 9 9s9-4 9-9c0-6-3.5-11-9-11z"/>
+              <path d="M12 2v20"/>
+              <path d="M7 9c2 1 3 3 3 5M17 9c-2 1-3 3-3 5"/>
+            </svg>
+          </span>
           <div class="wb-card-info">
             <span class="wb-card-tag">CRAFT PROCESS</span>
             <span class="wb-card-title">Bean to Bar &rarr;</span>
           </div>
         </button>
         <button type="button" class="workbench-mob-card" onclick="openTableModal('cacao-journal')" aria-label="Open Cacao Journal modal">
-          <span class="wb-card-icon">📖</span>
+          <span class="wb-card-icon">
+            <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              <line x1="8" y1="7" x2="16" y2="7"/>
+              <line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+          </span>
           <div class="wb-card-info">
             <span class="wb-card-tag">KNOWLEDGE HUB</span>
             <span class="wb-card-title">Cacao Journal &rarr;</span>
           </div>
         </button>
         <button type="button" class="workbench-mob-card" onclick="openTableModal('cacao-lab')" aria-label="Open Cacao Lab modal">
-          <span class="wb-card-icon">🧪</span>
+          <span class="wb-card-icon">
+            <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 2v7.5L5.2 18.2A2 2 0 0 0 7 21h10a2 2 0 0 0 1.8-2.8L14 9.5V2"/>
+              <line x1="8" y1="2" x2="16" y2="2"/>
+              <line x1="7" y1="15" x2="17" y2="15"/>
+            </svg>
+          </span>
           <div class="wb-card-info">
             <span class="wb-card-tag">AI &amp; R&amp;D</span>
             <span class="wb-card-title">Cacao Lab &rarr;</span>
           </div>
         </button>
         <button type="button" class="workbench-mob-card" onclick="openTableModal('formulations')" aria-label="Open Formulations modal">
-          <span class="wb-card-icon">🍫</span>
+          <span class="wb-card-icon">
+            <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2.5"/>
+              <line x1="3" y1="9" x2="21" y2="9"/>
+              <line x1="3" y1="15" x2="21" y2="15"/>
+              <line x1="9" y1="3" x2="9" y2="21"/>
+              <line x1="15" y1="3" x2="15" y2="21"/>
+            </svg>
+          </span>
           <div class="wb-card-info">
             <span class="wb-card-tag">PRO SPECS</span>
             <span class="wb-card-title">Formulations &rarr;</span>
           </div>
         </button>
         <button type="button" class="workbench-mob-card" onclick="openTableModal('work-with-us')" aria-label="Open Work With Us modal">
-          <span class="wb-card-icon">🤝</span>
+          <span class="wb-card-icon">
+            <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </span>
           <div class="wb-card-info">
             <span class="wb-card-tag">CONSULTING</span>
             <span class="wb-card-title">Work With Us &rarr;</span>
           </div>
         </button>
         <button type="button" class="workbench-mob-card" onclick="openTableModal('workshops-academy')" aria-label="Open Innovation Lab modal">
-          <span class="wb-card-icon">💡</span>
+          <span class="wb-card-icon">
+            <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18h6"/>
+              <path d="M10 22h4"/>
+              <path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.3 4.5 3.3 5.7.5.3.7.8.7 1.3v2h6v-2c0-.5.2-1 .7-1.3 2-1.2 3.3-3.2 3.3-5.7a7 7 0 0 0-7-7z"/>
+            </svg>
+          </span>
           <div class="wb-card-info">
             <span class="wb-card-tag">EXPERIMENTS</span>
             <span class="wb-card-title">Innovation Lab &rarr;</span>
