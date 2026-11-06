@@ -3375,21 +3375,10 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
   color: #ffffff;
 }
 
-/* Responsive hotspot labels: hide text on very small screens */
+/* Responsive hotspot labels: hide cluttered dots on mobile screens */
 @media (max-width: 640px) {
-  .hotspot-pin {
-    padding: 8px 12px;
-    font-size: 10px;
-    gap: 5px;
-  }
-
-  .hotspot-pin span:not(.hotspot-dot) {
-    display: none;
-  }
-
-  .hotspot-dot {
-    width: 12px;
-    height: 12px;
+  .table-hotspot {
+    display: none !important;
   }
 }
 
