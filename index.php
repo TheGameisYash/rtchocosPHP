@@ -82,7 +82,7 @@
   <!-- Split Hero with Full Video Background -->
   <section id="hero">
     <!-- Full Native Resolution Video Background -->
-    <video class="hero-video-bg" autoplay loop muted playsinline preload="auto">
+    <video class="hero-video-bg" autoplay loop muted playsinline preload="auto" poster="assets/cocuapod_circle_frame.jpg">
       <source src="assets/cocuapod_circle.mp4" type="video/mp4">
     </video>
 

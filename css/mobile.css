@@ -195,16 +195,52 @@
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  /* Centered, crystal-clear Cacao Background on Mobile */
+  #hero .hero-video-bg,
+  .hero-video-bg {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate(-50%, -50%) !important;
+    width: 100% !important;
+    max-width: min(96vw, 460px) !important;
+    height: auto !important;
+    max-height: 85% !important;
+    aspect-ratio: 16 / 9 !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    opacity: 1 !important;
+    filter: none !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    mix-blend-mode: multiply !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+  }
+
+  #hero .deco-circle-1,
+  #hero .deco-circle-2 {
+    display: none !important;
   }
 
   #hero .split-hero-container {
     width: 100% !important;
     margin: 0 auto !important;
+    position: relative !important;
+    z-index: 2 !important;
   }
 
   #hero .split-hero-content {
     max-width: 100% !important;
     margin: 0 auto !important;
+    position: relative !important;
+    z-index: 2 !important;
   }
 
   #hero .hero-tag {
@@ -214,12 +250,14 @@
     letter-spacing: 1.2px !important;
     text-transform: uppercase !important;
     color: #102A1C !important;
-    background: rgba(255, 248, 235, 0.92) !important;
-    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    background: rgba(255, 248, 235, 0.95) !important;
+    border: 1px solid rgba(212, 175, 55, 0.45) !important;
     padding: 6px 14px !important;
     border-radius: 20px !important;
     margin-bottom: 14px !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
   }
 
   #hero h1 {
@@ -228,11 +266,13 @@
     line-height: 1.2 !important;
     color: #0E291C !important;
     margin-bottom: 12px !important;
+    text-shadow: 0 1px 12px rgba(255, 248, 235, 0.9), 0 2px 24px rgba(255, 248, 235, 0.95) !important;
   }
 
   #hero h1 em {
     font-style: italic !important;
     color: #B8860B !important;
+    text-shadow: 0 1px 12px rgba(255, 248, 235, 0.9), 0 2px 24px rgba(255, 248, 235, 0.95) !important;
   }
 
   #hero p {
@@ -241,6 +281,7 @@
     color: #4A4036 !important;
     max-width: 320px !important;
     margin: 0 auto 22px !important;
+    text-shadow: 0 1px 8px rgba(255, 248, 235, 0.95), 0 2px 16px rgba(255, 248, 235, 0.95) !important;
   }
 
   #hero .hero-btns {
