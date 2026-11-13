@@ -3661,33 +3661,35 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
 
 @media (max-width: 768px) {
   #hero {
-    padding: 58px 14px 24px !important;
-    min-height: auto !important;
+    padding: 34px 14px 22px !important;
+    min-height: 560px !important;
     height: auto !important;
   }
 
   .hero-video-bg {
     position: absolute !important;
-    top: 50% !important;
+    top: 45% !important;
     left: 50% !important;
     right: auto !important;
     bottom: auto !important;
     transform: translate(-50%, -50%) !important;
-    min-width: 100% !important;
-    min-height: 100% !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
+    width: 115vw !important;
+    min-width: 115vw !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 16 / 9 !important;
+    object-fit: contain !important;
     object-position: center center !important;
     display: block !important;
     opacity: 1 !important;
     filter: none !important;
     -webkit-filter: none !important;
-    mask: none !important;
-    -webkit-mask: none !important;
     mix-blend-mode: normal !important;
     z-index: 0 !important;
     pointer-events: none !important;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%) !important;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%) !important;
   }
 
   .split-hero-content {
@@ -3696,20 +3698,21 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
     text-align: center !important;
     width: 100% !important;
     padding: 0 !important;
+    min-height: 500px !important;
   }
 
   .split-hero-content .hero-tag {
     font-size: 10px !important;
     padding: 5px 13px !important;
     letter-spacing: 1.1px !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 6px !important;
   }
 
   .split-hero-content h1,
   #hero h1 {
-    font-size: 26px !important;
+    font-size: clamp(21px, 5.6vw, 25px) !important;
     line-height: 1.18 !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 0 !important;
     text-align: center !important;
     word-break: break-word;
     overflow-wrap: break-word;
@@ -3720,6 +3723,11 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
     color: #823E08 !important;
     font-style: italic !important;
     font-weight: 700 !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: #823E08 !important;
+    animation: none !important;
   }
 
   .split-hero-content p,
@@ -3731,11 +3739,11 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
   #hero .hero-btns {
     width: 100% !important;
     display: flex !important;
-    flex-direction: row !important;
-    gap: 8px !important;
+    flex-direction: column !important;
+    gap: 10px !important;
     align-items: center !important;
     justify-content: center !important;
-    max-width: 340px !important;
+    max-width: 310px !important;
     margin-top: auto !important;
     margin-bottom: 0 !important;
     margin-left: auto !important;
@@ -3746,13 +3754,14 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
   .hero-btns button,
   #hero .btn-hero-primary,
   #hero .btn-hero-outline {
-    flex: 1 1 50% !important;
-    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 310px !important;
     height: 42px !important;
     justify-content: center !important;
-    padding: 0 10px !important;
+    padding: 0 14px !important;
     font-size: 11.5px !important;
     margin: 0 !important;
+    box-sizing: border-box !important;
   }
 
   .hero-ingredient-spotlight-card {

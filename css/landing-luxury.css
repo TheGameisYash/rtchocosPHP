@@ -2676,6 +2676,19 @@
     display: none !important;
   }
 
+  /* 2. Mobile Hero Headline Contrast: Solid rich cocoa gold without washed-out gradient */
+  #page-home #hero h1 em {
+    font-style: italic !important;
+    font-weight: 700 !important;
+    color: #823E08 !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: #823E08 !important;
+    animation: none !important;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 12px rgba(255, 255, 255, 0.9) !important;
+  }
+
 
   /* 3. Fix Tasting Notebook Clipping & Wheel Tab Wraps */
   #page-home #flavor-wheel-sec .detail-top {

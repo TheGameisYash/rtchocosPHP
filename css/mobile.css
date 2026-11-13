@@ -188,9 +188,11 @@
   /* --------------------------------------------------------------------------
      5. HERO VIEWPORT (EDITORIAL LUXURY ON MOBILE)
      -------------------------------------------------------------------------- */
+  #page-home #hero,
   #hero {
-    min-height: 520px !important;
-    padding: 58px 14px 24px !important;
+    min-height: 560px !important;
+    height: auto !important;
+    padding: 34px 14px 22px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -199,30 +201,35 @@
     overflow: hidden !important;
   }
 
-  /* Full-Bleed Video Background Canvas on Mobile (Like Blog Hero) */
+  /* Mobile Hero Video Canvas: Zoomed out backward so full diagram and nodes fit cleanly,
+     centered with generous clearance so heading floats clear above aroma node
+     and the entire tiered pedestal disc is 100% uncovered above the action buttons */
+  #page-home #hero .hero-video-bg,
   #hero .hero-video-bg,
   .hero-video-bg {
     position: absolute !important;
-    top: 50% !important;
+    top: 45% !important;
     left: 50% !important;
     right: auto !important;
     bottom: auto !important;
     transform: translate(-50%, -50%) !important;
-    min-width: 100% !important;
-    min-height: 100% !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
+    width: 115vw !important;
+    min-width: 115vw !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 16 / 9 !important;
+    object-fit: contain !important;
     object-position: center center !important;
     display: block !important;
     opacity: 1 !important;
     filter: none !important;
     -webkit-filter: none !important;
-    mask: none !important;
-    -webkit-mask: none !important;
     mix-blend-mode: normal !important;
     z-index: 0 !important;
     pointer-events: none !important;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%) !important;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%) !important;
   }
 
   #hero .deco-circle-1,
@@ -249,7 +256,7 @@
     flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
-    min-height: 440px !important;
+    min-height: 500px !important;
   }
 
   #hero .hero-tag {
@@ -265,25 +272,32 @@
     border: 1px solid rgba(212, 175, 55, 0.45) !important;
     padding: 5px 13px !important;
     border-radius: 20px !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 6px !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06) !important;
     backdrop-filter: blur(10px) !important;
     -webkit-backdrop-filter: blur(10px) !important;
   }
 
+  #page-home #hero h1,
   #hero h1 {
     font-family: 'Playfair Display', serif !important;
-    font-size: 26px !important;
+    font-size: clamp(21px, 5.6vw, 25px) !important;
     line-height: 1.18 !important;
     color: #0E291C !important;
     margin-bottom: 0 !important;
     text-shadow: 0 1px 3px rgba(255, 255, 255, 0.95), 0 0 16px rgba(255, 255, 255, 0.9) !important;
   }
 
+  #page-home #hero h1 em,
   #hero h1 em {
     font-style: italic !important;
     font-weight: 700 !important;
     color: #823E08 !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: #823E08 !important;
+    animation: none !important;
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 12px rgba(255, 255, 255, 0.9) !important;
   }
 
@@ -293,35 +307,37 @@
     display: none !important;
   }
 
-  /* Compact Horizontal Side-by-Side Hero Buttons at bottom base */
+  /* Stacked Vertical Hero Buttons grounded cleanly below the pedestal disc */
+  #page-home #hero .hero-btns,
   #hero .hero-btns,
   .hero-btns {
     display: flex !important;
-    flex-direction: row !important;
+    flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 8px !important;
+    gap: 10px !important;
     width: 100% !important;
-    max-width: 340px !important;
+    max-width: 310px !important;
     margin-top: auto !important;
     margin-bottom: 0 !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
 
+  #page-home #hero .btn-hero-primary,
   #hero .btn-hero-primary,
   .hero-btns a.btn-hero-primary {
-    flex: 1 1 50% !important;
-    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 310px !important;
     height: 42px !important;
-    padding: 0 10px !important;
+    padding: 0 14px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 6px !important;
+    gap: 8px !important;
     background: #143322 !important;
     color: #FFFFFF !important;
-    font-size: 11.5px !important;
+    font-size: 12px !important;
     font-weight: 700 !important;
     letter-spacing: 0.6px !important;
     text-transform: uppercase !important;
@@ -332,18 +348,20 @@
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    box-sizing: border-box !important;
   }
 
+  #page-home #hero .btn-hero-outline,
   #hero .btn-hero-outline,
   .hero-btns button.btn-hero-outline {
-    flex: 1 1 50% !important;
-    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 310px !important;
     height: 42px !important;
-    padding: 0 8px !important;
+    padding: 0 14px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 6px !important;
+    gap: 8px !important;
     background: rgba(255, 252, 246, 0.95) !important;
     color: #143322 !important;
     font-size: 11.5px !important;
@@ -358,6 +376,7 @@
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    box-sizing: border-box !important;
   }
 
   /* --------------------------------------------------------------------------
