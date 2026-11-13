@@ -1205,29 +1205,14 @@
     text-align: center !important;
   }
 
-  /* Refined Single Row Luxury Credential Pills */
+  /* Refined Single Row Luxury Credential Pills - Hidden on Mobile */
   .footer-trust-pills {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 6px !important;
-    margin-top: 10px !important;
-    margin-bottom: 4px !important;
+    display: none !important;
+    visibility: hidden !important;
   }
 
   .footer-trust-pill {
-    background: rgba(212, 175, 55, 0.08) !important;
-    border: 1px solid rgba(212, 175, 55, 0.25) !important;
-    border-radius: 14px !important;
-    padding: 4px 10px !important;
-    font-size: 10px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.4px !important;
-    color: #D4AF37 !important;
-    text-transform: uppercase !important;
-    white-space: nowrap !important;
-    box-shadow: none !important;
+    display: none !important;
   }
 
   .footer-trust-pill:not(:last-child)::after {
@@ -1276,6 +1261,12 @@
     text-decoration: none !important;
     min-height: 30px !important;
     transition: color 0.2s ease, transform 0.2s ease !important;
+  }
+
+  .footer-explore-col a[href*="indian-chocolate-brands"],
+  .footer-link.desktop-only {
+    display: none !important;
+    visibility: hidden !important;
   }
 
   .footer-link:active {
@@ -1405,23 +1396,8 @@
 
   /* Footer Legal & Bottom Bar */
   .footer-legal-links {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 10px !important;
-    margin-bottom: 12px !important;
-    font-size: 11px !important;
-    color: #8C9E94 !important;
-  }
-
-  .footer-legal-links a {
-    color: #A3B8AD !important;
-    text-decoration: none !important;
-  }
-
-  .footer-legal-links a:active {
-    color: #D4AF37 !important;
+    display: none !important;
+    visibility: hidden !important;
   }
 
   .footer-bottom {

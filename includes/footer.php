@@ -11,11 +11,6 @@
         <span class="logo-text"><span class="footer-logo-rt" style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text-heading);font-weight:400;">RT</span><span class="footer-logo-chocos" style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.25em;color:var(--accent);"> CHOCOS</span></span>
       </a>
       <p style="color:var(--text-secondary);font-size:13.5px;line-height:1.75;font-weight:400;max-width:260px;">India's chocolate learning platform for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
-      <div class="footer-trust-pills mobile-only-flex">
-        <span class="footer-trust-pill">Single-Origin</span>
-        <span class="footer-trust-pill">R&amp;D Lab</span>
-        <span class="footer-trust-pill">Mumbai Atelier</span>
-      </div>
     </div>
     <div class="footer-links-wrap">
       <div class="footer-nav-col">
@@ -30,7 +25,7 @@
         <div class="footer-heading">Explore</div>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>blog.php" title="Chocolate Blog India">Chocolate Blog India</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>innovation-lab.php" title="Chocolate Innovation Lab">Innovation Lab</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>indian-chocolate-brands.php" title="Indian Chocolate Brands Directory">Indian Chocolate Brands</a>
+        <a class="footer-link desktop-only" href="<?php echo $pathPrefix; ?>indian-chocolate-brands.php" title="Indian Chocolate Brands Directory">Indian Chocolate Brands</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
         <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes & Formulations</a>
       </div>
@@ -80,13 +75,6 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <div class="footer-legal-links mobile-only-flex">
-      <a href="<?php echo $pathPrefix; ?>about.php#sourcing">Sourcing Standards</a>
-      <span class="sep">&bull;</span>
-      <a href="<?php echo $pathPrefix; ?>contact.php">Atelier Inquiry</a>
-      <span class="sep">&bull;</span>
-      <a href="<?php echo $pathPrefix; ?>chocopedia.php">Cacao Glossary</a>
-    </div>
     <span>&copy; <?php echo date('Y'); ?> RT Chocos. All rights reserved.</span>
     <span>Crafted with &hearts; from Mumbai</span>
   </div>
