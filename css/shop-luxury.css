@@ -1446,11 +1446,12 @@ textarea.modal-input {
     min-height: auto;
   }
   .shop-hero-showcase-wrap {
+    order: -1;
     display: flex;
     justify-content: center;
     min-height: auto;
     width: 100%;
-    margin: 10px auto 0;
+    margin: 0 auto;
     pointer-events: auto;
   }
   .shop-hero-mobile-photo {
@@ -1464,9 +1465,16 @@ textarea.modal-input {
     image-rendering: high-quality;
   }
   .shop-hero-container {
-    grid-template-columns: 1fr;
-    gap: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
     text-align: center;
+    align-items: center;
+  }
+  .shop-hero-left {
+    order: 1;
+    width: 100%;
+    max-width: 700px;
   }
   .shop-hero-desc {
     margin-left: auto;
@@ -1683,31 +1691,183 @@ textarea.modal-input {
    ========================================================================== */
 
 @media (max-width: 768px) {
-  /* 1. Hide dense 4-line hero paragraph on mobile */
+  /* 1. Hero layout: Visual showcase card FIRST, followed by headline & badges */
+  .shop-hero-lux {
+    padding: 16px 16px 24px !important;
+    min-height: auto !important;
+  }
+
+  .shop-hero-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    text-align: center !important;
+    align-items: center !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  /* Image showcase card displays FIRST on mobile */
+  .shop-hero-showcase-wrap {
+    order: -1 !important;
+    width: 100% !important;
+    max-width: 480px !important;
+    min-height: auto !important;
+    margin: 0 auto 6px auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    padding: 0 !important;
+  }
+
+  .shop-hero-mobile-photo {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    object-fit: cover !important;
+    border-radius: 18px !important;
+    box-shadow: 0 12px 32px rgba(11, 28, 18, 0.14), 0 2px 8px rgba(148, 99, 29, 0.12) !important;
+    border: 1px solid rgba(148, 99, 29, 0.22) !important;
+  }
+
+  /* Content displays below image (only for active mode) */
+  .shop-hero-left:not(.mode-hidden) {
+    order: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 0 !important;
+  }
+
+  .shop-hero-left.mode-hidden,
+  .mode-hidden {
+    display: none !important;
+  }
+
+  .shop-hero-tag {
+    font-size: 10.5px !important;
+    letter-spacing: 2.5px !important;
+    margin: 4px 0 6px 0 !important;
+    color: #94631D !important;
+    font-weight: 700 !important;
+  }
+
+  .shop-hero-title {
+    font-size: clamp(22px, 5.8vw, 27px) !important;
+    line-height: 1.2 !important;
+    margin: 0 auto 16px auto !important;
+    max-width: 340px !important;
+    letter-spacing: -0.3px !important;
+  }
+
+  /* Hide dense 4-line hero paragraph on mobile for high-converting punchiness */
   .shop-hero-desc {
     display: none !important;
   }
 
-  /* 2. Compact hero section & badges */
-  .shop-hero-lux {
-    padding: 24px 16px 20px !important;
-    min-height: auto !important;
-  }
+  /* 4 Value Badges as Frosted Micro-Cards */
   .shop-hero-badges {
+    display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px !important;
-    margin: 16px 0 !important;
+    gap: 9px !important;
+    width: 100% !important;
+    max-width: 360px !important;
+    margin: 0 auto 20px auto !important;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
   }
+
   .hero-badge-item {
-    padding: 8px 10px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 9px !important;
+    background: rgba(255, 255, 255, 0.72) !important;
+    border: 1px solid rgba(148, 99, 29, 0.22) !important;
+    border-radius: 14px !important;
+    padding: 9px 11px !important;
+    text-align: left !important;
+    box-shadow: 0 4px 12px rgba(148, 99, 29, 0.05) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    box-sizing: border-box !important;
   }
+
+  .hero-badge-icon {
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .hero-badge-icon svg {
+    width: 22px !important;
+    height: 22px !important;
+    stroke: #94631D !important;
+  }
+
   .hero-badge-label {
-    font-size: 10px !important;
+    font-size: 10.5px !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    color: #0B1C12 !important;
+  }
+
+  /* Hero Action Buttons - Modern Luxury Pills */
+  .shop-hero-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+
+  .shop-hero-actions .btn-gold-lux,
+  .shop-hero-actions .btn-outline-lux {
+    width: 100% !important;
+    max-width: 320px !important;
+    height: 46px !important;
+    border-radius: 23px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.2px !important;
+    text-transform: uppercase !important;
+    box-sizing: border-box !important;
+    padding: 0 16px !important;
+    text-align: center !important;
+  }
+
+  .shop-hero-actions .btn-gold-lux {
+    background: linear-gradient(135deg, #0B1C12 0%, #163622 100%) !important;
+    color: #F4D38E !important;
+    border: 1px solid rgba(244, 211, 142, 0.4) !important;
+    box-shadow: 0 8px 20px rgba(11, 28, 18, 0.22) !important;
+  }
+
+  .shop-hero-actions .btn-outline-lux {
+    background: rgba(255, 255, 255, 0.8) !important;
+    color: #0B1C12 !important;
+    border: 1.5px solid #0B1C12 !important;
+    box-shadow: 0 4px 12px rgba(11, 28, 18, 0.05) !important;
   }
 
   /* 3. Catalog Section spacing */
   .shop-catalog-lux {
-    padding-top: 24px !important;
+    padding: 24px 16px 28px !important;
+  }
+  .catalog-pagination-lux {
+    margin: 20px auto 8px !important;
+    gap: 10px !important;
   }
   .catalog-header-lux {
     margin-bottom: 18px !important;
@@ -1744,7 +1904,7 @@ textarea.modal-input {
     gap: 12px !important;
   }
   .lux-product-card {
-    display: flex !important;
+    display: flex;
     flex-direction: column !important;
     height: 100% !important;
     border-radius: 14px !important;
@@ -1752,6 +1912,10 @@ textarea.modal-input {
     border: 1px solid rgba(229, 179, 88, 0.18) !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
     overflow: hidden !important;
+  }
+  .lux-product-card.is-hidden,
+  .lux-product-card[style*="display: none"] {
+    display: none !important;
   }
   .lux-prod-img-wrap {
     aspect-ratio: 1 / 1 !important;
@@ -1802,4 +1966,14 @@ textarea.modal-input {
   .lux-card-actions .lux-btn-bulk-wa svg {
     stroke: #D4AF37 !important;
   }
+}
+
+/* Strict Mode Enforcement: Hidden elements must NEVER display */
+.mode-hidden,
+.shop-hero-left.mode-hidden,
+.mode-section-retail.mode-hidden,
+.mode-section-bulk.mode-hidden,
+.lux-product-card.is-hidden,
+.lux-product-card[style*="display: none"] {
+  display: none !important;
 }

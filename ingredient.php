@@ -1092,12 +1092,12 @@ include 'includes/header.php';
                 </div>
             <?php endif; ?>
 
-            <!-- Chocolate Boutique Callout -->
+            <!-- Chocolate Products Callout -->
             <div class="exp-sidebar-callout">
                 <h4>Taste These Flavors</h4>
                 <p>Taste how we translate these regional Indian fruits, nuts, sugars, and botanicals into fresh artisanal chocolates.</p>
                 <a href="<?php echo $pathPrefix; ?>shop.php">
-                    <span>Explore Our Boutique</span>
+                    <span>Explore Our Products</span>
                     <span>&rarr;</span>
                 </a>
             </div>

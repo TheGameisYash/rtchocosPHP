@@ -78,7 +78,7 @@
   </div>
 </footer>
 
-<!-- Mobile Floating Bottom Navigation Bar (Home, Boutique, Journal, Academy, Menu) -->
+<!-- Mobile Floating Bottom Navigation Bar (Home, Products, Journal, Academy, Menu) -->
 <?php
   $navRoot = (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix : '/';
   $footerCartCount = (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) ? array_sum($_SESSION['cart']) : ($cartCount ?? 0);
@@ -86,7 +86,8 @@
   $isCartActive = (strpos($reqUri, 'cart') !== false);
   $isShopActive = (preg_match('#/(?:shop|product)(?:\.php|/|$)#', $reqUri) === 1) && !$isCartActive;
   $isAcademyActive = (preg_match('#/(?:workshops|gallery)(?:\.php|/|$)#', $reqUri) === 1);
-  $isHomeActive = (($activeNav ?? '') === 'home' || $reqUri === '/' || $reqUri === '/index.php') && !$isCartActive && !$isShopActive && !$isAcademyActive;
+  $isJournalActive = (preg_match('#/(?:blog|article)(?:\.php|/|$)#', $reqUri) === 1) || (($activeNav ?? '') === 'journal');
+  $isHomeActive = (($activeNav ?? '') === 'home' || $reqUri === '/' || $reqUri === '/index.php') && !$isCartActive && !$isShopActive && !$isAcademyActive && !$isJournalActive;
 ?>
 <nav class="mobile-bottom-nav" aria-label="Mobile Quick Navigation">
   <a href="<?php echo $navRoot; ?>" class="mobile-bottom-item <?php echo $isHomeActive ? 'active' : ''; ?>">
@@ -104,7 +105,7 @@
       <line x1="9" y1="3" x2="9" y2="21"></line>
       <line x1="15" y1="3" x2="15" y2="21"></line>
     </svg>
-    <span>Boutique</span>
+    <span>Products</span>
   </a>
   <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'blog.php' : '/blog.php'; ?>" class="mobile-bottom-item <?php echo $isJournalActive ? 'active' : ''; ?>" title="The Cacao Journal">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

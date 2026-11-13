@@ -417,8 +417,8 @@ if (!empty(trim($customHeadScripts))) {
         </div>
       </div>
 
-      <!-- 2. PRODUCTS / BOUTIQUE -->
-      <a class="nav-item-link <?php echo ($activeNav === 'shop') ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php" title="Artisanal Chocolate Boutique & Shop">
+      <!-- 2. PRODUCTS -->
+      <a class="nav-item-link <?php echo ($activeNav === 'shop') ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php" title="Artisanal Chocolate Products & Shop">
         <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="2.5"/>
           <line x1="3" y1="9" x2="21" y2="9"/>
@@ -543,13 +543,13 @@ if (!empty(trim($customHeadScripts))) {
       </form>
     </div>
 
-    <!-- Mobile Products / Boutique Group -->
+    <!-- Mobile Products Group -->
     <div class="mobile-nav-group">
       <div class="mobile-nav-group-title">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
-        <span>BOUTIQUE &amp; CREATIONS</span>
+        <span>PRODUCTS &amp; CREATIONS</span>
       </div>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'shop' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>shop.php">All Products &amp; Boutique</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'shop' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>shop.php">All Products</a>
       <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=chocolates">Bean-to-Bar Chocolates</a>
       <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=spreads">Spreads &amp; Nut Butters</a>
       <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=ingredients">Natural Ingredients</a>

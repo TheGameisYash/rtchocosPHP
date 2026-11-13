@@ -361,6 +361,7 @@
 }
 
 .blog-card-img {
+  width: 100%;
   aspect-ratio: 16 / 9;
   height: auto;
   background: linear-gradient(145deg, var(--cream) 0%, var(--cream-dark) 100%);

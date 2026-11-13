@@ -2813,7 +2813,9 @@
 
 @media (max-width: 480px) {
   .blog-card-img {
-    height: 180px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
   }
 
   .blog-card-body {

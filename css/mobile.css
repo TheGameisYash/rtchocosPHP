@@ -1140,6 +1140,63 @@
   }
 
   /* --------------------------------------------------------------------------
+     12B. BLOG / CACAO JOURNAL ARTICLE CARDS ON MOBILE
+     Ensure full-width image bleed across card borders with zero horizontal gaps
+     -------------------------------------------------------------------------- */
+  .grid-blog {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 24px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto 36px !important;
+    padding: 0 !important;
+  }
+
+  .grid-blog > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .card.blog-card-link,
+  .blog-card-link {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    border-radius: 20px !important;
+    box-sizing: border-box !important;
+  }
+
+  .blog-card-img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    display: block !important;
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  .blog-card-img img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+  }
+
+  .blog-card-body {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* --------------------------------------------------------------------------
      13. LUXURY ATELIER FOOTER & SAFE AREA SPACING
      -------------------------------------------------------------------------- */
   body #site-footer,

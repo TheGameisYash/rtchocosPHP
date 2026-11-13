@@ -1,5 +1,7 @@
 <?php
-  session_start();
+  if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+  }
   $pageTitle = "Artisanal Chocolates, Gourmet Spreads & Corporate Gifting | RT Chocos India";
   $pageDescription = "Explore handcrafted bean-to-bar chocolates, roasted nut spreads, dates powder, and bespoke corporate gifting solutions by RT Chocos — India's premier chocolate academy.";
   $pageKeywords = "gourmet chocolate India, bean to bar chocolate online, almond halwa spread, cashew coconut spread, corporate chocolate gifting, private label chocolates India, RT Chocos";
@@ -17,7 +19,7 @@
   require_once __DIR__ . '/includes/db.php';
 
   // Fetch Store Business Focus Mode & E-Commerce parameters
-  $dbStoreMode = get_site_setting('store_mode', 'retail');
+  $dbStoreMode = get_site_setting('store_mode', 'bulk');
   // Allow URL override for instant testing: ?mode=retail, ?mode=bulk, ?mode=hybrid
   $storeMode = isset($_GET['mode']) && in_array($_GET['mode'], ['retail', 'bulk', 'hybrid'], true) ? $_GET['mode'] : $dbStoreMode;
   $freeShippingMin = (int)get_site_setting('retail_free_shipping_min', 999);
@@ -1026,14 +1028,16 @@
 
       // Hide all cards first
       allCards.forEach(card => {
-        card.style.display = 'none';
+        card.classList.add('is-hidden');
+        card.style.setProperty('display', 'none', 'important');
         card.style.opacity = '0';
       });
 
       // Display the 6 items for the current page
       matching.forEach((card, idx) => {
         if (idx >= startIndex && idx < endIndex) {
-          card.style.display = 'flex';
+          card.classList.remove('is-hidden');
+          card.style.setProperty('display', 'flex', 'important');
           setTimeout(() => {
             card.style.opacity = '1';
             card.style.transition = 'opacity 0.25s ease';
