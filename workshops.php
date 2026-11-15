@@ -15,7 +15,7 @@
 ?>
 
 <!-- --- WORKSHOPS PAGE --- -->
-<div id="page-workshops" class="page active" style="padding-top:76px;">
+<div id="page-workshops" class="page active">
   <!-- =========================================================================
        SECTION 1: HERO SECTION (Full-Size Luxury Hero — Matching Product Page)
        ========================================================================= -->

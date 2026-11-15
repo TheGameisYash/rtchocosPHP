@@ -1135,6 +1135,128 @@ include __DIR__ . '/includes/header.php';
         font-family: inherit !important;
         font-size: inherit !important;
     }
+
+    /* Clean Hero Spacing & Luxury Badge for Blog Article */
+    #page-blog-article {
+        padding-top: 76px;
+        background: var(--cream, #FAF6EF);
+    }
+    .page-hero.blog-page-hero,
+    .blog-page-hero {
+        min-height: auto !important;
+        padding: 20px 20px 14px !important;
+        background: transparent !important;
+    }
+    .blog-article-hero-content {
+        max-width: 860px;
+        margin: 0 auto;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .back-to-blog-btn {
+        margin: 0 auto 10px auto !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        padding: 6px 14px !important;
+        font-family: 'Inter', -apple-system, sans-serif !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.8px !important;
+        text-transform: uppercase !important;
+        color: #6A4B3A !important;
+        background: rgba(255, 255, 255, 0.75) !important;
+        border: 1px solid rgba(148, 99, 29, 0.22) !important;
+        border-radius: 20px !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.2s ease !important;
+    }
+    .back-to-blog-btn:hover {
+        background: #112217 !important;
+        color: #F8E7BE !important;
+        border-color: #112217 !important;
+        transform: translateY(-1px) !important;
+    }
+    .blog-breadcrumbs {
+        margin: 2px auto 10px auto !important;
+        font-size: 12px !important;
+        color: var(--gold, #94631D) !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
+        max-width: 720px !important;
+    }
+    .article-category-badge,
+    #blog-article-category {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 10.5px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1.5px !important;
+        text-transform: uppercase !important;
+        color: #164627 !important;
+        background: rgba(22, 70, 39, 0.08) !important;
+        border: 1px solid rgba(22, 70, 39, 0.22) !important;
+        padding: 4px 14px !important;
+        border-radius: 50px !important;
+        margin: 2px auto 12px auto !important;
+        box-shadow: 0 2px 6px rgba(22, 70, 39, 0.04) !important;
+        line-height: 1.2 !important;
+        position: static !important;
+        text-decoration: none !important;
+    }
+    .article-category-badge::after,
+    .article-category-badge::before,
+    #blog-article-category::after,
+    #blog-article-category::before {
+        display: none !important;
+        content: none !important;
+    }
+
+    @media (max-width: 768px) {
+        #page-blog-article {
+            padding-top: 56px !important;
+        }
+        .page-hero.blog-page-hero,
+        .blog-page-hero {
+            padding: 8px 16px 6px !important;
+            background: transparent !important;
+        }
+        .back-to-blog-btn {
+            padding: 5px 12px !important;
+            font-size: 10px !important;
+            margin-bottom: 6px !important;
+        }
+        .blog-breadcrumbs {
+            margin: 0 auto 6px auto !important;
+            font-size: 11px !important;
+            line-height: 1.35 !important;
+        }
+        .article-category-badge,
+        #blog-article-category {
+            font-size: 9.5px !important;
+            padding: 3px 12px !important;
+            letter-spacing: 1.3px !important;
+            margin: 0 auto 8px auto !important;
+        }
+        #blog-article-title {
+            font-size: clamp(20px, 5.5vw, 28px) !important;
+            line-height: 1.2 !important;
+            margin-bottom: 6px !important;
+        }
+        #blog-article-meta {
+            font-size: 11.5px !important;
+            margin-bottom: 10px !important;
+        }
+        #blog-article-image {
+            margin: 6px auto 14px auto !important;
+            border-radius: 10px !important;
+        }
+    }
 </style>
 
 <?php if (!empty($isAdminPreview)): ?>
@@ -1182,11 +1304,11 @@ function publishThisArticleNow(blogId) {
 <div id="page-blog-article" class="page active">
   <div class="page-hero blog-page-hero">
     <div class="page-hero-content blog-article-hero-content">
-      <a class="btn-outline-dark back-to-blog-btn" href="../blog.php">&larr; Back to Blog</a>
+      <a class="back-to-blog-btn" href="../blog.php">&larr; Back to Blog</a>
       
       <div class="article-hero-text-container" style="max-width: 760px; margin: 0 auto;">
         <!-- Visual Breadcrumbs Trail -->
-        <div class="blog-breadcrumbs" style="font-size: 13px; color: var(--gold); margin: 16px 0 8px; font-family: var(--font-sans);">
+        <div class="blog-breadcrumbs">
           <a href="../index.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Home</a>
           <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
           <a href="../blog.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Blog</a>
@@ -1194,7 +1316,7 @@ function publishThisArticleNow(blogId) {
           <span style="opacity: 0.7; font-weight: 500;"><?php echo htmlspecialchars($post['title']); ?></span>
         </div>
 
-        <div class="section-label" id="blog-article-category"><?php echo htmlspecialchars($post['category']); ?></div>
+        <div class="article-category-badge" id="blog-article-category"><?php echo htmlspecialchars($post['category']); ?></div>
         <h1 id="blog-article-title" class="fade-up"><?php echo htmlspecialchars($post['title']); ?></h1>
         <p id="blog-article-meta" class="fade-up-d1"><?php echo htmlspecialchars($post['date']); ?> • <?php echo htmlspecialchars($post['read']); ?> read</p>
       </div>

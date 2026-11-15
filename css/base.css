@@ -594,7 +594,6 @@ p {
 @media (max-width: 768px) {
   /* Override double padding gaps on page containers */
   #page-about,
-  #page-workshops,
   #page-gallery,
   #page-contact,
   #page-faq {

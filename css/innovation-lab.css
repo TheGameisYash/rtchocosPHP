@@ -189,10 +189,10 @@
 
 @media (max-width: 640px) {
   .lab-subnav-strip {
-    top: 60px !important;
+    top: 54px !important;
   }
   #currently-in-lab, #ingredient-innovation, #what-if, #failed-experiments, #future-ideas, #ideas-and-failures {
-    scroll-margin-top: 115px !important;
+    scroll-margin-top: 104px !important;
   }
 }
 
@@ -4273,37 +4273,110 @@ section.lab-ingredient-section:nth-of-type(even) {
 
 
 /* ==========================================================================
-   INNOVATION LAB MOBILE REFINEMENTS: TIGHT PADDING & HORIZONTAL FILTER
+   INNOVATION LAB MOBILE REFINEMENTS: COMPACT LUXURY & SEAMLESS SECTION SPACING
    ========================================================================== */
 
 @media (max-width: 768px) {
-  /* 1. Tighten section paddings from 64px to 28px */
-  .lab-section {
-    padding: 28px 16px !important;
+  /* 0. Sticky Lab Subnav Strip aligned directly beneath 54px mobile header */
+  .lab-subnav-strip {
+    top: 54px !important;
+    background: rgba(250, 247, 242, 0.98) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
   }
-  .lab-section-header-row {
-    margin-bottom: 18px !important;
-    padding-bottom: 12px !important;
-  }
-  .lab-hero {
-    padding: 30px 16px 24px !important;
+  #currently-in-lab, 
+  #ingredient-innovation, 
+  #what-if, 
+  #failed-experiments, 
+  #future-ideas, 
+  #ideas-and-failures {
+    scroll-margin-top: 104px !important;
   }
 
-  /* 2. Swipeable Horizontal Ingredient Category Filter Bar */
-  .lab-ingredient-title-row {
+  /* 1. Tighten hero and section paddings */
+  .lab-hero {
+    padding: 24px 16px 20px !important;
+    gap: 20px !important;
+  }
+  .lab-hero-title {
+    font-size: clamp(24px, 6.5vw, 32px) !important;
+    margin-bottom: 10px !important;
+  }
+  .lab-hero-subtitle {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    margin-bottom: 18px !important;
+  }
+  .lab-hero-img {
+    height: 240px !important;
+    border-radius: 12px !important;
+  }
+  .lab-sticky-note {
+    font-size: 13px !important;
+    padding: 10px 14px !important;
+    max-width: 140px !important;
+    top: 10px !important;
+    right: 10px !important;
+  }
+
+  .lab-section {
+    padding: 24px 16px !important;
+  }
+  .lab-section-header-row {
+    margin-bottom: 14px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .lab-split-section {
+    padding: 20px 16px !important;
+    gap: 18px !important;
+  }
+
+  /* 2. INGREDIENT INNOVATION SECTION: Eliminate huge gaps & side padding bloat */
+  .lab-ingredient-section,
+  section.lab-ingredient-section,
+  section.lab-ingredient-section:nth-of-type(even) {
+    padding: 26px 16px 30px !important;
+    margin: 12px 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .lab-ingredient-header-top {
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: 12px !important;
+    margin-bottom: 12px !important;
   }
+
+  .lab-ingredient-header-left {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+  }
+
+  .lab-ingredient-title-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .lab-ingredient-title {
+    font-size: clamp(22px, 5.5vw, 26px) !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+  }
+
+  /* Swipeable Horizontal Filter Pills with Snug Bleed */
   .lab-ingredient-pills-wrap {
     display: flex !important;
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
     width: calc(100% + 32px) !important;
-    margin: 0 -16px 12px !important;
-    padding: 4px 16px 8px !important;
+    margin: 0 -16px 8px !important;
+    padding: 4px 16px 6px !important;
     scrollbar-width: none !important;
+    gap: 7px !important;
   }
   .lab-ingredient-pills-wrap::-webkit-scrollbar {
     display: none !important;
@@ -4311,5 +4384,114 @@ section.lab-ingredient-section:nth-of-type(even) {
   .lab-ing-pill {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
+    padding: 5px 12px !important;
+    font-size: 10.5px !important;
+  }
+
+  .lab-ingredient-subtext {
+    font-size: 12.5px !important;
+    line-height: 1.5 !important;
+    margin: 0 0 4px 0 !important;
+    color: #A3B8AA !important;
+  }
+
+  /* Compact Full-width Search Bar */
+  .lab-ingredient-search-wrap {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    margin-top: 2px !important;
+    gap: 4px !important;
+  }
+  .lab-search-input {
+    padding: 8px 32px 8px 36px !important;
+    font-size: 12px !important;
+    height: 38px !important;
+    box-sizing: border-box !important;
+  }
+  .lab-search-icon {
+    left: 12px !important;
+    width: 14px !important;
+    height: 14px !important;
+  }
+  .lab-search-status-bar {
+    padding: 0 4px !important;
+    margin-top: 1px !important;
+  }
+  .lab-search-counter {
+    font-size: 10px !important;
+  }
+
+  /* Seamless Edge-to-Edge Carousel: Remove 66px Side Dead-zones */
+  .lab-carousel-wrapper {
+    padding: 0 !important;
+    margin-top: 10px !important;
+    width: calc(100% + 32px) !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    overflow: hidden !important;
+  }
+
+  .lab-carousel-viewport {
+    padding: 4px 16px 14px 16px !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .lab-carousel-track {
+    gap: 12px !important;
+  }
+
+  .lab-carousel-track .lab-ing-card {
+    flex: 0 0 152px !important;
+    width: 152px !important;
+    scroll-snap-align: start !important;
+  }
+
+  .lab-ing-photo-wrap {
+    border-radius: 8px !important;
+  }
+
+  .lab-ing-label {
+    font-size: 10px !important;
+    margin-top: 8px !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  /* Hide bulky arrows on mobile — cards glide naturally via touch swipe */
+  .lab-carousel-arrow {
+    display: none !important;
+  }
+
+  /* 3. FUTURE OF CHOCOLATE SECTION: Tighten bottom spacing */
+  .lab-future-section {
+    padding: 26px 16px 36px !important;
+  }
+  .lab-future-left {
+    padding: 0 !important;
+  }
+  .lab-future-title {
+    font-size: clamp(22px, 5.5vw, 26px) !important;
+    line-height: 1.2 !important;
+    margin-bottom: 8px !important;
+  }
+  .lab-future-text {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    margin-bottom: 16px !important;
+  }
+  .lab-future-cta {
+    padding: 10px 20px !important;
+    font-size: 11px !important;
+  }
+  .lab-future-right {
+    border-left: none !important;
+    border-top: 1px solid #EAE2D5 !important;
+    padding: 18px 0 0 0 !important;
+  }
+  .lab-future-mid {
+    height: 200px !important;
+  }
+  .lab-future-mid img {
+    border-radius: 10px !important;
   }
 }

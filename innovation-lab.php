@@ -897,7 +897,7 @@ function navigateLabSection(targetId, el, e) {
 
   const targetEl = document.getElementById(targetId);
   if (targetEl) {
-    const offset = 140;
+    const offset = window.innerWidth <= 768 ? 104 : 140;
     const bodyRect = document.body.getBoundingClientRect().top;
     const elementRect = targetEl.getBoundingClientRect().top;
     const elementPosition = elementRect - bodyRect;
@@ -942,7 +942,7 @@ function filterLabExperiments(category, el, e) {
   // Smooth scroll to experiments section if triggered from navigation
   const expSection = document.getElementById('currently-in-lab');
   if (expSection && el) {
-    const offset = 140;
+    const offset = window.innerWidth <= 768 ? 104 : 140;
     const bodyRect = document.body.getBoundingClientRect().top;
     const elementRect = expSection.getBoundingClientRect().top;
     const elementPosition = elementRect - bodyRect;
@@ -1834,15 +1834,28 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
   // Touch handling
-  viewport.addEventListener('touchstart', function() {
+  let touchStartX = 0;
+  viewport.addEventListener('touchstart', function(e) {
     isIngPaused = true;
+    if (e.touches && e.touches[0]) {
+      touchStartX = e.touches[0].pageX;
+      ingDragDistance = 0;
+    }
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e) {
+    if (e.touches && e.touches[0]) {
+      ingDragDistance += Math.abs(e.touches[0].pageX - touchStartX);
+      touchStartX = e.touches[0].pageX;
+    }
   }, { passive: true });
 
   viewport.addEventListener('touchend', function() {
     clearTimeout(ingResumeTimer);
     ingResumeTimer = setTimeout(function() {
       isIngPaused = false;
-    }, 2000);
+      ingDragDistance = 0;
+    }, 1500);
   }, { passive: true });
 });
 

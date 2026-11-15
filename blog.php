@@ -72,7 +72,7 @@
 ?>
 
 <!-- --- HOME PAGE --- -->
-<div id="page-blog" class="page active" style="padding-top:76px;">
+<div id="page-blog" class="page active">
   <!-- =========================================================================
        BLOG HERO: Pure Full-Bleed Video Hero (Unmasked, No Filters, Clean Canvas)
        ========================================================================= -->
