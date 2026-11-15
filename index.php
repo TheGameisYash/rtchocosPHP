@@ -330,7 +330,7 @@
       </div>
       <!-- Mobile-Only Interactive Workbench Cards (Ergonomic 2-Column Grid) -->
       <div class="mobile-only-grid mobile-workbench-cards">
-        <button type="button" class="workbench-mob-card" onclick="openTableModal('bean-to-bar')" aria-label="Open Bean to Bar modal">
+        <a href="chocopedia.php" class="workbench-mob-card" aria-label="Explore Bean to Bar Guide">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2C6.5 2 3 7 3 13c0 5 4 9 9 9s9-4 9-9c0-6-3.5-11-9-11z"/>
@@ -342,8 +342,8 @@
             <span class="wb-card-tag">CRAFT PROCESS</span>
             <span class="wb-card-title">Bean to Bar &rarr;</span>
           </div>
-        </button>
-        <button type="button" class="workbench-mob-card" onclick="openTableModal('cacao-journal')" aria-label="Open Cacao Journal modal">
+        </a>
+        <a href="blog.php" class="workbench-mob-card" aria-label="Read Cacao Journal">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
@@ -356,8 +356,8 @@
             <span class="wb-card-tag">KNOWLEDGE HUB</span>
             <span class="wb-card-title">Cacao Journal &rarr;</span>
           </div>
-        </button>
-        <button type="button" class="workbench-mob-card" onclick="openTableModal('cacao-lab')" aria-label="Open Cacao Lab modal">
+        </a>
+        <a href="workshops.php" class="workbench-mob-card" aria-label="Explore Cacao Lab">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M10 2v7.5L5.2 18.2A2 2 0 0 0 7 21h10a2 2 0 0 0 1.8-2.8L14 9.5V2"/>
@@ -369,8 +369,8 @@
             <span class="wb-card-tag">AI &amp; R&amp;D</span>
             <span class="wb-card-title">Cacao Lab &rarr;</span>
           </div>
-        </button>
-        <button type="button" class="workbench-mob-card" onclick="openTableModal('formulations')" aria-label="Open Formulations modal">
+        </a>
+        <a href="gallery.php" class="workbench-mob-card" aria-label="View Formulations & Recipes">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2.5"/>
@@ -384,8 +384,8 @@
             <span class="wb-card-tag">PRO SPECS</span>
             <span class="wb-card-title">Formulations &rarr;</span>
           </div>
-        </button>
-        <button type="button" class="workbench-mob-card" onclick="openTableModal('work-with-us')" aria-label="Open Work With Us modal">
+        </a>
+        <a href="work-with-us.php" class="workbench-mob-card" aria-label="Work With Us & Consulting">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -398,8 +398,8 @@
             <span class="wb-card-tag">CONSULTING</span>
             <span class="wb-card-title">Work With Us &rarr;</span>
           </div>
-        </button>
-        <button type="button" class="workbench-mob-card" onclick="openTableModal('workshops-academy')" aria-label="Open Innovation Lab modal">
+        </a>
+        <a href="innovation-lab.php" class="workbench-mob-card" aria-label="Explore Innovation Lab">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M9 18h6"/>
@@ -411,7 +411,7 @@
             <span class="wb-card-tag">EXPERIMENTS</span>
             <span class="wb-card-title">Innovation Lab &rarr;</span>
           </div>
-        </button>
+        </a>
       </div>
     </div>
   </section>
