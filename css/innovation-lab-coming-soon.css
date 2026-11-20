@@ -18,30 +18,25 @@ body.lab-cs-body {
 }
 
 .lab-cs-page {
-  min-height: 85vh;
+  min-height: calc(100vh - 72px);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background-color: #07150E !important;
-  background: linear-gradient(180deg, #07150E 0%, #0C2117 40%, #07150E 100%) !important;
+  background: radial-gradient(ellipse at 50% 35%, #0F2A1C 0%, #07150E 75%) !important;
   color: var(--lab-text);
   position: relative;
   overflow: hidden;
-  padding: 60px 20px 90px;
+  padding: 140px 24px 80px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
 }
 
-/* Subtle Technical Grid Overlay */
+/* Technical grid overlay removed for simple, sober atmosphere */
 .lab-cs-page::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    linear-gradient(to right, rgba(229, 179, 88, 0.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(229, 179, 88, 0.025) 1px, transparent 1px);
-  background-size: 36px 36px;
-  pointer-events: none;
-  opacity: 0.7;
+  display: none !important;
 }
 
 /* Ambient Radial Glow */
@@ -58,8 +53,9 @@ body.lab-cs-body {
 }
 
 .lab-cs-container {
-  max-width: 1040px;
-  margin: 0 auto;
+  max-width: 680px;
+  width: 100%;
+  margin: auto auto;
   position: relative;
   z-index: 2;
   text-align: center;
@@ -110,6 +106,7 @@ body.lab-cs-body {
   max-width: 860px;
   letter-spacing: -0.015em;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+  text-wrap: balance;
 }
 
 .lab-cs-title em {
@@ -123,27 +120,29 @@ body.lab-cs-body {
   font-size: clamp(14.5px, 1.8vw, 16.5px);
   line-height: 1.7;
   color: rgba(251, 248, 243, 0.82);
-  max-width: 680px;
+  max-width: 640px;
   margin: 0 auto 36px;
   font-weight: 400;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  text-wrap: pretty;
 }
 
 /* Early Access Waitlist Card */
 .lab-cs-waitlist-card {
-  max-width: 580px;
-  margin: 0 auto 52px;
-  background: rgba(13, 34, 24, 0.9);
+  max-width: 520px;
+  margin: 0 auto 40px;
+  background: rgba(13, 34, 24, 0.85);
   border: 1px solid var(--lab-border);
   border-radius: 16px;
-  padding: 28px 26px;
+  padding: 28px 24px;
   backdrop-filter: blur(14px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(229, 179, 88, 0.15);
-  text-align: left;
+  text-align: center;
 }
 
 .lab-cs-card-header {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .lab-cs-card-title {
@@ -155,10 +154,11 @@ body.lab-cs-body {
 }
 
 .lab-cs-card-subtitle {
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--lab-muted);
   margin: 0;
   line-height: 1.5;
+  text-wrap: balance;
 }
 
 .lab-cs-form {
@@ -434,7 +434,9 @@ body.lab-cs-body {
 
 @media (max-width: 768px) {
   .lab-cs-page {
-    padding: 40px 16px 60px;
+    padding: 110px 16px 60px;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
   .lab-cs-glow {
     display: none;

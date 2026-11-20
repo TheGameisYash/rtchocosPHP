@@ -36,21 +36,21 @@ if ($labAccess['is_coming_soon']) {
         <!-- Floating Atelier Badge -->
         <div class="lab-cs-badge">
           <span class="lab-cs-pulse"></span>
-          <span>The Chocolate Innovation Lab &middot; In Research &amp; Development</span>
+          <span>Innovation Lab &middot; Coming Soon</span>
         </div>
 
         <!-- Headline & Narrative -->
-        <h1 class="lab-cs-title">Where Curiosity Meets <em>Cacao Science</em></h1>
+        <h1 class="lab-cs-title">Crafting the Future of <em>Chocolate</em></h1>
         <p class="lab-cs-desc">
-          We are currently deep inside the formulation atelier testing single-estate micro-batches, polymorphic crystal kinetics, and pairing native Indian botanicals with fine-flavor cacao. The public atelier will open its doors soon.
+          We are developing new recipes, unique flavor pairings, and experimental creations. Our innovation space will open soon.
         </p>
 
         <!-- Early Access Notification Card -->
         <div class="lab-cs-waitlist-card">
           <div class="lab-cs-card-header">
-            <h3 class="lab-cs-card-title">Be the First to Enter the Lab</h3>
+            <h3 class="lab-cs-card-title">Be the first to know</h3>
             <p class="lab-cs-card-subtitle">
-              Join our research waitlist to receive private dispatch notes on our inaugural formulation trials and priority invitation upon launch.
+              Leave your email to be notified as soon as the Innovation Lab opens.
             </p>
           </div>
 
@@ -58,7 +58,7 @@ if ($labAccess['is_coming_soon']) {
             <input type="email" name="email" id="waitlistEmail" placeholder="Enter your email address..." required class="lab-cs-input" autocomplete="email" />
             <input type="hidden" name="source" value="Innovation Lab Waitlist" />
             <button type="submit" id="waitlistBtn" class="lab-cs-btn">
-              <span>Notify Me At Launch</span>
+              <span>Notify Me</span>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
           </form>
@@ -66,52 +66,18 @@ if ($labAccess['is_coming_soon']) {
           <div id="waitlistFeedback" class="lab-cs-feedback"></div>
         </div>
 
-        <!-- 3 Research Pillars Preview -->
-        <div class="lab-cs-pillars-title">Currently Under Incubation in the Atelier</div>
-        <div class="lab-cs-pillars-grid">
-          <!-- Pillar 1 -->
-          <div class="lab-cs-pillar-card">
-            <div class="lab-cs-pillar-num">01</div>
-            <span class="lab-cs-pillar-tag">Formulation Atelier</span>
-            <h4 class="lab-cs-pillar-heading">Micro-Batch Polymorphic Crystallization</h4>
-            <p class="lab-cs-pillar-text">
-              Tracking real-time temperature curves, particle size reduction below 20 microns, and Form V crystal stability across single-estate Indian cacao harvests.
-            </p>
-          </div>
-
-          <!-- Pillar 2 -->
-          <div class="lab-cs-pillar-card">
-            <div class="lab-cs-pillar-num">02</div>
-            <span class="lab-cs-pillar-tag">Honest Experiments</span>
-            <h4 class="lab-cs-pillar-heading">The Failed Batch Archive</h4>
-            <p class="lab-cs-pillar-text">
-              Because failure is data. An unfiltered scientific log of split emulsions, bloom defects, and over-roasted profiles that unlocked our greatest recipe breakthroughs.
-            </p>
-          </div>
-
-          <!-- Pillar 3 -->
-          <div class="lab-cs-pillar-card">
-            <div class="lab-cs-pillar-num">03</div>
-            <span class="lab-cs-pillar-tag">Frontiers of Taste</span>
-            <h4 class="lab-cs-pillar-heading">Indigenous Botanical Pairings</h4>
-            <p class="lab-cs-pillar-text">
-              Pairing wild forest raw honeys, stone-ground nut butters, and indigenous Indian botanical infusions with ethical bean-to-bar chocolate.
-            </p>
-          </div>
-        </div>
-
         <!-- Navigation Links for Continued Exploration -->
         <div class="lab-cs-links">
-          <a href="blog.php" class="lab-cs-link-btn">
-            <span>Read The Cacao Journal</span>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
           <a href="shop.php" class="lab-cs-link-btn">
-            <span>Explore Handcrafted Chocolates</span>
+            <span>Explore Chocolates</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
-          <a href="work-with-us.php" class="lab-cs-link-btn">
-            <span>B2B &amp; Consulting Inquiries</span>
+          <a href="workshops.php" class="lab-cs-link-btn">
+            <span>View Workshops</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="blog.php" class="lab-cs-link-btn">
+            <span>Read The Journal</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
         </div>

@@ -1530,9 +1530,13 @@ textarea.modal-input {
 
 @media (max-width: 768px) {
 
-  /* --- 1. HERO SECTION --- */
+  /* --- 1. HERO SECTION (Full-Bleed Uniform Presentation) --- */
+  .shop-page-wrapper {
+    padding-top: 0;
+  }
+
   .shop-hero-lux {
-    padding: 16px 14px 24px !important;
+    padding: 0 0 28px 0 !important;
     min-height: auto !important;
     background: linear-gradient(180deg, #FBF8F3 0%, #F5EDE4 100%) !important;
   }
@@ -1547,13 +1551,13 @@ textarea.modal-input {
     padding: 0 !important;
   }
 
-  /* Visual Showcase Card: First on Mobile */
+  /* Visual Showcase: Full-Bleed 100% Edge-to-Edge */
   .shop-hero-showcase-wrap {
     order: -1 !important;
     width: 100% !important;
-    max-width: 480px !important;
+    max-width: 100% !important;
     min-height: auto !important;
-    margin: 0 auto 4px auto !important;
+    margin: 0 0 20px 0 !important;
     display: flex !important;
     justify-content: center !important;
     padding: 0 !important;
@@ -1566,9 +1570,9 @@ textarea.modal-input {
     height: auto !important;
     aspect-ratio: 16 / 9 !important;
     object-fit: cover !important;
-    border-radius: 16px !important;
-    box-shadow: 0 10px 28px rgba(11, 28, 18, 0.12), 0 2px 8px rgba(148, 99, 29, 0.10) !important;
-    border: 1px solid rgba(148, 99, 29, 0.20) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
   /* Content area */
@@ -1579,7 +1583,8 @@ textarea.modal-input {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    padding: 0 !important;
+    padding: 0 18px !important;
+    box-sizing: border-box !important;
   }
 
   .shop-hero-left.mode-hidden,
