@@ -113,6 +113,17 @@ if ($file) {
     fclose($file);
 }
 
+// 3. SEND INSTANT EMAIL NOTIFICATION TO ADMIN
+require_once __DIR__ . '/includes/mailer.php';
+try {
+    $formType = (stripos($subject, 'bulk') !== false || stripos($subject, 'product') !== false || stripos($message, 'product interest') !== false)
+        ? 'Shop & Bulk Requirement Enquiry'
+        : 'Website Contact Us Form';
+    send_contact_notification($name, $email, $phone, $subject, $message, $formType);
+} catch (Exception $e) {
+    error_log("Contact notification mailer error: " . $e->getMessage());
+}
+
 // Always return success — message is stored
 if (ob_get_length()) {
     ob_clean();

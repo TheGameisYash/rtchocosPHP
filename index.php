@@ -330,7 +330,7 @@
       </div>
       <!-- Mobile-Only Interactive Workbench Cards (Ergonomic 2-Column Grid) -->
       <div class="mobile-only-grid mobile-workbench-cards">
-        <a href="chocopedia.php" class="workbench-mob-card" aria-label="Explore Bean to Bar Guide">
+        <a href="#modal-beantobar-viewer" onclick="if(typeof openBeanToBarGuideModal === 'function'){ openBeanToBarGuideModal(); } else if(typeof openTableModal === 'function'){ openTableModal('bean-to-bar'); } return false;" class="workbench-mob-card" aria-label="Explore Bean to Bar Guide" role="button">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2C6.5 2 3 7 3 13c0 5 4 9 9 9s9-4 9-9c0-6-3.5-11-9-11z"/>
@@ -474,7 +474,7 @@
       </div>
 
       <div class="modal-beantobar-footer">
-        <button type="button" class="modal-b2b-btn-back" onclick="closeBeanToBarGuideModal(); openTableModal('bean-to-bar');">
+        <button type="button" class="modal-b2b-btn-back" onclick="closeBeanToBarGuideModal(); if (window.innerWidth > 768 && typeof openTableModal === 'function') { openTableModal('bean-to-bar'); }">
           &larr; Back to Chocolate Table
         </button>
         <a href="workshops.php" class="modal-b2b-btn-workshop">

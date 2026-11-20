@@ -63,8 +63,8 @@ Options +FollowSymLinks -Indexes
     # Handle /maintenance clean URL
     RewriteRule ^maintenance/?$ /maintenance.php [L]
 
-    # Handle /blog and /blog/ requests
-    RewriteRule ^blog/?$ /blog.php [L]
+    # Handle /blog and /blog/ requests (and /cacao-journal alias)
+    RewriteRule ^(?:blog|cacao-journal)(?:\.php)?/?$ /blog.php [L]
 
     # Rewrite clean blog article URLs (/blog/article-slug) to blog-article.php
     RewriteCond %{REQUEST_FILENAME} !-f

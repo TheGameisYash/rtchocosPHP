@@ -2,7 +2,15 @@
 // ingredient.php — Dedicated Luxury Single Ingredient Innovation Article for RT Chocos Innovation Lab
 // Styled with the exact luxury editorial architecture as experiment.php and blog-article.php
 require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/lab_gatekeeper.php';
 require_once __DIR__ . '/admin/auth.php';
+
+// Enforce Innovation Lab status
+$labAccess = get_innovation_lab_access();
+if ($labAccess['is_coming_soon']) {
+    header('Location: /innovation-lab.php');
+    exit;
+}
 
 $slug = $_GET['slug'] ?? '';
 $slug = trim($slug);

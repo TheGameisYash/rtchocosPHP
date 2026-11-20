@@ -88,6 +88,14 @@ if ($method === 'POST') {
         
         // Log comment time
         $_SESSION['last_comment_times'][] = $now;
+
+        // Dispatch email notification to admin
+        require_once $rootDir . '/includes/mailer.php';
+        try {
+            send_comment_notification($name, $comment, $slug);
+        } catch (Exception $mailEx) {
+            error_log("Comment email notification error: " . $mailEx->getMessage());
+        }
         
         echo json_encode(['success' => true, 'message' => 'Comment posted successfully.']);
     } catch (Exception $e) {

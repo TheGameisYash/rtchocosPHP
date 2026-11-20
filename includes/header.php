@@ -300,13 +300,17 @@ if (!empty(trim($customHeadScripts))) {
     <?php endif; ?>
   </div>
 <?php elseif (function_exists('is_beta_environment') && is_beta_environment() && function_exists('is_beta_lock_enabled') && is_beta_lock_enabled()): ?>
-  <div style="background: linear-gradient(90deg, #161009, #26170d); color: #fcf8f2; border-bottom: 1px solid rgba(212, 175, 55, 0.45); text-align: center; padding: 8px 16px; font-size: 12.5px; font-weight: 500; position: sticky; top: 0; z-index: 999998; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <div id="beta-staging-banner" style="background: linear-gradient(90deg, #161009, #26170d); color: #fcf8f2; border-bottom: 1px solid rgba(212, 175, 55, 0.45); text-align: center; padding: 7px 16px; font-size: 12px; font-weight: 500; position: fixed; top: 0; left: 0; right: 0; z-index: 10001; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; height: 34px; box-sizing: border-box;">
     <span>🔒 <strong>BETA STAGING LOCKED:</strong> Public visitors cannot access this platform. You are viewing via authorized session.</span>
     <a href="?lock_beta=1" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.6); color: #fca5a5; padding: 2px 8px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 600;" title="Lock this browser session again to view the lock screen">Lock Again</a>
     <?php if (!empty($_SESSION['dev_logged_in'])): ?>
       <a href="/dev/urls.php" style="background: #d4af37; color: #000; padding: 2px 9px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 700;">Beta Controls &rarr;</a>
     <?php endif; ?>
   </div>
+  <style>
+    #site-header { top: 34px !important; }
+    #hero { padding-top: 106px !important; }
+  </style>
 <?php endif; ?>
 
 <!-- --- HEADER --- -->
@@ -464,7 +468,7 @@ if (!empty(trim($customHeadScripts))) {
           <line x1="8.5" y1="2" x2="15.5" y2="2"/>
           <line x1="7" y1="14.5" x2="17" y2="14.5"/>
         </svg>
-        <span class="nav-label">INNOVATION LAB</span>
+        <span class="nav-label">INNOVATION LAB<?php if (get_site_setting('innovation_lab_mode', 'coming_soon') === 'coming_soon'): ?><span style="display:inline-block; font-size: 8px; font-weight: 800; background: rgba(229,179,88,0.22); color: var(--gold-light, #F7D592); border: 1px solid rgba(229,179,88,0.4); padding: 1px 5px; border-radius: 4px; margin-left: 5px; vertical-align: middle; letter-spacing: 0.5px;">SOON</span><?php endif; ?></span>
       </a>
 
 
@@ -515,8 +519,9 @@ if (!empty(trim($customHeadScripts))) {
       </button>
     </div>
   </div>
+</header>
 
-  <nav id="mobile-menu" aria-label="Mobile navigation">
+<nav id="mobile-menu" aria-label="Mobile navigation">
     <?php $navPrefix = (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix : '/'; ?>
     <!-- Mobile Drawer Top Bar with Close Button -->
     <div class="mobile-menu-header">
@@ -576,7 +581,7 @@ if (!empty(trim($customHeadScripts))) {
       <a class="mobile-nav-sublink <?php echo $activeNav === 'about' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>about.php">About Aarti &amp; RT Chocos</a>
       <a class="mobile-nav-sublink <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>chocopedia.php">Chocopedia &mdash; Cocoa Encyclopedia</a>
       <a class="mobile-nav-sublink <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>blog.php">The Cacao Journal</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>innovation-lab.php">Innovation &amp; R&amp;D Lab</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>innovation-lab.php">Innovation &amp; R&amp;D Lab<?php if (get_site_setting('innovation_lab_mode', 'coming_soon') === 'coming_soon'): ?><span style="display:inline-block; font-size: 8.5px; font-weight: 800; background: rgba(229,179,88,0.22); color: var(--gold-light, #F7D592); border: 1px solid rgba(229,179,88,0.4); padding: 1px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; letter-spacing: 0.5px;">SOON</span><?php endif; ?></a>
     </div>
 
     <!-- Mobile Direct Actions & Support -->
@@ -618,6 +623,5 @@ if (!empty(trim($customHeadScripts))) {
     </div>
   </nav>
   <div id="mobile-menu-backdrop" class="mobile-menu-backdrop" onclick="toggleMobileMenu(true)"></div>
-</header>
 
 <?php require_once __DIR__ . '/components/ai_drawer.php'; ?>

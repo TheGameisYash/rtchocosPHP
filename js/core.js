@@ -450,6 +450,7 @@ function openSearch() {
 function toggleMobileMenu(forceClose = false) {
   const menu = document.getElementById('mobile-menu');
   const btn = document.getElementById('hamburger');
+  const bottomMenuBtn = document.querySelector('.mobile-bottom-menu-trigger');
   const backdrop = document.getElementById('mobile-menu-backdrop');
   if (!menu) return;
 
@@ -457,11 +458,13 @@ function toggleMobileMenu(forceClose = false) {
   if (isOpen) {
     menu.classList.add('open');
     if (btn) btn.classList.add('active');
+    if (bottomMenuBtn) bottomMenuBtn.classList.add('active');
     if (backdrop) backdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
   } else {
     menu.classList.remove('open');
     if (btn) btn.classList.remove('active');
+    if (bottomMenuBtn) bottomMenuBtn.classList.remove('active');
     if (backdrop) backdrop.classList.remove('open');
     document.body.style.overflow = '';
   }

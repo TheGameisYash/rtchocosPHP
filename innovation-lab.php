@@ -11,6 +11,170 @@ $breadcrumbs = [
 ];
 
 require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/lab_gatekeeper.php';
+
+// Check Innovation Lab status & permissions
+$labAccess = get_innovation_lab_access();
+
+if ($labAccess['is_coming_soon']) {
+    $pageTitle = "Innovation Lab — Coming Soon | RT Chocos";
+    $pageDescription = "RT Chocos Chocolate Innovation Lab is currently in research and development. Join our priority waitlist to receive our inaugural formulation dispatch.";
+    include 'includes/header.php';
+    ?>
+    <link rel="stylesheet" href="css/innovation-lab-coming-soon.css?v=<?php echo filemtime(__DIR__ . '/css/innovation-lab-coming-soon.css'); ?>">
+
+    <?php if ($labAccess['simulating_public']): ?>
+    <div style="background: #11281A; border-bottom: 2px solid #E5B358; color: #FFFFFF; padding: 10px 20px; font-size: 13px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 14px; position: sticky; top: 0; z-index: 999999;">
+        <span>👁️ <strong>Simulating Public Visitor View:</strong> You are viewing the Coming Soon waitlist screen.</span>
+        <a href="innovation-lab.php?preview=1" style="background: #E5B358; color: #07150E; padding: 4px 12px; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 12px;">Switch Back to Live Dev Page ↗</a>
+    </div>
+    <?php endif; ?>
+
+    <main class="lab-cs-page">
+      <div class="lab-cs-glow"></div>
+      <div class="lab-cs-container">
+        <!-- Floating Atelier Badge -->
+        <div class="lab-cs-badge">
+          <span class="lab-cs-pulse"></span>
+          <span>The Chocolate Innovation Lab &middot; In Research &amp; Development</span>
+        </div>
+
+        <!-- Headline & Narrative -->
+        <h1 class="lab-cs-title">Where Curiosity Meets <em>Cacao Science</em></h1>
+        <p class="lab-cs-desc">
+          We are currently deep inside the formulation atelier testing single-estate micro-batches, polymorphic crystal kinetics, and pairing native Indian botanicals with fine-flavor cacao. The public atelier will open its doors soon.
+        </p>
+
+        <!-- Early Access Notification Card -->
+        <div class="lab-cs-waitlist-card">
+          <div class="lab-cs-card-header">
+            <h3 class="lab-cs-card-title">Be the First to Enter the Lab</h3>
+            <p class="lab-cs-card-subtitle">
+              Join our research waitlist to receive private dispatch notes on our inaugural formulation trials and priority invitation upon launch.
+            </p>
+          </div>
+
+          <form id="labWaitlistForm" class="lab-cs-form" method="POST" action="subscribe.php">
+            <input type="email" name="email" id="waitlistEmail" placeholder="Enter your email address..." required class="lab-cs-input" autocomplete="email" />
+            <input type="hidden" name="source" value="Innovation Lab Waitlist" />
+            <button type="submit" id="waitlistBtn" class="lab-cs-btn">
+              <span>Notify Me At Launch</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </form>
+
+          <div id="waitlistFeedback" class="lab-cs-feedback"></div>
+        </div>
+
+        <!-- 3 Research Pillars Preview -->
+        <div class="lab-cs-pillars-title">Currently Under Incubation in the Atelier</div>
+        <div class="lab-cs-pillars-grid">
+          <!-- Pillar 1 -->
+          <div class="lab-cs-pillar-card">
+            <div class="lab-cs-pillar-num">01</div>
+            <span class="lab-cs-pillar-tag">Formulation Atelier</span>
+            <h4 class="lab-cs-pillar-heading">Micro-Batch Polymorphic Crystallization</h4>
+            <p class="lab-cs-pillar-text">
+              Tracking real-time temperature curves, particle size reduction below 20 microns, and Form V crystal stability across single-estate Indian cacao harvests.
+            </p>
+          </div>
+
+          <!-- Pillar 2 -->
+          <div class="lab-cs-pillar-card">
+            <div class="lab-cs-pillar-num">02</div>
+            <span class="lab-cs-pillar-tag">Honest Experiments</span>
+            <h4 class="lab-cs-pillar-heading">The Failed Batch Archive</h4>
+            <p class="lab-cs-pillar-text">
+              Because failure is data. An unfiltered scientific log of split emulsions, bloom defects, and over-roasted profiles that unlocked our greatest recipe breakthroughs.
+            </p>
+          </div>
+
+          <!-- Pillar 3 -->
+          <div class="lab-cs-pillar-card">
+            <div class="lab-cs-pillar-num">03</div>
+            <span class="lab-cs-pillar-tag">Frontiers of Taste</span>
+            <h4 class="lab-cs-pillar-heading">Indigenous Botanical Pairings</h4>
+            <p class="lab-cs-pillar-text">
+              Pairing wild forest raw honeys, stone-ground nut butters, and indigenous Indian botanical infusions with ethical bean-to-bar chocolate.
+            </p>
+          </div>
+        </div>
+
+        <!-- Navigation Links for Continued Exploration -->
+        <div class="lab-cs-links">
+          <a href="blog.php" class="lab-cs-link-btn">
+            <span>Read The Cacao Journal</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="shop.php" class="lab-cs-link-btn">
+            <span>Explore Handcrafted Chocolates</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="work-with-us.php" class="lab-cs-link-btn">
+            <span>B2B &amp; Consulting Inquiries</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('labWaitlistForm');
+      const emailInput = document.getElementById('waitlistEmail');
+      const btn = document.getElementById('waitlistBtn');
+      const feedback = document.getElementById('waitlistFeedback');
+
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const email = emailInput.value.trim();
+          if (!email) return;
+
+          btn.disabled = true;
+          const origHtml = btn.innerHTML;
+          btn.innerHTML = '<span>Registering...</span>';
+          feedback.className = 'lab-cs-feedback';
+          feedback.style.display = 'none';
+
+          fetch('subscribe.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              email: email,
+              source: 'Innovation Lab Waitlist'
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+            if (data.status === 'success') {
+              feedback.className = 'lab-cs-feedback success';
+              feedback.innerHTML = '✓ ' + (data.message || "You're on the early access list! We'll notify you as soon as the Innovation Lab opens.");
+              feedback.style.display = 'block';
+              form.reset();
+            } else {
+              feedback.className = 'lab-cs-feedback error';
+              feedback.innerHTML = '✕ ' + (data.message || 'Something went wrong. Please try again.');
+              feedback.style.display = 'block';
+            }
+          })
+          .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+            feedback.className = 'lab-cs-feedback error';
+            feedback.innerHTML = '✕ Network error. Please try again or email us directly.';
+            feedback.style.display = 'block';
+          });
+        });
+      }
+    });
+    </script>
+    <?php
+    include 'includes/footer.php';
+    exit;
+}
 
 // Fetch dynamic data from database
 try {
@@ -109,6 +273,23 @@ try {
 include 'includes/header.php';
 ?>
 <link rel="stylesheet" href="css/innovation-lab.css?v=<?php echo filemtime(__DIR__ . '/css/innovation-lab.css'); ?>">
+<?php if ($labAccess['is_preview_active']): ?>
+<link rel="stylesheet" href="css/innovation-lab-coming-soon.css?v=<?php echo filemtime(__DIR__ . '/css/innovation-lab-coming-soon.css'); ?>">
+<!-- Admin Floating Live Preview Mode Bar -->
+<div class="lab-admin-preview-bar">
+  <div class="lab-preview-container">
+    <div class="lab-preview-left">
+      <span class="preview-mode-pill">🔬 ADMIN PREVIEW ACTIVE</span>
+      <span class="preview-mode-desc">The Innovation Lab is set to <strong>Coming Soon</strong> for public visitors. You are seeing the live development page because you are authorized.</span>
+    </div>
+    <div class="lab-preview-right">
+      <a href="admin/innovation-lab.php" target="_blank" class="preview-nav-btn">Innovation CMS ↗</a>
+      <a href="admin/settings.php" target="_blank" class="preview-nav-btn">Site Settings ↗</a>
+      <a href="innovation-lab.php?view_as=public" class="preview-nav-btn preview-nav-btn-highlight" title="Simulate what public visitors see">View Public Screen 👁️</a>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
 
 <!-- Master Innovation Lab Page Container -->
 <div class="lab-page-wrapper">

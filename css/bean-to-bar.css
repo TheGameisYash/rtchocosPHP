@@ -314,6 +314,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
+  box-sizing: border-box;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -333,6 +334,7 @@
   width: 100%;
   max-width: 860px;
   max-height: 88vh;
+  box-sizing: border-box;
   color: #ffffff;
   position: relative;
   box-shadow:
@@ -672,31 +674,68 @@
   .stage-main h4 {
     font-size: 20px;
   }
+  .modal-beantobar-backdrop {
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  .modal-beantobar-box {
+    max-height: 92vh;
+    border-radius: 20px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+  .modal-beantobar-close {
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
   .modal-beantobar-header,
   .modal-beantobar-scroll-body,
   .modal-beantobar-footer {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 18px;
+    padding-right: 18px;
+    box-sizing: border-box;
+  }
+  .modal-beantobar-header {
+    padding-top: 24px;
+    padding-bottom: 16px;
+    padding-right: 56px; /* Avoid collision with close button */
+  }
+  .modal-beantobar-title {
+    font-size: 22px;
+  }
+  .modal-beantobar-lede {
+    font-size: 13px;
+    line-height: 1.5;
   }
   .modal-spine-wrap, .modal-stage {
-    grid-template-columns: 50px 1fr;
+    grid-template-columns: 48px 1fr;
   }
   .modal-spine-line, .modal-spine-fill {
-    left: 16px;
+    left: 15px;
   }
   .modal-stage-num::before {
-    left: -34px;
+    left: -33px;
     width: 10px;
     height: 10px;
   }
   .modal-beantobar-footer {
+    padding: 14px 18px;
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
   }
+  .modal-b2b-btn-back,
+  .modal-b2b-btn-workshop,
   .modal-b2b-btn-scroll,
   .modal-b2b-btn-close {
     width: 100%;
     justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
   }
 }
 
@@ -715,5 +754,43 @@
   .spec {
     font-size: 10px;
     padding: 5px 9px;
+  }
+  .modal-beantobar-backdrop {
+    padding: 8px 6px;
+  }
+  .modal-beantobar-box {
+    max-height: 95vh;
+    border-radius: 16px;
+  }
+  .modal-beantobar-header {
+    padding: 20px 14px 12px;
+  }
+  .modal-beantobar-scroll-body {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .modal-spine-wrap, .modal-stage {
+    grid-template-columns: 40px 1fr;
+  }
+  .modal-spine-line, .modal-spine-fill {
+    left: 12px;
+  }
+  .modal-stage-num::before {
+    left: -28px;
+    width: 8px;
+    height: 8px;
+  }
+  .modal-stage-main h4 {
+    font-size: 17px;
+  }
+  .modal-stage-key {
+    font-size: 11px;
+  }
+  .modal-stage-body p {
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .modal-beantobar-meta-strip .meta-item {
+    font-size: 9.5px;
   }
 }

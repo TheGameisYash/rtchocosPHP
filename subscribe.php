@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL & ~E_DEPRECATED);
+ob_start();
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Cache-Control: post-check=0, pre-check=0', false);
@@ -20,6 +22,9 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Read JSON input or fallback to POST variables
 $input = json_decode(file_get_contents('php://input'), true);
+
+$source = !empty($input['source']) ? trim($input['source']) : (!empty($_POST['source']) ? trim($_POST['source']) : 'Website Footer Newsletter');
+$workshopTitle = !empty($input['workshop_title']) ? trim($input['workshop_title']) : (!empty($_POST['workshop_title']) ? trim($_POST['workshop_title']) : '');
 
 // Honeypot check
 $honeypot = isset($input['nickname']) ? trim($input['nickname']) : '';
@@ -94,40 +99,33 @@ $fileExisted = file_exists($csvFile);
 $file = fopen($csvFile, 'a');
 if ($file) {
     if (!$fileExisted) {
-        fputcsv($file, ['Date Added', 'Email Address']);
+        fputcsv($file, ['Date Added', 'Email Address', 'Source'], ',', '"', "\\");
     }
-    fputcsv($file, [date('Y-m-d H:i:s'), $email]);
+    fputcsv($file, [date('Y-m-d H:i:s'), $email, $source], ',', '"', "\\");
     fclose($file);
 }
 
-// 2. THIRD-PARTY NEWSLETTER API SYNC (Optional: MailerLite / Mailchimp Setup)
-/*
-// MAILERLITE SYNC (Reads from .env):
-$apiKey = getenv('MAILERLITE_API_KEY') ?: ($_ENV['MAILERLITE_API_KEY'] ?? '');
-$groupId = getenv('MAILERLITE_GROUP_ID') ?: ($_ENV['MAILERLITE_GROUP_ID'] ?? ''); // Optional
-
-if (!empty($apiKey)) {
-    $xhr = curl_init('https://connect.mailerlite.com/api/v1/subscribers');
-    $payload = json_encode([
-        'email' => $email,
-        'groups' => !empty($groupId) ? [$groupId] : []
-    ]);
-
-    curl_setopt($xhr, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($xhr, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
-    ]);
-    curl_setopt($xhr, CURLOPT_POST, true);
-    curl_setopt($xhr, CURLOPT_POSTFIELDS, $payload);
-    $response = curl_exec($xhr);
-    $httpStatus = curl_getinfo($xhr, CURLINFO_HTTP_CODE);
-    curl_close($xhr);
+// 3. SEND INSTANT EMAIL NOTIFICATION TO ADMIN
+require_once __DIR__ . '/includes/mailer.php';
+try {
+    send_subscription_notification($email, $source);
+} catch (Exception $e) {
+    error_log("Subscription notification error: " . $e->getMessage());
 }
-*/
+
+if (ob_get_length()) {
+    ob_clean();
+}
+
+$isWorkshop = stripos($source, 'Workshop Waitlist') !== false;
+$successMsg = $isWorkshop
+    ? ($workshopTitle 
+        ? "You're on the priority waitlist! We'll notify you as soon as registrations open for {$workshopTitle}."
+        : "You're on the priority waitlist! We'll notify you as soon as this workshop opens.")
+    : "Thank you for subscribing! Your email has been registered.";
 
 echo json_encode([
     "status" => "success", 
-    "message" => "Thank you for subscribing! Your email has been registered."
+    "message" => $successMsg
 ]);
 exit;

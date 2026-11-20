@@ -157,13 +157,13 @@
               </li>
               <li class="about-fact-item">
                 <span class="about-fact-icon">🌐</span>
-                <span>Educator to Global Online &amp; Studio Students</span>
+                <span>Chocolate Educator and Blogger</span>
               </li>
             </ul>
 
             <div class="about-profile-actions">
-              <a href="work-with-us.php" class="btn btn-primary">Work With Me</a>
-              <a href="cacao-journal.php" class="btn btn-secondary">Read The Cacao Journal</a>
+              <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="btn btn-primary">Work With Me</a>
+              <a href="<?php echo $pathPrefix; ?>blog.php" class="btn btn-secondary">Read The Cacao Journal</a>
             </div>
           </div>
         </div>

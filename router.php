@@ -48,6 +48,12 @@ if ($uri === '/sitemap.xml') {
     return true;
 }
 
+// Route /innovation-lab, /experiment, and /lab to innovation-lab.php
+if (preg_match('#^/(?:experiment|lab|innovation-lab)/?$#', $uri)) {
+    include __DIR__ . '/innovation-lab.php';
+    return true;
+}
+
 // Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
 if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
     $_GET['slug'] = $m[1];
@@ -143,8 +149,8 @@ if (preg_match('#^/indian-chocolate-brands/?$#', $uri)) {
     return true;
 }
 
-// Route physical /blog folder request to blog.php
-if ($uri === '/blog' || $uri === '/blog/') {
+// Route physical /blog folder request to blog.php (and /cacao-journal alias)
+if ($uri === '/blog' || $uri === '/blog/' || $uri === '/cacao-journal' || $uri === '/cacao-journal/' || $uri === '/cacao-journal.php') {
     include __DIR__ . '/blog.php';
     return true;
 }

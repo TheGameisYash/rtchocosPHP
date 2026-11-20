@@ -123,16 +123,20 @@ render_admin_header("Site Settings", "settings");
                 <textarea id="meta_description" name="settings[meta_description]" rows="3" required placeholder="Description that appears in search engines..."><?php echo htmlspecialchars($settings['meta_description'] ?? ''); ?></textarea>
             </div>
 
-            <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Contact details</div>
+            <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Contact &amp; Notification Settings</div>
             <div class="form-row">
                 <div class="form-col form-group">
-                    <label class="static-label" for="contact_email">Email Address</label>
+                    <label class="static-label" for="contact_email">Public Contact Email (Displayed on Website)</label>
                     <input type="email" id="contact_email" name="settings[contact_email]" value="<?php echo htmlspecialchars($settings['contact_email'] ?? ''); ?>" style="width:100%; padding:14px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-app); color:var(--text-main); font-family:var(--font-sans); outline:none;">
                 </div>
                 <div class="form-col form-group">
                     <label class="static-label" for="contact_phone">Phone Number</label>
                     <input type="text" id="contact_phone" name="settings[contact_phone]" value="<?php echo htmlspecialchars($settings['contact_phone'] ?? ''); ?>">
                 </div>
+            </div>
+            <div class="form-group" style="margin-top: 14px;">
+                <label class="static-label" for="notification_email">Inquiry Notification Email(s) <span style="font-weight: 400; color: var(--text-light);">(Where contact form &amp; B2B enquiries are delivered. Separate multiple emails with commas)</span></label>
+                <input type="text" id="notification_email" name="settings[notification_email]" value="<?php echo htmlspecialchars($settings['notification_email'] ?? ($_ENV['NOTIFICATION_EMAIL'] ?? 'hello@rtchocos.com, Rtchocos@gmail.com, yash237yash@gmail.com')); ?>" style="width:100%; padding:14px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-app); color:var(--text-main); font-family:var(--font-sans); outline:none;" placeholder="hello@rtchocos.com, Rtchocos@gmail.com, yash237yash@gmail.com">
             </div>
 
             <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Social Media Links</div>
@@ -311,6 +315,84 @@ render_admin_header("Site Settings", "settings");
                 }
             }
             document.addEventListener('DOMContentLoaded', updateBannerPreview);
+            </script>
+
+            <div class="editor-title" style="margin-top: 32px; font-size: 18px; display: flex; align-items: center; justify-content: space-between;">
+                <span>Innovation Lab Page Status &amp; Visibility</span>
+                <span style="font-size: 12px; font-weight: 500; color: var(--gold-light); background: rgba(229,179,88,0.12); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(229,179,88,0.25);">
+                    Public vs. Coming Soon
+                </span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: -6px; margin-bottom: 16px;">
+                Toggle whether the public website displays the Innovation Lab as <strong>"Coming Soon"</strong> (with an email waitlist) or publishes it <strong>Live</strong>. As an admin, you can always view, edit, and work on the live page in preview mode.
+            </p>
+
+            <?php 
+                $labMode = $settings['innovation_lab_mode'] ?? 'coming_soon'; 
+            ?>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 16px;">
+                <!-- 1. Coming Soon Mode Card -->
+                <label id="labCardComingSoon" style="position: relative; display: flex; flex-direction: column; padding: 18px; border-radius: 12px; border: 2px solid <?php echo $labMode === 'coming_soon' ? 'var(--gold-light)' : 'var(--border-color)'; ?>; background: <?php echo $labMode === 'coming_soon' ? 'rgba(229,179,88,0.06)' : 'var(--bg-app)'; ?>; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 26px;">⏳</span>
+                        <input type="radio" name="settings[innovation_lab_mode]" value="coming_soon" <?php echo $labMode === 'coming_soon' ? 'checked' : ''; ?> onchange="updateLabModeCards()" style="accent-color: var(--gold-light); width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Coming Soon (Preview Only)</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #F59E0B; margin-bottom: 8px;">PUBLIC WAITLIST ACTIVE</div>
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
+                        Public visitors see an on-brand luxury Coming Soon showcase with waitlist notification signup. Logged-in Admins &amp; Developers can view, test, and work on the live page without showing it to the public.
+                    </p>
+                </label>
+
+                <!-- 2. Live on Frontend Card -->
+                <label id="labCardLive" style="position: relative; display: flex; flex-direction: column; padding: 18px; border-radius: 12px; border: 2px solid <?php echo $labMode === 'live' ? 'var(--gold-light)' : 'var(--border-color)'; ?>; background: <?php echo $labMode === 'live' ? 'rgba(229,179,88,0.06)' : 'var(--bg-app)'; ?>; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 26px;">🚀</span>
+                        <input type="radio" name="settings[innovation_lab_mode]" value="live" <?php echo $labMode === 'live' ? 'checked' : ''; ?> onchange="updateLabModeCards()" style="accent-color: var(--gold-light); width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Live on Frontend (Open to Public)</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #74E291; margin-bottom: 8px;">FULLY ACCESSIBLE</div>
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
+                        The full Innovation Lab is published and visible to all site visitors and search engines. All interactive dossiers, experiments, and failed batch stories are live.
+                    </p>
+                </label>
+            </div>
+
+            <!-- Quick Action Links for Admin -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;">
+                <a href="../innovation-lab.php?preview=1" target="_blank" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 7px 14px;">
+                    <span>🧪 Open Live Lab in Preview Mode</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                </a>
+                <a href="../innovation-lab.php?view_as=public" target="_blank" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 7px 14px;">
+                    <span>👁️ Test Public Coming Soon Screen</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                </a>
+                <a href="innovation-lab.php" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 7px 14px;">
+                    <span>🔬 Innovation Lab CMS</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+
+            <script>
+            function updateLabModeCards() {
+                const val = document.querySelector('input[name="settings[innovation_lab_mode]"]:checked')?.value || 'coming_soon';
+                const cardSoon = document.getElementById('labCardComingSoon');
+                const cardLive = document.getElementById('labCardLive');
+                if (cardSoon && cardLive) {
+                    if (val === 'coming_soon') {
+                        cardSoon.style.borderColor = 'var(--gold-light)';
+                        cardSoon.style.background = 'rgba(229,179,88,0.06)';
+                        cardLive.style.borderColor = 'var(--border-color)';
+                        cardLive.style.background = 'var(--bg-app)';
+                    } else {
+                        cardLive.style.borderColor = 'var(--gold-light)';
+                        cardLive.style.background = 'rgba(229,179,88,0.06)';
+                        cardSoon.style.borderColor = 'var(--border-color)';
+                        cardSoon.style.background = 'var(--bg-app)';
+                    }
+                }
+            }
             </script>
 
             <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Theme & Appearance Settings</div>

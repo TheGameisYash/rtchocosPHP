@@ -275,13 +275,13 @@
   #hero .hero-video-bg,
   .hero-video-bg {
     position: absolute !important;
-    top: 45% !important;
+    top: 48% !important;
     left: 50% !important;
     right: auto !important;
     bottom: auto !important;
     transform: translate(-50%, -50%) !important;
-    width: 115vw !important;
-    min-width: 115vw !important;
+    width: 126vw !important;
+    min-width: 126vw !important;
     max-width: none !important;
     height: auto !important;
     min-height: 0 !important;

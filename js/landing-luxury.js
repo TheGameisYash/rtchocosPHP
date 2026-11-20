@@ -6,7 +6,7 @@
  * ==========================================================================
  */
 
-(function() {
+(function () {
   'use strict';
 
   document.addEventListener('DOMContentLoaded', initLandingLuxury);
@@ -32,7 +32,7 @@
       tickingScroll = false;
     }
 
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
       if (!tickingScroll) {
         window.requestAnimationFrame(updateScrollProgress);
         tickingScroll = true;
@@ -57,7 +57,7 @@
         cursorGlow.classList.remove('active');
       }
 
-      heroSection.addEventListener('mouseenter', function(e) {
+      heroSection.addEventListener('mouseenter', function (e) {
         cursorActive = true;
         mouseX = e.clientX;
         mouseY = e.clientY;
@@ -66,7 +66,7 @@
         cursorGlow.classList.add('active');
       });
 
-      heroSection.addEventListener('mousemove', function(e) {
+      heroSection.addEventListener('mousemove', function (e) {
         cursorActive = true;
         mouseX = e.clientX;
         mouseY = e.clientY;
@@ -78,7 +78,7 @@
       heroSection.addEventListener('mouseleave', deactivateCursorGlow);
 
       // When user scrolls down out of Hero section, deactivate immediately
-      window.addEventListener('scroll', function() {
+      window.addEventListener('scroll', function () {
         if (cursorActive) {
           const rect = heroSection.getBoundingClientRect();
           if (rect.bottom <= 60 || rect.top >= window.innerHeight) {
@@ -116,7 +116,7 @@
       tickingLeaves = false;
     }
 
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
       if (parallaxLeaves.length && !tickingLeaves) {
         window.requestAnimationFrame(renderParallaxLeaves);
         tickingLeaves = true;
@@ -149,7 +149,7 @@
         heroTicking = false;
       }
 
-      window.addEventListener('scroll', function() {
+      window.addEventListener('scroll', function () {
         if (!heroTicking) {
           window.requestAnimationFrame(renderHeroParallax);
           heroTicking = true;
@@ -335,19 +335,25 @@
     if ('IntersectionObserver' in window) {
       const revealObserver = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting || entry.intersectionRatio > 0) {
             entry.target.style.opacity = '1';
             entry.target.style.transform = 'translateY(0)';
             obs.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.15 });
+      }, { threshold: 0.05, rootMargin: '120px 0px 120px 0px' });
 
       revealTargets.forEach((el, idx) => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(24px)';
-        el.style.transition = `opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${idx * 0.08}s, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${idx * 0.08}s`;
-        revealObserver.observe(el);
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 120 && rect.bottom > -120) {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        } else {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(24px)';
+          el.style.transition = `opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${Math.min(idx, 4) * 0.08}s, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${Math.min(idx, 4) * 0.08}s`;
+          revealObserver.observe(el);
+        }
       });
     }
 
@@ -478,7 +484,7 @@
       }
 
       chocoPillBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
           const type = this.getAttribute('data-type');
           if (!type) return;
 

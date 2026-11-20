@@ -30,7 +30,7 @@
       } else {
           try {
               $pdo = get_db();
-              $stmt = $pdo->prepare("INSERT INTO contact_submissions (name, email, phone, subject, message, created_at) VALUES (:name, :email, :phone, :subject, :message, NOW())");
+              $stmt = $pdo->prepare("INSERT INTO contacts (name, email, phone, subject, message, created_at) VALUES (:name, :email, :phone, :subject, :message, NOW())");
               $subjectLine = "B2B Consultation: " . ($service ?: "Work With Us") . ($company ? " ($company)" : "");
               $fullMsg = "Company/Brand: " . ($company ?: "N/A") . "\nService Interested: " . ($service ?: "General Inquiry") . "\n\nProject Details:\n" . $message;
               
@@ -41,6 +41,15 @@
                   ':subject' => $subjectLine,
                   ':message' => $fullMsg
               ]);
+
+              // Dispatch instant email notification to admin
+              require_once __DIR__ . '/includes/mailer.php';
+              try {
+                  send_contact_notification($name, $email, $phone, $subjectLine, $fullMsg, 'Work With Us — B2B Consultation');
+              } catch (Exception $mailEx) {
+                  error_log("Work With Us email dispatch error: " . $mailEx->getMessage());
+              }
+
               $submissionSuccess = true;
           } catch (Exception $e) {
               $submissionError = "An unexpected error occurred. Please try again or email us directly at hello@rtchocos.com.";

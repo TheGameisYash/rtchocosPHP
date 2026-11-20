@@ -317,6 +317,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script src="<?php echo $pathPrefix; ?>js/anime.min.js"></script>
 <script src="<?php echo $pathPrefix; ?>script.js?v=<?php echo filemtime(__DIR__ . '/../script.js'); ?>"></script>
+<?php
+  // Workshop Notification Modal component
+  if (file_exists(__DIR__ . '/components/workshop_notify_modal.php')) {
+      include __DIR__ . '/components/workshop_notify_modal.php';
+  }
+?>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6W5XE5DRJG"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

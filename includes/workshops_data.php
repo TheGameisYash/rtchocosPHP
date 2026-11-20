@@ -54,8 +54,12 @@ $workshops = [
 
 function renderWorkshopCard($w, $pathPrefix = "") {
     $buttonLabel = $w['status'] === 'coming-soon' ? 'Notify Me When Open' : 'Book Now';
+    $safeTitle = htmlspecialchars($w['title'], ENT_QUOTES, 'UTF-8');
+    $safeDuration = htmlspecialchars($w['duration'], ENT_QUOTES, 'UTF-8');
+    $safeLevel = htmlspecialchars($w['level'], ENT_QUOTES, 'UTF-8');
+
     $buttonOnClick = $w['status'] === 'coming-soon'
-        ? 'onclick="triggerNewsletterAlert()"'
+        ? "data-workshop-title=\"{$safeTitle}\" data-workshop-duration=\"{$safeDuration}\" data-workshop-level=\"{$safeLevel}\" onclick=\"openWorkshopNotifyModal(this.dataset.workshopTitle, this.dataset.workshopDuration, this.dataset.workshopLevel)\""
         : 'onclick="addToCart()"';
 
     $imageSrc = $pathPrefix . $w['image'];

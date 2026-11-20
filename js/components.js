@@ -9,7 +9,11 @@ function addToCart() {
 }
 
 // --- WORKSHOP CARD ----------------------------------------------
-function triggerNewsletterAlert() {
+function triggerNewsletterAlert(title) {
+  if (typeof openWorkshopNotifyModal === 'function') {
+    openWorkshopNotifyModal(title || 'Artisan Chocolate Masterclass');
+    return;
+  }
   const footerNewsletter = document.getElementById('newsletter-footer-form') || document.getElementById('newsletter-home-form');
   if (footerNewsletter) {
     footerNewsletter.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -21,7 +25,7 @@ function triggerNewsletterAlert() {
 function workshopCardHTML(w) {
   const buttonLabel = w.status === 'coming-soon' ? 'Notify Me When Open' : 'Book Now';
   const buttonOnClick = w.status === 'coming-soon'
-    ? `onclick="triggerNewsletterAlert()"`
+    ? `onclick="openWorkshopNotifyModal('${(w.title || '').replace(/'/g, "\\'")}', '${(w.duration || '').replace(/'/g, "\\'")}', '${(w.level || '').replace(/'/g, "\\'")}')"`
     : `onclick="addToCart()"`;
 
   const imageTag = w.image && w.image.includes('/')

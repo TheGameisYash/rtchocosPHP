@@ -74,6 +74,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     } else {
         try {
             // -------------------------------------------------------------
+            // 0. QUICK LAB VISIBILITY TOGGLE ACTION
+            // -------------------------------------------------------------
+            if ($action === 'toggle_lab_mode') {
+                $targetMode = ($_POST['target_mode'] ?? '') === 'live' ? 'live' : 'coming_soon';
+                $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES ('innovation_lab_mode', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+                $stmt->execute([$targetMode, $targetMode]);
+                clear_site_settings_cache();
+                $success = "Innovation Lab status has been successfully updated to " . ($targetMode === 'live' ? 'LIVE ON FRONTEND (Open to Public)' : 'COMING SOON (Admin Preview Active)') . "!";
+            }
+
+            // -------------------------------------------------------------
             // 1. EXPERIMENT ACTIONS
             // -------------------------------------------------------------
             if ($action === 'save_experiment') {
@@ -1016,10 +1027,42 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 Full dynamic control over experiments, failed batches, exploration questions, native ingredients, and live dossiers.
             </p>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <a href="../innovation-lab.php" target="_blank" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;">
+        <?php $currentLabMode = get_site_setting('innovation_lab_mode', 'coming_soon'); ?>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <!-- Current Public Status Pill & One-Click Toggle -->
+            <?php if ($currentLabMode === 'coming_soon'): ?>
+                <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); color: #F59E0B; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px;">⏳</span> COMING SOON (Preview Active)
+                </div>
+                <form action="innovation-lab.php" method="POST" style="margin: 0; display: inline;">
+                    <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
+                    <input type="hidden" name="action" value="toggle_lab_mode">
+                    <input type="hidden" name="target_mode" value="live">
+                    <button type="submit" class="btn btn-primary" style="padding: 7px 14px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;" title="Make Innovation Lab live and visible to all website visitors">
+                        <span>Make Live on Frontend 🚀</span>
+                    </button>
+                </form>
+            <?php else: ?>
+                <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); color: #10B981; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px;">🟢</span> LIVE ON FRONTEND
+                </div>
+                <form action="innovation-lab.php" method="POST" style="margin: 0; display: inline;">
+                    <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
+                    <input type="hidden" name="action" value="toggle_lab_mode">
+                    <input type="hidden" name="target_mode" value="coming_soon">
+                    <button type="submit" class="btn btn-outline" style="padding: 7px 14px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;" title="Set Innovation Lab to Coming Soon mode (public sees waitlist, admins see live page)">
+                        <span>Switch to Coming Soon ⏳</span>
+                    </button>
+                </form>
+            <?php endif; ?>
+
+            <a href="../innovation-lab.php?preview=1" target="_blank" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;" title="View live page in preview mode">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
                 <span>View Live Lab Page</span>
+            </a>
+            <a href="../innovation-lab.php?view_as=public" target="_blank" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;" title="Preview how the public sees the Coming Soon screen">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span>Public Screen</span>
             </a>
         </div>
     </div>

@@ -899,7 +899,9 @@ function parseJsonFromAiResponse($content) {
 /**
  * Helper to make HTTP POST requests via stream_context
  */
-function makeSpotlightPostRequest($url, $headers, $payloadData, $timeout = 8) {
+function makeSpotlightPostRequest($url, $headers, $payloadData, $timeout = 4) {
+    $prevSocketTimeout = ini_get('default_socket_timeout');
+    @ini_set('default_socket_timeout', $timeout);
     $options = [
         'http' => [
             'method'        => 'POST',
@@ -915,6 +917,7 @@ function makeSpotlightPostRequest($url, $headers, $payloadData, $timeout = 8) {
     ];
     $context = stream_context_create($options);
     $response = @file_get_contents($url, false, $context);
+    @ini_set('default_socket_timeout', $prevSocketTimeout);
 
     $httpCode = 200;
     $headersList = [];
