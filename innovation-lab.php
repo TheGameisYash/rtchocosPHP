@@ -26,7 +26,7 @@ if ($labAccess['is_coming_soon']) {
     <?php if ($labAccess['simulating_public']): ?>
     <div style="background: #11281A; border-bottom: 2px solid #E5B358; color: #FFFFFF; padding: 10px 20px; font-size: 13px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 14px; position: sticky; top: 0; z-index: 999999;">
         <span>👁️ <strong>Simulating Public Visitor View:</strong> You are viewing the Coming Soon waitlist screen.</span>
-        <a href="innovation-lab.php?preview=1" style="background: #E5B358; color: #07150E; padding: 4px 12px; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 12px;">Switch Back to Live Dev Page ↗</a>
+        <a href="innovation-lab?preview=1" style="background: #E5B358; color: #07150E; padding: 4px 12px; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 12px;">Switch Back to Live Dev Page ↗</a>
     </div>
     <?php endif; ?>
 
@@ -68,15 +68,15 @@ if ($labAccess['is_coming_soon']) {
 
         <!-- Navigation Links for Continued Exploration -->
         <div class="lab-cs-links">
-          <a href="shop.php" class="lab-cs-link-btn">
+          <a href="shop" class="lab-cs-link-btn">
             <span>Explore Chocolates</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
-          <a href="workshops.php" class="lab-cs-link-btn">
+          <a href="workshops" class="lab-cs-link-btn">
             <span>View Workshops</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
-          <a href="blog.php" class="lab-cs-link-btn">
+          <a href="blog" class="lab-cs-link-btn">
             <span>Read The Journal</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
@@ -251,7 +251,7 @@ include 'includes/header.php';
     <div class="lab-preview-right">
       <a href="admin/innovation-lab.php" target="_blank" class="preview-nav-btn">Innovation CMS ↗</a>
       <a href="admin/settings.php" target="_blank" class="preview-nav-btn">Site Settings ↗</a>
-      <a href="innovation-lab.php?view_as=public" class="preview-nav-btn preview-nav-btn-highlight" title="Simulate what public visitors see">View Public Screen 👁️</a>
+      <a href="innovation-lab?view_as=public" class="preview-nav-btn preview-nav-btn-highlight" title="Simulate what public visitors see">View Public Screen 👁️</a>
     </div>
   </div>
 </div>

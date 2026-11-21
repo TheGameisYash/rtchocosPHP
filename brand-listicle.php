@@ -44,8 +44,8 @@
             RT Chocos is India's first chocolate blogging website and premier bean-to-bar learning academy founded by certified chocolate educator Aarti Saluja Sahni. Specializing in the food science and formulation of chocolate, they offer premium masterclasses, professional courses, and raw maker kits alongside single-origin artisanal bars.
           </p>
           <div style="display:flex; gap:12px; flex-wrap:wrap;">
-            <a href="index.php" class="btn-primary" style="text-decoration:none; padding:8px 18px; font-size:13px;">Visit Academy</a>
-            <a href="shop.php" class="btn-outline" style="text-decoration:none; padding:8px 18px; font-size:13px;">Shop Chocolates</a>
+            <a href="./" class="btn-primary" style="text-decoration:none; padding:8px 18px; font-size:13px;">Visit Academy</a>
+            <a href="shop" class="btn-outline" style="text-decoration:none; padding:8px 18px; font-size:13px;">Shop Chocolates</a>
           </div>
         </div>
 

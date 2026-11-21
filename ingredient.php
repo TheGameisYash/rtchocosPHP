@@ -34,7 +34,7 @@ if (!$ing) {
     if (file_exists(__DIR__ . '/error.php')) {
         include __DIR__ . '/error.php';
     } else {
-        echo "<h1>404 — Ingredient Dossier Not Found</h1><p><a href='../innovation-lab.php#ingredient-innovation'>Return to Innovation Lab</a></p>";
+        echo "<h1>404 — Ingredient Dossier Not Found</h1><p><a href='../innovation-lab#ingredient-innovation'>Return to Innovation Lab</a></p>";
     }
     exit;
 }
@@ -50,7 +50,7 @@ if ((int)$ing['is_active'] === 0) {
         if (file_exists(__DIR__ . '/error.php')) {
             include __DIR__ . '/error.php';
         } else {
-            echo "<h1>404 — Ingredient Dossier Not Found</h1><p><a href='../innovation-lab.php#ingredient-innovation'>Return to Innovation Lab</a></p>";
+            echo "<h1>404 — Ingredient Dossier Not Found</h1><p><a href='../innovation-lab#ingredient-innovation'>Return to Innovation Lab</a></p>";
         }
         exit;
     }
@@ -991,7 +991,7 @@ include 'includes/header.php';
       
       <!-- Top Utility Bar: Back Navigation (Left) + Badges (Right) -->
       <div class="exp-nav-bar">
-        <a class="exp-back-btn" href="<?php echo $pathPrefix; ?>innovation-lab.php#ingredient-innovation">
+        <a class="exp-back-btn" href="<?php echo $pathPrefix; ?>innovation-lab#ingredient-innovation">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
           <span>Back to Innovation Lab</span>
         </a>
@@ -1077,7 +1077,7 @@ include 'includes/header.php';
                     <p style="font-family:var(--font-sans, sans-serif); font-size:13.5px; line-height:1.6; color:#5C4033; font-weight:300; margin:0 0 12px;">
                         Certified chocolate educator and formulation researcher testing bean-to-bar boundaries, tropical fat structures, and indigenous Indian botanical pairings.
                     </p>
-                    <a href="<?php echo $pathPrefix; ?>innovation-lab.php" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">Explore Innovation Lab</a>
+                    <a href="<?php echo $pathPrefix; ?>innovation-lab" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">Explore Innovation Lab</a>
                 </div>
             </div>
 
@@ -1104,7 +1104,7 @@ include 'includes/header.php';
             <div class="exp-sidebar-callout">
                 <h4>Taste These Flavors</h4>
                 <p>Taste how we translate these regional Indian fruits, nuts, sugars, and botanicals into fresh artisanal chocolates.</p>
-                <a href="<?php echo $pathPrefix; ?>shop.php">
+                <a href="<?php echo $pathPrefix; ?>shop">
                     <span>Explore Our Products</span>
                     <span>&rarr;</span>
                 </a>
@@ -1123,7 +1123,7 @@ include 'includes/header.php';
                 <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold, #C7A66A); display:block; margin-bottom:4px;">Indigenous Palette</span>
                 <h3 style="font-family:'Playfair Display', Georgia, serif; font-size:28px; font-weight:700; color:#122217; margin:0;">More Botanical &amp; Ingredient Studies</h3>
             </div>
-            <a href="<?php echo $pathPrefix; ?>innovation-lab.php#ingredient-innovation" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold, #C7A66A); text-decoration:none;">View All Ingredients &rarr;</a>
+            <a href="<?php echo $pathPrefix; ?>innovation-lab#ingredient-innovation" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold, #C7A66A); text-decoration:none;">View All Ingredients &rarr;</a>
         </div>
 
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:28px;">

@@ -129,7 +129,7 @@
         </article>
       </div>
       <div class="seo-learning-cta">
-        <p>While registrations are being prepared, start with the <a href="blog.php">RT Chocos chocolate blog</a> or explore our <a href="gallery.php">tested chocolate recipes</a>.</p>
+        <p>While registrations are being prepared, start with the <a href="blog">RT Chocos chocolate blog</a> or explore our <a href="gallery">tested chocolate recipes</a>.</p>
       </div>
     </section>
 

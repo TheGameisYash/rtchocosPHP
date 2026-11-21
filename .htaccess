@@ -60,35 +60,71 @@ Options +FollowSymLinks -Indexes
     # Handle /dev without trailing slash
     RewriteRule ^dev$ /dev/ [R=301,L]
 
-    # Handle /maintenance clean URL
+    # ------------------------------------------------------------------
+    # | 1. Canonical Redirects: Hide .php Extensions (GET only)        |
+    # ------------------------------------------------------------------
+    # Canonical: Redirect /index.php to /
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /(?:index\.php)+(\?[^\ ]*)?\ HTTP/ [NC]
+    RewriteRule ^index\.php$ / [R=301,L]
+
+    # Canonical: 301 Redirect direct /page.php requests to /page (GET only, ignore admin/dev/api/scripts)
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([a-zA-Z0-9_\-]+)\.php(\?[^\ ]*)?\ HTTP/ [NC]
+    RewriteCond %{REQUEST_URI} !^/(admin|dev|api|includes)/ [NC]
+    RewriteCond %{REQUEST_URI} !(send_contact|subscribe|blog_image|test_blog|db_setup|router) [NC]
+    RewriteRule ^([a-zA-Z0-9_\-]+)\.php$ /$1 [R=301,L]
+
+    # ------------------------------------------------------------------
+    # | 2. Semantic URL Aliases (Missing URLs)                          |
+    # ------------------------------------------------------------------
+    # Products & Catalog
+    RewriteRule ^(?:products|all-products)/?$ /shop.php [L]
+
+    # Academy & Workshops
+    RewriteRule ^(?:academy|classes|masterclasses)/?$ /workshops.php [L]
+
+    # Journal & Blog
+    RewriteRule ^(?:journal|the-cacao-journal|cacao-journal)/?$ /blog.php [L]
+
+    # Recipes & Formulations
+    RewriteRule ^(?:recipes|formulations)/?$ /gallery.php [L]
+
+    # Work With Us / Work With Me
+    RewriteRule ^(?:work-with-me|consulting)/?$ /work-with-us.php [L]
+
+    # Innovation Lab
+    RewriteRule ^(?:lab|innovation)/?$ /innovation-lab.php [L]
+
+    # Clean Maintenance URL
     RewriteRule ^maintenance/?$ /maintenance.php [L]
 
-    # Handle /blog and /blog/ requests (and /cacao-journal alias)
-    RewriteRule ^(?:blog|cacao-journal)(?:\.php)?/?$ /blog.php [L]
+    # ------------------------------------------------------------------
+    # | 3. Physical Directory & Clean Article URL Routing               |
+    # ------------------------------------------------------------------
+    # Handle /blog and /blog/ requests
+    RewriteRule ^blog/?$ /blog.php [L]
 
     # Rewrite clean blog article URLs (/blog/article-slug) to blog-article.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^blog/([^/]+)/?$ /blog-article.php?slug=$1 [L,QSA]
 
-    # Handle /experiment and /lab requests
-    RewriteRule ^(?:experiment|lab)/?$ /innovation-lab.php [L]
+    # Handle /experiment requests to innovation-lab.php
+    RewriteRule ^experiment/?$ /innovation-lab.php [L]
 
-    # Rewrite clean experiment URLs (/experiment/article-slug or /lab/article-slug) to experiment.php
+    # Rewrite clean experiment URLs (/experiment/slug) to experiment.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(?:experiment|lab)/([^/]+)/?$ /experiment.php?slug=$1 [L,QSA]
+    RewriteRule ^experiment/([^/]+)/?$ /experiment.php?slug=$1 [L,QSA]
 
-    # Handle /failed-batch and /ingredient direct requests
+    # Handle /failed-batch requests
     RewriteRule ^failed-batch/?$ /innovation-lab.php#failed-experiments [L]
-    RewriteRule ^ingredient/?$ /innovation-lab.php#ingredient-innovation [L]
-
-    # Rewrite clean failed batch URLs (/failed-batch/slug) to failed-batch.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^failed-batch/([^/]+)/?$ /failed-batch.php?slug=$1 [L,QSA]
 
-    # Rewrite clean ingredient URLs (/ingredient/slug) to ingredient.php
+    # Handle /ingredient requests
+    RewriteRule ^ingredient/?$ /innovation-lab.php#ingredient-innovation [L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ingredient/([^/]+)/?$ /ingredient.php?slug=$1 [L,QSA]
@@ -96,7 +132,7 @@ Options +FollowSymLinks -Indexes
     # Handle accidental nested /shop/shop/{slug} requests
     RewriteRule ^(?:shop|blog)/(?:shop|blog)/([^/]+)/?$ /shop/$1 [R=301,L]
 
-    # Rewrite clean shop & product URLs
+    # Rewrite clean shop & product URLs (/shop/slug or /product/slug)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(?:shop|product)/([^/]+)/?$ /product.php?slug=$1 [L,QSA]
@@ -114,7 +150,9 @@ Options +FollowSymLinks -Indexes
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^assets/blogs/(.+)$ /blog_image.php?file=$1 [L,QSA]
 
-    # Map extensionless URL requests to actual .php files
+    # ------------------------------------------------------------------
+    # | 4. Map Any Extensionless URL to .php (e.g. /about -> about.php)|
+    # ------------------------------------------------------------------
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME}.php -f

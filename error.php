@@ -15,8 +15,8 @@ include __DIR__ . '/includes/header.php';
         </p>
         
         <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-            <a href="<?php echo $pathPrefix; ?>index.php" class="btn-primary" style="text-decoration: none;">Return Home</a>
-            <a href="<?php echo $pathPrefix; ?>blog.php" class="btn-outline-dark" style="text-decoration: none;">Read the Blog</a>
+            <a href="<?php echo $pathPrefix ?: './'; ?>" class="btn-primary" style="text-decoration: none;">Return Home</a>
+            <a href="<?php echo $pathPrefix; ?>blog" class="btn-outline-dark" style="text-decoration: none;">Read the Blog</a>
         </div>
     </div>
 </div>

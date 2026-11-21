@@ -162,8 +162,8 @@
             </ul>
 
             <div class="about-profile-actions">
-              <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="btn btn-primary">Work With Me</a>
-              <a href="<?php echo $pathPrefix; ?>blog.php" class="btn btn-secondary">Read The Cacao Journal</a>
+              <a href="<?php echo $pathPrefix; ?>work-with-us" class="btn btn-primary">Work With Me</a>
+              <a href="<?php echo $pathPrefix; ?>blog" class="btn btn-secondary">Read The Cacao Journal</a>
             </div>
           </div>
         </div>

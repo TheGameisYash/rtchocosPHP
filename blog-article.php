@@ -1450,14 +1450,14 @@ function publishThisArticleNow(blogId) {
 <div id="page-blog-article" class="page active">
   <div class="page-hero blog-page-hero">
     <div class="page-hero-content blog-article-hero-content">
-      <a class="back-to-blog-btn" href="../blog.php">&larr; Back to Blog</a>
+      <a class="back-to-blog-btn" href="../blog">&larr; Back to Blog</a>
       
       <div class="article-hero-text-container" style="max-width: 760px; margin: 0 auto;">
         <!-- Visual Breadcrumbs Trail -->
         <div class="blog-breadcrumbs">
-          <a href="../index.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Home</a>
+          <a href="../" style="color: inherit; text-decoration: none; opacity: 0.85;">Home</a>
           <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
-          <a href="../blog.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Blog</a>
+          <a href="../blog" style="color: inherit; text-decoration: none; opacity: 0.85;">Blog</a>
           <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
           <span style="opacity: 0.7; font-weight: 500;"><?php echo htmlspecialchars($post['title']); ?></span>
         </div>

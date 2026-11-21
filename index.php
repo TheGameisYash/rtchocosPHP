@@ -95,7 +95,7 @@
         <h1 class="fade-up-d1">Unlocking Cacao's <em>Science &amp; Art</em></h1>
         <p class="fade-up-d2">An independent Indian chocolate learning academy covering bean-to-bar craftsmanship, cacao formulation science, and professional masterclasses.</p>
         <div class="hero-btns fade-up-d3">
-          <a href="workshops.php" class="btn-hero-primary">
+          <a href="workshops" class="btn-hero-primary">
             <span>Start Learning</span>
             <span class="btn-arrow">→</span>
           </a>
@@ -343,7 +343,7 @@
             <span class="wb-card-title">Bean to Bar &rarr;</span>
           </div>
         </a>
-        <a href="blog.php" class="workbench-mob-card" aria-label="Read Cacao Journal">
+        <a href="blog" class="workbench-mob-card" aria-label="Read Cacao Journal">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
@@ -357,7 +357,7 @@
             <span class="wb-card-title">Cacao Journal &rarr;</span>
           </div>
         </a>
-        <a href="workshops.php" class="workbench-mob-card" aria-label="Explore Cacao Lab">
+        <a href="workshops" class="workbench-mob-card" aria-label="Explore Cacao Lab">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M10 2v7.5L5.2 18.2A2 2 0 0 0 7 21h10a2 2 0 0 0 1.8-2.8L14 9.5V2"/>
@@ -370,7 +370,7 @@
             <span class="wb-card-title">Cacao Lab &rarr;</span>
           </div>
         </a>
-        <a href="gallery.php" class="workbench-mob-card" aria-label="View Formulations & Recipes">
+        <a href="gallery" class="workbench-mob-card" aria-label="View Formulations & Recipes">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2.5"/>
@@ -385,7 +385,7 @@
             <span class="wb-card-title">Formulations &rarr;</span>
           </div>
         </a>
-        <a href="work-with-us.php" class="workbench-mob-card" aria-label="Work With Us & Consulting">
+        <a href="work-with-us" class="workbench-mob-card" aria-label="Work With Us & Consulting">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -399,7 +399,7 @@
             <span class="wb-card-title">Work With Us &rarr;</span>
           </div>
         </a>
-        <a href="innovation-lab.php" class="workbench-mob-card" aria-label="Explore Innovation Lab">
+        <a href="innovation-lab" class="workbench-mob-card" aria-label="Explore Innovation Lab">
           <span class="wb-card-icon">
             <svg class="wb-card-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M9 18h6"/>
@@ -439,8 +439,8 @@
       <p id="modal-table-prompt" class="table-modal-prompt" style="display: none;"></p>
 
       <div class="table-modal-actions" id="modal-table-actions">
-        <a href="chocopedia.php" id="modal-table-btn-primary" class="table-modal-btn-primary">Explore Bean-to-Bar Guide &rarr;</a>
-        <a href="workshops.php" id="modal-table-btn-secondary" class="table-modal-btn-secondary">Book Workshop</a>
+        <a href="chocopedia" id="modal-table-btn-primary" class="table-modal-btn-primary">Explore Bean-to-Bar Guide &rarr;</a>
+        <a href="workshops" id="modal-table-btn-secondary" class="table-modal-btn-secondary">Book Workshop</a>
       </div>
     </div>
   </div>
@@ -477,7 +477,7 @@
         <button type="button" class="modal-b2b-btn-back" onclick="closeBeanToBarGuideModal(); if (window.innerWidth > 768 && typeof openTableModal === 'function') { openTableModal('bean-to-bar'); }">
           &larr; Back to Chocolate Table
         </button>
-        <a href="workshops.php" class="modal-b2b-btn-workshop">
+        <a href="workshops" class="modal-b2b-btn-workshop">
           Book Workshop &rarr;
         </a>
       </div>

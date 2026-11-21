@@ -474,7 +474,7 @@ if (!empty(trim($customHeadScripts))) {
     <nav class="header-nav" aria-label="Primary navigation">
       <!-- 1. EXPLORE -->
       <div class="nav-item-dropdown">
-        <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'home' || $activeNav === 'about' || $activeNav === 'chocopedia') ? 'active' : ''; ?>" data-page="explore" href="<?php echo $pathPrefix ?: 'index.php'; ?>" title="Explore RT Chocos">
+        <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'home' || $activeNav === 'about' || $activeNav === 'chocopedia') ? 'active' : ''; ?>" data-page="explore" href="<?php echo $pathPrefix ?: './'; ?>" title="Explore RT Chocos">
           <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="9"/>
             <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
@@ -482,20 +482,20 @@ if (!empty(trim($customHeadScripts))) {
           <span class="nav-label">EXPLORE</span>
         </a>
         <div class="nav-dropdown-menu">
-          <a class="dropdown-item <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>" title="Explore RT Chocos">
+          <a class="dropdown-item <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>" title="Explore RT Chocos">
             Explore Overview
           </a>
-          <a class="dropdown-item <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Encyclopedia">
+          <a class="dropdown-item <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia" title="Chocolate Encyclopedia">
             Chocopedia
           </a>
-          <a class="dropdown-item <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php" title="About RT Chocos & Aarti Saluja">
+          <a class="dropdown-item <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about" title="About RT Chocos & Aarti Saluja">
             About RT Chocos
           </a>
         </div>
       </div>
 
       <!-- 2. PRODUCTS -->
-      <a class="nav-item-link <?php echo ($activeNav === 'shop') ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php" title="Artisanal Chocolate Products & Shop">
+      <a class="nav-item-link <?php echo ($activeNav === 'shop') ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop" title="Artisanal Chocolate Products & Shop">
         <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="2.5"/>
           <line x1="3" y1="9" x2="21" y2="9"/>
@@ -508,7 +508,7 @@ if (!empty(trim($customHeadScripts))) {
 
       <!-- 3. ACADEMY -->
       <div class="nav-item-dropdown">
-        <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'workshops' || $activeNav === 'gallery') ? 'active' : ''; ?>" data-page="academy" href="<?php echo $pathPrefix; ?>workshops.php" title="RT Chocos Academy">
+        <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'workshops' || $activeNav === 'gallery') ? 'active' : ''; ?>" data-page="academy" href="<?php echo $pathPrefix; ?>workshops" title="RT Chocos Academy">
           <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
             <path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"/>
@@ -516,17 +516,17 @@ if (!empty(trim($customHeadScripts))) {
           <span class="nav-label">ACADEMY</span>
         </a>
         <div class="nav-dropdown-menu">
-          <a class="dropdown-item <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy & Masterclasses">
+          <a class="dropdown-item <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops" title="Chocolate Academy & Masterclasses">
             Workshops &amp; Masterclasses
           </a>
-          <a class="dropdown-item <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php" title="Tested Recipes & Formulations">
+          <a class="dropdown-item <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery" title="Tested Recipes & Formulations">
             Recipes &amp; Formulations
           </a>
         </div>
       </div>
 
       <!-- 4. THE CACAO JOURNAL -->
-      <a class="nav-item-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php" title="The Cacao Journal & Blog">
+      <a class="nav-item-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog" title="The Cacao Journal & Blog">
         <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
@@ -535,7 +535,7 @@ if (!empty(trim($customHeadScripts))) {
       </a>
 
       <!-- 5. INNOVATION LAB -->
-      <a class="nav-item-link <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" data-page="innovation-lab" href="<?php echo $pathPrefix; ?>innovation-lab.php" title="Chocolate Innovation Lab">
+      <a class="nav-item-link <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" data-page="innovation-lab" href="<?php echo $pathPrefix; ?>innovation-lab" title="Chocolate Innovation Lab">
         <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/>
           <line x1="8.5" y1="2" x2="15.5" y2="2"/>
@@ -579,7 +579,7 @@ if (!empty(trim($customHeadScripts))) {
 <!-- Cart option completely removed from website -->
 
       <!-- Work with Us CTA (Desktop Only) -->
-      <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="signin-join-btn work-with-us-btn header-desktop-cta" title="Work With RT Chocos — Consulting, R&D & Workshops">
+      <a href="<?php echo $pathPrefix; ?>work-with-us" class="signin-join-btn work-with-us-btn header-desktop-cta" title="Work With RT Chocos — Consulting, R&D & Workshops">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
           <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
@@ -627,11 +627,11 @@ if (!empty(trim($customHeadScripts))) {
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
         <span>PRODUCTS &amp; CREATIONS</span>
       </div>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'shop' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>shop.php">All Products</a>
-      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=chocolates">Bean-to-Bar Chocolates</a>
-      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=spreads">Spreads &amp; Nut Butters</a>
-      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=ingredients">Natural Ingredients</a>
-      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=gifting">Corporate &amp; Festive Gifting</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'shop' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>shop">All Products</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop?category=chocolates">Bean-to-Bar Chocolates</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop?category=spreads">Spreads &amp; Nut Butters</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop?category=ingredients">Natural Ingredients</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop?category=gifting">Corporate &amp; Festive Gifting</a>
     </div>
 
     <!-- Mobile Academy Group -->
@@ -640,8 +640,8 @@ if (!empty(trim($customHeadScripts))) {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"/></svg>
         <span>ACADEMY &amp; MASTERCLASSES</span>
       </div>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>workshops.php">Workshops &amp; Masterclasses</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>gallery.php">Tested Recipes &amp; Formulations</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>workshops">Workshops &amp; Masterclasses</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>gallery">Tested Recipes &amp; Formulations</a>
     </div>
 
     <!-- Mobile Explore Group -->
@@ -650,20 +650,20 @@ if (!empty(trim($customHeadScripts))) {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         <span>EXPLORE &amp; KNOWLEDGE</span>
       </div>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'home' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>">Home Overview</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'about' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>about.php">About Aarti &amp; RT Chocos</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>chocopedia.php">Chocopedia &mdash; Cocoa Encyclopedia</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>blog.php">The Cacao Journal</a>
-      <a class="mobile-nav-sublink <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>innovation-lab.php">Innovation &amp; R&amp;D Lab<?php if (get_site_setting('innovation_lab_mode', 'coming_soon') === 'coming_soon'): ?><span style="display:inline-block; font-size: 8.5px; font-weight: 800; background: rgba(229,179,88,0.22); color: var(--gold-light, #F7D592); border: 1px solid rgba(229,179,88,0.4); padding: 1px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; letter-spacing: 0.5px;">SOON</span><?php endif; ?></a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'home' ? 'active' : ''; ?>" href="<?php echo $navPrefix ?: './'; ?>">Home Overview</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'about' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>about">About Aarti &amp; RT Chocos</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>chocopedia">Chocopedia &mdash; Cocoa Encyclopedia</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>blog">The Cacao Journal</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>innovation-lab">Innovation &amp; R&amp;D Lab<?php if (get_site_setting('innovation_lab_mode', 'coming_soon') === 'coming_soon'): ?><span style="display:inline-block; font-size: 8.5px; font-weight: 800; background: rgba(229,179,88,0.22); color: var(--gold-light, #F7D592); border: 1px solid rgba(229,179,88,0.4); padding: 1px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; letter-spacing: 0.5px;">SOON</span><?php endif; ?></a>
     </div>
 
     <!-- Mobile Direct Actions & Support -->
     <div class="mobile-drawer-direct-links">
-      <a class="mobile-nav-link <?php echo $activeNav === 'work-with-us' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>work-with-us.php">
+      <a class="mobile-nav-link <?php echo $activeNav === 'work-with-us' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>work-with-us">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
         <span>WORK WITH US &amp; B2B</span>
       </a>
-      <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>contact.php">
+      <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>contact">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         <span>CONTACT US</span>
       </a>
