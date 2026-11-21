@@ -15,17 +15,17 @@
     <div class="footer-links-wrap">
       <div class="footer-nav-col">
         <div class="footer-heading">Navigation</div>
-        <a class="footer-link" href="<?php echo $pathPrefix ?: 'index.php'; ?>">Home</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>about.php">About Us</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy India">Chocolate Academy India</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>work-with-us.php" title="Work With Us — B2B & Consulting">Work With Us</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>contact.php">Contact Us</a>
+        <a class="footer-link" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>about">About Us</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>workshops" title="Chocolate Academy India">Chocolate Academy India</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>work-with-us" title="Work With Us — B2B & Consulting">Work With Us</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>contact">Contact Us</a>
       </div>
       <div class="footer-explore-col">
         <div class="footer-heading">Explore</div>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>innovation-lab.php" title="Chocolate Innovation Lab">Innovation Lab</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>chocopedia.php">Chocopedia</a>
-        <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery.php" title="Chocolate Recipes India">Recipes & Formulations</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>innovation-lab" title="Chocolate Innovation Lab">Innovation Lab</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>chocopedia">Chocopedia</a>
+        <a class="footer-link" href="<?php echo $pathPrefix; ?>gallery" title="Chocolate Recipes India">Recipes & Formulations</a>
       </div>
     </div>
     <div class="footer-dispatch-col">
@@ -97,7 +97,7 @@
     </svg>
     <span>Home</span>
   </a>
-  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'shop.php' : '/shop.php'; ?>" class="mobile-bottom-item <?php echo $isShopActive ? 'active' : ''; ?>">
+  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'shop' : '/shop'; ?>" class="mobile-bottom-item <?php echo $isShopActive ? 'active' : ''; ?>">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="3" width="18" height="18" rx="2.5"></rect>
       <line x1="3" y1="9" x2="21" y2="9"></line>
@@ -107,14 +107,14 @@
     </svg>
     <span>Products</span>
   </a>
-  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'blog.php' : '/blog.php'; ?>" class="mobile-bottom-item <?php echo $isJournalActive ? 'active' : ''; ?>" title="The Cacao Journal">
+  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'blog' : '/blog'; ?>" class="mobile-bottom-item <?php echo $isJournalActive ? 'active' : ''; ?>" title="The Cacao Journal">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
       <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
     </svg>
     <span>Journal</span>
   </a>
-  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'workshops.php' : '/workshops.php'; ?>" class="mobile-bottom-item <?php echo $isAcademyActive ? 'active' : ''; ?>">
+  <a href="<?php echo (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix . 'workshops' : '/workshops'; ?>" class="mobile-bottom-item <?php echo $isAcademyActive ? 'active' : ''; ?>">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
       <path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"></path>

@@ -34,7 +34,7 @@ if (!$exp) {
     if (file_exists(__DIR__ . '/error.php')) {
         include __DIR__ . '/error.php';
     } else {
-        echo "<h1>404 — Experiment Not Found</h1><p><a href='../innovation-lab.php'>Return to Innovation Lab</a></p>";
+        echo "<h1>404 — Experiment Not Found</h1><p><a href='../innovation-lab'>Return to Innovation Lab</a></p>";
     }
     exit;
 }
@@ -50,7 +50,7 @@ if ((int)$exp['is_active'] === 0) {
         if (file_exists(__DIR__ . '/error.php')) {
             include __DIR__ . '/error.php';
         } else {
-            echo "<h1>404 — Experiment Not Found</h1><p><a href='../innovation-lab.php'>Return to Innovation Lab</a></p>";
+            echo "<h1>404 — Experiment Not Found</h1><p><a href='../innovation-lab'>Return to Innovation Lab</a></p>";
         }
         exit;
     }
@@ -1095,7 +1095,7 @@ table.blog-table-minimal td {
       
       <!-- Top Utility Bar: Back Navigation (Left) + Badges (Right) -->
       <div class="exp-nav-bar">
-        <a class="exp-back-btn" href="<?php echo $pathPrefix; ?>innovation-lab.php">
+        <a class="exp-back-btn" href="<?php echo $pathPrefix; ?>innovation-lab">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
           <span>Back to Innovation Lab</span>
         </a>
@@ -1182,7 +1182,7 @@ table.blog-table-minimal td {
                     <p style="font-family:var(--font-sans, sans-serif); font-size:13.5px; line-height:1.6; color:#5C4033; font-weight:300; margin:0 0 12px;">
                         Certified chocolate educator and formulation researcher testing bean-to-bar boundaries, tropical fat structures, and indigenous Indian botanical pairings.
                     </p>
-                    <a href="<?php echo $pathPrefix; ?>innovation-lab.php" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">Explore Innovation Lab</a>
+                    <a href="<?php echo $pathPrefix; ?>innovation-lab" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">Explore Innovation Lab</a>
                 </div>
             </div>
 
@@ -1209,7 +1209,7 @@ table.blog-table-minimal td {
             <div class="exp-sidebar-callout">
                 <h4>Curious About Our Chocolate?</h4>
                 <p>Every chocolate bar we craft starts with experiments right here in our Innovation Lab. Taste the outcome in our chocolate shop.</p>
-                <a href="<?php echo $pathPrefix; ?>shop.php">
+                <a href="<?php echo $pathPrefix; ?>shop">
                     <span>Explore Chocolate Shop</span>
                     <span>&rarr;</span>
                 </a>
@@ -1224,7 +1224,7 @@ table.blog-table-minimal td {
         <div style="margin-top:64px; border-top:1px solid #EDE7DB; padding-top:48px;">
             <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:24px;">
                 <h3 style="font-family:'Cormorant Garamond', serif; font-size:28px; margin:0; color:#3B2A22; font-weight:700;">More Experiments From the Lab</h3>
-                <a href="<?php echo $pathPrefix; ?>innovation-lab.php#currently-in-lab" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold, #C7A66A); text-decoration:none;">View All Experiments &rarr;</a>
+                <a href="<?php echo $pathPrefix; ?>innovation-lab#currently-in-lab" style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold, #C7A66A); text-decoration:none;">View All Experiments &rarr;</a>
             </div>
             
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(265px, 1fr)); gap:24px;">

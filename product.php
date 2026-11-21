@@ -379,9 +379,9 @@
   <div class="section">
     <!-- Breadcrumb text -->
     <div style="font-family:'Jost',sans-serif; font-size:13px; color:var(--brown-light); margin-bottom:24px; font-weight:300;">
-      <a href="<?php echo $pathPrefix; ?>index.php" style="color:var(--brown-light); text-decoration:none;">Home</a> › 
-      <a href="<?php echo $pathPrefix; ?>shop.php" style="color:var(--brown-light); text-decoration:none;">Shop</a> › 
-      <a href="<?php echo $pathPrefix; ?>shop.php?category=<?php echo urlencode($product['category'] ?? 'Chocolates'); ?>" style="color:var(--brown-light); text-decoration:none;"><?php echo htmlspecialchars($product['category'] ?? 'Chocolates'); ?></a> › 
+      <a href="<?php echo $pathPrefix ?: './'; ?>" style="color:var(--brown-light); text-decoration:none;">Home</a> › 
+      <a href="<?php echo $pathPrefix; ?>shop" style="color:var(--brown-light); text-decoration:none;">Shop</a> › 
+      <a href="<?php echo $pathPrefix; ?>shop?category=<?php echo urlencode($product['category'] ?? 'Chocolates'); ?>" style="color:var(--brown-light); text-decoration:none;"><?php echo htmlspecialchars($product['category'] ?? 'Chocolates'); ?></a> › 
       <span style="color:var(--brown); font-weight:600;"><?php echo htmlspecialchars($product['name']); ?></span>
     </div>
 
@@ -600,7 +600,7 @@
               <span>💬 Instant WhatsApp Quote &rarr;</span>
             </a>
             <div class="product-secondary-actions-row" style="display:flex; gap:10px; width:100%;">
-              <a href="<?php echo $pathPrefix; ?>shop.php#bulk-enquiry" class="btn-outline product-secondary-bulk-btn" style="flex:1; text-decoration:none; padding:11px 10px; font-size:12px; font-weight:600; text-align:center; display:inline-flex; align-items:center; justify-content:center;">
+              <a href="<?php echo $pathPrefix; ?>shop#bulk-enquiry" class="btn-outline product-secondary-bulk-btn" style="flex:1; text-decoration:none; padding:11px 10px; font-size:12px; font-weight:600; text-align:center; display:inline-flex; align-items:center; justify-content:center;">
                 Custom RFP &rarr;
               </a>
             </div>
@@ -645,7 +645,7 @@
           </p>
           <?php endif; ?>
           <p style="font-size:13px; color:var(--brown-light);">
-            Have questions? <a href="<?php echo $pathPrefix; ?>contact.php" style="color:var(--brown); font-weight:500;">Contact our Chocolatier concierge</a>
+            Have questions? <a href="<?php echo $pathPrefix; ?>contact" style="color:var(--brown); font-weight:500;">Contact our Chocolatier concierge</a>
           </p>
         </div>
       </div>

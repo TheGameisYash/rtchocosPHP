@@ -66,7 +66,7 @@ $glossary = [
       'tagClass' => 'tag-process',
       'definition' => 'Chocolate made by a producer who starts with cacao beans and manages the key steps through to finished chocolate. It describes a production approach, not an automatic guarantee of quality or ethical sourcing.',
       'matter' => 'It tells readers how the chocolate was made, while leaving quality to be judged by ingredients, process and result.',
-      'extraHtml' => '<a href="index.php#chocolate-table" style="display:inline-flex; align-items:center; gap:6px; color:#C6A24C; font-size:12px; font-weight:600; margin-top:8px; text-decoration:none;">Explore Bean-to-Bar on Chocolate Table &rarr;</a>'
+      'extraHtml' => '<a href="./#chocolate-table" style="display:inline-flex; align-items:center; gap:6px; color:#C6A24C; font-size:12px; font-weight:600; margin-top:8px; text-decoration:none;">Explore Bean-to-Bar on Chocolate Table &rarr;</a>'
     ],
     [
       'term' => 'Bloom',

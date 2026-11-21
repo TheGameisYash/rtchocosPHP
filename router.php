@@ -22,6 +22,48 @@ if ($uri === '/login' || $uri === '/login.php') {
     return true;
 }
 
+// Route direct index.php navigation to root /
+if ($uri === '/index.php') {
+    $qs = !empty($_SERVER['QUERY_STRING']) ? ('?' . $_SERVER['QUERY_STRING']) : '';
+    header('Location: /' . $qs, true, 301);
+    return true;
+}
+
+// Redirect direct .php GET requests to extensionless (except dev/admin/api/scripts)
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && preg_match('#^/([a-zA-Z0-9_\-]+)\.php$#', $uri, $m)) {
+    if (!in_array($m[1], ['send_contact', 'subscribe', 'blog_image', 'test_blog', 'router', 'db_setup'])) {
+        $qs = !empty($_SERVER['QUERY_STRING']) ? ('?' . $_SERVER['QUERY_STRING']) : '';
+        header('Location: /' . $m[1] . $qs, true, 301);
+        return true;
+    }
+}
+
+// Route clean aliases
+if ($uri === '/products' || $uri === '/products/' || $uri === '/all-products') {
+    include __DIR__ . '/shop.php';
+    return true;
+}
+if ($uri === '/academy' || $uri === '/academy/' || $uri === '/classes' || $uri === '/masterclasses') {
+    include __DIR__ . '/workshops.php';
+    return true;
+}
+if ($uri === '/journal' || $uri === '/journal/' || $uri === '/the-cacao-journal') {
+    include __DIR__ . '/blog.php';
+    return true;
+}
+if ($uri === '/recipes' || $uri === '/recipes/' || $uri === '/formulations') {
+    include __DIR__ . '/gallery.php';
+    return true;
+}
+if ($uri === '/work-with-me' || $uri === '/consulting') {
+    include __DIR__ . '/work-with-us.php';
+    return true;
+}
+if ($uri === '/lab' || $uri === '/lab/' || $uri === '/innovation') {
+    include __DIR__ . '/innovation-lab.php';
+    return true;
+}
+
 // Check Beta Website Lockdown
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/beta_lock.php';
