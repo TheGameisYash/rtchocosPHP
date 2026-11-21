@@ -38,6 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && preg_match('#^/([a-zA-Z0-9_\-]+)\.ph
     }
 }
 
+// Redirect trailing slash on clean section URLs (e.g. /blog/ -> /blog)
+if (preg_match('#^/(blog|shop|about|workshops|chocopedia|gallery|contact|innovation-lab|work-with-us)/+$#', $uri, $m)) {
+    $qs = !empty($_SERVER['QUERY_STRING']) ? ('?' . $_SERVER['QUERY_STRING']) : '';
+    header('Location: /' . $m[1] . $qs, true, 301);
+    return true;
+}
+
 // Route clean aliases
 if ($uri === '/products' || $uri === '/products/' || $uri === '/all-products') {
     include __DIR__ . '/shop.php';

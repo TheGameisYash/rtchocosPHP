@@ -56,7 +56,19 @@
 
   $pageTitle = "Chocolate Blog India: Cocoa Science & Making | RT Chocos";
   $pageDescription = "An Indian chocolate blog with practical guides to cocoa science, tempering, ingredients, flavour, defects and bean-to-bar chocolate making.";
-  $pathPrefix = "";
+
+  // Canonical trailing-slash guard: if accessed with /blog/, redirect to /blog
+  $reqPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+  $hasTrailingSlash = (rtrim($reqPath, '/') === '/blog' && substr($reqPath, -1) === '/');
+  if ($hasTrailingSlash) {
+      $qs = !empty($_SERVER['QUERY_STRING']) ? ('?' . $_SERVER['QUERY_STRING']) : '';
+      header('Location: /blog' . $qs, true, 301);
+      // Fallback pathPrefix in case redirect is delayed or output buffered
+      $pathPrefix = "../";
+  } else {
+      $pathPrefix = "";
+  }
+
   $canonicalUrl = "https://www.rtchocos.com/blog";
   $schemaType = "CollectionPage";
   $itemList = ['name' => 'RT Chocos chocolate articles', 'items' => array_map(function($blog) {
@@ -87,9 +99,9 @@
         muted 
         playsinline 
         preload="auto" 
-        poster="assets/blog_hero_poster.jpg"
+        poster="<?php echo $pathPrefix; ?>assets/blog_hero_poster.jpg"
       >
-        <source src="assets/blog%20section%20herovideo.mp4" type="video/mp4">
+        <source src="<?php echo $pathPrefix; ?>assets/blog%20section%20herovideo.mp4" type="video/mp4">
         Your browser does not support HTML5 video.
       </video>
     </div>
@@ -148,13 +160,15 @@
     <div class="grid-blog" id="blog-grid">
       <?php foreach ($blogs as $b): ?>
         <?php 
-          $href = "blog/" . $b['slug'];
+          $href = ($pathPrefix ?: '') . "blog/" . $b['slug'];
+          $rawImg = $b['image'];
+          $cardImg = (!empty($rawImg) && (strpos($rawImg, 'http') === 0 || strpos($rawImg, '/') === 0 || strpos($rawImg, '../') === 0)) ? $rawImg : (($pathPrefix ?: '') . $rawImg);
           $ytBadge = !empty($b['youtube_url']) ? ' • <span class="yt-badge">🎥 Video</span>' : '';
         ?>
         <a class="card blog-card-link" href="<?php echo htmlspecialchars($href); ?>">
           <div class="blog-card-img">
-            <?php if (!empty($b['image'])): ?>
-              <img src="<?php echo htmlspecialchars($b['image']); ?>" alt="<?php echo htmlspecialchars($b['title']); ?>" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+            <?php if (!empty($cardImg)): ?>
+              <img src="<?php echo htmlspecialchars($cardImg); ?>" alt="<?php echo htmlspecialchars($b['title']); ?>" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
               <span style="display:none;">Chocolate Journal</span>
             <?php else: ?>
               <span>Chocolate Journal</span>

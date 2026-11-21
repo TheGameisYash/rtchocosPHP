@@ -126,7 +126,7 @@ $canonicalUrl = "https://www.rtchocos.com/blog/" . rawurlencode($articleKey);
 
 $breadcrumbs = [
     ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
-    ['name' => 'Blog', 'item' => 'https://www.rtchocos.com/blog.php'],
+    ['name' => 'Blog', 'item' => 'https://www.rtchocos.com/blog'],
     ['name' => $post['title'], 'item' => $canonicalUrl]
 ];
 
@@ -539,7 +539,13 @@ function parse_inline($text) {
 
 // Load markdown content from file if not loaded from DB
 if (!$isFromDb) {
-    $markdown_file = __DIR__ . '/blog/posts/' . $articleKey . '.md';
+    $markdown_file = __DIR__ . '/content/blog_posts/' . $articleKey . '.md';
+    if (!file_exists($markdown_file)) {
+        $markdown_file = __DIR__ . '/data/blog_posts/' . $articleKey . '.md';
+    }
+    if (!file_exists($markdown_file)) {
+        $markdown_file = __DIR__ . '/blog/posts/' . $articleKey . '.md';
+    }
     $markdown_content = file_exists($markdown_file) ? file_get_contents($markdown_file) : '';
 }
 
@@ -1450,14 +1456,14 @@ function publishThisArticleNow(blogId) {
 <div id="page-blog-article" class="page active">
   <div class="page-hero blog-page-hero">
     <div class="page-hero-content blog-article-hero-content">
-      <a class="back-to-blog-btn" href="../blog">&larr; Back to Blog</a>
+      <a class="back-to-blog-btn" href="/blog">&larr; Back to Blog</a>
       
       <div class="article-hero-text-container" style="max-width: 760px; margin: 0 auto;">
         <!-- Visual Breadcrumbs Trail -->
         <div class="blog-breadcrumbs">
-          <a href="../" style="color: inherit; text-decoration: none; opacity: 0.85;">Home</a>
+          <a href="/" style="color: inherit; text-decoration: none; opacity: 0.85;">Home</a>
           <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
-          <a href="../blog" style="color: inherit; text-decoration: none; opacity: 0.85;">Blog</a>
+          <a href="/blog" style="color: inherit; text-decoration: none; opacity: 0.85;">Blog</a>
           <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
           <span style="opacity: 0.7; font-weight: 500;"><?php echo htmlspecialchars($post['title']); ?></span>
         </div>

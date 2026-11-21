@@ -101,6 +101,10 @@ Options +FollowSymLinks -Indexes
     # ------------------------------------------------------------------
     # | 3. Physical Directory & Clean Article URL Routing               |
     # ------------------------------------------------------------------
+    # Canonical: Strip trailing slash from clean URLs (e.g. /blog/ -> /blog)
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteRule ^(blog|shop|about|workshops|chocopedia|gallery|contact|innovation-lab|work-with-us)/+$ /$1 [R=301,L]
+
     # Handle /blog and /blog/ requests
     RewriteRule ^blog/?$ /blog.php [L]
 

@@ -10,7 +10,7 @@ Disallow: /test_blog.php
 Disallow: /router.php
 Disallow: /api_blogs.php
 Disallow: /api_comments.php
-Disallow: /blog/posts/
+Disallow: /content/
 Disallow: /*.md$
 Sitemap: https://www.rtchocos.com/sitemap.xml
 
