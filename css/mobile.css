@@ -285,7 +285,7 @@
     max-width: none !important;
     height: auto !important;
     min-height: 0 !important;
-    aspect-ratio: 16 / 9 !important;
+    aspect-ratio: 1168 / 768 !important;
     object-fit: contain !important;
     object-position: center center !important;
     display: block !important;
@@ -295,8 +295,14 @@
     mix-blend-mode: normal !important;
     z-index: 0 !important;
     pointer-events: none !important;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%) !important;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%) !important;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, black 8%, black 97.5%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, black 2.5%, black 96.5%, transparent 100%) !important;
+    -webkit-mask-composite: source-in !important;
+    mask-image:
+      linear-gradient(to right, transparent 0%, black 8%, black 97.5%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, black 2.5%, black 96.5%, transparent 100%) !important;
+    mask-composite: intersect !important;
   }
 
   #hero .deco-circle-1,

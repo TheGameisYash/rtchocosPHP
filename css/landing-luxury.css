@@ -155,8 +155,7 @@
   background-color: #edd7bd !important;
   background-image: 
     radial-gradient(circle at 18% 30%, rgba(212, 175, 55, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 82% 65%, rgba(27, 77, 46, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 65% 75% at 76% 50%, #f5e2c9 0%, #edd7bd 52%, #ebd6bb 100%) !important;
+    radial-gradient(ellipse 65% 75% at 76% 50%, #f6e3cb 0%, #f0dac0 50%, #edd5bb 100%) !important;
 }
 
 /* Ambient Animated Radial Light Orbs */
@@ -2795,13 +2794,14 @@
   }
 
   #hero .hero-video-bg {
-    right: -2.5vw !important;
+    right: -2vw !important;
     max-width: 53vw !important;
     height: 78% !important;
     max-height: 600px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     object-position: right center !important;
+    aspect-ratio: 1168 / 768 !important;
   }
 
   /* Compact Hero Ingredient Spotlight Card for 125% DPI */
@@ -2899,5 +2899,6 @@
   #hero .hero-video-bg {
     height: 74% !important;
     max-height: 520px !important;
+    aspect-ratio: 1168 / 768 !important;
   }
 }

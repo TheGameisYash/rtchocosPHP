@@ -12,7 +12,7 @@
   height: 100vh;
   min-height: 100vh;
   background-color: #edd7bd !important;
-  background-image: radial-gradient(ellipse 58% 72% at 76% 50%, #f5e2c9 0%, #edd7bd 48%, #ebd6bb 100%) !important;
+  background-image: radial-gradient(ellipse 65% 75% at 76% 50%, #f6e3cb 0%, #f0dac0 50%, #edd5bb 100%) !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,13 +26,13 @@
 .hero-video-bg {
   position: absolute;
   top: 50%;
-  right: -6.5vw;
+  right: -2.5vw;
   transform: translateY(-50%);
-  height: 82% !important;
+  height: 80% !important;
   max-height: 720px !important;
   width: auto !important;
-  aspect-ratio: 16 / 9;
-  max-width: 58vw !important;
+  aspect-ratio: 1168 / 768;
+  max-width: 56vw !important;
   object-fit: contain;
   object-position: right center;
   z-index: 1;
@@ -40,12 +40,12 @@
   opacity: 1;
   mix-blend-mode: normal;
   -webkit-mask-image:
-    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.04) 3%, rgba(0, 0, 0, 0.6) 8%, black 14%, black 100%),
-    linear-gradient(to bottom, transparent 0%, black 2.5%, black 98.5%, transparent 100%);
+    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 2%, rgba(0, 0, 0, 0.7) 7%, black 12%, black 97.5%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 2.5%, black 96.5%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-image:
-    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.04) 3%, rgba(0, 0, 0, 0.6) 8%, black 14%, black 100%),
-    linear-gradient(to bottom, transparent 0%, black 2.5%, black 98.5%, transparent 100%);
+    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 2%, rgba(0, 0, 0, 0.7) 7%, black 12%, black 97.5%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 2.5%, black 96.5%, transparent 100%);
   mask-composite: intersect;
 }
 
@@ -3726,7 +3726,7 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
     max-width: none !important;
     height: auto !important;
     min-height: 0 !important;
-    aspect-ratio: 16 / 9 !important;
+    aspect-ratio: 1168 / 768 !important;
     object-fit: contain !important;
     object-position: center center !important;
     display: block !important;
