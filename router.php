@@ -1,35 +1,185 @@
 <?php
 // router.php — Dev-only router for PHP built-in server.
-// Emulates .htaccess rewrite: blog/{slug} → blog/article.php?slug={slug}
+// Emulates .htaccess rewrite rules locally for clean URLs, sitemap, blog articles, experiments, failed batches, and ingredients.
 
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
-// Explicitly handle clean blog list page requests since 'blog' is a physical directory
-if ($uri === '/blog' || $uri === '/blog/') {
+// Enforce trailing slash on /admin directory for correct relative path resolution
+if ($uri === '/admin') {
+    header('Location: /admin/');
+    return true;
+}
+
+// Enforce trailing slash on /dev directory for correct relative path resolution
+if ($uri === '/dev') {
+    header('Location: /dev/');
+    return true;
+}
+
+// Route direct /login and /login.php navigation to admin login
+if ($uri === '/login' || $uri === '/login.php') {
+    header('Location: /admin/login.php');
+    return true;
+}
+
+// Check Beta Website Lockdown
+require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/beta_lock.php';
+check_beta_lock();
+
+// Route clean /maintenance URL
+if ($uri === '/maintenance' || $uri === '/maintenance/') {
+    include __DIR__ . '/maintenance.php';
+    return true;
+}
+
+// Route clean URLs inside /dev (e.g. /dev/admins -> /dev/admins.php)
+if (preg_match('#^/dev/([^/]+)/?$#', $uri, $m)) {
+    $devFile = __DIR__ . '/dev/' . $m[1] . '.php';
+    if (file_exists($devFile)) {
+        include $devFile;
+        return true;
+    }
+}
+
+// Match the sitemap rewrite
+if ($uri === '/sitemap.xml') {
+    include __DIR__ . '/sitemap.php';
+    return true;
+}
+
+// Route /innovation-lab, /experiment, and /lab to innovation-lab.php
+if (preg_match('#^/(?:experiment|lab|innovation-lab)/?$#', $uri)) {
+    include __DIR__ . '/innovation-lab.php';
+    return true;
+}
+
+// Route clean experiment URLs: /experiment/{slug} or /lab/{slug}
+if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/experiment.php';
+    return true;
+}
+
+// Route clean failed batch URLs: /failed-batch/{slug} or /case-study/{slug}
+if (preg_match('#^/(?:failed-batch|case-study)/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/failed-batch.php';
+    return true;
+}
+
+// Route clean ingredient URLs: /ingredient/{slug}
+if (preg_match('#^/ingredient/([^/]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/ingredient.php';
+    return true;
+}
+
+// Serve static files requested from subpaths like /shop/style.css, /blog/style.css, /experiment/assets/..., /failed-batch/css/...
+if (preg_match('#^/(?:shop|blog|experiment|lab|failed-batch|ingredient)/((?:style\.css|script\.js|favicon\.[a-z]+|(?:css|js|assets|data)/.+))$#', $uri, $m)) {
+    $realStaticPath = __DIR__ . '/' . $m[1];
+    if (file_exists($realStaticPath)) {
+        $mimeTypes = [
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'svg' => 'image/svg+xml',
+            'webp' => 'image/webp',
+            'woff2' => 'font/woff2',
+            'woff' => 'font/woff',
+            'ico' => 'image/x-icon'
+        ];
+        $ext = strtolower(pathinfo($realStaticPath, PATHINFO_EXTENSION));
+        if (isset($mimeTypes[$ext])) {
+            header('Content-Type: ' . $mimeTypes[$ext]);
+        }
+        readfile($realStaticPath);
+        return true;
+    }
+}
+
+// Route API & contact requests from subpaths like /shop/api_cart.php, /blog/api_ai.php
+if (preg_match('#^/(?:shop|blog|experiment|lab|failed-batch|ingredient)/((?:api_[a-zA-Z0-9_\-]+|send_contact)\.php)$#', $uri, $m)) {
+    $apiFile = __DIR__ . '/' . $m[1];
+    if (file_exists($apiFile)) {
+        include $apiFile;
+        return true;
+    }
+}
+
+// Route clean /cart and /checkout URLs
+if ($uri === '/cart' || $uri === '/cart/') {
+    include __DIR__ . '/cart.php';
+    return true;
+}
+if ($uri === '/checkout' || $uri === '/checkout/') {
+    include __DIR__ . '/checkout.php';
+    return true;
+}
+if (preg_match('#^/(?:shop|blog)/(cart|checkout)\.php$#', $uri, $m)) {
+    include __DIR__ . '/' . $m[1] . '.php';
+    return true;
+}
+
+// Handle accidental nested /shop/shop/{slug} redirects
+if (preg_match('#^/(?:shop|blog)/(?:shop|blog)/([a-zA-Z0-9_\-]+)/?$#', $uri, $m)) {
+    header('Location: /shop/' . $m[1], true, 301);
+    return true;
+}
+
+// Route clean shop product URLs: /shop/{slug} or /product/{slug}
+if (preg_match('#^/(?:shop|product)/([a-zA-Z0-9_\-]+)/?$#', $uri, $m)) {
+    $_GET['slug'] = $m[1];
+    include __DIR__ . '/product.php';
+    return true;
+}
+
+// Route clean blog URLs: /blog/{slug}
+if (preg_match('#^/blog/([^/]+)/?$#', $uri, $m)) {
+    $articleKey = $m[1];
+    include __DIR__ . '/blog-article.php';
+    return true;
+}
+
+// Route clean listicle URL
+if (preg_match('#^/indian-chocolate-brands/?$#', $uri)) {
+    include __DIR__ . '/brand-listicle.php';
+    return true;
+}
+
+// Route physical /blog folder request to blog.php (and /cacao-journal alias)
+if ($uri === '/blog' || $uri === '/blog/' || $uri === '/cacao-journal' || $uri === '/cacao-journal/' || $uri === '/cacao-journal.php') {
     include __DIR__ . '/blog.php';
     return true;
 }
 
-// If it's a real file or directory, serve it directly
+// Route physical /shop folder request or clean /shop to shop.php
+if ($uri === '/shop' || $uri === '/shop/') {
+    include __DIR__ . '/shop.php';
+    return true;
+}
+
+// Route missing blog images to blog_image.php
+if (preg_match('#^/assets/blogs/(.+)$#', $uri, $m)) {
+    $_GET['file'] = $m[1];
+    include __DIR__ . '/blog_image.php';
+    return true;
+}
+
+// If it's a real file or directory, serve directly
 if ($uri !== '/' && file_exists(__DIR__ . $uri)) {
     return false;
 }
 
-// Local clean URL mapping (e.g. /about -> about.php)
+// Local clean URL mapping (e.g. /about -> about.php, /workshops -> workshops.php, /chocopedia -> chocopedia.php)
 if ($uri !== '/' && preg_match('#^/([^/]+)$#', $uri, $m)) {
     $file = __DIR__ . '/' . $m[1] . '.php';
     if (file_exists($file)) {
         include $file;
         return true;
     }
-}
-
-// Blog clean URL rewrite: /blog/{slug} → set slug and include article logic
-if (preg_match('#^/blog/([^/]+)$#', $uri, $m)) {
-    $articleKey = $m[1];
-    // Directly include the article template (which blog/article.php would include)
-    include __DIR__ . '/blog-article.php';
-    return true;
 }
 
 // Shop category/main routing: /shop

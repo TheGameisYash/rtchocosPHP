@@ -1,4 +1,403 @@
 <?php
-// Root setup script wrapper for backward compatibility -> tools/db_setup.php
-require_once __DIR__ . '/tools/db_setup.php';
+// db_setup.php - Database Initialization and Migration Script
+// IMPORTANT: Delete this file before deploying to production!
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/blog-data.php';
+
+try {
+    $pdo = get_db();
+    echo "<h2>RT Chocos Database Setup</h2>";
+
+    // 1. Create admins table
+    echo "Creating 'admins' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS admins (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        is_active TINYINT(1) NOT NULL DEFAULT 1,
+        last_login TIMESTAMP NULL DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Insert default admin if not exists
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM admins WHERE username = 'admin'");
+    $stmt->execute();
+    if ($stmt->fetchColumn() == 0) {
+        echo "Creating default admin account... ";
+        $hash = password_hash('Admin@rtchocos1', PASSWORD_BCRYPT);
+        $stmt = $pdo->prepare("INSERT INTO admins (username, password, is_active) VALUES ('admin', ?, 1)");
+        $stmt->execute([$hash]);
+        echo "OK (Username: admin, Password: Admin@rtchocos1)<br>";
+    } else {
+        echo "Default admin account already exists.<br>";
+    }
+
+    // 1b. Create developers table (Master Control)
+    echo "Creating 'developers' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS developers (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        email VARCHAR(150) NULL,
+        role VARCHAR(50) NOT NULL DEFAULT 'super_dev',
+        is_active TINYINT(1) NOT NULL DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_login TIMESTAMP NULL DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Insert default developer if not exists
+    $devCheck = $pdo->query("SELECT COUNT(*) FROM developers");
+    if ($devCheck->fetchColumn() == 0) {
+        echo "Creating default developer account... ";
+        $devUser = 'dev';
+        $devPass = 'Dev@rtchocosMaster1';
+        $devHash = password_hash($devPass, PASSWORD_BCRYPT);
+        $stmt = $pdo->prepare("INSERT INTO developers (username, password, email, role, is_active) VALUES (?, ?, 'dev@rtchocos.com', 'super_dev', 1)");
+        $stmt->execute([$devUser, $devHash]);
+        echo "OK (Username: {$devUser}, Password: {$devPass})<br>";
+    }
+
+    // 2. Create blogs table (correct column names matching admin panel)
+    echo "Creating 'blogs' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS blogs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        slug VARCHAR(100) UNIQUE NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        category VARCHAR(50) NOT NULL DEFAULT 'Science',
+        excerpt TEXT NULL,
+        content LONGTEXT NULL,
+        image_path VARCHAR(255) NULL,
+        thumbnail_path VARCHAR(255) NULL,
+        body_class VARCHAR(100) NULL,
+        youtube_url VARCHAR(255) NULL,
+        read_time VARCHAR(50) NULL,
+        is_published TINYINT(1) NOT NULL DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_blogs_pub_date (is_published, created_at),
+        INDEX idx_blogs_cat (category)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // 3. Create subscribers table
+    echo "Creating 'subscribers' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS subscribers (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(150) UNIQUE NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // 4. Create contacts table (with is_read flag for admin inbox)
+    echo "Creating 'contacts' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS contacts (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(150) NOT NULL,
+        phone VARCHAR(50) NULL,
+        subject VARCHAR(150) NULL,
+        message TEXT NOT NULL,
+        is_read TINYINT(1) NOT NULL DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_contacts_is_read (is_read)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Create comments table
+    echo "Creating 'comments' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS comments (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        blog_slug VARCHAR(100) NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        comment TEXT NOT NULL,
+        is_approved TINYINT(1) DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_blog_slug (blog_slug)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // 5. Migrate blogs from static array + markdown files
+    echo "Migrating blog articles...<br>";
+    foreach ($BLOGS as $slug => $meta) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM blogs WHERE slug = ?");
+        $stmt->execute([$slug]);
+        if ($stmt->fetchColumn() == 0) {
+            $mdFile  = __DIR__ . '/blog/posts/' . $slug . '.md';
+            $content = '';
+            if (file_exists($mdFile)) {
+                $content = file_get_contents($mdFile);
+            }
+
+            echo "&nbsp;&nbsp;- Migrating '$slug'... ";
+            $stmt = $pdo->prepare(
+                "INSERT INTO blogs (slug, title, category, excerpt, content, image_path, thumbnail_path, body_class, read_time, is_published, created_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())"
+            );
+            $stmt->execute([
+                $slug,
+                $meta['title'],
+                $meta['category'],
+                $meta['excerpt'],
+                $content,
+                $meta['image'],
+                $meta['image'],       // thumbnail fallback = header image
+                $meta['bodyClass'] ?: null,
+                $meta['read']
+            ]);
+            echo "OK<br>";
+        } else {
+            echo "&nbsp;&nbsp;- Blog '$slug' already exists in database.<br>";
+        }
+    }
+
+    // 6. Migrate existing subscribers from CSV
+    $csvFile = __DIR__ . '/data/subscribers.csv';
+    if (file_exists($csvFile)) {
+        echo "Migrating subscribers from CSV...<br>";
+        $file = fopen($csvFile, 'r');
+        if ($file) {
+            $header = fgetcsv($file); // skip header row
+            while (($row = fgetcsv($file)) !== false) {
+                if (isset($row[1]) && !empty(trim($row[1]))) {
+                    $email = trim($row[1]);
+                    $stmt  = $pdo->prepare("SELECT COUNT(*) FROM subscribers WHERE email = ?");
+                    $stmt->execute([$email]);
+                    if ($stmt->fetchColumn() == 0) {
+                        $stmt = $pdo->prepare("INSERT INTO subscribers (email) VALUES (?)");
+                        $stmt->execute([$email]);
+                        echo "&nbsp;&nbsp;- Imported: $email<br>";
+                    }
+                }
+            }
+            fclose($file);
+        }
+    }
+
+    // 7. Add columns to blogs table if they don't exist
+    $columns = $pdo->query("SHOW COLUMNS FROM blogs")->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('scheduled_at', $columns)) {
+        echo "Adding 'scheduled_at' column to 'blogs'... ";
+        $pdo->exec("ALTER TABLE blogs ADD COLUMN scheduled_at TIMESTAMP NULL DEFAULT NULL;");
+        echo "OK<br>";
+    }
+    if (!in_array('views', $columns)) {
+        echo "Adding 'views' column to 'blogs'... ";
+        $pdo->exec("ALTER TABLE blogs ADD COLUMN views INT NOT NULL DEFAULT 0;");
+        echo "OK<br>";
+    }
+
+    // 8. Create tags and mapping tables
+    echo "Creating 'blog_tags' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS blog_tags (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) UNIQUE NOT NULL,
+        slug VARCHAR(100) UNIQUE NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    echo "Creating 'blog_tag_map' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS blog_tag_map (
+        blog_id INT NOT NULL,
+        tag_id INT NOT NULL,
+        PRIMARY KEY (blog_id, tag_id),
+        FOREIGN KEY (blog_id) REFERENCES blogs(id) ON DELETE CASCADE,
+        FOREIGN KEY (tag_id) REFERENCES blog_tags(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // 9. Create site_settings table
+    echo "Creating 'site_settings' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS site_settings (
+        setting_key VARCHAR(100) PRIMARY KEY,
+        setting_value TEXT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Populate default settings
+    $defaultSettings = [
+        'site_name' => 'RT Chocos',
+        'site_tagline' => 'Real Taste, Real Chocolate',
+        'meta_description' => 'Experience the real taste of premium chocolates crafted with love and science.',
+        'contact_email' => 'info@rtchocos.com',
+        'contact_phone' => '+1234567890',
+        'social_instagram' => 'https://instagram.com/rtchocos',
+        'social_facebook' => 'https://facebook.com/rtchocos',
+        'social_youtube' => 'https://youtube.com/rtchocos',
+        'social_linkedin' => 'https://linkedin.com/company/rtchocos',
+        'newsletter_text' => 'Subscribe to our newsletter for exclusive recipes, scientific cocoa insights, and new product releases.',
+        'show_theme_tester' => '0',
+        'site_url' => 'https://www.rtchocos.com',
+        'beta_url' => 'https://www.rtchocos.com/beta',
+        'beta_locked' => '1',
+        'beta_access_code' => 'rtbeta2026',
+        'maintenance_mode' => '0',
+        'maintenance_title' => "We're Perfecting Something Delicious",
+        'maintenance_subtitle' => 'Our chocolate laboratory is currently undergoing planned improvements.',
+        'maintenance_message' => "We are fine-tuning our handcrafted batches and platform to bring you an even more delightful bean-to-bar experience. We will be back online shortly!",
+        'maintenance_eta' => '',
+        'maintenance_media_type' => 'both',
+        'maintenance_image' => 'assets/ph.png',
+        'maintenance_video' => 'https://www.youtube.com/watch?v=kY3Pvdq0YpY',
+        'maintenance_bypass_key' => 'rtdev2026',
+        'maintenance_notify_enabled' => '1'
+    ];
+
+    foreach ($defaultSettings as $key => $value) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM site_settings WHERE setting_key = ?");
+        $stmt->execute([$key]);
+        if ($stmt->fetchColumn() == 0) {
+            $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)");
+            $stmt->execute([$key, $value]);
+        }
+    }
+    echo "Settings initialized<br>";
+
+    // 10. Create media table
+    echo "Creating 'media' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS media (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        filename VARCHAR(255) NOT NULL,
+        path VARCHAR(255) NOT NULL,
+        mime_type VARCHAR(100) NOT NULL,
+        size INT NOT NULL,
+        uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // 11. Create ai_insights table for server-side cache
+    echo "Creating 'ai_insights' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS ai_insights (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        insight_text TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Seed default insights if table is empty
+    $stmt = $pdo->query("SELECT COUNT(*) FROM ai_insights");
+    if ($stmt->fetchColumn() == 0) {
+        echo "Seeding default cacao insights... ";
+        $defaults = [
+            "Cacao beans contain over 600 flavor compounds, making them chemically more complex than red wine.",
+            "The ideal temperature for dark chocolate tempering is between 88°F and 90°F (31°C - 32°C).",
+            "Criollo cacao is highly prized for its delicate, aromatic flavor profile and low bitterness.",
+            "Water is chocolate's biggest enemy; even a single drop can cause a batch to seize.",
+            "Roasting cacao beans sterilizes them, reduces moisture, and develops crucial chocolate aroma precursors."
+        ];
+        $insStmt = $pdo->prepare("INSERT INTO ai_insights (insight_text) VALUES (?)");
+        foreach ($defaults as $d) {
+            $insStmt->execute([$d]);
+        }
+        echo "OK<br>";
+    }
+
+    // 12. Create ai_class_facts table for workshops facts
+    echo "Creating 'ai_class_facts' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS ai_class_facts (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        fact_text TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Seed default class facts if table is empty
+    $stmt = $pdo->query("SELECT COUNT(*) FROM ai_class_facts");
+    if ($stmt->fetchColumn() == 0) {
+        echo "Seeding default chocolate workshop facts... ";
+        $classDefaults = [
+            "Tempering cocoa butter requires precisely forming Type V crystals for that satisfying snap and glossy finish.",
+            "Under-roasting cacao beans leads to high acidity and lack of deep chocolate flavor notes in the final bar.",
+            "The conching process reduces volatile acids (like acetic acid) and coats solid particles with cocoa butter for a smooth mouthfeel.",
+            "Adding lecithin (an emulsifier) reduces chocolate viscosity significantly, making it easier to mould or coat.",
+            "Roasting temperature profiles are varied: high-temperature short-time (HTST) for floral profiles, low-temperature long-time (LTLT) for earthy profiles."
+        ];
+        $insStmt = $pdo->prepare("INSERT INTO ai_class_facts (fact_text) VALUES (?)");
+        foreach ($classDefaults as $fd) {
+            $insStmt->execute([$fd]);
+        }
+        echo "OK<br>";
+    }
+
+    // 13. Create ai_ingredient_spotlights table for dynamic landing page spotlight
+    echo "Creating 'ai_ingredient_spotlights' table... ";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS ai_ingredient_spotlights (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        ingredient_name VARCHAR(150) NOT NULL,
+        tag VARCHAR(100) NOT NULL DEFAULT '🌱 INGREDIENT SPOTLIGHT',
+        short_desc VARCHAR(255) NOT NULL,
+        detailed_notes TEXT NULL,
+        flavor_notes VARCHAR(150) NULL,
+        origin_region VARCHAR(100) NULL,
+        modal_key VARCHAR(50) NOT NULL DEFAULT 'bean-to-bar',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "OK<br>";
+
+    // Seed default spotlight if table is empty
+    $stmt = $pdo->query("SELECT COUNT(*) FROM ai_ingredient_spotlights");
+    if ($stmt->fetchColumn() == 0) {
+        echo "Seeding default ingredient spotlights... ";
+        $spotlightDefaults = [
+            [
+                'ingredient_name' => 'Single-Origin Cocoa Butter',
+                'tag' => '🌱 INGREDIENT SPOTLIGHT',
+                'short_desc' => 'The golden fat that gives artisan chocolate its velvet melt and glossy snap.',
+                'detailed_notes' => 'Pure unrefined cold-pressed cocoa butter crystallized specifically into Beta-V polymorphs for superior thermodynamic stability and aroma release.',
+                'flavor_notes' => 'Velvety, subtle white floral, warm cacao',
+                'origin_region' => 'Idukki Valley, Kerala',
+                'modal_key' => 'bean-to-bar'
+            ],
+            [
+                'ingredient_name' => 'Roasted Idukki Cacao Nibs',
+                'tag' => '🍫 CACAO SPOTLIGHT',
+                'short_desc' => 'Crunchy, unadulterated cacao bean centers brimming with antioxidants and deep fruity acidity.',
+                'detailed_notes' => 'Slow-roasted at 115°C to preserve naturally occurring polyphenols and fruity tannins before stone-grinding into liquid silk.',
+                'flavor_notes' => 'Citrus zest, dried cranberries, dark roast nut',
+                'origin_region' => 'Malabar Coast Foothills, Kerala',
+                'modal_key' => 'bean-to-bar'
+            ],
+            [
+                'ingredient_name' => 'Bourbon Vanilla Bean Pods',
+                'tag' => '✨ ARTISAN SPOTLIGHT',
+                'short_desc' => 'Sun-cured heirloom pods that soften dark chocolate bitterness with buttery aromatic warmth.',
+                'detailed_notes' => 'Hand-split and scraped into stone melangers during conching so whole vanillin crystals bond seamlessly with cacao butter fat globules.',
+                'flavor_notes' => 'Sweet cream, woody caramel, amber floral',
+                'origin_region' => 'Western Ghats Agroforests',
+                'modal_key' => 'chocolate-lab'
+            ]
+        ];
+        $insSpotlight = $pdo->prepare("INSERT INTO ai_ingredient_spotlights (ingredient_name, tag, short_desc, detailed_notes, flavor_notes, origin_region, modal_key) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        foreach ($spotlightDefaults as $sp) {
+            $insSpotlight->execute([$sp['ingredient_name'], $sp['tag'], $sp['short_desc'], $sp['detailed_notes'], $sp['flavor_notes'], $sp['origin_region'], $sp['modal_key']]);
+        }
+        echo "OK<br>";
+    }
+
+    // 14. Ensure order_items allows NULL product_id with ON DELETE SET NULL
+    echo "Checking order_items foreign key constraints... ";
+    try {
+        $pdo->exec("ALTER TABLE `order_items` MODIFY `product_id` INT(11) NULL;");
+        // Ensure constraint allows product deletion while preserving order history
+        $fkExists = $pdo->query("SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_NAME = 'order_items_ibfk_2' AND DELETE_RULE = 'SET NULL'")->fetch();
+        if (!$fkExists) {
+            try { $pdo->exec("ALTER TABLE `order_items` DROP FOREIGN KEY `order_items_ibfk_2`;"); } catch (Exception $e) {}
+            $pdo->exec("ALTER TABLE `order_items` ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL;");
+        }
+        echo "OK<br>";
+    } catch (Exception $e) {
+        echo "Skipped (" . htmlspecialchars($e->getMessage()) . ")<br>";
+    }
+
+    echo "<h3>Setup Completed Successfully!</h3>";
+    echo "<p style='color:red;'><b>IMPORTANT: Delete db_setup.php before deploying to production!</b></p>";
+
+} catch (Exception $e) {
+    echo "<h3 style='color:red;'>Error: " . $e->getMessage() . "</h3>";
+}
 ?>

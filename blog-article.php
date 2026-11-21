@@ -1,50 +1,87 @@
 <?php
 require_once __DIR__ . '/includes/blog-data.php';
 require_once __DIR__ . '/includes/db.php';
-
 require_once __DIR__ . '/includes/blog-cache.php';
+require_once __DIR__ . '/admin/auth.php';
+
+$articleKey = $articleKey ?? ($_GET['slug'] ?? ($_GET['article'] ?? null));
 
 $post = null;
 $markdown_content = '';
 $isFromDb = false;
+$isAdminPreview = false;
 
-// Try to fetch from DB first
+// Try to fetch from cache first for fast response, unless admin is logged in previewing drafts
 if (isset($articleKey)) {
-    try {
-        $pdo = get_db();
-        $stmt = $pdo->prepare("SELECT * FROM blogs WHERE slug = ? AND is_published = 1");
-        $stmt->execute([$articleKey]);
-        $dbPost = $stmt->fetch();
-        if ($dbPost) {
-            $post = [
-                'title' => $dbPost['title'],
-                'category' => $dbPost['category'],
-                'date' => date('M Y', strtotime($dbPost['created_at'])),
-                'read' => $dbPost['read_time'] ?: '5 min',
-                'excerpt' => $dbPost['excerpt'],
-                'image' => $dbPost['image_path'],
-                'thumbnail' => $dbPost['thumbnail_path'] ?: $dbPost['image_path'],
-                'bodyClass' => $dbPost['body_class'] ?: '',
-                'youtube_url' => $dbPost['youtube_url']
-            ];
-            $markdown_content = $dbPost['content'];
-            $isFromDb = true;
+    $isAdmin = function_exists('is_admin_logged_in') && is_admin_logged_in();
+    $cached = !$isAdmin ? get_cached_blog_article($articleKey, 1800) : null;
 
-            // Cache article data for offline resilience
-            cache_blog_article($articleKey, [
-                'post' => $post,
-                'markdown_content' => $markdown_content
-            ]);
-
-            // Increment article views (Analytics)
-            try {
-                $upStmt = $pdo->prepare("UPDATE blogs SET views = views + 1 WHERE id = ?");
-                $upStmt->execute([$dbPost['id']]);
-            } catch (Exception $ex) {
-                // Non-blocking
+    if ($cached && !empty($cached['post'])) {
+        if (isset($cached['post']['is_published']) && (int)$cached['post']['is_published'] === 0) {
+            if ($isAdmin) {
+                $isAdminPreview = true;
+                $post = $cached['post'];
+                $markdown_content = $cached['markdown_content'] ?? '';
+                $isFromDb = true;
+            } else {
+                http_response_code(404);
+                $pathPrefix = "../";
+                include __DIR__ . '/error.php';
+                exit;
             }
         } else {
-            // Check cache fallback
+            $post = $cached['post'];
+            $markdown_content = $cached['markdown_content'] ?? '';
+            $isFromDb = true;
+        }
+    } else {
+        try {
+            $pdo = get_db();
+            $stmt = $pdo->prepare("SELECT * FROM blogs WHERE slug = ?");
+            $stmt->execute([$articleKey]);
+            $dbPost = $stmt->fetch();
+            if ($dbPost) {
+                // Check visibility / publish state
+                if ((int)$dbPost['is_published'] === 0) {
+                    if ($isAdmin) {
+                        $isAdminPreview = true;
+                    } else {
+                        // Hidden post requested by public user -> 404 immediately
+                        http_response_code(404);
+                        $pathPrefix = "../";
+                        include __DIR__ . '/error.php';
+                        exit;
+                    }
+                }
+
+                $post = [
+                    'id' => (int)$dbPost['id'],
+                    'title' => $dbPost['title'],
+                    'category' => $dbPost['category'],
+                    'date' => date('M Y', strtotime($dbPost['created_at'])),
+                    'read' => $dbPost['read_time'] ?: '5 min',
+                    'excerpt' => $dbPost['excerpt'],
+                    'published' => $dbPost['created_at'],
+                    'modified' => $dbPost['updated_at'],
+                    'image' => $dbPost['image_path'],
+                    'thumbnail' => $dbPost['thumbnail_path'] ?: $dbPost['image_path'],
+                    'bodyClass' => $dbPost['body_class'] ?: '',
+                    'youtube_url' => $dbPost['youtube_url'],
+                    'is_published' => (int)$dbPost['is_published']
+                ];
+                $markdown_content = $dbPost['content'];
+                $isFromDb = true;
+
+                // Cache article if published
+                if ((int)$dbPost['is_published'] === 1) {
+                    cache_blog_article($articleKey, [
+                        'post' => $post,
+                        'markdown_content' => $markdown_content
+                    ]);
+                }
+            }
+        } catch (Throwable $e) {
+            error_log("Database error fetching blog '$articleKey': " . $e->getMessage() . ". Checking cache fallback.");
             $cached = get_cached_blog_article($articleKey);
             if ($cached) {
                 $post = $cached['post'];
@@ -52,13 +89,17 @@ if (isset($articleKey)) {
                 $isFromDb = true;
             }
         }
-    } catch (Exception $e) {
-        error_log("Database error fetching blog '$articleKey': " . $e->getMessage() . ". Checking cache fallback.");
-        $cached = get_cached_blog_article($articleKey);
-        if ($cached) {
-            $post = $cached['post'];
-            $markdown_content = $cached['markdown_content'];
-            $isFromDb = true;
+    }
+
+    // Increment article views (Analytics) - only once per visitor session to eliminate DB row locking
+    if (!empty($post['id']) && empty($_SESSION['viewed_article_' . $post['id']]) && empty($isAdminPreview)) {
+        $_SESSION['viewed_article_' . $post['id']] = true;
+        try {
+            $pdo = get_db();
+            $upStmt = $pdo->prepare("UPDATE blogs SET views = views + 1 WHERE id = ?");
+            $upStmt->execute([$post['id']]);
+        } catch (Throwable $ex) {
+            // Non-blocking
         }
     }
 }
@@ -74,15 +115,14 @@ if (!$post) {
     $post = $BLOGS[$articleKey];
 }
 
-$pageTitle = $post['title'] . " | RT Chocos — India's First Chocolate Blog & Academy";
+$pageTitle = $post['title'] . " | RT Chocos";
 $pageDescription = $post['excerpt'];
 $pageImage = $post['image'];
 $pageType = 'article';
 $bodyClass = $post['bodyClass'] ?? '';
 $pathPrefix = "../";
 
-$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-$canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+$canonicalUrl = "https://www.rtchocos.com/blog/" . rawurlencode($articleKey);
 
 $breadcrumbs = [
     ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
@@ -221,7 +261,7 @@ function parse_markdown($markdown) {
             $resolvedSrc = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, '/') === 0 || strpos($url, '../') === 0) 
                 ? $url 
                 : $pathPrefix . $url;
-            $html .= "<div class=\"blog-img-{$pos}\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars($caption) . "\">" . (!empty($caption) ? "<span class=\"article-image-caption\">{$caption}</span>" : "") . "</div>\n";
+            $html .= "<figure class=\"blog-figure blog-figure-center\"><img src=\"" . htmlspecialchars($resolvedSrc) . "\" alt=\"" . htmlspecialchars(strip_tags($caption)) . "\" loading=\"lazy\">" . (!empty($caption) ? "<figcaption>{$caption}</figcaption>" : "") . "</figure>\n";
             continue;
         }
 
@@ -261,9 +301,9 @@ function parse_markdown($markdown) {
 
         // Tables support
         if (strpos($block, '|') === 0) {
-            $tableLines = explode("\n", $block);
-            if (count($tableLines) >= 2) {
-                $tableHtml = "<div class=\"table-responsive\"><table>\n";
+            $lines = explode("\n", $block);
+            if (count($lines) >= 2) {
+                $tableHtml = "<div class=\"table-responsive-wrapper\"><table class=\"blog-custom-table blog-table-artisan\">\n";
                 $hasHeader = false;
                 foreach ($tableLines as $line) {
                     $trimmedLine = trim($line, "| ");
@@ -297,6 +337,7 @@ function parse_markdown($markdown) {
         // Headers
         if (preg_match('/^(#{1,6})\s+(.+)$/', $block, $matches)) {
             $level = strlen($matches[1]);
+            if ($level === 1) $level = 2; // Demote H1 to H2 so article has only 1 H1 (post title)
             $content = parse_inline($matches[2]);
             $cleanText = strip_tags($content);
             $cleanText = html_entity_decode($cleanText, ENT_QUOTES, 'UTF-8');
@@ -370,9 +411,67 @@ function parse_markdown($markdown) {
             $html .= $listHtml;
             continue;
         }
+
+        // Paragraph blocks containing markdown heading like <p># Title</p> or <p>## Heading</p> or <p>### Heading</p>
+        if (preg_match('/^<p>\s*(#{1,6})\s+(.*?)\s*<\/p>$/is', $block, $pHeadingMatch)) {
+            $level = strlen($pHeadingMatch[1]);
+            if ($level === 1) $level = 2; // Demote H1 to H2
+            $level = min(4, max(2, $level));
+            $content = parse_inline($pHeadingMatch[2]);
+            $cleanText = strip_tags($content);
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $cleanText), '-'));
+
+            if ($level === 2 || $level === 3) {
+                global $headings_list;
+                $headings_list[] = [
+                    'level' => $level,
+                    'text' => $cleanText,
+                    'slug' => $slug
+                ];
+                $html .= "<h{$level} id=\"{$slug}\">{$content}</h{$level}>\n";
+            } else {
+                $html .= "<h{$level}>{$content}</h{$level}>\n";
+            }
+            continue;
+        }
+
+        // Paragraph blocks containing markdown bullet list like <p>* item<br>* item</p>
+        if (preg_match('/^<p>\s*([*•\-]\s+.*?)\s*<\/p>$/is', $block, $pListMatch)) {
+            $rawList = preg_replace('/<br\s*\/?>/i', "\n", $pListMatch[1]);
+            $lines = explode("\n", $rawList);
+            if (count($lines) > 0 && preg_match('/^[*•\-]\s+/', trim($lines[0]))) {
+                $listHtml = "<ul>\n";
+                foreach ($lines as $line) {
+                    $trimmedLine = trim($line);
+                    if (preg_match('/^[*•\-]\s+(.+)$/', $trimmedLine, $lMatches)) {
+                        $listHtml .= "  <li>" . parse_inline($lMatches[1]) . "</li>\n";
+                    } elseif (!empty($trimmedLine)) {
+                        $listHtml .= "  <li>" . parse_inline($trimmedLine) . "</li>\n";
+                    }
+                }
+                $listHtml .= "</ul>\n";
+                $html .= $listHtml;
+                continue;
+            }
+        }
         
-        // HTML blocks
-        if (preg_match('/^<(div|table|thead|tbody|tr|th|td|pre|blockquote|hr|iframe|figure|section|article|p|h[1-6]|ul|ol|li)\b/i', $block)) {
+        // HTML blocks (like div, img, hr, p, section, a, span, h\d, table, tr, td, th, iframe, blockquote, ul, ol, pre, figure)
+        if (preg_match('/^<h([1-4])(?:\s+id="([^"]+)")?[^>]*>(.*?)<\/h\1>/i', $block, $hMatches)) {
+            $hLevel = (int)$hMatches[1];
+            if ($hLevel === 1) $hLevel = 2; // Demote H1 to H2 so article has only 1 H1 (post title)
+            $hClean = strip_tags($hMatches[3]);
+            $hSlug = !empty($hMatches[2]) ? $hMatches[2] : strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $hClean), '-'));
+            global $headings_list;
+            $headings_list[] = [
+                'level' => $hLevel,
+                'text' => $hClean,
+                'slug' => $hSlug
+            ];
+            $html .= "<h{$hLevel} id=\"{$hSlug}\">{$hMatches[3]}</h{$hLevel}>\n";
+            continue;
+        }
+
+        if (preg_match('/^<(div|img|hr|p|section|a|span|h\d|table|thead|tbody|tr|td|th|iframe|blockquote|ul|ol|pre|figure)/i', $block)) {
             $html .= $block . "\n";
             continue;
         }
@@ -447,18 +546,22 @@ if (!$isFromDb) {
 // Fetch related articles (limit 3)
 $relatedArticles = [];
 try {
-    $currentId = $isFromDb ? (int)$dbPost['id'] : 0;
-    $stmt = $pdo->prepare("SELECT id, title, slug, category, excerpt, thumbnail_path, created_at FROM blogs WHERE category = ? AND id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 3");
-    $stmt->execute([$post['category'], $currentId]);
-    $relatedArticles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Fallback: If less than 2 category-matched items, grab any recent ones
-    if (count($relatedArticles) < 2) {
-        $stmt = $pdo->prepare("SELECT id, title, slug, category, excerpt, thumbnail_path, created_at FROM blogs WHERE id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 3");
-        $stmt->execute([$currentId]);
+    $pdo = get_db();
+    if ($pdo instanceof PDO) {
+        $currentId = !empty($post['id']) ? (int)$post['id'] : 0;
+        $category = $post['category'] ?? '';
+        $stmt = $pdo->prepare("SELECT id, title, slug, category, excerpt, thumbnail_path, created_at FROM blogs WHERE category = ? AND id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 3");
+        $stmt->execute([$category, $currentId]);
         $relatedArticles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Fallback: If less than 2 category-matched items, grab any recent ones
+        if (count($relatedArticles) < 2) {
+            $stmt = $pdo->prepare("SELECT id, title, slug, category, excerpt, thumbnail_path, created_at FROM blogs WHERE id != ? AND is_published = 1 ORDER BY created_at DESC LIMIT 3");
+            $stmt->execute([$currentId]);
+            $relatedArticles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
-} catch (Exception $e) {
+} catch (Throwable $e) {
     // Non-blocking
 }
 
@@ -470,6 +573,198 @@ include __DIR__ . '/includes/header.php';
 
 <style>
     /* Premium style overrides for public article pages */
+    /* ==========================================================================
+       LUXURY EDITORIAL TYPOGRAPHY & CONSISTENT ARTICLE STYLES
+       ========================================================================== */
+    #blog-article-content {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 17.5px;
+        line-height: 1.88;
+        color: var(--text-primary, #1F2E25);
+        letter-spacing: -0.003em;
+    }
+
+    #blog-article-content > p:first-of-type {
+        font-size: 19.5px;
+        line-height: 1.85;
+        color: var(--text-heading, #112217);
+        font-weight: 400;
+        margin-bottom: 34px;
+    }
+
+    #blog-article-content > p:first-of-type::first-letter {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 3.8rem;
+        float: left;
+        line-height: 0.78;
+        margin-right: 12px;
+        margin-top: 4px;
+        font-weight: 700;
+        color: var(--gold, #C7A66A);
+        text-shadow: 0 2px 8px rgba(199, 166, 106, 0.2);
+    }
+
+    #blog-article-content p {
+        margin-bottom: 26px;
+        color: var(--text-primary, #1F2E25);
+        font-weight: 400;
+    }
+
+    #blog-article-content h1 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(32px, 5vw, 44px);
+        font-weight: 700;
+        color: var(--text-heading, #112217);
+        margin-top: 52px;
+        margin-bottom: 24px;
+        line-height: 1.25;
+        letter-spacing: -0.015em;
+    }
+
+    #blog-article-content h2 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(26px, 3.5vw, 33px);
+        font-weight: 700;
+        color: var(--text-heading, #112217) !important;
+        margin-top: 56px;
+        margin-bottom: 22px;
+        line-height: 1.32;
+        letter-spacing: -0.01em;
+        padding-bottom: 12px;
+        border-bottom: 2px solid rgba(199, 166, 106, 0.35);
+    }
+
+    #blog-article-content h3 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(21px, 2.6vw, 25px);
+        font-weight: 600;
+        color: var(--text-heading, #16261c) !important;
+        margin-top: 42px;
+        margin-bottom: 18px;
+        line-height: 1.38;
+    }
+
+    #blog-article-content h4 {
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent, #235436);
+        margin-top: 32px;
+        margin-bottom: 14px;
+    }
+
+    /* Freedom to set everything: Author-defined custom text & background colors */
+    #blog-article-content h1 *:not([style*="color"]):not([color]),
+    #blog-article-content h2 *:not([style*="color"]):not([color]),
+    #blog-article-content h3 *:not([style*="color"]):not([color]),
+    #blog-article-content h4 *:not([style*="color"]):not([color]) {
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
+
+    #blog-article-content [style*="color"] {
+        /* Let author inline style apply directly */
+    }
+
+    #blog-article-content font[color] {
+        /* Let font color attribute apply */
+    }
+
+    #blog-article-content mark,
+    #blog-article-content [style*="background-color"] {
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    #blog-article-content strong,
+    #blog-article-content b {
+        color: var(--text-heading, #112217);
+        font-weight: 600;
+    }
+
+    #blog-article-content a {
+        color: var(--gold, #C7A66A);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color 0.2s ease;
+    }
+
+    #blog-article-content a:hover {
+        color: var(--accent, #235436);
+    }
+
+    #blog-article-content blockquote {
+        border-left: 4px solid var(--gold, #C7A66A);
+        padding: 24px 32px;
+        margin: 40px 0;
+        font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+        font-size: 22px;
+        line-height: 1.65;
+        font-style: italic;
+        background: rgba(199, 166, 106, 0.08);
+        border-radius: 0 12px 12px 0;
+        position: relative;
+        color: var(--text-heading, #112217);
+        box-shadow: 0 4px 16px rgba(17, 34, 23, 0.03);
+    }
+
+    #blog-article-content blockquote p {
+        margin: 0;
+        font-family: inherit;
+        font-style: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        color: inherit;
+    }
+
+    #blog-article-content ul {
+        list-style: none;
+        margin: 24px 0;
+        padding-left: 12px;
+    }
+
+    #blog-article-content ul li {
+        position: relative;
+        padding-left: 26px;
+        margin-bottom: 12px;
+        color: var(--text-primary, #1F2E25);
+    }
+
+    #blog-article-content ul li::before {
+        content: '✦';
+        position: absolute;
+        left: 0;
+        color: var(--gold, #C7A66A);
+        font-size: 13px;
+        top: 0;
+    }
+
+    #blog-article-content ol {
+        margin: 24px 0;
+        padding-left: 24px;
+    }
+
+    #blog-article-content ol li {
+        margin-bottom: 12px;
+        padding-left: 6px;
+        color: var(--text-primary, #1F2E25);
+    }
+
+    #blog-article-content ol li::marker {
+        color: var(--gold, #C7A66A);
+        font-weight: 700;
+    }
+
+    #blog-article-content hr.block-divider,
+    #blog-article-content hr {
+        border: none;
+        border-top: 1px solid rgba(199, 166, 106, 0.25);
+        margin: 40px 0;
+    }
+
     .article-layout-wrapper {
         display: flex;
         gap: 48px;
@@ -779,17 +1074,387 @@ include __DIR__ . '/includes/header.php';
         width: 100%; height: 100%;
         border: 0;
     }
+
+    /* Admin Preview Mode Banner */
+    .admin-preview-banner {
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+        background: #1c1511;
+        border-bottom: 2px solid var(--gold);
+        padding: 10px 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+    .admin-preview-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .admin-preview-badge {
+        background: #eab308;
+        color: #000;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: inline-block;
+    }
+    .admin-preview-text {
+        font-size: 13.5px;
+        color: #f7ede2;
+        flex: 1;
+    }
+    .admin-preview-edit-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--gold);
+        color: #111;
+        font-size: 12.5px;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .admin-preview-edit-btn:hover {
+        background: #d4b57b;
+        transform: translateY(-1px);
+    }
+
+    /* Production Table Responsive Wrappers & Tables */
+    .table-responsive-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        margin: 36px 0;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(59, 42, 34, 0.08);
+        -webkit-overflow-scrolling: touch;
+    }
+    table.blog-custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--font-sans);
+        font-size: 15px;
+        line-height: 1.6;
+        text-align: left;
+    }
+    table.blog-custom-table th {
+        padding: 14px 18px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
+    table.blog-custom-table td {
+        padding: 12px 18px;
+        border-top: 1px solid rgba(199, 166, 106, 0.15);
+    }
+
+    /* Table Styles */
+    table.blog-table-artisan {
+        background: var(--cream);
+        border: 1px solid var(--cream-dark);
+    }
+    table.blog-table-artisan th {
+        background: var(--brown);
+        color: var(--gold);
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 18px;
+    }
+    table.blog-table-artisan tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.6);
+    }
+
+    table.blog-table-minimal th {
+        border-bottom: 2px solid var(--gold);
+        color: var(--brown);
+        font-weight: 700;
+    }
+    table.blog-table-minimal td {
+        border-bottom: 1px solid var(--cream-dark);
+    }
+
+    table.blog-table-striped th {
+        background: var(--green-900, #1b4d3e);
+        color: #ffffff;
+    }
+    table.blog-table-striped tr:nth-child(even) td {
+        background: rgba(27, 77, 62, 0.04);
+    }
+
+    /* Production Figures & Captions */
+    figure.blog-figure {
+        margin: 36px auto;
+        text-align: center;
+        display: block;
+        max-width: 100%;
+    }
+    figure.blog-figure img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        border: 1px solid var(--cream-dark);
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.3s ease;
+    }
+    figure.blog-figure img:hover {
+        transform: scale(1.01);
+    }
+    figure.blog-figure figcaption {
+        font-size: 13.5px;
+        color: #8E7A70;
+        font-style: italic;
+        margin-top: 10px;
+        line-height: 1.5;
+    }
+
+    figure.blog-figure-center {
+        margin: 36px auto;
+    }
+    figure.blog-figure-left {
+        float: left;
+        margin: 12px 28px 24px 0;
+        width: 48%;
+        max-width: 100%;
+    }
+    figure.blog-figure-right {
+        float: right;
+        margin: 12px 0 24px 28px;
+        width: 48%;
+        max-width: 100%;
+    }
+    figure.blog-figure-wide {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 44px 0;
+    }
+    .article-main-body::after,
+    .blog-article-section::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    @media (max-width: 768px) {
+        figure.blog-figure-left,
+        figure.blog-figure-right {
+            float: none !important;
+            margin: 28px 0 !important;
+            max-width: 100% !important;
+        }
+    }
+
+    /* Public article content typography & color consistency safeguard */
+    #blog-article-content p *,
+    #blog-article-content li *,
+    #blog-article-content blockquote *,
+    #blog-article-content td *,
+    #blog-article-content th * {
+        font-family: inherit !important;
+        font-size: inherit !important;
+        line-height: inherit !important;
+    }
+    #blog-article-content [style*="color: #fff"],
+    #blog-article-content [style*="color: #FFF"],
+    #blog-article-content [style*="color: #ffffff"],
+    #blog-article-content [style*="color: #FFFFFF"],
+    #blog-article-content [style*="color: rgb(255, 255, 255)"],
+    #blog-article-content [style*="color: rgb(255,255,255)"],
+    #blog-article-content [style*="color: white"] {
+        color: inherit !important;
+    }
+    #blog-article-content [style*="background-color: rgb(255, 255, 255)"],
+    #blog-article-content [style*="background-color: #fff"],
+    #blog-article-content [style*="background-color: #ffffff"],
+    #blog-article-content [style*="background-color: white"],
+    #blog-article-content [style*="background-color: rgb(0, 0, 0)"],
+    #blog-article-content [style*="background-color: #000"] {
+        background-color: transparent !important;
+    }
+    #blog-article-content font {
+        color: inherit !important;
+        font-family: inherit !important;
+        font-size: inherit !important;
+    }
+
+    /* Clean Hero Spacing & Luxury Badge for Blog Article */
+    #page-blog-article {
+        padding-top: 76px;
+        background: var(--cream, #FAF6EF);
+    }
+    .page-hero.blog-page-hero,
+    .blog-page-hero {
+        min-height: auto !important;
+        padding: 20px 20px 14px !important;
+        background: transparent !important;
+    }
+    .blog-article-hero-content {
+        max-width: 860px;
+        margin: 0 auto;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .back-to-blog-btn {
+        margin: 0 auto 10px auto !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        padding: 6px 14px !important;
+        font-family: 'Inter', -apple-system, sans-serif !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.8px !important;
+        text-transform: uppercase !important;
+        color: #6A4B3A !important;
+        background: rgba(255, 255, 255, 0.75) !important;
+        border: 1px solid rgba(148, 99, 29, 0.22) !important;
+        border-radius: 20px !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.2s ease !important;
+    }
+    .back-to-blog-btn:hover {
+        background: #112217 !important;
+        color: #F8E7BE !important;
+        border-color: #112217 !important;
+        transform: translateY(-1px) !important;
+    }
+    .blog-breadcrumbs {
+        margin: 2px auto 10px auto !important;
+        font-size: 12px !important;
+        color: var(--gold, #94631D) !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
+        max-width: 720px !important;
+    }
+    .article-category-badge,
+    #blog-article-category {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 10.5px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1.5px !important;
+        text-transform: uppercase !important;
+        color: #164627 !important;
+        background: rgba(22, 70, 39, 0.08) !important;
+        border: 1px solid rgba(22, 70, 39, 0.22) !important;
+        padding: 4px 14px !important;
+        border-radius: 50px !important;
+        margin: 2px auto 12px auto !important;
+        box-shadow: 0 2px 6px rgba(22, 70, 39, 0.04) !important;
+        line-height: 1.2 !important;
+        position: static !important;
+        text-decoration: none !important;
+    }
+    .article-category-badge::after,
+    .article-category-badge::before,
+    #blog-article-category::after,
+    #blog-article-category::before {
+        display: none !important;
+        content: none !important;
+    }
+
+    @media (max-width: 768px) {
+        #page-blog-article {
+            padding-top: 56px !important;
+        }
+        .page-hero.blog-page-hero,
+        .blog-page-hero {
+            padding: 8px 16px 6px !important;
+            background: transparent !important;
+        }
+        .back-to-blog-btn {
+            padding: 5px 12px !important;
+            font-size: 10px !important;
+            margin-bottom: 6px !important;
+        }
+        .blog-breadcrumbs {
+            margin: 0 auto 6px auto !important;
+            font-size: 11px !important;
+            line-height: 1.35 !important;
+        }
+        .article-category-badge,
+        #blog-article-category {
+            font-size: 9.5px !important;
+            padding: 3px 12px !important;
+            letter-spacing: 1.3px !important;
+            margin: 0 auto 8px auto !important;
+        }
+        #blog-article-title {
+            font-size: clamp(20px, 5.5vw, 28px) !important;
+            line-height: 1.2 !important;
+            margin-bottom: 6px !important;
+        }
+        #blog-article-meta {
+            font-size: 11.5px !important;
+            margin-bottom: 10px !important;
+        }
+        #blog-article-image {
+            margin: 6px auto 14px auto !important;
+            border-radius: 10px !important;
+        }
+    }
 </style>
+
+<?php if (!empty($isAdminPreview)): ?>
+<div class="admin-preview-banner">
+    <div class="admin-preview-content">
+        <div style="display:flex; align-items:center; gap:10px; flex:1;">
+            <span class="admin-preview-badge">Admin Preview Mode</span>
+            <span class="admin-preview-text">This article is currently <strong>HIDDEN (Draft)</strong> from the public. Only logged-in administrators can view this page.</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <button type="button" onclick="publishThisArticleNow(<?php echo (int)($post['id'] ?? 0); ?>)" class="admin-preview-publish-btn" style="background:#15803d; color:#fff; border:none; border-radius:6px; font-weight:700; font-size:12.5px; padding:6px 14px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:background 0.2s;">
+                <span>👁️</span> Make Visible (Publish)
+            </button>
+            <a href="../admin/blog-editor.php?id=<?php echo (int)($post['id'] ?? 0); ?>" class="admin-preview-edit-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit Article
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+function publishThisArticleNow(blogId) {
+    if (!confirm('Make this article visible to the public now?')) return;
+    const form = new FormData();
+    form.append('action', 'toggle_publish');
+    form.append('blog_id', blogId);
+    form.append('is_published', '1');
+    form.append('csrf_token', <?php echo json_encode(generate_csrf()); ?>);
+    fetch('../admin/blog-editor.php', { method: 'POST', body: form })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Article is now published and visible to the public!');
+                location.reload();
+            } else {
+                alert('Failed to publish: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(err => alert('Network error: ' + err.message));
+}
+</script>
+<?php endif; ?>
 
 <!-- --- BLOG ARTICLE SECTION --- -->
 <div id="page-blog-article" class="page active">
   <div class="page-hero blog-page-hero">
     <div class="page-hero-content blog-article-hero-content">
-      <a class="btn-outline-dark back-to-blog-btn" href="../blog.php">&larr; Back to Blog</a>
+      <a class="back-to-blog-btn" href="../blog.php">&larr; Back to Blog</a>
       
       <div class="article-hero-text-container" style="max-width: 760px; margin: 0 auto;">
         <!-- Visual Breadcrumbs Trail -->
-        <div class="blog-breadcrumbs" style="font-size: 13px; color: var(--gold); margin: 16px 0 8px; font-family: var(--font-sans);">
+        <div class="blog-breadcrumbs">
           <a href="../index.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Home</a>
           <span style="margin: 0 6px; opacity: 0.5;">&rsaquo;</span>
           <a href="../blog.php" style="color: inherit; text-decoration: none; opacity: 0.85;">Blog</a>
@@ -797,7 +1462,7 @@ include __DIR__ . '/includes/header.php';
           <span style="opacity: 0.7; font-weight: 500;"><?php echo htmlspecialchars($post['title']); ?></span>
         </div>
 
-        <div class="section-label" id="blog-article-category"><?php echo htmlspecialchars($post['category']); ?></div>
+        <div class="article-category-badge" id="blog-article-category"><?php echo htmlspecialchars($post['category']); ?></div>
         <h1 id="blog-article-title" class="fade-up"><?php echo htmlspecialchars($post['title']); ?></h1>
         <p id="blog-article-meta" class="fade-up-d1"><?php echo htmlspecialchars($post['date']); ?> • <?php echo htmlspecialchars($post['read']); ?> read</p>
       </div>
@@ -868,13 +1533,12 @@ include __DIR__ . '/includes/header.php';
                 <div style="flex:1; min-width:240px;">
                     <span style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--gold); letter-spacing:0.08em; display:block; margin-bottom:4px;">Written By The Founder</span>
                     <h4 style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:var(--brown); margin:0 0 8px;">Aarti Saluja Sahni</h4>
-                    <p style="font-family:'Jost',sans-serif; font-size:13.5px; line-height:1.6; color:var(--brown-light); font-weight:300; margin:0 0 12px;">
-                        Aarti is India's first chocolate blogger and a certified chocolate educator with 10+ years of bean-to-bar and cocoa science expertise. She has trained 2,000+ students and consults for craft chocolate brands across India.
+                    <p style="font-family:var(--font-sans); font-size:13.5px; line-height:1.6; color:var(--brown-light); font-weight:300; margin:0 0 12px;">
+                        Aarti is India's first chocolate blogger and a certified chocolate educator with 13+ years of bean-to-bar and cocoa science expertise. She has trained 2,000+ students and consults for craft chocolate brands across India.
                     </p>
-                    <a href="<?php echo $pathPrefix; ?>about.php" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">About Aarti</a>
+                    <a href="<?php echo $pathPrefix; ?>about" class="btn-outline" style="text-decoration:none; padding:6px 14px; font-size:12px; display:inline-block;">About Aarti</a>
                 </div>
             </div>
-
 
             <!-- Contextual FAQ Block -->
             <?php

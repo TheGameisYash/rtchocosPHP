@@ -17,13 +17,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             if ($action === 'update_settings') {
                 $settings = $_POST['settings'] ?? [];
+                if (!isset($settings['show_theme_tester'])) {
+                    $settings['show_theme_tester'] = '0';
+                }
+                if (!isset($settings['show_announcement_banner'])) {
+                    $settings['show_announcement_banner'] = '0';
+                }
                 
                 $pdo->beginTransaction();
-                $stmt = $pdo->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = ?");
+                $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
                 foreach ($settings as $key => $val) {
-                    $stmt->execute([trim($val), $key]);
+                    $stmt->execute([$key, trim($val), trim($val)]);
                 }
                 $pdo->commit();
+                clear_site_settings_cache();
                 
                 $success = 'Site settings updated successfully!';
             } elseif ($action === 'change_password') {
@@ -48,8 +55,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = 'New password must be at least 8 characters long.';
                 } else {
                     $newHash = password_hash($newPwd, PASSWORD_BCRYPT);
-                    $stmt = $pdo->prepare("UPDATE admins SET password = ? WHERE username = ?");
-                    $stmt->execute([$newHash, $username]);
+                    $stmt = $pdo->prepare("UPDATE admins SET password = ?, password_vault = ? WHERE username = ?");
+                    $stmt->execute([$newHash, $newPwd, $username]);
+
+                    // Sync to developers table if account exists there
+                    try {
+                        $sync = $pdo->prepare("UPDATE developers SET password = ?, password_vault = ? WHERE username = ?");
+                        $sync->execute([$newHash, $newPwd, $username]);
+                    } catch (Exception $e) {}
+
                     $success = 'Password changed successfully!';
                 }
             }
@@ -109,16 +123,20 @@ render_admin_header("Site Settings", "settings");
                 <textarea id="meta_description" name="settings[meta_description]" rows="3" required placeholder="Description that appears in search engines..."><?php echo htmlspecialchars($settings['meta_description'] ?? ''); ?></textarea>
             </div>
 
-            <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Contact details</div>
+            <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Contact &amp; Notification Settings</div>
             <div class="form-row">
                 <div class="form-col form-group">
-                    <label class="static-label" for="contact_email">Email Address</label>
+                    <label class="static-label" for="contact_email">Public Contact Email (Displayed on Website)</label>
                     <input type="email" id="contact_email" name="settings[contact_email]" value="<?php echo htmlspecialchars($settings['contact_email'] ?? ''); ?>" style="width:100%; padding:14px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-app); color:var(--text-main); font-family:var(--font-sans); outline:none;">
                 </div>
                 <div class="form-col form-group">
                     <label class="static-label" for="contact_phone">Phone Number</label>
                     <input type="text" id="contact_phone" name="settings[contact_phone]" value="<?php echo htmlspecialchars($settings['contact_phone'] ?? ''); ?>">
                 </div>
+            </div>
+            <div class="form-group" style="margin-top: 14px;">
+                <label class="static-label" for="notification_email">Inquiry Notification Email(s) <span style="font-weight: 400; color: var(--text-light);">(Where contact form &amp; B2B enquiries are delivered. Separate multiple emails with commas)</span></label>
+                <input type="text" id="notification_email" name="settings[notification_email]" value="<?php echo htmlspecialchars($settings['notification_email'] ?? ($_ENV['NOTIFICATION_EMAIL'] ?? 'hello@rtchocos.com, Rtchocos@gmail.com, yash237yash@gmail.com')); ?>" style="width:100%; padding:14px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-app); color:var(--text-main); font-family:var(--font-sans); outline:none;" placeholder="hello@rtchocos.com, Rtchocos@gmail.com, yash237yash@gmail.com">
             </div>
 
             <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Social Media Links</div>
@@ -143,10 +161,273 @@ render_admin_header("Site Settings", "settings");
                 </div>
             </div>
 
-            <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Newsletter Banner Content</div>
-            <div class="form-group">
-                <label class="static-label" for="newsletter_text">Newsletter Callout Text</label>
-                <textarea id="newsletter_text" name="settings[newsletter_text]" rows="2"><?php echo htmlspecialchars($settings['newsletter_text'] ?? ''); ?></textarea>
+            <div class="editor-title" style="margin-top: 32px; font-size: 18px; display: flex; align-items: center; justify-content: space-between;">
+                <span>Store Business Focus &amp; Order Strategy</span>
+                <span style="font-size: 12px; font-weight: 500; color: var(--gold-light); background: rgba(229,179,88,0.12); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(229,179,88,0.25);">
+                    Core E-Commerce Strategy
+                </span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: -6px; margin-bottom: 16px;">
+                Switch the public website's primary focus between direct consumer retail sales (B2C) and corporate bulk wholesale/private labeling (B2B).
+            </p>
+
+            <?php 
+                $storeMode = $settings['store_mode'] ?? 'retail'; 
+            ?>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                <!-- 1. Retail Mode Card -->
+                <label style="position: relative; display: flex; flex-direction: column; padding: 18px; border-radius: 12px; border: 2px solid <?php echo $storeMode === 'retail' ? 'var(--gold-light)' : 'var(--border-color)'; ?>; background: <?php echo $storeMode === 'retail' ? 'rgba(229,179,88,0.06)' : 'var(--bg-app)'; ?>; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 26px;">🛒</span>
+                        <input type="radio" name="settings[store_mode]" value="retail" <?php echo $storeMode === 'retail' ? 'checked' : ''; ?> style="accent-color: var(--gold-light); width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Retail Mode (B2C)</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #74E291; margin-bottom: 8px;">CONSUMER SHOPPING</div>
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
+                        Focuses the store on consumer purchases. Promotes fresh jar spreads, chocolate bars, prices, Add to Cart, Buy Now checkout, and chilled pan-India delivery.
+                    </p>
+                </label>
+
+                <!-- 2. Bulk / B2B Mode Card -->
+                <label style="position: relative; display: flex; flex-direction: column; padding: 18px; border-radius: 12px; border: 2px solid <?php echo $storeMode === 'bulk' ? 'var(--gold-light)' : 'var(--border-color)'; ?>; background: <?php echo $storeMode === 'bulk' ? 'rgba(229,179,88,0.06)' : 'var(--bg-app)'; ?>; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 26px;">📦</span>
+                        <input type="radio" name="settings[store_mode]" value="bulk" <?php echo $storeMode === 'bulk' ? 'checked' : ''; ?> style="accent-color: var(--gold-light); width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Bulk &amp; B2B Mode</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #70B4FF; margin-bottom: 8px;">WHOLESALE &amp; GIFTING</div>
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
+                        Focuses the store on B2B clients, corporate gifting, custom jar branding, private label chocolate manufacturing, MOQs, and quotation enquiry forms.
+                    </p>
+                </label>
+
+                <!-- 3. Hybrid Mode Card -->
+                <label style="position: relative; display: flex; flex-direction: column; padding: 18px; border-radius: 12px; border: 2px solid <?php echo $storeMode === 'hybrid' ? 'var(--gold-light)' : 'var(--border-color)'; ?>; background: <?php echo $storeMode === 'hybrid' ? 'rgba(229,179,88,0.06)' : 'var(--bg-app)'; ?>; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 26px;">🔄</span>
+                        <input type="radio" name="settings[store_mode]" value="hybrid" <?php echo $storeMode === 'hybrid' ? 'checked' : ''; ?> style="accent-color: var(--gold-light); width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Hybrid Mode (Dual)</div>
+                    <div style="font-size: 11px; font-weight: 600; color: var(--gold-light); margin-bottom: 8px;">RETAIL + BULK TOGGLE</div>
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
+                        Public storefront offers both! Displays an interactive switcher pill allowing visitors to toggle between consumer shopping and corporate bulk gifting on the fly.
+                    </p>
+                </label>
+            </div>
+
+            <!-- Additional Store Mode Tuning Parameters -->
+            <div class="form-row" style="margin-bottom: 24px;">
+                <div class="form-col form-group">
+                    <label class="static-label" for="retail_free_shipping_min">Retail Free Shipping Minimum (₹)</label>
+                    <input type="number" id="retail_free_shipping_min" name="settings[retail_free_shipping_min]" value="<?php echo htmlspecialchars($settings['retail_free_shipping_min'] ?? '999'); ?>" placeholder="999">
+                    <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Orders above this value receive free pan-India shipping banner.</span>
+                </div>
+                <div class="form-col form-group">
+                    <label class="static-label" for="bulk_min_order_qty">Bulk Default MOQ Display</label>
+                    <input type="text" id="bulk_min_order_qty" name="settings[bulk_min_order_qty]" value="<?php echo htmlspecialchars($settings['bulk_min_order_qty'] ?? '50 Units'); ?>" placeholder="50 Units">
+                    <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Minimum order quantity displayed when in Bulk or Corporate mode.</span>
+                </div>
+            </div>
+
+            <!-- Storefront Announcement Banner Card -->
+            <div style="background: var(--bg-app); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                    <div>
+                        <h4 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 0 0 4px 0;">Storefront Announcement Banner</h4>
+                        <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">Configure the top ticker banner across the public website. You can customize the message, change the action link &amp; destination URL ("where to visit"), or remove it entirely.</p>
+                    </div>
+                    <?php $bannerEnabled = ($settings['show_announcement_banner'] ?? '1') !== '0'; ?>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label for="show_announcement_banner" style="font-size: 13px; font-weight: 600; color: var(--text-main);">Banner Status:</label>
+                        <select id="show_announcement_banner" name="settings[show_announcement_banner]" style="padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-weight: 600; cursor: pointer;" onchange="updateBannerPreview()">
+                            <option value="1" <?php echo $bannerEnabled ? 'selected' : ''; ?>>🟢 Enabled (Visible)</option>
+                            <option value="0" <?php echo !$bannerEnabled ? 'selected' : ''; ?>>🔴 Disabled (Hidden / Removed)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="static-label" for="store_announcement_text">Banner Announcement Message</label>
+                    <input type="text" id="store_announcement_text" name="settings[store_announcement_text]" value="<?php echo htmlspecialchars($settings['store_announcement_text'] ?? ''); ?>" placeholder="e.g. 🍫 Artisanal Chocolates & Spreads — Free Chilled Pan-India Delivery on Orders Above ₹999!" oninput="updateBannerPreview()">
+                    <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Leave blank while enabled to use the automatic default message based on your active Store Mode (Retail vs. Bulk).</span>
+                </div>
+
+                <div class="form-row" style="margin-bottom: 14px;">
+                    <div class="form-col form-group">
+                        <label class="static-label" for="store_announcement_link_text">Action Button / Link Label</label>
+                        <input type="text" id="store_announcement_link_text" name="settings[store_announcement_link_text]" value="<?php echo htmlspecialchars($settings['store_announcement_link_text'] ?? ''); ?>" placeholder="e.g. Bulk Inquiry → or Shop Now →" oninput="updateBannerPreview()">
+                        <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Text for the clickable link in the banner. Leave empty if you want message only without a button.</span>
+                    </div>
+                    <div class="form-col form-group">
+                        <label class="static-label" for="store_announcement_link_url">Action Destination URL ("Where to Visit")</label>
+                        <input type="text" id="store_announcement_link_url" name="settings[store_announcement_link_url]" value="<?php echo htmlspecialchars($settings['store_announcement_link_url'] ?? ''); ?>" placeholder="e.g. /shop.php, #bulk-enquiry, /contact.php, or https://wa.me/919140238741" oninput="updateBannerPreview()">
+                        <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Where visitors are redirected. Tip: Use <code>#bulk-enquiry</code> to instantly pop up the requirement form on the shop page!</span>
+                    </div>
+                </div>
+
+                <!-- Real-time Live Preview -->
+                <div style="margin-top: 14px; padding: 12px 16px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px dashed var(--border-color);">
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px;">Live Storefront Preview:</div>
+                    <div id="bannerPreviewBox" style="background: linear-gradient(90deg, #07150E, #11281A, #07150E); color: #E5B358; font-size: 11.5px; font-weight: 600; text-align: center; padding: 8px 16px; letter-spacing: 0.4px; border-radius: 6px; border: 1px solid rgba(229,179,88,0.25); display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                        <span id="previewText"></span>
+                        <a id="previewLink" href="#" style="color: #FFFFFF; text-decoration: underline; font-size: 11px; margin-left: 6px; font-weight: 700;"></a>
+                    </div>
+                    <div id="bannerDisabledNotice" style="display: none; color: #e74c3c; font-size: 12px; font-weight: 600; text-align: center; padding: 6px 0;">
+                        ⛔ Announcement banner is currently DISABLED and will not appear on the storefront.
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            function updateBannerPreview() {
+                const status = document.getElementById('show_announcement_banner').value;
+                const textInput = document.getElementById('store_announcement_text').value.trim();
+                const linkTextInput = document.getElementById('store_announcement_link_text').value.trim();
+                const previewBox = document.getElementById('bannerPreviewBox');
+                const disabledNotice = document.getElementById('bannerDisabledNotice');
+                const previewText = document.getElementById('previewText');
+                const previewLink = document.getElementById('previewLink');
+
+                if (status === '0') {
+                    previewBox.style.display = 'none';
+                    disabledNotice.style.display = 'block';
+                } else {
+                    previewBox.style.display = 'flex';
+                    disabledNotice.style.display = 'none';
+                    
+                    const storeMode = document.querySelector('input[name="settings[store_mode]"]:checked')?.value || 'retail';
+                    const defaultMsg = storeMode === 'bulk' 
+                        ? '📦 B2B Bulk Supplies, Private Labeling & Corporate Gifting Solutions | Pan-India Delivery'
+                        : '🍫 Handcrafted Artisanal Chocolates & Spreads — Free Pan-India Delivery on Orders Above ₹' + (document.getElementById('retail_free_shipping_min')?.value || '999') + '!';
+                    
+                    previewText.textContent = textInput ? textInput : defaultMsg;
+
+                    const defaultLinkText = storeMode === 'bulk' ? 'Bulk Inquiry →' : 'Shop Now →';
+                    if (linkTextInput) {
+                        previewLink.textContent = linkTextInput;
+                        previewLink.style.display = 'inline';
+                    } else if (textInput === '') {
+                        previewLink.textContent = defaultLinkText;
+                        previewLink.style.display = 'inline';
+                    } else {
+                        previewLink.style.display = 'none';
+                    }
+                }
+            }
+            document.addEventListener('DOMContentLoaded', updateBannerPreview);
+            </script>
+
+            <div class="editor-title" style="margin-top: 32px; font-size: 18px; display: flex; align-items: center; justify-content: space-between;">
+                <span>Innovation Lab Page Status &amp; Visibility</span>
+                <span style="font-size: 12px; font-weight: 500; color: var(--gold-light); background: rgba(229,179,88,0.12); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(229,179,88,0.25);">
+                    Public vs. Coming Soon
+                </span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: -6px; margin-bottom: 16px;">
+                Toggle whether the public website displays the Innovation Lab as <strong>"Coming Soon"</strong> (with an email waitlist) or publishes it <strong>Live</strong>. As an admin, you can always view, edit, and work on the live page in preview mode.
+            </p>
+
+            <?php 
+                $labMode = $settings['innovation_lab_mode'] ?? 'coming_soon'; 
+            ?>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 16px;">
+                <!-- 1. Coming Soon Mode Card -->
+                <label id="labCardComingSoon" style="position: relative; display: flex; flex-direction: column; padding: 18px; border-radius: 12px; border: 2px solid <?php echo $labMode === 'coming_soon' ? 'var(--gold-light)' : 'var(--border-color)'; ?>; background: <?php echo $labMode === 'coming_soon' ? 'rgba(229,179,88,0.06)' : 'var(--bg-app)'; ?>; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 26px;">⏳</span>
+                        <input type="radio" name="settings[innovation_lab_mode]" value="coming_soon" <?php echo $labMode === 'coming_soon' ? 'checked' : ''; ?> onchange="updateLabModeCards()" style="accent-color: var(--gold-light); width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Coming Soon (Preview Only)</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #F59E0B; margin-bottom: 8px;">PUBLIC WAITLIST ACTIVE</div>
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
+                        Public visitors see an on-brand luxury Coming Soon showcase with waitlist notification signup. Logged-in Admins &amp; Developers can view, test, and work on the live page without showing it to the public.
+                    </p>
+                </label>
+
+                <!-- 2. Live on Frontend Card -->
+                <label id="labCardLive" style="position: relative; display: flex; flex-direction: column; padding: 18px; border-radius: 12px; border: 2px solid <?php echo $labMode === 'live' ? 'var(--gold-light)' : 'var(--border-color)'; ?>; background: <?php echo $labMode === 'live' ? 'rgba(229,179,88,0.06)' : 'var(--bg-app)'; ?>; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 26px;">🚀</span>
+                        <input type="radio" name="settings[innovation_lab_mode]" value="live" <?php echo $labMode === 'live' ? 'checked' : ''; ?> onchange="updateLabModeCards()" style="accent-color: var(--gold-light); width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Live on Frontend (Open to Public)</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #74E291; margin-bottom: 8px;">FULLY ACCESSIBLE</div>
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
+                        The full Innovation Lab is published and visible to all site visitors and search engines. All interactive dossiers, experiments, and failed batch stories are live.
+                    </p>
+                </label>
+            </div>
+
+            <!-- Quick Action Links for Admin -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;">
+                <a href="../innovation-lab.php?preview=1" target="_blank" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 7px 14px;">
+                    <span>🧪 Open Live Lab in Preview Mode</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                </a>
+                <a href="../innovation-lab.php?view_as=public" target="_blank" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 7px 14px;">
+                    <span>👁️ Test Public Coming Soon Screen</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                </a>
+                <a href="innovation-lab.php" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 7px 14px;">
+                    <span>🔬 Innovation Lab CMS</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+
+            <script>
+            function updateLabModeCards() {
+                const val = document.querySelector('input[name="settings[innovation_lab_mode]"]:checked')?.value || 'coming_soon';
+                const cardSoon = document.getElementById('labCardComingSoon');
+                const cardLive = document.getElementById('labCardLive');
+                if (cardSoon && cardLive) {
+                    if (val === 'coming_soon') {
+                        cardSoon.style.borderColor = 'var(--gold-light)';
+                        cardSoon.style.background = 'rgba(229,179,88,0.06)';
+                        cardLive.style.borderColor = 'var(--border-color)';
+                        cardLive.style.background = 'var(--bg-app)';
+                    } else {
+                        cardLive.style.borderColor = 'var(--gold-light)';
+                        cardLive.style.background = 'rgba(229,179,88,0.06)';
+                        cardSoon.style.borderColor = 'var(--border-color)';
+                        cardSoon.style.background = 'var(--bg-app)';
+                    }
+                }
+            }
+            </script>
+
+            <div class="editor-title" style="margin-top: 32px; font-size: 18px;">Theme & Appearance Settings</div>
+            
+            <div class="form-group" style="background: var(--bg-app); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <label for="default_site_theme" style="font-weight: 600; font-size: 15px; color: var(--text-main); display: block; margin-bottom: 4px;">Active Website Theme Palette</label>
+                        <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Choose the default color theme applied across the entire public website.</p>
+                    </div>
+                    <?php $activeTheme = $settings['default_site_theme'] ?? 'theme-cream-forest'; ?>
+                    <select id="default_site_theme" name="settings[default_site_theme]" style="padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-weight: 600; min-width: 220px; cursor: pointer;">
+                        <option value="theme-cream-forest" <?php echo $activeTheme === 'theme-cream-forest' ? 'selected' : ''; ?>>🌿 Forest Green &amp; Ivory (Default)</option>
+                        <option value="theme-teal-sage" <?php echo $activeTheme === 'theme-teal-sage' ? 'selected' : ''; ?>>🌊 Teal Green &amp; Sage</option>
+                        <option value="theme-lavender-mint" <?php echo $activeTheme === 'theme-lavender-mint' ? 'selected' : ''; ?>>🪻 Lavender &amp; Mint</option>
+                        <option value="theme-peach-mint" <?php echo $activeTheme === 'theme-peach-mint' ? 'selected' : ''; ?>>🍑 Peach Orange &amp; Mint</option>
+                        <option value="theme-original" <?php echo $activeTheme === 'theme-original' ? 'selected' : ''; ?>>🍃 Eucalyptus Sage</option>
+                        <option value="theme-midnight-gold" <?php echo $activeTheme === 'theme-midnight-gold' ? 'selected' : ''; ?>>🌙 Midnight Obsidian &amp; Gold (Dark)</option>
+                        <option value="theme-royal-ruby" <?php echo $activeTheme === 'theme-royal-ruby' ? 'selected' : ''; ?>>🍷 Royal Ruby &amp; Champagne</option>
+                        <option value="theme-sapphire-gold" <?php echo $activeTheme === 'theme-sapphire-gold' ? 'selected' : ''; ?>>💎 Sapphire Blue &amp; Gold</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" style="background: var(--bg-app); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <label for="show_theme_tester" style="font-weight: 600; font-size: 15px; color: var(--text-main); display: block; margin-bottom: 4px;">Frontend Theme Tester Widget</label>
+                        <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Enable or disable the floating color palette switcher widget on the public website.</p>
+                    </div>
+                    <select id="show_theme_tester" name="settings[show_theme_tester]" style="padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-weight: 600; min-width: 150px; cursor: pointer;">
+                        <option value="0" <?php echo ($settings['show_theme_tester'] ?? '0') === '0' ? 'selected' : ''; ?>>OFF (Disabled)</option>
+                        <option value="1" <?php echo ($settings['show_theme_tester'] ?? '0') === '1' ? 'selected' : ''; ?>>ON (Enabled)</option>
+                    </select>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary" style="margin-top: 12px; padding: 12px 24px; min-width: 180px;">Save Settings</button>

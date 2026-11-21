@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/db.php';
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
 
-$baseUrl = "https://www.rtchocos.com/";
+$baseUrl = rtrim(get_site_setting('site_url', 'https://www.rtchocos.com'), '/') . '/';
 
 // Static pages
 $today = date('Y-m-d');
@@ -16,6 +16,7 @@ $staticPages = [
     "workshops" => ["priority" => "0.9", "changefreq" => "weekly", "lastmod" => $today],
     "shop" => ["priority" => "0.9", "changefreq" => "daily", "lastmod" => $today],
     "blog" => ["priority" => "0.9", "changefreq" => "daily", "lastmod" => $today],
+    "chocopedia" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
     "gallery" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
     "faq" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
     "indian-chocolate-brands" => ["priority" => "0.8", "changefreq" => "weekly", "lastmod" => $today],
@@ -25,9 +26,7 @@ $staticPages = [
 foreach ($staticPages as $page => $meta) {
     echo "  <url>\n";
     echo "    <loc>" . $baseUrl . $page . "</loc>\n";
-    if (!empty($meta['lastmod'])) {
-        echo "    <lastmod>" . $meta['lastmod'] . "</lastmod>\n";
-    }
+    echo "    <lastmod>" . $meta['lastmod'] . "</lastmod>\n";
     echo "    <changefreq>" . $meta['changefreq'] . "</changefreq>\n";
     echo "    <priority>" . $meta['priority'] . "</priority>\n";
     echo "  </url>\n";

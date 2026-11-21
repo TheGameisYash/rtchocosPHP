@@ -1,6 +1,7 @@
 <?php
 // admin/blog-editor.php
 require_once __DIR__ . '/layout.php';
+require_once __DIR__ . '/../includes/blog-cache.php';
 
 $pdo = get_db();
 $error = '';
@@ -21,14 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
         exit;
     }
     
-    $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
-    $parentDir = dirname($docRoot);
-    $liveUploadsDir = $parentDir . '/uploads_blogs';
-    if (is_dir($liveUploadsDir)) {
-        $blogsDir = $liveUploadsDir;
-    } else {
-        $blogsDir = $docRoot . '/assets/blogs';
-    }
+    $blogsDir = get_blog_uploads_dir();
     if (!file_exists($blogsDir)) {
         mkdir($blogsDir, 0755, true);
     }
@@ -36,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
     $fileTmpPath = $_FILES['inline_image']['tmp_name'];
     $fileName = $_FILES['inline_image']['name'];
     $fileSize = $_FILES['inline_image']['size'];
-    $fileType = mime_content_type($fileTmpPath);
+    $fileType = get_file_mime_type($fileTmpPath, $fileName);
     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     
     $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -53,9 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
     }
     
     $newFileName = 'inline-' . time() . '-' . rand(1000, 9999) . '.' . $fileExtension;
-    $destPath = $blogsDir . '/' . $newFileName;
     
-    if (move_uploaded_file($fileTmpPath, $destPath)) {
+    if (save_blog_upload($fileTmpPath, $newFileName)) {
         // Register image in media table
         try {
             $stmt = $pdo->prepare("INSERT INTO media (filename, path, mime_type, size) VALUES (?, ?, ?, ?)");
@@ -69,12 +62,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
             // Non-blocking fallback
         }
 
-        echo json_encode(['success' => true, 'url' => 'assets/blogs/' . $newFileName]);
+        echo json_encode([
+            'success' => true,
+            'url' => 'assets/blogs/' . $newFileName,
+            'full_url' => '/assets/blogs/' . $newFileName
+        ]);
         exit;
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to save uploaded image.']);
         exit;
     }
+}
+
+// 2. AJAX MEDIA LIBRARY FETCHER FOR IMAGE MODAL
+if (($_GET['action'] ?? ($_POST['action'] ?? '')) === 'get_media_library') {
+    header('Content-Type: application/json');
+    try {
+        $stmt = $pdo->query("SELECT id, filename, path, path as url, size, created_at FROM media ORDER BY id DESC LIMIT 60");
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(['success' => true, 'media' => $items]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
+    exit;
+}
+
+// 3. AJAX INSTANT VISIBILITY TOGGLE (Instant Hide / Publish)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggle_publish') {
+    header('Content-Type: application/json');
+    $token = $_POST['csrf_token'] ?? '';
+    if (!verify_csrf($token)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid security token.']);
+        exit;
+    }
+    $bId = (int)($_POST['blog_id'] ?? 0);
+    $targetState = isset($_POST['is_published']) ? ((int)$_POST['is_published'] === 1 ? 1 : 0) : null;
+    if ($bId > 0) {
+        if ($targetState !== null) {
+            $stmt = $pdo->prepare("UPDATE blogs SET is_published = ? WHERE id = ?");
+            $stmt->execute([$targetState, $bId]);
+        } else {
+            $stmt = $pdo->prepare("UPDATE blogs SET is_published = 1 - is_published WHERE id = ?");
+            $stmt->execute([$bId]);
+        }
+        $stmt = $pdo->prepare("SELECT id, slug, title, is_published FROM blogs WHERE id = ?");
+        $stmt->execute([$bId]);
+        $updatedPost = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($updatedPost) {
+            clear_blog_cache($updatedPost['slug']);
+        }
+        clear_blog_cache();
+        $isPub = $updatedPost ? (int)$updatedPost['is_published'] : 0;
+        echo json_encode([
+            'success' => true,
+            'blog_id' => $bId,
+            'is_published' => $isPub,
+            'status_label' => $isPub ? 'Visible (Published)' : 'Hidden (Draft)',
+            'message' => 'Article "' . ($updatedPost['title'] ?? 'Post') . '" is now ' . ($isPub ? 'Visible to the public' : 'Hidden from the public (Draft)') . '.'
+        ]);
+        exit;
+    }
+    echo json_encode(['success' => false, 'message' => 'Blog not saved in database yet. Save the article first to toggle visibility.']);
+    exit;
 }
 
 $blogId = (int)($_GET['id'] ?? 0);
@@ -140,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $readTime = trim($_POST['read_time'] ?? '');
     $bodyClass = trim($_POST['body_class'] ?? '');
     $youtubeUrl = trim($_POST['youtube_url'] ?? '');
-    $isPublished = isset($_POST['is_published']) ? 1 : 0;
+    $isPublished = (!empty($_POST['is_published']) && $_POST['is_published'] !== '0') ? 1 : 0;
     
     $scheduledAt = trim($_POST['scheduled_at'] ?? '');
     $scheduledVal = !empty($scheduledAt) ? date('Y-m-d H:i:s', strtotime($scheduledAt)) : null;
@@ -176,16 +225,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->fetch()) {
                 $error = "The URL slug '{$slug}' is already in use by another article. URL slugs must be unique.";
             } else {
-                $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
-                $parentDir = dirname($docRoot);
-                $liveUploadsDir = $parentDir . '/uploads_blogs';
-                if (is_dir($liveUploadsDir)) {
-                    $blogsDir = $liveUploadsDir;
-                    $thumbsDir = $liveUploadsDir . '/thumbnails';
-                } else {
-                    $blogsDir = $docRoot . '/assets/blogs';
-                    $thumbsDir = $docRoot . '/assets/blogs/thumbnails';
-                }
+                $blogsDir = get_blog_uploads_dir();
+                $thumbsDir = get_blog_thumbnails_dir();
                 if (!file_exists($blogsDir)) mkdir($blogsDir, 0755, true);
                 if (!file_exists($thumbsDir)) mkdir($thumbsDir, 0755, true);
 
@@ -200,7 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $fileTmpPath = $_FILES['header_image']['tmp_name'];
                     $fileName = $_FILES['header_image']['name'];
                     $fileSize = $_FILES['header_image']['size'];
-                    $fileType = mime_content_type($fileTmpPath);
+                    $fileType = get_file_mime_type($fileTmpPath, $fileName);
                     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
                     if (!in_array($fileType, $allowedMimeTypes)) {
@@ -208,12 +249,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } elseif ($fileSize > $maxFileSize) {
                         $error = 'Header Image file size must be less than 5MB.';
                     } else {
-                        if (!empty($imagePath) && strpos($imagePath, 'assets/blogs/') === 0 && file_exists(__DIR__ . '/../' . $imagePath)) {
-                            unlink(__DIR__ . '/../' . $imagePath);
+                        if (!empty($imagePath) && strpos($imagePath, 'assets/blogs/') === 0) {
+                            delete_blog_image_file($imagePath);
                         }
                         $newFileName = $slug . '-header-' . time() . '.' . $fileExtension;
-                        $destPath = $blogsDir . '/' . $newFileName;
-                        if (move_uploaded_file($fileTmpPath, $destPath)) {
+                        if (save_blog_upload($fileTmpPath, $newFileName)) {
                             $imagePath = 'assets/blogs/' . $newFileName;
                             
                             // Insert to media library
@@ -230,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $fileTmpPath = $_FILES['thumbnail_image']['tmp_name'];
                     $fileName = $_FILES['thumbnail_image']['name'];
                     $fileSize = $_FILES['thumbnail_image']['size'];
-                    $fileType = mime_content_type($fileTmpPath);
+                    $fileType = get_file_mime_type($fileTmpPath, $fileName);
                     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
                     if (!in_array($fileType, $allowedMimeTypes)) {
@@ -238,12 +278,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } elseif ($fileSize > $maxFileSize) {
                         $error = 'Thumbnail Image file size must be less than 5MB.';
                     } else {
-                        if (!empty($thumbnailPath) && strpos($thumbnailPath, 'assets/blogs/') === 0 && file_exists(__DIR__ . '/../' . $thumbnailPath)) {
-                            unlink(__DIR__ . '/../' . $thumbnailPath);
+                        if (!empty($thumbnailPath) && strpos($thumbnailPath, 'assets/blogs/') === 0) {
+                            delete_blog_image_file($thumbnailPath);
                         }
                         $newFileName = $slug . '-thumb-' . time() . '.' . $fileExtension;
-                        $destPath = $thumbsDir . '/' . $newFileName;
-                        if (move_uploaded_file($fileTmpPath, $destPath)) {
+                        if (save_blog_upload($fileTmpPath, $newFileName, 'thumbnails')) {
                             $thumbnailPath = 'assets/blogs/thumbnails/' . $newFileName;
                             
                             // Insert to media library
@@ -259,8 +298,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $thumbnailPath = $imagePath;
                 }
 
-                // Save or Update details
+                // Save or Update details in a single database transaction
                 if (empty($error)) {
+                    $pdo->beginTransaction();
+
                     if ($isEdit) {
                         $stmt = $pdo->prepare("UPDATE blogs SET slug = ?, title = ?, category = ?, excerpt = ?, content = ?, image_path = ?, thumbnail_path = ?, youtube_url = ?, body_class = ?, read_time = ?, is_published = ?, scheduled_at = ? WHERE id = ?");
                         $stmt->execute([
@@ -310,22 +351,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
 
-                    // Map associations
+                    // Batch map associations in 1 single query instead of a loop
                     $tags = array_unique(array_map('intval', $tags));
                     if (!empty($tags)) {
-                        $stmt = $pdo->prepare("INSERT INTO blog_tag_map (blog_id, tag_id) VALUES (?, ?)");
+                        $placeholders = implode(',', array_fill(0, count($tags), '(?, ?)'));
+                        $insertParams = [];
                         foreach ($tags as $tagIdVal) {
-                            $stmt->execute([$blogId, $tagIdVal]);
+                            $insertParams[] = $blogId;
+                            $insertParams[] = $tagIdVal;
                         }
+                        $stmt = $pdo->prepare("INSERT INTO blog_tag_map (blog_id, tag_id) VALUES $placeholders");
+                        $stmt->execute($insertParams);
                     }
 
-                    // Reload configurations
-                    $post['image_path'] = $imagePath;
-                    $post['thumbnail_path'] = $thumbnailPath;
-                    $selectedTags = $tags;
-                    
-                    // Re-load tags
-                    $allTags = $pdo->query("SELECT id, name FROM blog_tags ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+                    $pdo->commit();
+
+                    // Clear blog cache so frontend reflects changes instantly
+                    clear_blog_cache($slug);
+                    clear_blog_cache();
 
                     // Redirect to escape resubmission
                     header('Location: blogs.php?success=' . urlencode($success));
@@ -333,6 +376,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             $error = 'Save failed: ' . $e->getMessage();
         }
     }
@@ -342,37 +388,49 @@ $csrfToken = generate_csrf();
 render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 ?>
 
-<link rel="stylesheet" href="editor-style.css">
+<link rel="stylesheet" href="editor-style.css?v=<?php echo filemtime(__DIR__ . '/editor-style.css'); ?>">
 
 <?php if (!empty($error)): ?>
     <script>window.addEventListener('DOMContentLoaded', () => showToast(<?php echo json_encode($error); ?>, 'danger'));</script>
 <?php endif; ?>
 
 <!-- Sub-Header Actions -->
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px;">
-    <a href="blogs.php" class="btn btn-outline">
-        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Back to List
-    </a>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:16px;">
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <a href="blogs.php" class="btn btn-outline">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to List
+        </a>
+
+        <!-- Live Topbar Visibility Toggle Switch -->
+        <div class="topbar-visibility-box" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:8px; background:var(--bg-card); border:1px solid var(--border-color);">
+            <span style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--text-light); letter-spacing:0.5px;">Visibility:</span>
+            <label class="custom-toggle" style="transform:scale(0.85); margin:0;">
+                <input type="checkbox" id="topbarVisibilityToggle" <?php echo $post['is_published'] ? 'checked' : ''; ?> onchange="syncVisibilityState(this.checked, true)">
+                <span class="toggle-slider"></span>
+            </label>
+            <span id="topbarVisibilityBadge" class="status-badge <?php echo $post['is_published'] ? 'published' : 'draft'; ?>" style="font-size:11px; padding:3px 8px; <?php echo $post['is_published'] ? '' : 'background:rgba(217, 119, 6, 0.15); color:#d97706; border-color:rgba(217, 119, 6, 0.3);'; ?>">
+                <span id="topbarVisibilityIcon"><?php echo $post['is_published'] ? '👁️' : '🔒'; ?></span>
+                <span id="topbarVisibilityLabel"><?php echo $post['is_published'] ? 'Visible (Published)' : 'Hidden (Draft)'; ?></span>
+            </span>
+        </div>
+    </div>
     
-    <div style="display:flex; gap:12px; align-items:center;">
-        <span id="autosaveIndicator" style="font-size:12.5px; color:var(--text-light); opacity:0.5; transition:opacity var(--transition);">Autosave is active</span>
-        <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-light); margin-right:8px; cursor:pointer; user-select:none; margin-bottom:0;">
-            <input type="checkbox" id="autoFormatPasteToggle" checked style="width:14px; height:14px; accent-color:var(--green-900); margin:0;">
-            <span>Auto-Format Paste</span>
-        </label>
-        <button type="button" class="btn btn-outline" id="standardizeContentBtn" title="Clean Word/Docs tags, convert bold section titles to H2 headings, and normalize paragraph formatting">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-            Clean & Standardize
-        </button>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <span id="autosaveIndicator" style="font-size:12.5px; color:var(--text-light); opacity:0.75; transition:opacity var(--transition);"><span style="color:#2e7d32;">●</span> Browser draft active (Offline-safe)</span>
         <button type="button" class="btn btn-outline" onclick="triggerUndo()" title="Undo (Ctrl+Z)">Undo</button>
         <button type="button" class="btn btn-outline" onclick="triggerRedo()" title="Redo (Ctrl+Y)">Redo</button>
         <button type="button" class="btn btn-outline" onclick="openFullPreview()">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
             Immersive Preview
         </button>
-        <button type="button" class="drawer-toggle-btn" id="drawerToggle" title="Toggle Settings Drawer" style="position:static;box-shadow:none;">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <button type="button" class="btn btn-outline" id="drawerToggle" title="Open Article Settings, Cover & Thumbnail Images" style="display:inline-flex; align-items:center; gap:8px;">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span>Cover &amp; Settings</span>
+        </button>
+        <button type="button" class="btn btn-primary" onclick="saveArticleForm()" style="display:inline-flex; align-items:center; gap:6px; padding:8px 18px; font-weight:600;">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+            <span>Save Article</span>
         </button>
     </div>
 </div>
@@ -380,165 +438,211 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 <!-- Main Forms -->
 <form action="blog-editor.php<?php echo $isEdit ? '?id=' . $blogId : ''; ?>" method="POST" enctype="multipart/form-data" id="editorForm">
     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
+    <input type="hidden" name="is_published" id="isPublishedHiddenInput" value="<?php echo $post['is_published'] ? '1' : '0'; ?>">
     <input type="hidden" name="content" id="content" value="<?php echo htmlspecialchars($post['content']); ?>">
     <input type="hidden" id="blogId" value="<?php echo $post['id']; ?>">
 
     <div class="editor-canvas-wrapper">
-        <!-- Main Canvas Panel -->
-        <div class="editor-main-canvas">
-            <!-- Static Formatting Toolbar -->
-            <div class="editor-static-toolbar" id="editorToolbar">
-                <!-- Text Formatting Group -->
-                <div class="toolbar-group">
-                    <button type="button" class="toolbar-btn" data-action="bold" title="Bold (Ctrl+B)"><b>B</b></button>
-                    <button type="button" class="toolbar-btn" data-action="italic" title="Italic (Ctrl+I)"><i>I</i></button>
-                    <button type="button" class="toolbar-btn" data-action="underline" title="Underline (Ctrl+U)"><u>U</u></button>
-                    <button type="button" class="toolbar-btn" data-action="strikethrough" title="Strikethrough"><s>S</s></button>
-                    <button type="button" class="toolbar-btn" data-action="superscript" title="Superscript">X<sup style="font-size:9px;">2</sup></button>
-                    <button type="button" class="toolbar-btn" data-action="subscript" title="Subscript">X<sub style="font-size:9px;">2</sub></button>
-                </div>
-                <div class="toolbar-divider"></div>
-                <!-- Font Size Dropdown -->
-                <div class="toolbar-group">
-                    <div class="toolbar-dropdown-wrap">
-                        <button type="button" class="toolbar-btn toolbar-dropdown-trigger" data-action="fontSize" title="Font Size">
-                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7V5h12v2M7 5v14M15 13v-1h8v1M19 12v7"/></svg>
-                        </button>
-                        <div class="toolbar-dropdown" id="fontSizeDropdown">
-                            <button type="button" data-size="small" class="toolbar-dropdown-item">Small</button>
-                            <button type="button" data-size="normal" class="toolbar-dropdown-item active">Normal</button>
-                            <button type="button" data-size="large" class="toolbar-dropdown-item">Large</button>
-                            <button type="button" data-size="xlarge" class="toolbar-dropdown-item">Extra Large</button>
+        <!-- Main Canvas Panel (Normal Word-Style Document Editor) -->
+        <div class="editor-main-canvas word-editor-canvas">
+            <!-- Word Formatting Toolbar -->
+            <div class="word-editor-toolbar" id="wordToolbar">
+                <select class="word-format-select" id="formatBlockSelect" title="Paragraph Style">
+                    <option value="p">Normal Text</option>
+                    <option value="h2">Heading 2</option>
+                    <option value="h3">Heading 3</option>
+                    <option value="h4">Heading 4</option>
+                    <option value="blockquote">Quote / Callout</option>
+                    <option value="pre">Code Block</option>
+                </select>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" data-action="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+                <button type="button" class="word-btn" data-action="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+                <button type="button" class="word-btn" data-action="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+                <button type="button" class="word-btn" data-action="strikeThrough" title="Strikethrough"><s>S</s></button>
+
+                <!-- Text Color Dropdown (Curated Editorial Brand Palette & Custom Color) -->
+                <div class="word-color-dropdown-wrapper">
+                    <button type="button" class="word-btn word-color-btn" id="textColorBtn" title="Text Color (Editorial Palette & Custom)" onclick="toggleColorDropdown('textColorDropdown')">
+                        <span style="font-weight:700; font-size:13px; line-height:1;">A</span>
+                        <span class="color-indicator-bar" id="textColorIndicator" style="background:var(--gold, #c7a66a);"></span>
+                    </button>
+                    <div class="word-color-dropdown" id="textColorDropdown" style="display:none; min-width:200px; padding:10px 8px;">
+                        <div class="color-dropdown-header" style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; color:var(--text-light); font-weight:700;">Text Color</div>
+                        <div style="display:flex; flex-direction:column; gap:4px;">
+                            <button type="button" class="color-swatch-row" data-color="" title="Default Theme — High-contrast luxury tone" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:var(--text-main); border:1px solid var(--border-color); display:inline-block; flex-shrink:0;"></span>
+                                <span style="font-weight:600;">Theme Default</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-color="#c7a66a" title="RT Gold Accent — Signature luxury chocolate emphasis" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:#c7a66a; display:inline-block; flex-shrink:0;"></span>
+                                <span>Gold Accent</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-color="#5a3825" title="Deep Cocoa Bronze — Warm artisan chocolate tone" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:#5a3825; border:1px solid rgba(255,255,255,0.25); display:inline-block; flex-shrink:0;"></span>
+                                <span>Deep Cocoa</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-color="#1c1511" title="Dark Espresso — Rich charcoal black" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:#1c1511; border:1px solid rgba(255,255,255,0.25); display:inline-block; flex-shrink:0;"></span>
+                                <span>Dark Espresso</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-color="#1b4d3e" title="Forest Green — Cacao origin & botanical accent" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:#1b4d3e; display:inline-block; flex-shrink:0;"></span>
+                                <span>Artisan Green</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-color="#8b1e2d" title="Artisan Crimson — Berry & fruit notes" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:#8b1e2d; display:inline-block; flex-shrink:0;"></span>
+                                <span>Artisan Crimson</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-color="#c25e2e" title="Warm Terracotta — Earthy roast notes" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:#c25e2e; display:inline-block; flex-shrink:0;"></span>
+                                <span>Warm Terracotta</span>
+                            </button>
+                        </div>
+                        <div class="color-picker-custom-row">
+                            <input type="color" id="customTextColorPicker" class="color-picker-custom-input" value="#c7a66a" title="Choose custom text color">
+                            <label for="customTextColorPicker" style="font-size:12px; cursor:pointer; color:var(--text-main); font-weight:500;">Custom Color...</label>
                         </div>
                     </div>
                 </div>
-                <div class="toolbar-divider"></div>
-                <!-- Text & Highlight Color -->
-                <div class="toolbar-group">
-                    <div class="toolbar-dropdown-wrap">
-                        <button type="button" class="toolbar-btn" data-action="textColor" title="Text Color">
-                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 3L5 21M15 3l4 18M4 8h16M3 16h16"/></svg>
-                            <span class="toolbar-color-indicator" id="textColorIndicator" style="background:#C7A66A;"></span>
-                        </button>
-                        <div class="toolbar-dropdown toolbar-color-picker" id="textColorDropdown">
-                            <div class="color-picker-label">Text Color</div>
-                            <div class="color-picker-grid">
-                                <button type="button" class="color-swatch" data-color="inherit" title="Default" style="background:var(--text-main);"></button>
-                                <button type="button" class="color-swatch" data-color="#C7A66A" title="Gold" style="background:#C7A66A;"></button>
-                                <button type="button" class="color-swatch" data-color="#D32F2F" title="Red" style="background:#D32F2F;"></button>
-                                <button type="button" class="color-swatch" data-color="#1976D2" title="Blue" style="background:#1976D2;"></button>
-                                <button type="button" class="color-swatch" data-color="#388E3C" title="Green" style="background:#388E3C;"></button>
-                                <button type="button" class="color-swatch" data-color="#7B1FA2" title="Purple" style="background:#7B1FA2;"></button>
-                                <button type="button" class="color-swatch" data-color="#E64A19" title="Orange" style="background:#E64A19;"></button>
-                                <button type="button" class="color-swatch" data-color="#5D4037" title="Brown" style="background:#5D4037;"></button>
-                            </div>
+
+                <!-- Text Highlight / Background Dropdown (Curated Brand Tints & Custom Tint) -->
+                <div class="word-color-dropdown-wrapper">
+                    <button type="button" class="word-btn word-color-btn" id="textHighlightBtn" title="Highlight Text (Tints & Custom)" onclick="toggleColorDropdown('textHighlightDropdown')">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        <span class="color-indicator-bar" id="highlightColorIndicator" style="background:#c7a66a;"></span>
+                    </button>
+                    <div class="word-color-dropdown" id="textHighlightDropdown" style="display:none; min-width:200px; padding:10px 8px;">
+                        <div class="color-dropdown-header" style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; color:var(--text-light); font-weight:700;">Highlight (Tint)</div>
+                        <div style="display:flex; flex-direction:column; gap:4px;">
+                            <button type="button" class="color-swatch-row" data-highlight="" title="No Highlight (Clear)" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:50%; background:transparent; border:1px dashed var(--border-color); display:inline-flex; align-items:center; justify-content:center; color:#ef4444; font-size:11px; font-weight:700; flex-shrink:0;">&times;</span>
+                                <span style="font-weight:600;">Clear Highlight</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-highlight="rgba(199, 166, 106, 0.3)" title="Gold Glow Tint — Luxury subtle highlight" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:3px; background:rgba(199, 166, 106, 0.45); border:1px solid #c7a66a; display:inline-block; flex-shrink:0;"></span>
+                                <span>Gold Glow Tint</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-highlight="rgba(27, 77, 62, 0.25)" title="Artisan Mint Tint — Botanical emphasis" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:3px; background:rgba(27, 77, 62, 0.35); border:1px solid #1b4d3e; display:inline-block; flex-shrink:0;"></span>
+                                <span>Artisan Mint Tint</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-highlight="rgba(194, 65, 84, 0.22)" title="Rose Blush Tint" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:3px; background:rgba(194, 65, 84, 0.35); border:1px solid #c24154; display:inline-block; flex-shrink:0;"></span>
+                                <span>Rose Blush Tint</span>
+                            </button>
+                            <button type="button" class="color-swatch-row" data-highlight="rgba(245, 158, 11, 0.25)" title="Amber Honey Tint" style="display:flex; align-items:center; gap:10px; width:100%; padding:7px 10px; background:transparent; border:1px solid transparent; border-radius:6px; cursor:pointer; color:var(--text-main); font-size:12.5px; text-align:left; transition:background 0.15s ease;">
+                                <span style="width:14px; height:14px; border-radius:3px; background:rgba(245, 158, 11, 0.38); border:1px solid #f59e0b; display:inline-block; flex-shrink:0;"></span>
+                                <span>Amber Honey Tint</span>
+                            </button>
                         </div>
-                    </div>
-                    <div class="toolbar-dropdown-wrap">
-                        <button type="button" class="toolbar-btn" data-action="highlight" title="Highlight Color">
-                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                            <span class="toolbar-color-indicator" id="highlightColorIndicator" style="background:#FFF9C4;"></span>
-                        </button>
-                        <div class="toolbar-dropdown toolbar-color-picker" id="highlightColorDropdown">
-                            <div class="color-picker-label">Highlight</div>
-                            <div class="color-picker-grid">
-                                <button type="button" class="color-swatch" data-color="transparent" title="None" style="background:transparent; border:2px dashed var(--border-color);"></button>
-                                <button type="button" class="color-swatch" data-color="#FFF9C4" title="Yellow" style="background:#FFF9C4;"></button>
-                                <button type="button" class="color-swatch" data-color="#C8E6C9" title="Green" style="background:#C8E6C9;"></button>
-                                <button type="button" class="color-swatch" data-color="#BBDEFB" title="Blue" style="background:#BBDEFB;"></button>
-                                <button type="button" class="color-swatch" data-color="#F8BBD0" title="Pink" style="background:#F8BBD0;"></button>
-                                <button type="button" class="color-swatch" data-color="#FFE0B2" title="Orange" style="background:#FFE0B2;"></button>
-                                <button type="button" class="color-swatch" data-color="#E1BEE7" title="Purple" style="background:#E1BEE7;"></button>
-                                <button type="button" class="color-swatch" data-color="#D7CCC8" title="Brown" style="background:#D7CCC8;"></button>
-                            </div>
+                        <div class="color-picker-custom-row">
+                            <input type="color" id="customHighlightPicker" class="color-picker-custom-input" value="#fef08a" title="Choose custom highlight color">
+                            <label for="customHighlightPicker" style="font-size:12px; cursor:pointer; color:var(--text-main); font-weight:500;">Custom Tint...</label>
                         </div>
                     </div>
                 </div>
-                <div class="toolbar-divider"></div>
-                <!-- Headings Group -->
-                <div class="toolbar-group">
-                    <button type="button" class="toolbar-btn" data-action="heading-2" title="Heading 2"><span style="font-weight:700;font-size:13px;">H2</span></button>
-                    <button type="button" class="toolbar-btn" data-action="heading-3" title="Heading 3"><span style="font-weight:600;font-size:12px;">H3</span></button>
-                    <button type="button" class="toolbar-btn" data-action="heading-4" title="Heading 4"><span style="font-weight:600;font-size:11px;">H4</span></button>
-                </div>
-                <div class="toolbar-divider"></div>
-                <!-- List & Indent Group -->
-                <div class="toolbar-group">
-                    <button type="button" class="toolbar-btn" data-action="list-bullet" title="Bullet List">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="4" cy="7" r="1.5" fill="currentColor"/><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="17" r="1.5" fill="currentColor"/></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="list-ordered" title="Numbered List">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><text x="2" y="9" font-size="7" fill="currentColor" font-family="sans-serif">1</text><text x="2" y="14" font-size="7" fill="currentColor" font-family="sans-serif">2</text><text x="2" y="19" font-size="7" fill="currentColor" font-family="sans-serif">3</text></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="indent" title="Increase Indent">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8h18M3 16h18M13 12h8M3 11l4 1-4 1"/></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="outdent" title="Decrease Indent">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8h18M3 16h18M13 12h8M7 11l-4 1 4 1"/></svg>
-                    </button>
-                </div>
-                <div class="toolbar-divider"></div>
-                <!-- Alignment Group -->
-                <div class="toolbar-group">
-                    <button type="button" class="toolbar-btn" data-action="align-left" title="Align Left">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M3 10h12M3 14h18M3 18h12"/></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="align-center" title="Align Center">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M6 10h12M3 14h18M6 18h12"/></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="align-right" title="Align Right">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M9 10h12M3 14h18M9 18h12"/></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="align-justify" title="Justify">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>
-                    </button>
-                </div>
-                <div class="toolbar-divider"></div>
-                <!-- Block Inserts Group -->
-                <div class="toolbar-group">
-                    <button type="button" class="toolbar-btn" data-action="quote" title="Blockquote">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="callout" title="Callout Note">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="code" title="Code Block">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    </button>
-                </div>
-                <div class="toolbar-divider"></div>
-                <!-- Media & Links Group -->
-                <div class="toolbar-group">
-                    <button type="button" class="toolbar-btn" data-action="link" title="Insert Link (Ctrl+K)">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="image" title="Insert Image">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="divider" title="Divider Line">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14"></path></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="table" title="Table">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18M8 4v16M16 4v16M4 4h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1z"></path></svg>
-                    </button>
-                </div>
-                <div class="toolbar-divider"></div>
-                <!-- Utility Group -->
-                <div class="toolbar-group">
-                    <button type="button" class="toolbar-btn" data-action="select-all" title="Select All Blocks (Ctrl+A)">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm0 4h14M5 12h14M5 17h14"></path></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="delete-selected" title="Delete Selected Blocks (Backspace/Delete)">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
-                    <button type="button" class="toolbar-btn" data-action="clear-format" title="Clear Formatting">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
-                    </button>
-                </div>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" data-action="justifyLeft" title="Align Left">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h14"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-action="justifyCenter" title="Align Center">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M5 18h14"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-action="justifyRight" title="Align Right">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M10 12h10M6 18h14"/></svg>
+                </button>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" data-action="insertUnorderedList" title="Bullet List">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-action="insertOrderedList" title="Numbered List">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 6h11M10 12h11M10 18h11M4 6h1v4M4 10h2M3 18h3-3v-2a2 2 0 012-2h1"/></svg>
+                </button>
+                <button type="button" class="word-btn" id="insertQuoteBtn" data-action="toggleQuote" onclick="window.toggleWordQuote && window.toggleWordQuote()" title="Quote / Callout Box (Gold Bar)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"/></svg>
+                </button>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" id="insertLinkBtn" title="Insert Link (Ctrl+K)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                </button>
+                <button type="button" class="word-btn word-btn-featured" id="insertImageBtn" onclick="window.openWordImageModal && window.openWordImageModal()" title="Insert Article Image (Upload, Media Library, or URL)" style="display:inline-flex; align-items:center; gap:5px; padding:0 10px; font-weight:600;">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                    <span>Image</span>
+                </button>
+                <button type="button" class="word-btn word-btn-featured" id="insertTableBtn" onclick="window.openWordTableModal && window.openWordTableModal()" title="Insert Data / Comparison Table" style="display:inline-flex; align-items:center; gap:5px; padding:0 10px; font-weight:600;">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+                    <span>Table</span>
+                </button>
+                <button type="button" class="word-btn" id="insertYoutubeBtn" title="Insert YouTube Embed">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-action="insertHorizontalRule" title="Horizontal Divider Line">—</button>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" data-action="removeFormat" title="Clear Formatting on selection">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h12M12 4v16M4 20l4-4"/></svg>
+                </button>
+                <button type="button" class="word-btn word-btn-scrub" id="scrubDocFormattingBtn" onclick="window.scrubDocumentFormatting && window.scrubDocumentFormatting(true)" title="Fix Invisible Text & Formatting: Reset foreign styles, invisible white/black colors, and fonts to site theme" style="color:var(--gold);">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                    <span style="font-size:11.5px; margin-left:4px; font-weight:600;">Fix Text</span>
+                </button>
+
+                <div class="toolbar-sep"></div>
+
+                <!-- Paste Mode Toggle: Text Only vs Clean Format -->
+                <button type="button" class="word-btn word-paste-mode-btn active" id="pasteModeToggleBtn" onclick="window.togglePasteMode && window.togglePasteMode()" title="Toggle Paste Mode: Text Only (Active - foreign properties & colors stripped) vs Clean Format">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 12h6M9 16h4"/></svg>
+                    <span class="paste-mode-label" id="pasteModeLabel" style="font-size:11.5px; margin-left:4px; font-weight:600;">Paste: Text Only</span>
+                </button>
+
+                <div class="toolbar-sep"></div>
+
+                <button type="button" class="word-btn" data-action="undo" title="Undo (Ctrl+Z)">↶</button>
+                <button type="button" class="word-btn" data-action="redo" title="Redo (Ctrl+Y)">↷</button>
             </div>
-            <!-- Content Block Canvas Container -->
-            <div class="editor-blocks-container" id="editorBlocksContainer">
-                <!-- Blocks loaded dynamically via editor.js -->
+
+            <!-- Floating Selection Mini Bubble Toolbar -->
+            <div class="editor-floating-bubble-toolbar" id="floatingBubbleToolbar">
+                <button type="button" class="word-btn" data-bubble-action="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+                <button type="button" class="word-btn" data-bubble-action="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+                <button type="button" class="word-btn" data-bubble-action="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+                <div class="toolbar-sep" style="height:14px; margin:0 3px;"></div>
+                <button type="button" class="word-btn" data-bubble-block="h2" title="Heading 2" style="font-weight:700; font-size:11px;">H2</button>
+                <button type="button" class="word-btn" data-bubble-block="h3" title="Heading 3" style="font-weight:700; font-size:11px;">H3</button>
+                <button type="button" class="word-btn" data-bubble-block="blockquote" title="Quote" style="font-size:14px; font-weight:700;">”</button>
+                <div class="toolbar-sep" style="height:14px; margin:0 3px;"></div>
+                <button type="button" class="word-btn" id="bubbleLinkBtn" title="Link (Ctrl+K)">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                </button>
+                <button type="button" class="word-btn" data-bubble-color="#c7a66a" title="Gold Accent Color" style="color:#c7a66a; font-weight:700; font-size:13px;">A</button>
+                <button type="button" class="word-btn" data-bubble-highlight="rgba(199, 166, 106, 0.35)" title="Gold Glow Tint" style="padding:0 5px;">
+                    <span style="display:inline-block; width:12px; height:12px; background:rgba(199, 166, 106, 0.45); border:1px solid #c7a66a; border-radius:3px;"></span>
+                </button>
+                <button type="button" class="word-btn" data-bubble-action="removeFormat" title="Clear Formatting">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h12M12 4v16M4 20l4-4"/></svg>
+                </button>
+            </div>
+
+            <!-- Single Continuous Editable Document Area -->
+            <div class="word-editor-body" id="wordEditorDoc" contenteditable="true" spellcheck="true" placeholder="Start typing your article here..."></div>
+
+            <!-- Stats Bar -->
+            <div class="word-editor-footer">
+                <span id="char-count">0 characters</span>
+                <span class="footer-dot">•</span>
+                <span id="word-count">0 words</span>
+                <span class="footer-dot">•</span>
+                <span id="read-time-calc">1 min read</span>
             </div>
         </div>
 
@@ -574,12 +678,12 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 
                 <div class="form-group">
                     <label class="static-label" for="read_time">Estimated Read Time</label>
-                    <input type="text" id="read_time" name="read_time" value="<?php echo htmlspecialchars((string)$post['read_time']); ?>" placeholder="e.g. 5 min">
+                    <input type="text" id="read_time" name="read_time" value="<?php echo htmlspecialchars($post['read_time'] ?? ''); ?>" placeholder="e.g. 5 min">
                 </div>
 
                 <div class="form-group">
                     <label class="static-label" for="scheduled_at">Schedule Publish Date</label>
-                    <input type="datetime-local" id="scheduled_at" name="scheduled_at" value="<?php echo $post['scheduled_at'] ? date('Y-m-d\TH:i', strtotime($post['scheduled_at'])) : ''; ?>">
+                    <input type="datetime-local" id="scheduled_at" name="scheduled_at" value="<?php echo !empty($post['scheduled_at']) ? date('Y-m-d\TH:i', strtotime($post['scheduled_at'])) : ''; ?>">
                     <span style="font-size: 11px; color: var(--text-light); margin-top:4px; display:block;">Leave blank to publish immediately on saving.</span>
                 </div>
 
@@ -593,7 +697,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
                             <?php foreach ($allTags as $tag): ?>
                                 <label style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:normal; margin-bottom:4px; cursor:pointer; text-transform: none;">
                                     <input type="checkbox" name="tags[]" value="<?php echo $tag['id']; ?>" <?php echo in_array($tag['id'], $selectedTags) ? 'checked' : ''; ?> style="width:16px; height:16px; accent-color:var(--green-900);">
-                                    <span><?php echo htmlspecialchars($tag['name']); ?></span>
+                                    <span><?php echo htmlspecialchars($tag['name'] ?? ''); ?></span>
                                 </label>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -603,7 +707,7 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 
                 <div class="form-group">
                     <label class="static-label" for="excerpt">Excerpt / Summary</label>
-                    <textarea id="excerpt" name="excerpt" rows="3" required placeholder="Write a short blog card teaser summary..."><?php echo htmlspecialchars((string)$post['excerpt']); ?></textarea>
+                    <textarea id="excerpt" name="excerpt" rows="3" required placeholder="Write a short blog card teaser summary..."><?php echo htmlspecialchars($post['excerpt'] ?? ''); ?></textarea>
                 </div>
 
                 <!-- Google SEO Result Live Mockup Card -->
@@ -642,23 +746,26 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
 
                 <div class="form-group">
                     <label class="static-label" for="youtube_url">YouTube URL</label>
-                    <input type="url" id="youtube_url" name="youtube_url" value="<?php echo htmlspecialchars((string)$post['youtube_url']); ?>" placeholder="e.g. https://youtube.com/watch?v=...">
+                    <input type="url" id="youtube_url" name="youtube_url" value="<?php echo htmlspecialchars($post['youtube_url'] ?? ''); ?>" placeholder="e.g. https://youtube.com/watch?v=...">
                 </div>
 
                 <div class="form-group">
                     <label class="static-label" for="body_class">Body CSS Class</label>
-                    <input type="text" id="body_class" name="body_class" value="<?php echo htmlspecialchars((string)$post['body_class']); ?>" placeholder="e.g. cocoa-article">
+                    <input type="text" id="body_class" name="body_class" value="<?php echo htmlspecialchars($post['body_class'] ?? ''); ?>" placeholder="e.g. cocoa-article">
                 </div>
 
                 <div class="form-group" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span class="custom-toggle-label" style="font-weight:600; font-size:12.5px; color:var(--text-muted); text-transform:uppercase;">Publish Post</span>
+                    <div>
+                        <span class="custom-toggle-label" style="font-weight:600; font-size:12.5px; color:var(--text-muted); text-transform:uppercase; display:block;">Article Visibility</span>
+                        <span id="drawerVisibilityHint" style="font-size:11px; color:var(--text-light);"><?php echo $post['is_published'] ? 'Visible to public on website' : 'Hidden from public (Draft)'; ?></span>
+                    </div>
                     <label class="custom-toggle">
-                        <input type="checkbox" name="is_published" value="1" <?php echo $post['is_published'] ? 'checked' : ''; ?>>
+                        <input type="checkbox" id="drawerVisibilityToggle" <?php echo $post['is_published'] ? 'checked' : ''; ?> onchange="syncVisibilityState(this.checked, true)">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px;">
+                <button type="button" onclick="saveArticleForm()" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px; font-weight:600;">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                     Save Article
                 </button>
@@ -667,18 +774,216 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     </div>
 </form>
 
-<!-- Formatting Selection Toolbar -->
-<div id="floatingFormatBar">
-    <button type="button" class="format-bar-btn" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
-    <button type="button" class="format-bar-btn" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
-    <button type="button" class="format-bar-btn" data-cmd="underline" title="Underline (Ctrl+U)"><u>U</u></button>
-    <button type="button" class="format-bar-btn" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
-    <div class="format-bar-divider"></div>
-    <button type="button" class="format-bar-btn" data-cmd="createLink" title="Insert Link">Link</button>
-    <div class="format-bar-link-input">
-        <input type="text" placeholder="https://...">
-        <button type="button" class="btn btn-secondary btn-sm link-submit" style="padding:4px 8px; font-size:11px;">Apply</button>
+<!-- Word Editor Image Insert Modal (Upgraded: Upload, Media Library, URL, Alignment, Sizing, Caption) -->
+<div class="word-modal-overlay" id="wordEditorImageModal">
+    <div class="word-modal-card word-modal-card-lg">
+        <div class="word-modal-header">
+            <h3>Insert Article Image</h3>
+            <button type="button" class="word-modal-close" id="closeWordImageModal" onclick="document.getElementById('wordEditorImageModal').style.display='none'">&times;</button>
+        </div>
+
+        <!-- Image Source Tabs -->
+        <div class="modal-tabs">
+            <button type="button" class="modal-tab-btn active" data-tab="uploadTab" onclick="switchImageModalTab('uploadTab')">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                Upload File
+            </button>
+            <button type="button" class="modal-tab-btn" data-tab="mediaTab" onclick="switchImageModalTab('mediaTab'); loadEditorMediaLibrary();">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                Media Library
+            </button>
+            <button type="button" class="modal-tab-btn" data-tab="urlTab" onclick="switchImageModalTab('urlTab')">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                Image URL
+            </button>
+        </div>
+
+        <!-- Tab 1: Upload File -->
+        <div class="modal-tab-pane active" id="uploadTab">
+            <div class="word-image-dropzone" id="wordImageDropzone">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/></svg>
+                <p style="margin:0; font-size:14px; font-weight:600; color:var(--text-main);">Click or Drag &amp; Drop Image Here</p>
+                <span style="font-size:11.5px; color:var(--text-light); margin-top:4px; display:block;">Supports JPG, PNG, WEBP (Max 5MB)</span>
+                <input type="file" id="wordImageFileInput" accept="image/*" style="display:none;">
+            </div>
+            <div id="imageUploadStatus" style="font-size:12px; color:var(--gold); text-align:center; display:none; margin-bottom:12px;"></div>
+        </div>
+
+        <!-- Tab 2: Media Library -->
+        <div class="modal-tab-pane" id="mediaTab" style="display:none;">
+            <div style="margin-bottom:10px;">
+                <input type="text" id="mediaSearchInput" placeholder="Search media by filename..." oninput="filterMediaLibrary(this.value)" style="font-size:12.5px; padding:8px 12px; width:100%; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-app); color:var(--text-main);">
+            </div>
+            <div class="modal-media-grid" id="modalMediaGrid">
+                <div style="padding:30px; text-align:center; color:var(--text-light); font-size:13px; grid-column:1/-1;">Loading media items...</div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Web URL -->
+        <div class="modal-tab-pane" id="urlTab" style="display:none;">
+            <div class="form-group" style="margin-bottom:12px;">
+                <label class="static-label" for="wordImageUrlInput">Direct Image URL</label>
+                <input type="url" id="wordImageUrlInput" placeholder="https://example.com/image.jpg" style="font-size:13px;" oninput="updateSelectedPreview(this.value, 'Direct URL Image')">
+            </div>
+        </div>
+
+        <!-- Selected Image Preview & Formatting Options -->
+        <div class="image-options-panel" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border-color);">
+            <div id="selectedImagePreviewBar" style="display:none; align-items:center; gap:12px; margin-bottom:14px; padding:8px 12px; background:var(--bg-app); border-radius:8px; border:1px solid var(--border-color);">
+                <img id="modalSelectedImgThumb" src="" style="width:48px; height:48px; object-fit:cover; border-radius:6px;">
+                <div style="flex:1; overflow:hidden;">
+                    <div id="modalSelectedImgName" style="font-size:13px; font-weight:600; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; color:var(--text-main);">Selected Image</div>
+                    <div id="modalSelectedImgUrl" style="font-size:11px; color:var(--text-light); font-family:monospace; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;"></div>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+                <div class="form-group">
+                    <label class="static-label" for="wordImageAlignSelect">Alignment / Text Wrap</label>
+                    <select id="wordImageAlignSelect" style="font-size:13px; width:100%;">
+                        <option value="center">Center Block (Full Column)</option>
+                        <option value="left">Float Left (Text wraps right)</option>
+                        <option value="right">Float Right (Text wraps left)</option>
+                        <option value="wide">Wide Showcase (Expanded)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="static-label" for="wordImageWidthSelect">Display Width</label>
+                    <select id="wordImageWidthSelect" style="font-size:13px; width:100%;">
+                        <option value="100%">100% (Full Width)</option>
+                        <option value="75%">75% (Medium Large)</option>
+                        <option value="50%">50% (Half Width)</option>
+                        <option value="33%">33% (One Third)</option>
+                        <option value="25%">25% (Compact / Thumbnail)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:12px;">
+                <label class="static-label" for="wordImageAltInput">Alt Text (For SEO &amp; Accessibility)</label>
+                <input type="text" id="wordImageAltInput" placeholder="e.g. Fine flavor cocoa beans drying under sun" style="font-size:13px;">
+            </div>
+
+            <div class="form-group" style="margin-bottom:18px;">
+                <label class="static-label" for="wordImageCaptionInput">Caption (Displayed under image in article)</label>
+                <input type="text" id="wordImageCaptionInput" placeholder="e.g. Fig 1. Sun-drying cacao beans on raised wooden beds" style="font-size:13px;">
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('wordEditorImageModal').style.display='none'">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" id="submitWordImageUrlBtn">Insert Image into Article</button>
+            </div>
+        </div>
     </div>
+</div>
+
+<!-- Word Editor Table Insert Modal -->
+<div class="word-modal-overlay" id="wordEditorTableModal">
+    <div class="word-modal-card">
+        <div class="word-modal-header">
+            <h3>Insert Table</h3>
+            <button type="button" class="word-modal-close" id="closeWordTableModal" onclick="document.getElementById('wordEditorTableModal').style.display='none'">&times;</button>
+        </div>
+
+        <p style="font-size:13px; color:var(--text-light); margin-top:-10px; margin-bottom:16px;">
+            Choose dimensions and styling for your data or comparison table:
+        </p>
+
+        <!-- Visual Table Matrix Hover Selector -->
+        <div class="table-matrix-wrapper" style="text-align:center; margin-bottom:18px;">
+            <div id="tableMatrixGrid" class="table-matrix-grid"></div>
+            <div id="tableMatrixLabel" style="font-size:12.5px; font-weight:600; color:var(--gold); margin-top:8px;">3 Rows &times; 3 Columns</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:14px;">
+            <div class="form-group">
+                <label class="static-label" for="tableRowsInput">Rows (Excl. Header)</label>
+                <input type="number" id="tableRowsInput" min="1" max="25" value="3" style="font-size:13px;">
+            </div>
+            <div class="form-group">
+                <label class="static-label" for="tableColsInput">Columns</label>
+                <input type="number" id="tableColsInput" min="1" max="10" value="3" style="font-size:13px;">
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:18px;">
+            <div class="form-group">
+                <label class="static-label" for="tableStyleSelect">Table Style</label>
+                <select id="tableStyleSelect" style="font-size:13px; width:100%;">
+                    <option value="artisan">RT Artisan (Chocolate &amp; Cream)</option>
+                    <option value="minimal">Modern Minimal (Clean Borders)</option>
+                    <option value="striped">Zebra Striped (High Contrast)</option>
+                </select>
+            </div>
+            <div class="form-group" style="display:flex; flex-direction:column; justify-content:center;">
+                <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer; margin-top:16px; text-transform:none; font-weight:500;">
+                    <input type="checkbox" id="tableHeaderRowCheckbox" checked style="width:16px; height:16px; accent-color:var(--green-900);">
+                    <span>Include Header Row</span>
+                </label>
+            </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('wordEditorTableModal').style.display='none'">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="confirmInsertTableBtn" onclick="window.confirmInsertTable && window.confirmInsertTable()">Insert Table</button>
+        </div>
+    </div>
+</div>
+
+<!-- Contextual Floating Table Toolbar -->
+<div id="floatingTableToolbar" class="editor-floating-toolbar" style="display:none;">
+    <span class="floating-toolbar-title">Table:</span>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('moveUp')" title="Move Table Above Previous Block">&uarr; Move Up</button>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('moveDown')" title="Move Table Below Next Block">&darr; Move Down</button>
+    <div class="floating-sep"></div>
+    <select class="floating-select" id="floatingTableWidthSelect" onchange="window.tableAction && window.tableAction('setWidth', this.value)" title="Table Width">
+        <option value="100%">Width: 100%</option>
+        <option value="85%">Width: 85%</option>
+        <option value="70%">Width: 70%</option>
+        <option value="55%">Width: 55%</option>
+    </select>
+    <select class="floating-select" id="floatingTableAlignSelect" onchange="window.tableAction && window.tableAction('setAlign', this.value)" title="Table Alignment">
+        <option value="center">Align: Center</option>
+        <option value="left">Align: Left</option>
+        <option value="right">Align: Right</option>
+    </select>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('equalCols')" title="Distribute Columns Equally">Equal Cols</button>
+    <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addRowAbove')" title="Add Row Above">+ Row &uarr;</button>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addRowBelow')" title="Add Row Below">+ Row &darr;</button>
+    <button type="button" class="floating-btn floating-btn-danger" onclick="window.tableAction && window.tableAction('deleteRow')" title="Delete Current Row">&minus; Row</button>
+    <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addColLeft')" title="Add Column Left">+ Col &larr;</button>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('addColRight')" title="Add Column Right">+ Col &rarr;</button>
+    <button type="button" class="floating-btn floating-btn-danger" onclick="window.tableAction && window.tableAction('deleteCol')" title="Delete Current Column">&minus; Col</button>
+    <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('insertParagraphBelow')" title="Insert an empty paragraph below this table">+ Paragraph</button>
+    <button type="button" class="floating-btn" onclick="window.tableAction && window.tableAction('toggleHeader')" title="Toggle Table Header">Header</button>
+    <button type="button" class="floating-btn floating-btn-danger" onclick="window.tableAction && window.tableAction('deleteTable')" title="Delete Entire Table">Delete Table</button>
+</div>
+
+<!-- Contextual Floating Image Toolbar -->
+<div id="floatingImageToolbar" class="editor-floating-toolbar" style="display:none;">
+    <span class="floating-toolbar-title">Image:</span>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('moveUp')" title="Move Image Above Previous Block">&uarr; Move Up</button>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('moveDown')" title="Move Image Below Next Block">&darr; Move Down</button>
+    <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" data-img-align="left" onclick="window.imageAction && window.imageAction('alignLeft')" title="Float Left with text wrap">&larr; Left</button>
+    <button type="button" class="floating-btn" data-img-align="center" onclick="window.imageAction && window.imageAction('alignCenter')" title="Center Block">&#9632; Center</button>
+    <button type="button" class="floating-btn" data-img-align="right" onclick="window.imageAction && window.imageAction('alignRight')" title="Float Right with text wrap">&rarr; Right</button>
+    <button type="button" class="floating-btn" data-img-align="wide" onclick="window.imageAction && window.imageAction('alignWide')" title="Full Bleed Wide">&harr; Wide</button>
+    <div class="floating-sep"></div>
+    <div class="floating-size-group" title="Quick Image Size">
+        <button type="button" class="floating-btn floating-size-btn" data-img-size="25%" onclick="window.imageAction && window.imageAction('setSize', '25%')">25%</button>
+        <button type="button" class="floating-btn floating-size-btn" data-img-size="33%" onclick="window.imageAction && window.imageAction('setSize', '33%')">33%</button>
+        <button type="button" class="floating-btn floating-size-btn" data-img-size="50%" onclick="window.imageAction && window.imageAction('setSize', '50%')">50%</button>
+        <button type="button" class="floating-btn floating-size-btn" data-img-size="75%" onclick="window.imageAction && window.imageAction('setSize', '75%')">75%</button>
+        <button type="button" class="floating-btn floating-size-btn" data-img-size="100%" onclick="window.imageAction && window.imageAction('setSize', '100%')">100%</button>
+    </div>
+    <div class="floating-sep"></div>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('insertParagraphBelow')" title="Insert an empty paragraph below this image">+ Paragraph</button>
+    <button type="button" class="floating-btn" onclick="window.imageAction && window.imageAction('editCaption')" title="Edit Caption">Caption</button>
+    <button type="button" class="floating-btn floating-btn-danger" onclick="window.imageAction && window.imageAction('deleteImage')" title="Remove Image">Remove</button>
 </div>
 
 <!-- Immersive Full Preview Overlay -->
@@ -700,6 +1005,20 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     font-size: 16px;
     line-height: 1.85;
     color: var(--text-muted);
+}
+.blog-article-section p *,
+.blog-article-section li *,
+.blog-article-section blockquote *,
+.blog-article-section td *,
+.blog-article-section th * {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+}
+.blog-article-section font {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    color: inherit !important;
 }
 .blog-article-section h2 {
     font-family: var(--font-heading);
@@ -746,6 +1065,61 @@ render_admin_header($isEdit ? "Edit Article" : "New Article", "blogs");
     border-radius: 8px;
     margin: 24px 0;
     box-shadow: var(--shadow-sm);
+}
+
+/* Figures & Tables in Preview */
+.blog-article-section figure.blog-figure {
+    margin: 32px auto;
+    text-align: center;
+    display: block;
+    max-width: 100%;
+}
+.blog-article-section figure.blog-figure img {
+    margin: 0 !important;
+}
+.blog-article-section figure.blog-figure figcaption {
+    font-size: 13px;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 8px;
+}
+.blog-article-section figure.blog-figure-left {
+    float: left;
+    margin: 12px 24px 20px 0;
+    width: 48%;
+    max-width: 100%;
+}
+.blog-article-section figure.blog-figure-right {
+    float: right;
+    margin: 12px 0 20px 24px;
+    width: 48%;
+    max-width: 100%;
+}
+.blog-article-section figure.blog-figure-wide {
+    width: 100% !important;
+    max-width: 100%;
+    margin: 40px 0;
+}
+.blog-article-section::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.blog-article-section .table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin: 32px 0;
+    border-radius: 10px;
+}
+.blog-article-section table.blog-custom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.blog-article-section table.blog-custom-table th,
+.blog-article-section table.blog-custom-table td {
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    text-align: left;
 }
 </style>
 
@@ -908,11 +1282,17 @@ function parseMarkdown(markdown) {
             return;
         }
 
-        // Table support
+        // HTML blocks (div, figure, table, etc.)
+        if (/^<(div|img|hr|p|section|a|span|h[1-6]|table|thead|tbody|tr|td|th|iframe|blockquote|ul|ol|pre|figure)/i.test(block)) {
+            html += block + '\n';
+            return;
+        }
+
+        // Table support (Markdown table pipe syntax)
         if (block.startsWith('|')) {
-            const tableLines = block.split('\n');
-            if (tableLines.length >= 2) {
-                let tableHtml = '<div class="table-responsive"><table>\n';
+            const lines = block.split('\n');
+            if (lines.length >= 2) {
+                let tableHtml = '<div class="table-responsive-wrapper"><table class="blog-custom-table blog-table-artisan">\n';
                 let hasHeader = false;
                 tableLines.forEach(line => {
                     const trimmedLine = line.trim().replace(/^\||\|$/g, '');
@@ -943,6 +1323,11 @@ function parseMarkdown(markdown) {
             }
         }
 
+        // Heading 1 (demoted to H2 for SEO)
+        if (block.startsWith('# ')) {
+            html += `<h2>${parseInline(block.substring(2))}</h2>\n`;
+            return;
+        }
         // Heading 2
         if (block.startsWith('## ')) {
             html += `<h2>${parseInline(block.substring(3))}</h2>\n`;
@@ -1056,14 +1441,14 @@ function parseMarkdown(markdown) {
 }
 </script>
 
-<script src="editor.js"></script>
+<script src="word-editor.js?v=<?php echo filemtime(__DIR__ . '/word-editor.js'); ?>"></script>
 
 <!-- UI logic for drawer toggle, preview toggles, image previews, and SEO synchronization -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Initialize Block Editor Engine
-    const initialMarkdown = <?php echo json_encode($post['content']); ?>;
-    initBlockEditor(initialMarkdown);
+    // 1. Initialize Word Document Editor Engine
+    const initialContent = <?php echo json_encode($post['content']); ?>;
+    initWordEditor(initialContent);
 
     // 2. Settings Drawer Toggle
     const drawer = document.getElementById('settingsDrawer');
@@ -1121,7 +1506,280 @@ document.addEventListener('DOMContentLoaded', function() {
     if (slugInput) slugInput.addEventListener('input', updateSeoPreview);
     if (excerptInput) excerptInput.addEventListener('input', updateSeoPreview);
     updateSeoPreview(); // Run initial SEO preview load
+
+    // Initialize Interactive Table Matrix Picker
+    initTableMatrix();
 });
+
+// Synchronize Article Visibility toggles and badges across Topbar and Drawer
+function syncVisibilityState(isChecked, triggerAjax = false) {
+    const topToggle = document.getElementById('topbarVisibilityToggle');
+    const drawerToggle = document.getElementById('drawerVisibilityToggle');
+    const hiddenInput = document.getElementById('isPublishedHiddenInput');
+    const statusBadge = document.getElementById('topbarVisibilityBadge');
+    const statusIcon = document.getElementById('topbarVisibilityIcon');
+    const statusLabel = document.getElementById('topbarVisibilityLabel');
+    const drawerHint = document.getElementById('drawerVisibilityHint');
+
+    if (topToggle) topToggle.checked = isChecked;
+    if (drawerToggle) drawerToggle.checked = isChecked;
+    if (hiddenInput) hiddenInput.value = isChecked ? '1' : '0';
+
+    if (statusBadge) {
+        statusBadge.className = 'status-badge ' + (isChecked ? 'published' : 'draft');
+        if (isChecked) {
+            statusBadge.style.background = '';
+            statusBadge.style.color = '';
+            statusBadge.style.borderColor = '';
+        } else {
+            statusBadge.style.background = 'rgba(217, 119, 6, 0.15)';
+            statusBadge.style.color = '#d97706';
+            statusBadge.style.borderColor = 'rgba(217, 119, 6, 0.3)';
+        }
+    }
+    if (statusIcon) statusIcon.innerText = isChecked ? '👁️' : '🔒';
+    if (statusLabel) statusLabel.innerText = isChecked ? 'Visible (Published)' : 'Hidden (Draft)';
+
+    if (drawerHint) {
+        drawerHint.innerText = isChecked ? 'Visible to public on website' : 'Hidden from public (Draft)';
+    }
+
+    // If existing blog, also perform instant AJAX toggle so status is saved immediately
+    const blogIdEl = document.getElementById('blogId');
+    const blogId = blogIdEl ? parseInt(blogIdEl.value, 10) : 0;
+    if (triggerAjax && blogId > 0) {
+        const csrfTokenEl = document.querySelector('input[name="csrf_token"]');
+        const csrfToken = csrfTokenEl ? csrfTokenEl.value : '';
+        const formData = new FormData();
+        formData.append('action', 'toggle_publish');
+        formData.append('blog_id', blogId);
+        formData.append('is_published', isChecked ? '1' : '0');
+        formData.append('csrf_token', csrfToken);
+
+        fetch('blog-editor.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (window.showToast) {
+                    showToast(data.message, isChecked ? 'success' : 'warning');
+                }
+            } else {
+                if (window.showToast) showToast(data.message || 'Failed to update visibility', 'danger');
+            }
+        })
+        .catch(err => {
+            if (window.showToast) showToast('Network error updating visibility: ' + err.message, 'danger');
+        });
+    }
+}
+
+// Global Save Article Form with Auto-Drawer Expansion on Validation Errors
+function saveArticleForm() {
+    if (window.syncWordEditorContent) {
+        window.syncWordEditorContent();
+    }
+    const form = document.getElementById('editorForm');
+    if (!form) return;
+
+    const titleInput = document.getElementById('title');
+    const slugInput = document.getElementById('slug');
+    const excerptInput = document.getElementById('excerpt');
+    const contentInput = document.getElementById('content');
+    const drawer = document.getElementById('settingsDrawer');
+
+    if (!titleInput.value.trim()) {
+        if (drawer && !drawer.classList.contains('open')) {
+            drawer.classList.add('open');
+        }
+        titleInput.focus();
+        if (window.showToast) showToast('Please enter an article title in Cover & Settings', 'danger');
+        return;
+    }
+
+    if (!slugInput.value.trim()) {
+        if (drawer && !drawer.classList.contains('open')) {
+            drawer.classList.add('open');
+        }
+        slugInput.focus();
+        if (window.showToast) showToast('Please enter a URL slug in Cover & Settings', 'danger');
+        return;
+    }
+
+    if (!excerptInput.value.trim()) {
+        if (drawer && !drawer.classList.contains('open')) {
+            drawer.classList.add('open');
+        }
+        excerptInput.focus();
+        if (window.showToast) showToast('Please provide an excerpt summary in Cover & Settings', 'danger');
+        return;
+    }
+
+    if (!contentInput.value.trim() || contentInput.value.trim() === '<p><br></p>') {
+        if (window.showToast) showToast('Article content cannot be empty. Please write your article.', 'danger');
+        const doc = document.getElementById('wordEditorDoc');
+        if (doc) doc.focus();
+        return;
+    }
+
+    window.__isEditorDirty = false;
+    form.submit();
+}
+
+// Image Modal Tabs
+function switchImageModalTab(tabId) {
+    const tabs = document.querySelectorAll('#wordEditorImageModal .modal-tab-btn');
+    const panes = document.querySelectorAll('#wordEditorImageModal .modal-tab-pane');
+    tabs.forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+    });
+    panes.forEach(pane => {
+        pane.style.display = pane.id === tabId ? 'block' : 'none';
+    });
+}
+
+// Media Library Loading & Filtering
+let loadedMediaItems = [];
+
+function loadEditorMediaLibrary() {
+    const grid = document.getElementById('modalMediaGrid');
+    if (!grid) return;
+    if (loadedMediaItems.length > 0) {
+        renderMediaLibrary(loadedMediaItems);
+        return;
+    }
+    grid.innerHTML = '<div style="padding:30px; text-align:center; color:var(--text-light); font-size:13px; grid-column:1/-1;">Loading media items...</div>';
+    fetch('blog-editor.php?action=get_media_library')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.media) {
+                loadedMediaItems = data.media;
+                renderMediaLibrary(loadedMediaItems);
+            } else {
+                grid.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-light); font-size:13px; grid-column:1/-1;">No media items found.</div>';
+            }
+        })
+        .catch(err => {
+            grid.innerHTML = '<div style="padding:20px; text-align:center; color:#e06c75; font-size:13px; grid-column:1/-1;">Failed to load media library.</div>';
+        });
+}
+
+function renderMediaLibrary(items) {
+    const grid = document.getElementById('modalMediaGrid');
+    if (!grid) return;
+    if (!items || items.length === 0) {
+        grid.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-light); font-size:13px; grid-column:1/-1;">No matching media items found.</div>';
+        return;
+    }
+    grid.innerHTML = items.map(item => {
+        const itemUrl = item.url || item.path || '';
+        const itemName = item.filename || 'Image';
+        const displaySrc = itemUrl.startsWith('http') ? itemUrl : ('/' + itemUrl.replace(/^(\.\.\/|\/)/, ''));
+        return `
+        <div class="modal-media-item" onclick="selectMediaItem('${itemUrl}', '${escapeHtml(itemName)}')">
+            <img src="${displaySrc}" alt="${escapeHtml(itemName)}" loading="lazy">
+            <div class="modal-media-item-name" title="${escapeHtml(itemName)}">${escapeHtml(itemName)}</div>
+        </div>
+    `;
+    }).join('');
+}
+
+function filterMediaLibrary(query) {
+    if (!query || !query.trim()) {
+        renderMediaLibrary(loadedMediaItems);
+        return;
+    }
+    const q = query.toLowerCase().trim();
+    const filtered = loadedMediaItems.filter(item => item.filename.toLowerCase().includes(q));
+    renderMediaLibrary(filtered);
+}
+
+function selectMediaItem(url, name) {
+    document.querySelectorAll('.modal-media-item').forEach(el => el.classList.remove('selected'));
+    if (window.event && window.event.currentTarget) {
+        window.event.currentTarget.classList.add('selected');
+    }
+    updateSelectedPreview(url, name);
+}
+
+function updateSelectedPreview(url, name) {
+    const previewBar = document.getElementById('selectedImagePreviewBar');
+    const imgThumb = document.getElementById('modalSelectedImgThumb');
+    const imgName = document.getElementById('modalSelectedImgName');
+    const imgUrl = document.getElementById('modalSelectedImgUrl');
+    const urlInput = document.getElementById('wordImageUrlInput');
+
+    if (!url || !url.trim()) {
+        if (previewBar) previewBar.style.display = 'none';
+        return;
+    }
+
+    const cleanUrl = url.trim();
+    const fullUrl = cleanUrl.startsWith('http') || cleanUrl.startsWith('/') ? cleanUrl : ('../' + cleanUrl);
+    
+    if (imgThumb) imgThumb.src = fullUrl;
+    if (imgName) imgName.innerText = name || cleanUrl.split('/').pop() || 'Selected Image';
+    if (imgUrl) imgUrl.innerText = cleanUrl;
+    if (urlInput) urlInput.value = cleanUrl;
+    if (previewBar) previewBar.style.display = 'flex';
+}
+
+// Table Matrix Hover Grid Builder
+function initTableMatrix() {
+    const matrixGrid = document.getElementById('tableMatrixGrid');
+    const matrixLabel = document.getElementById('tableMatrixLabel');
+    const rowsInput = document.getElementById('tableRowsInput');
+    const colsInput = document.getElementById('tableColsInput');
+    if (!matrixGrid) return;
+
+    matrixGrid.innerHTML = '';
+    const maxR = 6, maxC = 6;
+    for (let r = 1; r <= maxR; r++) {
+        for (let c = 1; c <= maxC; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'matrix-cell';
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            
+            cell.addEventListener('mouseenter', () => {
+                highlightMatrix(r, c);
+                if (matrixLabel) matrixLabel.innerText = `${r} Row${r > 1 ? 's' : ''} × ${c} Column${c > 1 ? 's' : ''}`;
+            });
+
+            cell.addEventListener('click', () => {
+                if (rowsInput) rowsInput.value = r;
+                if (colsInput) colsInput.value = c;
+                highlightMatrix(r, c);
+            });
+
+            matrixGrid.appendChild(cell);
+        }
+    }
+
+    function highlightMatrix(activeR, activeC) {
+        matrixGrid.querySelectorAll('.matrix-cell').forEach(c => {
+            const cr = parseInt(c.dataset.row, 10);
+            const cc = parseInt(c.dataset.col, 10);
+            c.classList.toggle('highlighted', cr <= activeR && cc <= activeC);
+        });
+    }
+
+    // Default highlight 3x3
+    highlightMatrix(3, 3);
+
+    if (rowsInput && colsInput) {
+        const updateFromInputs = () => {
+            const r = Math.min(6, Math.max(1, parseInt(rowsInput.value, 10) || 1));
+            const c = Math.min(6, Math.max(1, parseInt(colsInput.value, 10) || 1));
+            highlightMatrix(r, c);
+            if (matrixLabel) matrixLabel.innerText = `${rowsInput.value} Row${rowsInput.value > 1 ? 's' : ''} × ${colsInput.value} Column${colsInput.value > 1 ? 's' : ''}`;
+        };
+        rowsInput.addEventListener('input', updateFromInputs);
+        colsInput.addEventListener('input', updateFromInputs);
+    }
+}
 
 // Dropzone preview image loaders
 function previewFile(input, previewId) {
@@ -1143,7 +1801,6 @@ function openFullPreview() {
     const overlay = document.getElementById('fullPreviewOverlay');
     const title = document.getElementById('title').value.trim();
     const category = document.getElementById('category').value;
-    const contentMarkdown = document.getElementById('content').value;
     
     document.getElementById('previewFullTitle').innerText = title || 'Untitled Blog Post';
     document.getElementById('previewFullCategory').innerText = category;
@@ -1158,7 +1815,18 @@ function openFullPreview() {
         headerWrapper.style.display = 'none';
     }
 
-    document.getElementById('previewFullContent').innerHTML = parseMarkdown(contentMarkdown);
+    if (window.syncWordEditorContent) {
+        window.syncWordEditorContent();
+    }
+    const docEl = document.getElementById('wordEditorDoc');
+    let previewHtml = '';
+    if (window.cleanHtmlForSave && docEl) {
+        previewHtml = window.cleanHtmlForSave(docEl.innerHTML);
+    } else {
+        previewHtml = document.getElementById('content')?.value || '';
+    }
+
+    document.getElementById('previewFullContent').innerHTML = previewHtml;
     overlay.style.display = 'block';
 }
 

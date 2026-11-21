@@ -1,11 +1,9 @@
 <?php
-  $pageTitle = "Contact RT Chocos — India's Chocolate Academy | Consulting, Training & Recipe Development";
-  $pageDescription = "Contact RT Chocos for chocolate consulting, bean-to-bar training, recipe development, and workshop bookings across India. Reach India's first chocolate educator Aarti Saluja Sahni in Mumbai for professional chocolate courses and corporate chocolate training.";
-  $pageKeywords = "contact RT Chocos, chocolate consulting India, bean to bar consulting Mumbai, recipe development chocolate India, chocolate training India, hire chocolate consultant India, chocolate workshop booking, corporate chocolate training India, chocolate educator contact, RT Chocos Mumbai";
+  $pageTitle = "Contact RT Chocos | Chocolate Training & Consulting India";
+  $pageDescription = "Get in touch with RT Chocos for chocolate recipe development, bean-to-bar consulting, workshop bookings, and corporate chocolate training across India.";
   $pathPrefix = "";
-  
-  $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-  $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  $canonicalUrl = "https://www.rtchocos.com/contact";
+  $schemaType = "ContactPage";
   
   $breadcrumbs = [
       ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
@@ -26,8 +24,8 @@
   <div class="section">
     <div class="contact-grid">
       <div>
-        <div class="section-label">Reach Out</div>
-        <h2 style="font-size:32px;margin-bottom:16px;">Contact Details</h2>
+        <div class="section-label mobile-hide-text">Direct Channels</div>
+        <h2 class="section-title">Contact Details</h2>
         <div class="divider" style="margin-bottom:24px;"></div>
         <div class="contact-item"><div><div class="contact-label">Location</div><div class="contact-value">Mumbai, Maharashtra, India</div></div></div>
         <div class="contact-item"><div><div class="contact-label">Email</div><div class="contact-value">hello@rtchocos.com</div></div></div>

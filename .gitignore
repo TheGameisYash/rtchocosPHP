@@ -3,4 +3,11 @@ scratch/
 *.log
 .env
 data/
-assets/blogs/
+node_modules/
+backups/*.zip
+/*.jpg
+/*.mp4
+assets/*_backup.mp4
+assets/*_clean.mp4
+
+

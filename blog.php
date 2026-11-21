@@ -2,32 +2,37 @@
   require_once __DIR__ . '/includes/db.php';
   require_once __DIR__ . '/includes/blog-cache.php';
   require_once __DIR__ . '/includes/blog-data.php';
+  require_once __DIR__ . '/admin/auth.php';
 
-  $blogs = [];
-  try {
-      $pdo = get_db();
-      $stmt = $pdo->query("SELECT id, slug, title, category, created_at, excerpt, image_path, thumbnail_path, youtube_url, body_class, read_time FROM blogs WHERE is_published = 1 ORDER BY created_at DESC");
-      $dbBlogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      foreach ($dbBlogs as $blog) {
-          $blogs[] = [
-              'id' => (int)$blog['id'],
-              'slug' => $blog['slug'],
-              'title' => $blog['title'],
-              'category' => $blog['category'],
-              'date' => date('M Y', strtotime($blog['created_at'])),
-              'read_time' => $blog['read_time'] ?: '5 min',
-              'excerpt' => $blog['excerpt'],
-              'image' => $blog['image_path'],
-              'thumbnail' => $blog['thumbnail_path'] ?: $blog['image_path'],
-              'youtube_url' => $blog['youtube_url'],
-              'body_class' => $blog['body_class'] ?: ''
-          ];
-      }
-  } catch (Exception $e) {
-      $cached = get_cached_blog_list();
-      if ($cached) {
-          $blogs = $cached;
-      } else {
+  $isAdmin = function_exists('is_admin_logged_in') && is_admin_logged_in();
+  $blogs = !$isAdmin ? get_cached_blog_list(1800) : null;
+  if ($blogs === null || empty($blogs)) {
+      try {
+          $pdo = get_db();
+          $stmt = $pdo->query("SELECT id, slug, title, category, created_at, excerpt, image_path, thumbnail_path, youtube_url, body_class, read_time FROM blogs WHERE is_published = 1 ORDER BY created_at DESC");
+          $dbBlogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          $blogs = [];
+          foreach ($dbBlogs as $blog) {
+              $blogs[] = [
+                  'id' => (int)$blog['id'],
+                  'slug' => $blog['slug'],
+                  'title' => $blog['title'],
+                  'category' => $blog['category'],
+                  'date' => date('M Y', strtotime($blog['created_at'])),
+                  'read_time' => $blog['read_time'] ?: '5 min',
+                  'excerpt' => $blog['excerpt'],
+                  'image' => $blog['image_path'],
+                  'thumbnail' => $blog['thumbnail_path'] ?: $blog['image_path'],
+                  'youtube_url' => $blog['youtube_url'],
+                  'body_class' => $blog['body_class'] ?: ''
+              ];
+          }
+          cache_blog_list($blogs);
+      } catch (Exception $e) {
+          $cached = get_cached_blog_list();
+          if ($cached) {
+              $blogs = $cached;
+          } else {
           $idx = 1;
           $reversedBlogs = array_reverse($BLOGS, true);
           foreach ($reversedBlogs as $slug => $meta) {
@@ -44,17 +49,19 @@
                   'youtube_url' => $meta['youtube_url'] ?? null,
                   'body_class' => $meta['bodyClass'] ?? ''
               ];
-          }
-      }
+        }
+    }
+  }
   }
 
-  $pageTitle = "Indian Chocolate Blog — Cocoa Science, Bean-to-Bar Articles & Craft Chocolate Learning | RT Chocos";
-  $pageDescription = "Read India's first chocolate blog by RT Chocos. In-depth articles on cocoa science, bean-to-bar chocolate making, tempering chemistry, flavor profiling, cacao farming, and Indian craft chocolate — written by chocolate educator Aarti Saluja Sahni.";
-  $pageKeywords = "Indian chocolate blog, chocolate blog India, India first chocolate blog, cocoa science blog, bean to bar articles India, craft chocolate blog, chocolate making blog India, tempering chocolate science, cacao farming India blog, chocolate education articles, chocolate learning blog, RT Chocos blog, Aarti Saluja Sahni blog, chocolate science articles, bean to bar chocolate India blog, chocolate flavor profiling, cocoa chemistry blog";
+  $pageTitle = "Chocolate Blog India: Cocoa Science & Making | RT Chocos";
+  $pageDescription = "An Indian chocolate blog with practical guides to cocoa science, tempering, ingredients, flavour, defects and bean-to-bar chocolate making.";
   $pathPrefix = "";
-  
-  $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-  $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  $canonicalUrl = "https://www.rtchocos.com/blog";
+  $schemaType = "CollectionPage";
+  $itemList = ['name' => 'RT Chocos chocolate articles', 'items' => array_map(function($blog) {
+      return ['name' => $blog['title'], 'url' => 'https://www.rtchocos.com/blog/' . $blog['slug']];
+  }, $blogs)];
   
   $breadcrumbs = [
       ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
@@ -65,17 +72,62 @@
 ?>
 
 <!-- --- HOME PAGE --- -->
-<div id="page-blog" class="page active" style="padding-top:80px;">
-  <div class="page-hero blog-page-hero">
-    <div class="blog-page-hero-image fade-in">
-      <img src="assets/blog.jpg" alt="RT Chocos blog" />
+<div id="page-blog" class="page active">
+  <!-- =========================================================================
+       BLOG HERO: Pure Full-Bleed Video Hero (Unmasked, No Filters, Clean Canvas)
+       ========================================================================= -->
+  <section class="blog-hero-lux">
+    <!-- Pure Video Canvas (No Masking, No Filters) -->
+    <div class="blog-hero-video-bg">
+      <video 
+        id="blogHeroFullscreenVideo" 
+        class="blog-hero-fullscreen-video" 
+        autoplay 
+        loop 
+        muted 
+        playsinline 
+        preload="auto" 
+        poster="assets/blog_hero_poster.jpg"
+      >
+        <source src="assets/blog%20section%20herovideo.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+      </video>
     </div>
-  </div>
+
+    <!-- Clean Hero Content -->
+    <div class="blog-hero-lux-container">
+      <div class="blog-hero-lux-left">
+        <h1 class="blog-hero-lux-title">The Cacao Journal</h1>
+        <p class="blog-hero-lux-desc">
+          From ancient Mayan origins to modern flavour chemistry and bean-to-bar craftsmanship — explore every angle of cacao craft and confectionery science.
+        </p>
+
+        <div class="blog-hero-lux-actions">
+          <button type="button" class="btn-blog-lux-explore" onclick="document.getElementById('blog-grid').scrollIntoView({behavior: 'smooth'})">
+            <span>EXPLORE ARTICLES</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
   <div class="section">
-    <div style="text-align:center;margin-bottom:48px;">
-      <div class="section-label" style="margin-bottom:12px;">The Cacao Journal</div>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,52px);font-weight:400;color:var(--brown);margin-bottom:12px;letter-spacing:-0.01em;">Articles &amp; Insights</h1>
-      <p style="font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:var(--brown-light);font-weight:300;max-width:560px;margin:0 auto;">Science, craft, and stories from the world of bean-to-bar chocolate</p>
+    <div style="text-align:center;margin-bottom:48px; display: flex; flex-direction: column; align-items: center;">
+      <div class="section-label">The Cacao Journal</div>
+      <h1 class="section-title">Articles &amp; Insights</h1>
+      <p class="section-subtitle">Science, craft, and stories from the world of bean-to-bar chocolate</p>
+    </div>
+    <div class="blog-seo-intro">
+      <p><strong>RT Chocos is an independent chocolate blog from India</strong>, written for makers who want to understand what happens inside the bowl—not simply follow a method. Explore evidence-led articles on cocoa ingredients, tempering, bloom, flavour development, formulation and bean-to-bar production.</p>
+      <nav aria-label="Chocolate learning topics">
+        <a href="#blog-grid">Cocoa science</a>
+        <a href="#blog-grid">Beginner guides</a>
+        <a href="gallery.php">Chocolate recipes</a>
+        <a href="workshops.php">Workshops</a>
+      </nav>
     </div>
     <div class="blog-header-bar">
       <div class="blog-filters-wrapper" id="blog-filters">

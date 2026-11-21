@@ -1,8 +1,18 @@
 <?php
-// Determine canonical URL if not set
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/maintenance_check.php';
+
+$cartCount = (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) ? array_sum($_SESSION['cart']) : 0;
+
+// Canonicals always point to the public HTTPS URL, dynamically resolved from site_settings
+$siteUrl = rtrim(get_site_setting('site_url', 'https://www.rtchocos.com'), '/');
 if (empty($canonicalUrl)) {
-    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-    $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $requestPath = $requestPath === '/index.php' ? '/' : $requestPath;
+    $canonicalUrl = $siteUrl . $requestPath;
 }
 
 // Fallback OG description and image
@@ -14,14 +24,34 @@ if (strpos($ogImage, 'http') !== 0) {
 }
 $ogTitle = !empty($pageTitle) ? $pageTitle : "RT Chocos | India's Chocolate Blog & Learning";
 $ogType = !empty($pageType) ? $pageType : "website";
+
+$adminSiteTheme = get_site_setting('default_site_theme', 'theme-cream-forest');
 ?>
 <!DOCTYPE html>
-<html lang="en-IN">
+<html lang="en-IN" class="<?php echo htmlspecialchars($adminSiteTheme, ENT_QUOTES, 'UTF-8'); ?>">
 <head>
+<script>
+  var pathPrefix = "<?php echo isset($pathPrefix) ? addslashes($pathPrefix) : ''; ?>";
+  (function() {
+    const savedTheme = localStorage.getItem('rtchocos-color-theme');
+    if (savedTheme) {
+      document.documentElement.className = savedTheme;
+    }
+  })();
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title><?php echo $pageTitle; ?></title>
-<meta name="description" content="<?php echo $pageDescription; ?>" />
+<title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></title>
+<meta name="description" content="<?php echo htmlspecialchars($pageDescription, ENT_QUOTES, 'UTF-8'); ?>" />
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+<?php if (!empty($pageKeywords)): ?>
+<meta name="keywords" content="<?php echo htmlspecialchars($pageKeywords, ENT_QUOTES, 'UTF-8'); ?>" />
+<?php else: ?>
+<meta name="keywords" content="chocolate blog india, chocolate academy india, indian bean to bar chocolate, bean to bar chocolate, chocolate course india, chocolate workshops india, learn chocolate making india, cocoa science blog india, craft chocolate india, chocolate education india, chocolate blogging india, tempering chocolate course, chocolate consultant Mumbai, RT Chocos" />
+<?php endif; ?>
+<?php if (!empty($pageType) && $pageType === 'article'): ?>
+<meta name="author" content="Aarti Saluja Sahni" />
+<?php endif; ?>
 <link rel="icon" type="image/png" href="<?php echo $pathPrefix; ?>assets/favicon.png" />
 <link rel="apple-touch-icon" href="<?php echo $pathPrefix; ?>assets/favicon.png" />
 <link rel="canonical" href="<?php echo htmlspecialchars($canonicalUrl); ?>" />
@@ -35,11 +65,6 @@ $ogType = !empty($pageType) ? $pageType : "website";
 <meta name="geo.placename" content="Mumbai" />
 <meta property="og:locale" content="en_IN" />
 
-<?php
-$defaultKeywords = "chocolate academy India, Indian chocolate blog, India first chocolate blog, bean to bar India, bean to bar learning academy, chocolate course India, chocolate workshops India, learn chocolate making India, cocoa science blog India, craft chocolate India, chocolate education India, chocolate blogging India, tempering chocolate course, chocolate consultant Mumbai, artisan chocolate making India, cacao farming blog India, chocolate recipes India, chocolate maker India, RT Chocos, Aarti Saluja Sahni chocolate";
-$keywordsVal = !empty($pageKeywords) ? htmlspecialchars($pageKeywords) : $defaultKeywords;
-?>
-<meta name="keywords" content="<?php echo $keywordsVal; ?>" />
 <meta property="og:title" content="<?php echo htmlspecialchars($ogTitle); ?>" />
 <meta property="og:description" content="<?php echo htmlspecialchars($ogDescription); ?>" />
 <meta property="og:image" content="<?php echo htmlspecialchars($ogImage); ?>" />
@@ -59,8 +84,13 @@ $keywordsVal = !empty($pageKeywords) ? htmlspecialchars($pageKeywords) : $defaul
 <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 <link rel="dns-prefetch" href="https://www.youtube.com" />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Dancing+Script:wght@700&family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="<?php echo $pathPrefix; ?>style.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<?php
+  $cssFiles = [__DIR__ . '/../style.css', __DIR__ . '/../css/pages.css', __DIR__ . '/../css/mobile.css'];
+  $cssVersion = max(array_map('filemtime', array_filter($cssFiles, 'file_exists')));
+?>
+<link rel="stylesheet" href="<?php echo $pathPrefix; ?>style.css?v=<?php echo $cssVersion; ?>">
+<script src="<?php echo $pathPrefix; ?>js/anime.min.js"></script>
 
 <!-- JSON-LD Structured Data -->
 <?php
@@ -71,25 +101,18 @@ $graph = [
         "name" => "RT Chocos",
         "alternateName" => "RT Chocos Chocolate Academy",
         "url" => "https://www.rtchocos.com/",
-        "description" => "India's first chocolate blogging website and bean-to-bar learning academy. Professional chocolate education, cocoa science articles, craft chocolate workshops, and recipe development by Aarti Saluja Sahni.",
+        "description" => "An independent Indian chocolate learning platform covering bean-to-bar craft, cocoa science, recipes and workshops.",
         "logo" => [
             "@type" => "ImageObject",
             "url" => "https://www.rtchocos.com/assets/logo.png"
         ],
-        "founder" => [
-            "@id" => "https://www.rtchocos.com/#founder"
-        ],
-        "address" => [
-            "@type" => "PostalAddress",
-            "streetAddress" => "Mumbai Craft Kitchen Studio",
-            "addressLocality" => "Mumbai",
-            "addressRegion" => "MH",
-            "postalCode" => "400001",
-            "addressCountry" => "IN"
-        ],
-        "areaServed" => [
-            "@type" => "Country",
-            "name" => "India"
+        "founder" => ["@id" => "https://www.rtchocos.com/#aarti-saluja-sahni"],
+        "contactPoint" => [
+            "@type" => "ContactPoint",
+            "contactType" => "customer support",
+            "telephone" => "+91-91402-38741",
+            "email" => "hello@rtchocos.com",
+            "areaServed" => "IN"
         ],
         "sameAs" => [
             "https://www.instagram.com/rt.chocos/",
@@ -132,90 +155,42 @@ $graph = [
         ]
     ],
     [
+        "@type" => "Person",
+        "@id" => "https://www.rtchocos.com/#aarti-saluja-sahni",
+        "name" => "Aarti Saluja Sahni",
+        "url" => "https://www.rtchocos.com/about",
+        "image" => "https://www.rtchocos.com/assets/myphoto.jpg",
+        "jobTitle" => "Chocolate maker, recipe developer and educator",
+        "worksFor" => ["@id" => "https://www.rtchocos.com/#organization"],
+        "sameAs" => ["https://www.linkedin.com/in/aarti-saluja-sahni-8304637/"]
+    ],
+    [
         "@type" => "WebSite",
         "@id" => "https://www.rtchocos.com/#website",
         "url" => "https://www.rtchocos.com/",
-        "name" => "RT Chocos — India's First Chocolate Blog & Academy",
-        "description" => "India's first chocolate blogging website and bean-to-bar learning academy",
+        "name" => "RT Chocos",
+        "alternateName" => "RT Chocos Chocolate Blog",
+        "inLanguage" => "en-IN",
         "publisher" => [
             "@id" => "https://www.rtchocos.com/#organization"
         ],
         "potentialAction" => [
             "@type" => "SearchAction",
-            "target" => "https://www.rtchocos.com/blog.php?q={search_term_string}",
+            "target" => "https://www.rtchocos.com/blog?s={search_term_string}",
             "query-input" => "required name=search_term_string"
         ]
-    ],
-    [
-        "@type" => "LocalBusiness",
-        "@id" => "https://www.rtchocos.com/#localbusiness",
-        "name" => "RT Chocos — Chocolate Academy India",
-        "description" => "India's first chocolate blog and bean-to-bar learning academy offering professional chocolate workshops, cocoa science education, and craft chocolate courses in Mumbai and online.",
-        "image" => "https://www.rtchocos.com/assets/logo.png",
-        "url" => "https://www.rtchocos.com/",
-        "telephone" => "+919140238741",
-        "priceRange" => "$$",
-        "address" => [
-            "@type" => "PostalAddress",
-            "streetAddress" => "Mumbai Craft Kitchen Studio",
-            "addressLocality" => "Mumbai",
-            "addressRegion" => "MH",
-            "postalCode" => "400001",
-            "addressCountry" => "IN"
-        ],
-        "geo" => [
-            "@type" => "GeoCoordinates",
-            "latitude" => "19.0760",
-            "longitude" => "72.8777"
-        ],
-        "areaServed" => [
-            "@type" => "Country",
-            "name" => "India"
-        ],
-        "founder" => [
-            "@id" => "https://www.rtchocos.com/#founder"
-        ]
-    ],
-    [
-        "@type" => "Service",
-        "@id" => "https://www.rtchocos.com/#chocolate-consulting",
-        "name" => "Professional Bean-to-Bar Chocolate Consulting & Brand Business Setup",
-        "description" => "Comprehensive consulting services for craft and bean-to-bar chocolate businesses in India. Includes micro-batch production scaling, cacao bean sourcing, stone grinder selection, chocolate tempering machinery consulting, packaging guidance, and legal compliance.",
-        "provider" => [
-            "@id" => "https://www.rtchocos.com/#organization"
-        ],
-        "areaServed" => [
-            "@type" => "Country",
-            "name" => "India"
-        ],
-        "category" => "Chocolate Food Industry Consulting",
-        "offers" => [
-            "@type" => "Offer",
-            "priceCurrency" => "INR",
-            "price" => "0",
-            "description" => "Contact hello@rtchocos.com for custom quote pricing on consulting packages"
-        ]
-    ],
-    [
-        "@type" => "Service",
-        "@id" => "https://www.rtchocos.com/#recipe-development",
-        "name" => "Artisan Chocolate Recipe Development & Formulation Services",
-        "description" => "Professional chocolate recipe formulation, dark chocolate profiles, organic inclusions, dairy-free chocolate alternatives, sugar-free keto chocolate recipes, and shelf-life optimization by food developer Aarti Saluja Sahni.",
-        "provider" => [
-            "@id" => "https://www.rtchocos.com/#organization"
-        ],
-        "areaServed" => [
-            "@type" => "Country",
-            "name" => "India"
-        ],
-        "category" => "Food Recipe Development",
-        "offers" => [
-            "@type" => "Offer",
-            "priceCurrency" => "INR",
-            "price" => "0",
-            "description" => "Contact hello@rtchocos.com for custom chocolate recipe formulation packages"
-        ]
     ]
+];
+
+$graph[] = [
+    "@type" => !empty($schemaType) ? $schemaType : "WebPage",
+    "@id" => $canonicalUrl . "#webpage",
+    "url" => $canonicalUrl,
+    "name" => $pageTitle,
+    "description" => $pageDescription,
+    "inLanguage" => "en-IN",
+    "isPartOf" => ["@id" => "https://www.rtchocos.com/#website"],
+    "about" => ["@id" => "https://www.rtchocos.com/#organization"]
 ];
 
 if (!empty($pageType) && $pageType === 'article' && !empty($post)) {
@@ -228,16 +203,42 @@ if (!empty($pageType) && $pageType === 'article' && !empty($post)) {
         "headline" => $post['title'],
         "description" => $post['excerpt'],
         "image" => $ogImage,
-        "datePublished" => date('c', strtotime($dbPost['created_at'] ?? 'now')),
-        "dateModified" => date('c', strtotime($dbPost['updated_at'] ?? 'now')),
+        "datePublished" => date('c', strtotime($post['published'] ?? $dbPost['created_at'] ?? '2026-01-01')),
+        "dateModified" => date('c', strtotime($post['modified'] ?? $dbPost['updated_at'] ?? $post['published'] ?? '2026-01-01')),
         "author" => [
-            "@type" => "Person",
-            "name" => "Aarti Saluja Sahni",
-            "url" => "https://www.rtchocos.com/about.php"
+            "@id" => "https://www.rtchocos.com/#aarti-saluja-sahni"
         ],
         "publisher" => [
             "@id" => "https://www.rtchocos.com/#organization"
         ]
+    ];
+}
+
+if (!empty($itemList)) {
+    $graph[] = [
+        "@type" => "ItemList",
+        "name" => $itemList['name'],
+        "itemListElement" => array_map(function($item, $index) {
+            return [
+                "@type" => "ListItem",
+                "position" => $index + 1,
+                "name" => $item['name'],
+                "url" => $item['url']
+            ];
+        }, $itemList['items'], array_keys($itemList['items']))
+    ];
+}
+
+if (!empty($faqItems)) {
+    $graph[] = [
+        "@type" => "FAQPage",
+        "mainEntity" => array_map(function($faq) {
+            return [
+                "@type" => "Question",
+                "name" => $faq['question'],
+                "acceptedAnswer" => ["@type" => "Answer", "text" => $faq['answer']]
+            ];
+        }, $faqItems)
     ];
 }
 
@@ -306,44 +307,394 @@ if (!empty($recipeData)) {
         ]
     ];
 }
+
+if (!empty($pageSchema)) {
+    if (isset($pageSchema['@type'])) {
+        $graph[] = $pageSchema;
+    } else if (is_array($pageSchema)) {
+        foreach ($pageSchema as $s) {
+            $graph[] = $s;
+        }
+    }
+}
 ?>
 <script type="application/ld+json">
 <?php echo json_encode(["@context" => "https://schema.org", "@graph" => $graph], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT); ?>
 </script>
+<?php
+// Developer Custom Head Scripts & CSS Injection
+$customCss = get_site_setting('custom_css', '');
+if (!empty(trim($customCss))) {
+    echo "\n<!-- Developer Custom CSS -->\n<style>\n" . $customCss . "\n</style>\n";
+}
+$customHeadScripts = get_site_setting('custom_head_scripts', '');
+if (!empty(trim($customHeadScripts))) {
+    echo "\n<!-- Developer Custom Head Scripts -->\n" . $customHeadScripts . "\n";
+}
+?>
+<!-- Dedicated Mobile Isolated Presentation Layer -->
+<link rel="stylesheet" href="<?php echo $pathPrefix; ?>css/mobile.css?v=<?php echo file_exists(__DIR__ . '/../css/mobile.css') ? filemtime(__DIR__ . '/../css/mobile.css') : time(); ?>">
 </head>
 <body<?php echo !empty($bodyClass) ? ' class="' . $bodyClass . '"' : ''; ?>>
+
+<?php if (get_site_setting('maintenance_mode', '0') === '1'): ?>
+  <div style="background: linear-gradient(90deg, #dc2626, #b91c1c); color: #fff; text-align: center; padding: 10px 16px; font-size: 13px; font-weight: 600; position: sticky; top: 0; z-index: 999999; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <span>⚠️ <strong>MAINTENANCE MODE ACTIVE:</strong> Public visitors are currently seeing the 503 screen. You are viewing via authorized bypass.</span>
+    <?php if (!empty($_SESSION['dev_logged_in'])): ?>
+      <a href="/dev/maintenance.php" style="background: #fff; color: #991b1b; padding: 3px 10px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 700;">Dev Controls &rarr;</a>
+    <?php elseif (!empty($_SESSION['admin_logged_in'])): ?>
+      <a href="/admin/dashboard.php" style="background: #fff; color: #991b1b; padding: 3px 10px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 700;">Admin CMS &rarr;</a>
+    <?php endif; ?>
+  </div>
+<?php elseif (function_exists('is_beta_environment') && is_beta_environment() && function_exists('is_beta_lock_enabled') && is_beta_lock_enabled()): ?>
+  <div id="beta-staging-banner" style="background: linear-gradient(90deg, #161009, #26170d); color: #fcf8f2; border-bottom: 1px solid rgba(212, 175, 55, 0.45); text-align: center; padding: 7px 16px; font-size: 12px; font-weight: 500; position: fixed; top: 0; left: 0; right: 0; z-index: 10001; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; height: 34px; box-sizing: border-box;">
+    <span>🔒 <strong>BETA STAGING LOCKED:</strong> Public visitors cannot access this platform. You are viewing via authorized session.</span>
+    <a href="?lock_beta=1" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.6); color: #fca5a5; padding: 2px 8px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 600;" title="Lock this browser session again to view the lock screen">Lock Again</a>
+    <?php if (!empty($_SESSION['dev_logged_in'])): ?>
+      <a href="/dev/urls.php" style="background: #d4af37; color: #000; padding: 2px 9px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 700;">Beta Controls &rarr;</a>
+    <?php endif; ?>
+  </div>
+  <style>
+    #site-header { top: 34px !important; }
+    #hero { padding-top: 106px !important; }
+    #page-blog,
+    #page-workshops,
+    .shop-page-wrapper,
+    #page-about,
+    #page-gallery,
+    #page-chocopedia,
+    #page-contact {
+      padding-top: 114px !important;
+    }
+    .lab-cs-page {
+      padding-top: 150px !important;
+    }
+    @media (max-width: 768px) {
+      #page-blog,
+      #page-workshops,
+      .shop-page-wrapper,
+      #page-about,
+      #page-gallery,
+      #page-chocopedia,
+      #page-contact {
+        padding-top: 34px !important;
+      }
+      .lab-cs-page {
+        padding-top: 110px !important;
+      }
+    }
+  </style>
+<?php endif; ?>
+
 <!-- --- HEADER --- -->
+<?php
+  if (session_status() === PHP_SESSION_NONE) {
+    @session_start();
+  }
+  $currentURI = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+  $activeNav = 'home';
+  if (strpos($currentURI, 'about') !== false) $activeNav = 'about';
+  elseif (strpos($currentURI, 'shop') !== false || strpos($currentURI, 'product') !== false || strpos($currentURI, 'cart') !== false || strpos($currentURI, 'checkout') !== false) $activeNav = 'shop';
+  elseif (strpos($currentURI, 'workshops') !== false) $activeNav = 'workshops';
+  elseif (strpos($currentURI, 'blog') !== false) $activeNav = 'blog';
+  elseif (strpos($currentURI, 'innovation-lab') !== false) $activeNav = 'innovation-lab';
+  elseif (strpos($currentURI, 'chocopedia') !== false) $activeNav = 'chocopedia';
+  elseif (strpos($currentURI, 'gallery') !== false) $activeNav = 'gallery';
+  elseif (strpos($currentURI, 'contact') !== false) $activeNav = 'contact';
+
+  $cartCount = 0;
+  if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+    $cartCount = array_sum($_SESSION['cart']);
+  }
+?>
 <header id="site-header" class="<?php echo ($isHome ?? false) ? '' : 'not-home'; ?>">
+  <?php
+    $showBanner = get_site_setting('show_announcement_banner', '1');
+    $headerStoreMode = get_site_setting('store_mode', 'retail');
+    $announcementText = get_site_setting('store_announcement_text', '');
+    $announcementLinkText = get_site_setting('store_announcement_link_text', null);
+    $announcementLinkUrl = get_site_setting('store_announcement_link_url', '');
+
+    // Fallback message if banner is enabled and text is empty
+    if ($showBanner !== '0' && empty($announcementText)) {
+      if ($headerStoreMode === 'bulk') {
+        $announcementText = '📦 B2B Bulk Supplies, Private Labeling & Corporate Gifting Solutions | Pan-India Delivery';
+      } else {
+        $freeShipMin = get_site_setting('retail_free_shipping_min', '999');
+        $announcementText = '🍫 Handcrafted Artisanal Chocolates & Spreads — Free Pan-India Delivery on Orders Above ₹' . htmlspecialchars($freeShipMin) . '!';
+      }
+    }
+
+    // Determine link text: if explicitly set in settings, respect it (even if empty to hide link). If null/never set, use default.
+    if ($announcementLinkText === null) {
+      $announcementLinkText = ($headerStoreMode === 'bulk') ? 'Bulk Inquiry →' : 'Shop Now →';
+    }
+
+    // Determine link URL destination
+    if (empty($announcementLinkUrl)) {
+      $announcementLinkUrl = ($headerStoreMode === 'bulk') ? ($pathPrefix . 'shop.php#bulk-enquiry') : ($pathPrefix . 'shop.php');
+    }
+  ?>
+  <?php if ($showBanner !== '0' && !empty($announcementText)): ?>
+  <div class="site-announcement-strip" style="background: linear-gradient(90deg, #07150E, #11281A, #07150E); color: #E5B358; font-size: 11.5px; font-weight: 600; text-align: center; padding: 6px 16px; letter-spacing: 0.4px; border-bottom: 1px solid rgba(229,179,88,0.2); display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+    <span><?php echo htmlspecialchars($announcementText); ?></span>
+    <?php if (!empty($announcementLinkText)): ?>
+      <?php 
+        $isModalTrigger = (strpos($announcementLinkUrl, '#bulk-enquiry') !== false || strpos($announcementLinkUrl, '#enquiryModal') !== false);
+        $onclickAction = $isModalTrigger ? 'onclick="if(typeof openEnquiryModal===\'function\'){event.preventDefault();openEnquiryModal(\'Announcement Banner\');}"' : '';
+      ?>
+      <a href="<?php echo htmlspecialchars($announcementLinkUrl); ?>" <?php echo $onclickAction; ?> style="color: #FFFFFF; text-decoration: underline; font-size: 11px; margin-left: 6px; font-weight: 700; transition: opacity 0.2s ease;">
+        <?php echo htmlspecialchars($announcementLinkText); ?>
+      </a>
+    <?php endif; ?>
+  </div>
+  <?php endif; ?>
   <div class="header-inner">
-    <a href="<?php echo $pathPrefix; ?>index.php" class="logo" title="RT Chocos — India's First Chocolate Blog & Academy">
-      <img src="<?php echo $pathPrefix; ?>assets/logo.png" class="logo-img logo-img-header" alt="RT Chocos — India's First Chocolate Blog & Bean-to-Bar Academy" />
+    <div class="header-mobile-spacer" style="display: none;"></div>
+    <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" title="RT CHOCOS — Artisanal Cacao Academy & Journal">
+      <svg class="logo-svg-emblem" width="26" height="34" viewBox="0 0 40 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Top stem -->
+        <path d="M19 1.5C19 0.7 21 0.7 21 1.5V7.5H19V1.5Z" fill="#D4AF37"/>
+        <!-- Center segment -->
+        <path d="M20 7.5C21.8 17 21.8 35.5 20 45C18.2 35.5 18.2 17 20 7.5Z" fill="#D4AF37"/>
+        <!-- Inner right segment -->
+        <path d="M20 7.5C22.6 10 26 19 24.6 33C23.8 38 22.2 42 20 45C21.5 41.5 23.2 36.5 23.6 31.5C24.6 19 21.8 11.2 20 7.5Z" fill="#D4AF37"/>
+        <!-- Inner left segment -->
+        <path d="M20 7.5C17.4 10 14 19 15.4 33C16.2 38 17.8 42 20 45C18.5 41.5 16.8 36.5 16.4 31.5C15.4 19 18.2 11.2 20 7.5Z" fill="#D4AF37"/>
+        <!-- Outer right segment -->
+        <path d="M20 7.5C25.5 10 31.2 19 30.5 31C30 37.5 26.5 42.5 20 45C25.2 42 28.2 36.5 28.7 30.5C29.3 19.8 24.5 11.5 20 7.5Z" fill="#D4AF37"/>
+        <!-- Outer left segment -->
+        <path d="M20 7.5C14.5 10 8.8 19 9.5 31C10 37.5 13.5 42.5 20 45C14.8 42 11.8 36.5 11.3 30.5C10.7 19.8 15.5 11.5 20 7.5Z" fill="#D4AF37"/>
+      </svg>
+      <span class="logo-title">RT CHOCOS</span>
     </a>
-    <nav class="header-nav-left" aria-label="Primary navigation">
-      <a class="nav-link" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
-      <a class="nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about">About</a>
-      <a class="nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops" title="Chocolate Academy & Workshops India">Workshops</a>
+
+    <div class="header-divider"></div>
+
+    <nav class="header-nav" aria-label="Primary navigation">
+      <!-- 1. EXPLORE -->
+      <div class="nav-item-dropdown">
+        <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'home' || $activeNav === 'about' || $activeNav === 'chocopedia') ? 'active' : ''; ?>" data-page="explore" href="<?php echo $pathPrefix ?: 'index.php'; ?>" title="Explore RT Chocos">
+          <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+          </svg>
+          <span class="nav-label">EXPLORE</span>
+        </a>
+        <div class="nav-dropdown-menu">
+          <a class="dropdown-item <?php echo $activeNav === 'home' ? 'active' : ''; ?>" data-page="home" href="<?php echo $pathPrefix ?: 'index.php'; ?>" title="Explore RT Chocos">
+            Explore Overview
+          </a>
+          <a class="dropdown-item <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" data-page="chocopedia" href="<?php echo $pathPrefix; ?>chocopedia.php" title="Chocolate Encyclopedia">
+            Chocopedia
+          </a>
+          <a class="dropdown-item <?php echo $activeNav === 'about' ? 'active' : ''; ?>" data-page="about" href="<?php echo $pathPrefix; ?>about.php" title="About RT Chocos & Aarti Saluja">
+            About RT Chocos
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. PRODUCTS -->
+      <a class="nav-item-link <?php echo ($activeNav === 'shop') ? 'active' : ''; ?>" data-page="shop" href="<?php echo $pathPrefix; ?>shop.php" title="Artisanal Chocolate Products & Shop">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2.5"/>
+          <line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="3" y1="15" x2="21" y2="15"/>
+          <line x1="9" y1="3" x2="9" y2="21"/>
+          <line x1="15" y1="3" x2="15" y2="21"/>
+        </svg>
+        <span class="nav-label">PRODUCTS</span>
+      </a>
+
+      <!-- 3. ACADEMY -->
+      <div class="nav-item-dropdown">
+        <a class="nav-item-link dropdown-toggle <?php echo ($activeNav === 'workshops' || $activeNav === 'gallery') ? 'active' : ''; ?>" data-page="academy" href="<?php echo $pathPrefix; ?>workshops.php" title="RT Chocos Academy">
+          <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"/>
+          </svg>
+          <span class="nav-label">ACADEMY</span>
+        </a>
+        <div class="nav-dropdown-menu">
+          <a class="dropdown-item <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops.php" title="Chocolate Academy & Masterclasses">
+            Workshops &amp; Masterclasses
+          </a>
+          <a class="dropdown-item <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery.php" title="Tested Recipes & Formulations">
+            Recipes &amp; Formulations
+          </a>
+        </div>
+      </div>
+
+      <!-- 4. THE CACAO JOURNAL -->
+      <a class="nav-item-link <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" data-page="blog" href="<?php echo $pathPrefix; ?>blog.php" title="The Cacao Journal & Blog">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        <span class="nav-label">THE CACAO JOURNAL</span>
+      </a>
+
+      <!-- 5. INNOVATION LAB -->
+      <a class="nav-item-link <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" data-page="innovation-lab" href="<?php echo $pathPrefix; ?>innovation-lab.php" title="Chocolate Innovation Lab">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 2v5.5L4.4 17.6A2 2 0 0 0 6.1 20h11.8a2 2 0 0 0 1.7-2.4L14 7.5V2"/>
+          <line x1="8.5" y1="2" x2="15.5" y2="2"/>
+          <line x1="7" y1="14.5" x2="17" y2="14.5"/>
+        </svg>
+        <span class="nav-label">INNOVATION LAB<?php if (get_site_setting('innovation_lab_mode', 'coming_soon') === 'coming_soon'): ?><span style="display:inline-block; font-size: 8px; font-weight: 800; background: rgba(229,179,88,0.22); color: var(--gold-light, #F7D592); border: 1px solid rgba(229,179,88,0.4); padding: 1px 5px; border-radius: 4px; margin-left: 5px; vertical-align: middle; letter-spacing: 0.5px;">SOON</span><?php endif; ?></span>
+      </a>
+
+
+      <!-- 6. CHOCOLATE AI -->
+      <button class="nav-item-link nav-ai-trigger" aria-label="Ask CocoaGenius AI" onclick="toggleAiDrawer()">
+        <svg class="nav-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11a2 2 0 0 1-2 2h-1"/>
+          <path d="M9.5 4.5A3.5 3.5 0 0 0 6 8c0 1.4.8 2.6 2 3.1V12a2 2 0 0 0 2 2h1"/>
+          <circle cx="12" cy="6" r="1"/>
+          <path d="M12 13v8"/>
+          <path d="M8 17h8"/>
+          <circle cx="6" cy="8" r="1"/>
+          <circle cx="18" cy="8" r="1"/>
+          <circle cx="8" cy="17" r="1"/>
+          <circle cx="16" cy="17" r="1"/>
+          <circle cx="12" cy="21" r="1"/>
+        </svg>
+        <span class="nav-label">CHOCOLATE AI</span>
+      </button>
+
+      
     </nav>
-    <nav class="header-nav-right" aria-label="Secondary navigation">
-      <a class="nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog" title="Indian Chocolate Blog — Cocoa Science & Articles">Blog</a>
-      <a class="nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery" title="Chocolate Recipes India">Recipes</a>
-      <a class="nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact">Contact</a>
+
+    <div class="header-divider"></div>
+
+    <div class="header-actions">
+      <!-- Search Button -->
       <button class="search-btn" aria-label="Search RT Chocos chocolate articles" onclick="openSearch()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon-svg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </button>
-    </nav>
-    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Open navigation menu">
-      <span></span><span></span><span></span>
-    </button>
+
+<!-- Cart option completely removed from website -->
+
+      <!-- Work with Us CTA (Desktop Only) -->
+      <a href="<?php echo $pathPrefix; ?>work-with-us.php" class="signin-join-btn work-with-us-btn header-desktop-cta" title="Work With RT Chocos — Consulting, R&D & Workshops">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        <span>WORK WITH US</span>
+      </a>
+
+      <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Open navigation menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
-  <nav id="mobile-menu" aria-label="Mobile navigation">
-    <a class="mobile-nav-link" data-page="home" href="<?php echo $pathPrefix ?: './'; ?>">Home</a>
-    <a class="mobile-nav-link" data-page="about" href="<?php echo $pathPrefix; ?>about">About</a>
-    <a class="mobile-nav-link" data-page="workshops" href="<?php echo $pathPrefix; ?>workshops">Workshops</a>
-    <a class="mobile-nav-link" data-page="blog" href="<?php echo $pathPrefix; ?>blog">Blog</a>
-    <a class="mobile-nav-link" data-page="gallery" href="<?php echo $pathPrefix; ?>gallery">Recipes</a>
-    <a class="mobile-nav-link" data-page="contact" href="<?php echo $pathPrefix; ?>contact">Contact</a>
-  </nav>
 </header>
+
+<nav id="mobile-menu" aria-label="Mobile navigation">
+    <?php $navPrefix = (isset($pathPrefix) && $pathPrefix !== '') ? $pathPrefix : '/'; ?>
+    <!-- Mobile Drawer Top Bar with Close Button -->
+    <div class="mobile-menu-header">
+      <div class="mobile-menu-title-wrap">
+        <span class="mobile-menu-tag">ARTISANAL CACAO</span>
+        <span class="mobile-menu-title">RT CHOCOS</span>
+      </div>
+      <button type="button" class="mobile-menu-close-btn" onclick="toggleMobileMenu(true)" aria-label="Close navigation menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Quick Search Row in Drawer -->
+    <div class="mobile-drawer-search-wrap">
+      <form action="<?php echo $navPrefix; ?>shop.php" method="GET" class="mobile-drawer-search-form">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="search" name="search" placeholder="Search chocolates, spreads, ingredients..." autocomplete="off">
+      </form>
+    </div>
+
+    <!-- Mobile Products Group -->
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+        <span>PRODUCTS &amp; CREATIONS</span>
+      </div>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'shop' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>shop.php">All Products</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=chocolates">Bean-to-Bar Chocolates</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=spreads">Spreads &amp; Nut Butters</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=ingredients">Natural Ingredients</a>
+      <a class="mobile-nav-sublink" href="<?php echo $navPrefix; ?>shop.php?category=gifting">Corporate &amp; Festive Gifting</a>
+    </div>
+
+    <!-- Mobile Academy Group -->
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 6 2 6 2s6 0 6-2v-5"/></svg>
+        <span>ACADEMY &amp; MASTERCLASSES</span>
+      </div>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'workshops' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>workshops.php">Workshops &amp; Masterclasses</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'gallery' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>gallery.php">Tested Recipes &amp; Formulations</a>
+    </div>
+
+    <!-- Mobile Explore Group -->
+    <div class="mobile-nav-group">
+      <div class="mobile-nav-group-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span>EXPLORE &amp; KNOWLEDGE</span>
+      </div>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'home' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>">Home Overview</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'about' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>about.php">About Aarti &amp; RT Chocos</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'chocopedia' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>chocopedia.php">Chocopedia &mdash; Cocoa Encyclopedia</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'blog' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>blog.php">The Cacao Journal</a>
+      <a class="mobile-nav-sublink <?php echo $activeNav === 'innovation-lab' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>innovation-lab.php">Innovation &amp; R&amp;D Lab<?php if (get_site_setting('innovation_lab_mode', 'coming_soon') === 'coming_soon'): ?><span style="display:inline-block; font-size: 8.5px; font-weight: 800; background: rgba(229,179,88,0.22); color: var(--gold-light, #F7D592); border: 1px solid rgba(229,179,88,0.4); padding: 1px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; letter-spacing: 0.5px;">SOON</span><?php endif; ?></a>
+    </div>
+
+    <!-- Mobile Direct Actions & Support -->
+    <div class="mobile-drawer-direct-links">
+      <a class="mobile-nav-link <?php echo $activeNav === 'work-with-us' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>work-with-us.php">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        <span>WORK WITH US &amp; B2B</span>
+      </a>
+      <a class="mobile-nav-link <?php echo $activeNav === 'contact' ? 'active' : ''; ?>" href="<?php echo $navPrefix; ?>contact.php">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span>CONTACT US</span>
+      </a>
+    </div>
+
+    <!-- Downside Concierge & AI Actions -->
+    <div class="mobile-menu-ai-dock">
+      <a href="https://wa.me/919140238741?text=Hi%20RT%20Chocos,%20I%20have%20an%20inquiry%20regarding%20artisanal%20chocolates" target="_blank" rel="noopener noreferrer" class="mobile-menu-whatsapp-pill">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+        </svg>
+        <span>WhatsApp Chocolatier Concierge</span>
+      </a>
+      <button class="mobile-menu-ai-pill" onclick="toggleAiDrawer(); toggleMobileMenu();">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8">
+          <path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11a2 2 0 0 1-2 2h-1"/>
+          <path d="M9.5 4.5A3.5 3.5 0 0 0 6 8c0 1.4.8 2.6 2 3.1V12a2 2 0 0 0 2 2h1"/>
+          <circle cx="12" cy="6" r="1"/>
+          <path d="M12 13v8"/>
+          <path d="M8 17h8"/>
+          <circle cx="6" cy="8" r="1"/>
+          <circle cx="18" cy="8" r="1"/>
+          <circle cx="8" cy="17" r="1"/>
+          <circle cx="16" cy="17" r="1"/>
+          <circle cx="12" cy="21" r="1"/>
+        </svg>
+        <span>CHOCOLATE AI &mdash; COCOAGENIUS</span>
+        <span class="ai-sparkle-pill">✦</span>
+      </button>
+    </div>
+  </nav>
+  <div id="mobile-menu-backdrop" class="mobile-menu-backdrop" onclick="toggleMobileMenu(true)"></div>
+
+<?php require_once __DIR__ . '/components/ai_drawer.php'; ?>

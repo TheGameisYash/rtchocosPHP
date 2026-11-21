@@ -11,9 +11,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    header('Location: dashboard.php');
+    header('Location: /admin/dashboard.php');
 } else {
-    header('Location: login.php');
+    header('Location: /admin/login.php');
 }
 exit;
 ?>

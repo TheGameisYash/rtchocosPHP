@@ -1,0 +1,16 @@
+# ----------------------------------------------------------------------
+# | Ingredient Directory Rewrite Rules (Hostinger / LiteSpeed)         |
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /ingredient/
+
+    # Route /ingredient/ or empty slug to innovation lab listing
+    RewriteRule ^$ ../innovation-lab.php#ingredient-innovation [L]
+
+    # Route clean ingredient URLs (/ingredient/{slug}) to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^([^/]+)/?$ index.php?slug=$1 [L,QSA]
+</IfModule>
+

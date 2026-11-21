@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $fileTmpPath = $_FILES['media_file']['tmp_name'];
                     $fileName = $_FILES['media_file']['name'];
                     $fileSize = $_FILES['media_file']['size'];
-                    $fileType = mime_content_type($fileTmpPath);
+                    $fileType = get_file_mime_type($fileTmpPath, $fileName);
                     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
                     $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -31,23 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } elseif ($fileSize > $maxFileSize) {
                         $error = 'File size must be less than 5MB.';
                     } else {
-                        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
-                        $parentDir = dirname($docRoot);
-                        $liveUploadsDir = $parentDir . '/uploads_blogs';
-                        if (is_dir($liveUploadsDir)) {
-                            $blogsDir = $liveUploadsDir;
-                        } else {
-                            $blogsDir = $docRoot . '/assets/blogs';
-                        }
+                        $blogsDir = get_blog_uploads_dir();
                         if (!file_exists($blogsDir)) {
                             mkdir($blogsDir, 0755, true);
                         }
 
                         $newFileName = 'media-' . time() . '-' . rand(100, 999) . '.' . $fileExtension;
-                        $destPath = $blogsDir . '/' . $newFileName;
                         $relativePath = 'assets/blogs/' . $newFileName;
 
-                        if (move_uploaded_file($fileTmpPath, $destPath)) {
+                        if (save_blog_upload($fileTmpPath, $newFileName)) {
                             // Register in media table
                             $stmt = $pdo->prepare("INSERT INTO media (filename, path, mime_type, size) VALUES (?, ?, ?, ?)");
                             $stmt->execute([
@@ -73,9 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if ($path) {
                         // Delete file
-                        if (file_exists(__DIR__ . '/../' . $path)) {
-                            unlink(__DIR__ . '/../' . $path);
-                        }
+                        delete_blog_image_file($path);
                         
                         // Delete DB entry
                         $stmt = $pdo->prepare("DELETE FROM media WHERE id = ?");

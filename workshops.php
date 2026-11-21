@@ -1,40 +1,139 @@
 <?php
-  $pageTitle = "Chocolate Academy India — Bean-to-Bar Workshops, Tempering Masterclass & Online Courses | RT Chocos";
-  $pageDescription = "Enrol in India's top chocolate academy workshops. Professional bean-to-bar courses, tempering science masterclasses, and chocolate making workshops in Mumbai & online. Founded by Aarti Saluja Sahni — India's first chocolate educator with 2,000+ students trained.";
-  $pageKeywords = "chocolate academy India, chocolate workshops India, chocolate course India, bean to bar course India, learn chocolate making India, chocolate classes Mumbai, chocolate masterclass India, tempering chocolate course India, professional chocolate course online India, chocolate making workshop Mumbai, bean to bar learning academy, craft chocolate course, cocoa science workshop, chocolate training India, learn bean to bar India, RT Chocos workshops, Aarti Saluja Sahni workshops";
+  $pageTitle = "Chocolate Workshops & Bean-to-Bar Classes | RT Chocos";
+  $pageDescription = "Learn chocolate making with RT Chocos in Mumbai and online. Explore upcoming bean-to-bar, tempering, bonbon and formulation workshops for every skill level.";
   $pathPrefix = "";
-  
-  $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-  $canonicalUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  $canonicalUrl = "https://www.rtchocos.com/workshops";
+  $schemaType = "CollectionPage";
   
   $breadcrumbs = [
       ['name' => 'Home', 'item' => 'https://www.rtchocos.com/'],
       ['name' => 'Workshops', 'item' => $canonicalUrl]
   ];
   
-  // Dynamic Course schema data
-  $courseData = [
-      'name' => "Professional Bean-to-Bar Chocolate Masterclass",
-      'description' => "Deep-dive course on cacao fermentation, roasting profiles, stone grinding, tempering science, and packaging design.",
-      'mode' => "blended",
-      'location' => "Mumbai Craft Kitchen Studio & Online Zoom sessions",
-      'price' => "15000"
-  ];
   
   include $pathPrefix . 'includes/header.php';
 ?>
 
-<!-- --- HOME PAGE --- -->
-<div id="page-workshops" class="page active" style="padding-top:80px;">
-  <div class="page-hero workshops-page-hero">
-  </div>
-  <div class="section">
-    <div id="workshop-filters" style="margin-bottom:40px;text-align:center;">
-      <h1 style="font-family:'Cormorant Garamond', serif;font-style:italic;font-weight:700;font-size:42px;margin-bottom:12px;color:var(--brown);letter-spacing:0.02em;">Chocolate Academy India — Our Workshops Are Brewing</h1>
-      <p style="font-family:'Cormorant Garamond', serif;font-style:italic;font-size:24px;line-height:1.6;color:var(--brown-light);font-weight:600;max-width:680px;margin:0 auto;">Exciting chocolate-making workshops will be announced soon</p>
-      <p style="font-family:'Jost', sans-serif;font-size:15px;line-height:1.8;color:var(--brown-light);font-weight:300;max-width:680px;margin:20px auto 0;">RT Chocos is India's first chocolate academy offering professional bean-to-bar workshops, tempering science masterclasses, and hands-on cocoa-to-bar courses in Mumbai and online. Founded by Aarti Saluja Sahni — India's first chocolate blogger and educator with 10+ years of experience and 2,000+ students trained. Subscribe below to be the first to know when new chocolate courses open for enrolment.</p>
+<!-- --- WORKSHOPS PAGE --- -->
+<div id="page-workshops" class="page active">
+  <!-- =========================================================================
+       SECTION 1: HERO SECTION (Full-Size Luxury Hero — Matching Product Page)
+       ========================================================================= -->
+  <section class="workshop-hero-lux">
+    <div class="workshop-hero-container">
+
+      <!-- Left Column: Content, 4 Feature Badges, Action CTAs -->
+      <div class="workshop-hero-left">
+        <span class="workshop-hero-tag">RT Chocos Learning Studio &amp; Academy</span>
+        <h1 class="workshop-hero-title">The Cacao Lab.<br>Master Bean-to-Bar Chocolate.</h1>
+        <p class="workshop-hero-desc">
+          A collection of premium, technical chocolate workshops and masterclasses. Learn bean-to-bar making, tempering science, and recipe formulation from expert Aarti Saluja Sahni.
+        </p>
+
+        <!-- 4 Luxury Value Badges (Same Architecture as Product Page Hero) -->
+        <div class="workshop-hero-badges">
+          <!-- 1: 7-Stage Process -->
+          <div class="workshop-badge-item">
+            <div class="workshop-badge-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <span class="workshop-badge-label">7-Stage<br>Bean-to-Bar</span>
+          </div>
+
+          <!-- 2: Hands-on Studio -->
+          <div class="workshop-badge-item">
+            <div class="workshop-badge-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 11a8 8 0 0 0 16 0H4z"></path>
+                <path d="M12 2v4"></path>
+                <line x1="2" y1="20" x2="22" y2="20"></line>
+              </svg>
+            </div>
+            <span class="workshop-badge-label">Hands-on<br>Studio Practice</span>
+          </div>
+
+          <!-- 3: Tempering & Formulation -->
+          <div class="workshop-badge-item">
+            <div class="workshop-badge-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <span class="workshop-badge-label">Tempering<br>&amp; Formulation</span>
+          </div>
+
+          <!-- 4: Certification -->
+          <div class="workshop-badge-item">
+            <div class="workshop-badge-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <span class="workshop-badge-label">Certification<br>&amp; Take-Home</span>
+          </div>
+        </div>
+
+        <!-- Action CTAs -->
+        <div class="workshop-hero-actions">
+          <a href="#workshops-grid" class="btn-gold-lux">
+            Explore Masterclasses &darr;
+          </a>
+          <a href="#learning-roadmap-title" class="btn-outline-lux">
+            Learning Roadmap &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Visual Showcase (Desktop shows background image seamlessly; Mobile shows crisp image card) -->
+      <div class="workshop-hero-showcase-wrap">
+        <img src="assets/workshop_hero.png" alt="Bean-to-Bar Chocolate Making Process: Bean, Cleaning &amp; Sorting, Roasting, Winnowing, Grinding, Conching, Tempering" class="workshop-hero-mobile-photo" width="1024" height="426" loading="eager" />
+      </div>
     </div>
-    <div class="grid-3" id="workshops-grid"></div>
+  </section>
+  <div class="section">
+
+
+    <div class="grid-3" id="workshops-grid">
+      <?php
+        require_once 'includes/workshops_data.php';
+        foreach ($workshops as $w) {
+            echo renderWorkshopCard($w);
+        }
+      ?>
+    </div>
+
+    <section class="seo-learning-section" aria-labelledby="learning-roadmap-title">
+      <div class="section-label">What You Can Learn</div>
+      <h2 id="learning-roadmap-title" class="section-title">A practical chocolate learning roadmap</h2>
+      <p class="seo-learning-intro">RT Chocos connects technique with the food science behind it. The programme is being developed around four focused learning paths, from understanding cacao to producing consistent finished chocolate.</p>
+      <div class="seo-topic-grid">
+        <article class="seo-topic-card">
+          <h3>Bean-to-Bar Foundations</h3>
+          <p>Follow cacao through sorting, roasting, cracking, winnowing, refining and conching. Learn how origin and processing decisions shape flavour and texture.</p>
+        </article>
+        <article class="seo-topic-card">
+          <h3>Tempering &amp; Crystal Science</h3>
+          <p>Understand cocoa butter crystals, working temperatures and cooling. Diagnose dull finish, poor snap, streaks and fat bloom with repeatable methods.</p>
+        </article>
+        <article class="seo-topic-card">
+          <h3>Bonbons, Ganache &amp; Fillings</h3>
+          <p>Build balanced shells and centres while learning about emulsions, flavour infusion, water activity, shelf life and safe storage.</p>
+        </article>
+        <article class="seo-topic-card">
+          <h3>Recipe &amp; Product Development</h3>
+          <p>Move from an idea to a testable formulation. Explore ingredient function, percentages, batch records, sensory evaluation and production consistency.</p>
+        </article>
+      </div>
+      <div class="seo-learning-cta">
+        <p>While registrations are being prepared, start with the <a href="blog.php">RT Chocos chocolate blog</a> or explore our <a href="gallery.php">tested chocolate recipes</a>.</p>
+      </div>
+    </section>
+
+
   </div>
 </div>
 

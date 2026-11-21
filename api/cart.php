@@ -1,6 +1,8 @@
 <?php
 // api/cart.php — AJAX Cart Operations
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 header('Content-Type: application/json');
 
 $rootDir = dirname(__DIR__);
