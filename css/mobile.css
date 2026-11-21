@@ -296,11 +296,11 @@
     z-index: 0 !important;
     pointer-events: none !important;
     -webkit-mask-image:
-      linear-gradient(to right, transparent 0%, black 8%, black 97.5%, transparent 100%),
+      linear-gradient(to right, transparent 0%, black 8%, black 86.5%, transparent 89.5%),
       linear-gradient(to bottom, transparent 0%, black 2.5%, black 96.5%, transparent 100%) !important;
     -webkit-mask-composite: source-in !important;
     mask-image:
-      linear-gradient(to right, transparent 0%, black 8%, black 97.5%, transparent 100%),
+      linear-gradient(to right, transparent 0%, black 8%, black 86.5%, transparent 89.5%),
       linear-gradient(to bottom, transparent 0%, black 2.5%, black 96.5%, transparent 100%) !important;
     mask-composite: intersect !important;
   }

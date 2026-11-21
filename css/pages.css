@@ -40,11 +40,11 @@
   opacity: 1;
   mix-blend-mode: normal;
   -webkit-mask-image:
-    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 2%, rgba(0, 0, 0, 0.7) 7%, black 12%, black 97.5%, transparent 100%),
+    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 2%, rgba(0, 0, 0, 0.7) 7%, black 12%, black 86.5%, transparent 89.5%),
     linear-gradient(to bottom, transparent 0%, black 2.5%, black 96.5%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-image:
-    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 2%, rgba(0, 0, 0, 0.7) 7%, black 12%, black 97.5%, transparent 100%),
+    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 2%, rgba(0, 0, 0, 0.7) 7%, black 12%, black 86.5%, transparent 89.5%),
     linear-gradient(to bottom, transparent 0%, black 2.5%, black 96.5%, transparent 100%);
   mask-composite: intersect;
 }
@@ -3736,8 +3736,14 @@ section:not(.lab-ingredient-section):not([class*="dark"]):nth-of-type(even) {
     mix-blend-mode: normal !important;
     z-index: 0 !important;
     pointer-events: none !important;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%) !important;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%) !important;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, black 8%, black 86.5%, transparent 89.5%),
+      linear-gradient(to bottom, transparent 0%, black 2.5%, black 96.5%, transparent 100%) !important;
+    -webkit-mask-composite: source-in !important;
+    mask-image:
+      linear-gradient(to right, transparent 0%, black 8%, black 86.5%, transparent 89.5%),
+      linear-gradient(to bottom, transparent 0%, black 2.5%, black 96.5%, transparent 100%) !important;
+    mask-composite: intersect !important;
   }
 
   .split-hero-content {
