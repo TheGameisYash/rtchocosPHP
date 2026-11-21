@@ -128,7 +128,13 @@ try {
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM blogs WHERE slug = ?");
         $stmt->execute([$slug]);
         if ($stmt->fetchColumn() == 0) {
-            $mdFile  = __DIR__ . '/blog/posts/' . $slug . '.md';
+            $mdFile = __DIR__ . '/content/blog_posts/' . $slug . '.md';
+            if (!file_exists($mdFile)) {
+                $mdFile = __DIR__ . '/data/blog_posts/' . $slug . '.md';
+            }
+            if (!file_exists($mdFile)) {
+                $mdFile = __DIR__ . '/blog/posts/' . $slug . '.md';
+            }
             $content = '';
             if (file_exists($mdFile)) {
                 $content = file_get_contents($mdFile);
