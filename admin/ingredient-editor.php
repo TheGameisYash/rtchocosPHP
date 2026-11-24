@@ -544,7 +544,7 @@ render_admin_header($isEdit ? "Edit Ingredient — " . htmlspecialchars($ing['ti
                 <button type="button" class="word-btn" id="insertLinkBtn" title="Insert Link (Ctrl+K)">
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
                 </button>
-                <button type="button" class="word-btn word-btn-featured" id="insertImageBtn" onclick="window.openWordImageModal && window.openWordImageModal()" title="Insert Image into Dossier" style="display:inline-flex; align-items:center; gap:5px; padding:0 10px; font-weight:600;">
+                <button type="button" class="word-btn word-btn-featured" id="insertImageBtn" onclick="window.openWordImageModal && window.openWordImageModal()" title="Insert Image into Guide" style="display:inline-flex; align-items:center; gap:5px; padding:0 10px; font-weight:600;">
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
                     <span>Image</span>
                 </button>
@@ -794,7 +794,7 @@ render_admin_header($isEdit ? "Edit Ingredient — " . htmlspecialchars($ing['ti
 
             <div style="display:flex; justify-content:flex-end; gap:10px;">
                 <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('wordEditorImageModal').style.display='none'">Cancel</button>
-                <button type="button" class="btn btn-primary btn-sm" id="submitWordImageUrlBtn">Insert Image into Dossier</button>
+                <button type="button" class="btn btn-primary btn-sm" id="submitWordImageUrlBtn">Insert Image into Guide</button>
             </div>
         </div>
     </div>
@@ -837,7 +837,7 @@ render_admin_header($isEdit ? "Edit Ingredient — " . htmlspecialchars($ing['ti
     <button type="button" class="btn btn-outline full-preview-close" onclick="closeFullPreview()">Close Preview</button>
     <div class="full-preview-container">
         <h1 id="previewFullTitle" style="font-family:'Playfair Display', serif; font-size:42px; font-weight:700; color:var(--text-main); text-align:center; margin-bottom:12px;"></h1>
-        <div id="previewFullCategory" style="text-align:center; font-size:12px; font-weight:700; text-transform:uppercase; color:var(--gold); letter-spacing:2px; margin-bottom:32px;">LOCAL INGREDIENT INNOVATION DOSSIER</div>
+        <div id="previewFullCategory" style="text-align:center; font-size:12px; font-weight:700; text-transform:uppercase; color:var(--gold); letter-spacing:2px; margin-bottom:32px;">LOCAL INGREDIENT INNOVATION GUIDE</div>
         <div id="previewFullHeaderImg" style="border-radius:12px; overflow:hidden; border:1px solid var(--border-color); height:380px; margin-bottom:40px; background:var(--cream); display:none;">
             <img src="" style="width:100%; height:100%; object-fit:cover;">
         </div>

@@ -312,7 +312,7 @@
           <span class="peek-badge">${data.badge}</span>
           <div class="peek-title">${data.title}</div>
           <div class="peek-desc">${data.desc}</div>
-          <div class="peek-cta">Explore Dossier →</div>
+          <div class="peek-cta">Explore Guide →</div>
         `;
         hotspot.appendChild(peekCard);
       }

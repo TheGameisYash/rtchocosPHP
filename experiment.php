@@ -1165,7 +1165,7 @@ table.blog-table-minimal td {
                 $shareTitle = $exp['title'] . ' | RT Chocos Innovation Lab';
             ?>
             <div class="share-container">
-                <span class="share-title">Share Dossier:</span>
+                <span class="share-title">Share Report:</span>
                 <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode($articleUrl); ?>&text=<?php echo urlencode($shareTitle); ?>" target="_blank" class="share-btn tw" title="Share on Twitter">Twitter</a>
                 <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn fb" title="Share on Facebook">Facebook</a>
                 <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode($articleUrl); ?>" target="_blank" class="share-btn ln" title="Share on LinkedIn">LinkedIn</a>
@@ -1243,7 +1243,7 @@ table.blog-table-minimal td {
                             <p style="font-family:var(--font-sans, sans-serif); font-size:12.5px; color:#5C4033; line-height:1.5; margin:0 0 14px; flex:1; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
                                 <?php echo htmlspecialchars($rel['description']); ?>
                             </p>
-                            <span style="font-size:11px; font-weight:700; color:var(--gold, #C7A66A); text-transform:uppercase; letter-spacing:0.5px;">Read Dossier &rarr;</span>
+                            <span style="font-size:11px; font-weight:700; color:var(--gold, #C7A66A); text-transform:uppercase; letter-spacing:0.5px;">Read Report &rarr;</span>
                         </div>
                     </a>
                 <?php endforeach; ?>

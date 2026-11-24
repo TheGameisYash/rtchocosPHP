@@ -636,7 +636,7 @@ include 'includes/header.php';
                    data-science="<?php echo htmlspecialchars(strtolower($cat['science_behavior'] ?? '')); ?>"
                    data-apps="<?php echo htmlspecialchars(strtolower($cat['applications'] ?? '')); ?>"
                    onclick="handleCardClick('<?php echo htmlspecialchars($ingUrl); ?>', event)" 
-                   aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> dossier">
+                   aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> guide">
                   <div class="lab-ing-photo-wrap">
                     <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" />
                   </div>
@@ -663,7 +663,7 @@ include 'includes/header.php';
                    data-science="<?php echo htmlspecialchars(strtolower($cat['science_behavior'] ?? '')); ?>"
                    data-apps="<?php echo htmlspecialchars(strtolower($cat['applications'] ?? '')); ?>"
                    onclick="handleCardClick('<?php echo htmlspecialchars($ingUrl); ?>', event)" 
-                   aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> dossier">
+                   aria-label="Explore <?php echo htmlspecialchars($cat['title']); ?> guide">
                   <div class="lab-ing-photo-wrap">
                     <img src="<?php echo htmlspecialchars($cat['image_path'] ?: 'assets/images/placeholder.jpg'); ?>" alt="<?php echo htmlspecialchars($cat['title']); ?>" loading="lazy" />
                   </div>
@@ -750,7 +750,7 @@ include 'includes/header.php';
 </div> <!-- End .lab-page-wrapper -->
 
 <!-- =================================================================
-     MODAL: EXPERIMENT DOSSIER MODAL
+     MODAL: EXPERIMENT REPORT MODAL
      ================================================================= -->
 <div id="experimentModal" class="lab-modal-overlay" onclick="closeModalOnOverlay(event, this)">
   <div class="lab-modal-container" role="dialog" aria-modal="true">
@@ -778,7 +778,7 @@ include 'includes/header.php';
 </div>
 
 <!-- =================================================================
-     MODAL: INGREDIENT INNOVATION DOSSIER MODAL
+     MODAL: INGREDIENT INNOVATION GUIDE MODAL
      ================================================================= -->
 <div id="ingredientModal" class="lab-modal-overlay" onclick="closeModalOnOverlay(event, this)">
   <div class="lab-modal-container" role="dialog" aria-modal="true">
@@ -794,7 +794,7 @@ include 'includes/header.php';
 <!-- Floating Toast Notification -->
 <div id="labToast" class="lab-toast" role="status" aria-live="polite">
   <span style="color: #22C55E; font-size: 14px;">✓</span>
-  <span id="labToastMsg">Dossier link copied to clipboard!</span>
+  <span id="labToastMsg">Link copied to clipboard!</span>
 </div>
 
 <!-- Raw Client-Side Data Store for Instant Modal Rendering -->
@@ -1005,10 +1005,10 @@ function copyLabDossier(slug, title) {
     navigator.clipboard.writeText(url).then(() => {
       showLabToast(`✓ Copied link for "${title}"!`);
     }).catch(() => {
-      prompt('Copy dossier link:', url);
+      prompt('Copy link:', url);
     });
   } else {
-    prompt('Copy dossier link:', url);
+    prompt('Copy link:', url);
   }
 }
 
@@ -1168,15 +1168,15 @@ function openFailedBatchModal(id) {
         </div>
         <div class="lab-failed-actions">
           <span class="lab-modal-esc-hint">Press <kbd>ESC</kbd> to exit</span>
-          <button type="button" class="lab-action-btn" onclick="copyLabDossier('${escapeHtml(fail.slug || 'failed-' + fail.id)}', '${escapeHtml(fail.title)}')" title="Share Dossier Link">
+          <button type="button" class="lab-action-btn" onclick="copyLabDossier('${escapeHtml(fail.slug || 'failed-' + fail.id)}', '${escapeHtml(fail.title)}')" title="Share Report Link">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
             <span>SHARE</span>
           </button>
-          <button type="button" class="lab-action-btn" onclick="printLabDossier()" title="Print / Export Dossier">
+          <button type="button" class="lab-action-btn" onclick="printLabDossier()" title="Print / Export Report">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
             <span>PRINT</span>
           </button>
-          <button type="button" class="lab-close-btn" onclick="closeLabModal('failedBatchModal')" aria-label="Close Failed Batch Dossier">
+          <button type="button" class="lab-close-btn" onclick="closeLabModal('failedBatchModal')" aria-label="Close Failed Batch Report">
             <span>CLOSE</span>
             <span class="close-x">✕</span>
           </button>
@@ -1429,7 +1429,7 @@ function openIngredientModal(id, e) {
       </div>
       <div class="lab-modal-header-right">
         <span class="lab-modal-esc-hint">Press <kbd>ESC</kbd> to exit</span>
-        <button type="button" class="lab-modal-close-btn" onclick="closeLabModal('ingredientModal')" aria-label="Close Ingredient Dossier">
+        <button type="button" class="lab-modal-close-btn" onclick="closeLabModal('ingredientModal')" aria-label="Close Ingredient Guide">
           <span>CLOSE</span>
           <span class="close-btn-x">✕</span>
         </button>

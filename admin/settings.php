@@ -353,7 +353,7 @@ render_admin_header("Site Settings", "settings");
                     <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Live on Frontend (Open to Public)</div>
                     <div style="font-size: 11px; font-weight: 600; color: #74E291; margin-bottom: 8px;">FULLY ACCESSIBLE</div>
                     <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0;">
-                        The full Innovation Lab is published and visible to all site visitors and search engines. All interactive dossiers, experiments, and failed batch stories are live.
+                        The full Innovation Lab is published and visible to all site visitors and search engines. All interactive reports, experiments, and failed batch stories are live.
                     </p>
                 </label>
             </div>
