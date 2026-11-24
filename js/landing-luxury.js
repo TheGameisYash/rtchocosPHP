@@ -259,7 +259,7 @@
       },
       'recipes-formulations': {
         badge: '🍫 Formulations',
-        title: 'Recipes & Slabs',
+        title: 'Recipes & Formulations',
         desc: 'Award-winning single origin formulas, glossy truffles & bonbon ganaches.'
       },
       'techniques': {
