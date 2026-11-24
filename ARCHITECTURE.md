@@ -280,7 +280,7 @@ Query all tables
 JavaScript enhances interactions
    (js/innovation-lab-enhancements.js)
    ↓
-Modals show detailed dossiers
+Modals show detailed reports
 ```
 
 ---

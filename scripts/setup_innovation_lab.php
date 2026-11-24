@@ -88,7 +88,7 @@ try {
         INDEX idx_ing_active (is_active, sort_order)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
-    // Ensure dossier columns exist if table was already created
+    // Ensure guide columns exist if table was already created
     foreach (['key_varietals', 'science_behavior', 'applications', 'lab_notes'] as $col) {
         try {
             $pdo->exec("ALTER TABLE lab_ingredient_categories ADD COLUMN $col TEXT NULL");

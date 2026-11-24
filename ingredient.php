@@ -34,7 +34,7 @@ if (!$ing) {
     if (file_exists(__DIR__ . '/error.php')) {
         include __DIR__ . '/error.php';
     } else {
-        echo "<h1>404 — Ingredient Dossier Not Found</h1><p><a href='../innovation-lab#ingredient-innovation'>Return to Innovation Lab</a></p>";
+        echo "<h1>404 — Ingredient Guide Not Found</h1><p><a href='../innovation-lab#ingredient-innovation'>Return to Innovation Lab</a></p>";
     }
     exit;
 }
@@ -50,7 +50,7 @@ if ((int)$ing['is_active'] === 0) {
         if (file_exists(__DIR__ . '/error.php')) {
             include __DIR__ . '/error.php';
         } else {
-            echo "<h1>404 — Ingredient Dossier Not Found</h1><p><a href='../innovation-lab#ingredient-innovation'>Return to Innovation Lab</a></p>";
+            echo "<h1>404 — Ingredient Guide Not Found</h1><p><a href='../innovation-lab#ingredient-innovation'>Return to Innovation Lab</a></p>";
         }
         exit;
     }
@@ -1141,7 +1141,7 @@ include 'includes/header.php';
                         <h4 style="font-family:'Playfair Display', Georgia, serif; font-size:18px; font-weight:700; color:#122217; margin:0 0 8px; line-height:1.3;"><?php echo htmlspecialchars($ri['title']); ?></h4>
                         <p style="font-size:13px; color:#5C4033; line-height:1.55; margin:0; flex:1;"><?php echo htmlspecialchars(mb_strimwidth($ri['description'] ?: '', 0, 110, '...')); ?></p>
                         <div style="margin-top:14px; font-size:11.5px; font-weight:700; color:var(--gold, #C7A66A); display:flex; align-items:center; gap:4px;">
-                            <span>Explore Dossier</span>
+                            <span>Explore Guide</span>
                             <span>&rarr;</span>
                         </div>
                     </div>

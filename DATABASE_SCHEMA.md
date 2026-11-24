@@ -275,10 +275,10 @@ CREATE TABLE lab_experiments (
     image_path VARCHAR(255) NULL,
     description TEXT NOT NULL,                   -- Card excerpt
     tags VARCHAR(255) NULL,                      -- e.g., "FAT SYSTEMS | FORMULATION"
-    hypothesis TEXT NULL,                        -- Dossier: The Hypothesis
-    methodology TEXT NULL,                       -- Dossier: The Method
-    findings TEXT NULL,                          -- Dossier: Early Findings
-    next_steps TEXT NULL,                        -- Dossier: Next Steps
+    hypothesis TEXT NULL,                        -- Report: The Hypothesis
+    methodology TEXT NULL,                       -- Report: The Method
+    findings TEXT NULL,                          -- Report: Early Findings
+    next_steps TEXT NULL,                        -- Report: Next Steps
     full_content LONGTEXT NULL,                  -- Full experiment HTML
     is_featured TINYINT(1) NOT NULL DEFAULT 1,
     sort_order INT NOT NULL DEFAULT 0,
@@ -347,7 +347,7 @@ CREATE TABLE lab_what_if_questions (
 ---
 
 ### **17. lab_ingredient_categories**
-Ingredient innovation categories with full dossiers
+Ingredient innovation categories with full guides
 
 ```sql
 CREATE TABLE lab_ingredient_categories (
@@ -357,10 +357,10 @@ CREATE TABLE lab_ingredient_categories (
     image_path VARCHAR(255) NULL,
     description TEXT NULL,                       -- Card description
     link_url VARCHAR(255) NULL,
-    key_varietals TEXT NULL,                     -- Dossier pillar 1
-    science_behavior TEXT NULL,                  -- Dossier pillar 2
-    applications TEXT NULL,                      -- Dossier pillar 3
-    lab_notes TEXT NULL,                         -- Dossier pillar 4
+    key_varietals TEXT NULL,                     -- Guide pillar 1
+    science_behavior TEXT NULL,                  -- Guide pillar 2
+    applications TEXT NULL,                      -- Guide pillar 3
+    lab_notes TEXT NULL,                         -- Guide pillar 4
     sort_order INT NOT NULL DEFAULT 0,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -369,7 +369,7 @@ CREATE TABLE lab_ingredient_categories (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
-**Dossier Structure:** 4 aligned pillars (Key Varietals, Science & Behavior, Applications, Lab Notes)
+**Guide Structure:** 4 aligned pillars (Key Varietals, Science & Behavior, Applications, Lab Notes)
 
 ---
 

@@ -1024,7 +1024,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 </span>
             </div>
             <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
-                Full dynamic control over experiments, failed batches, exploration questions, native ingredients, and live dossiers.
+                Full dynamic control over experiments, failed batches, exploration questions, native ingredients, and live reports.
             </p>
         </div>
         <?php $currentLabMode = get_site_setting('innovation_lab_mode', 'coming_soon'); ?>
@@ -1643,7 +1643,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(199, 166, 106, 0.15); color: var(--gold, #C7A66A); display: flex; align-items: center; justify-content: center; font-size: 16px;">🧪</div>
                 <div>
                     <h2 id="expModalTitle" style="font-family: var(--font-heading); font-size: 22px; margin: 0; color: var(--text-main);">Create New Lab Experiment</h2>
-                    <div style="font-size: 12px; color: var(--text-muted);">Step-by-step formulation studio &amp; live dossier editor</div>
+                    <div style="font-size: 12px; color: var(--text-muted);">Step-by-step formulation studio &amp; live report editor</div>
                 </div>
             </div>
             <button type="button" onclick="closeModal('experimentModal')" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light); transition: color 0.15s;" title="Close Modal (Esc)">✕</button>
@@ -1661,7 +1661,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                 <span>⚙️ 3. Science Telemetry</span>
             </button>
             <button type="button" class="lab-step-tab" data-step="3" onclick="switchExpStep(3)">
-                <span>📋 4. Full Lab Dossier</span>
+                <span>📋 4. Full Lab Report</span>
             </button>
             <button type="button" class="lab-step-tab" data-step="4" onclick="switchExpStep(4)">
                 <span>👁️ 5. Live Preview</span>
@@ -1773,7 +1773,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                     <div style="background: var(--bg-subtle, rgba(0,0,0,0.02)); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; margin-bottom: 16px;">
                         <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
                             <span>🔬 The 4 Cards (Matching the Website Modal)</span>
-                            <span style="font-size: 11px; color: var(--gold, #C7A66A);">Displayed on Live Dossier Popup</span>
+                            <span style="font-size: 11px; color: var(--gold, #C7A66A);">Displayed on Live Report Popup</span>
                         </div>
                         <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
                             Click <b>• Bullet List</b> or <b>+ 3 Bullets Template</b> to instantly structure observations into crisp, readable points.
@@ -1884,14 +1884,14 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                     </div>
                 </div>
 
-                <!-- STEP 4: DETAILED KITCHEN NOTES (FULL DOSSIER) -->
+                <!-- STEP 4: DETAILED KITCHEN NOTES (FULL REPORT) -->
                 <div class="lab-step-panel" id="exp_step_3">
                     <div style="margin-bottom: 14px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                             <label style="display: block; font-size: 13px; font-weight: 700; color: var(--gold, #C7A66A);">
                                 📋 Detailed Kitchen Notes &amp; Story (Live HTML)
                             </label>
-                            <span style="font-size: 11px; color: var(--text-muted);">Rendered in the detailed dossier card on the website</span>
+                            <span style="font-size: 11px; color: var(--text-muted);">Rendered in the detailed report card on the website</span>
                         </div>
                         <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
                             Use headings, lists, quotes, and colors to format recipe summaries, kitchen measurements, and tasting notes.
@@ -1924,9 +1924,9 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                             </div>
                         </div>
 
-                        <!-- Mini Dossier Sim -->
+                        <!-- Mini Report Sim -->
                         <div>
-                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">2. Dossier Popup Overview:</div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">2. Report Popup Overview:</div>
                             <div class="lab-live-dossier-sim">
                                 <div class="lab-sim-quad" style="border-left-color: #166534;">
                                     <div class="lab-sim-quad-title" style="color: #166534;">01. Research Question</div>
@@ -2110,7 +2110,7 @@ render_admin_header('Innovation Lab', 'innovation-lab');
                         <label style="display: block; font-size: 13px; font-weight: 700; color: var(--gold, #C7A66A); margin-bottom: 2px;">
                             📖 The Full Story Behind This Test Batch (Field Notes &amp; Story)
                         </label>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">The complete story and kitchen notes behind this test batch as displayed in the full modal dossier.</div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">The complete story and kitchen notes behind this test batch as displayed in the full modal report.</div>
                         <div id="mount_failed_full_story"></div>
                     </div>
                 </div>

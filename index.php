@@ -82,8 +82,8 @@
   <!-- Split Hero with Full Video Background -->
   <section id="hero">
     <!-- Full Native Resolution Video Background -->
-    <video class="hero-video-bg" autoplay loop muted playsinline preload="auto" poster="assets/cocuapod_circle_frame.jpg">
-      <source src="assets/cocuapod_circle.mp4" type="video/mp4">
+    <video class="hero-video-bg" autoplay loop muted playsinline preload="auto" poster="assets/cocuapod_circle_frame.jpg?v=<?php echo file_exists(__DIR__ . '/assets/cocuapod_circle_frame.jpg') ? filemtime(__DIR__ . '/assets/cocuapod_circle_frame.jpg') : time(); ?>">
+      <source src="assets/cocuapod_circle.mp4?v=<?php echo file_exists(__DIR__ . '/assets/cocuapod_circle.mp4') ? filemtime(__DIR__ . '/assets/cocuapod_circle.mp4') : time(); ?>" type="video/mp4">
     </video>
 
     <div class="deco-circle-1"></div>
