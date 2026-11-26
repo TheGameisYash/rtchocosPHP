@@ -2,13 +2,13 @@
 <footer id="site-footer" class="footer-links-section">
   <div class="footer-grid">
     <div class="footer-brand-col">
-      <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" style="text-decoration:none;display:inline-flex;align-items:center;gap:12px;margin-bottom:16px;">
-        <svg class="logo-svg-emblem" width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="40" height="40" rx="10" fill="var(--accent-glow)" stroke="var(--border-accent)" stroke-width="1.2"/>
-          <path d="M20 8C24 12.5 28 15.5 28 21.5C28 26 24.5 30 20 32C15.5 30 12 26 12 21.5C12 15.5 16 12.5 20 8Z" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="20" cy="20" r="2" fill="var(--accent)"/>
-        </svg>
-        <span class="logo-text"><span class="footer-logo-rt" style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text-heading);font-weight:400;">RT</span><span class="footer-logo-chocos" style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.25em;color:var(--accent);"> CHOCOS</span></span>
+      <a href="<?php echo $pathPrefix ?: './'; ?>" class="logo" style="text-decoration:none;display:inline-flex;flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:16px;">
+        <div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;">
+          <svg class="logo-svg-emblem" width="18" height="38" viewBox="0 0 147 307" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M59 41L42 53L32 63L20 80L11 98L5 115L2 133L1 134L1 140L0 141L0 176L1 177L1 184L2 185L6 207L13 227L24 249L32 262L45 279L67 302L42 268L28 243L28 241L24 234L21 224L19 221L15 208L14 200L11 190L11 185L10 184L10 176L9 175L9 146L10 145L10 137L11 136L11 131L13 126L14 118L19 102L32 75L45 57L60 42ZM72 40L71 64L70 65L70 89L69 90L69 208L70 209L70 243L71 244L71 277L72 278L72 299L71 300L60 273L50 240L50 236L48 231L45 211L44 210L44 202L43 201L43 193L42 192L42 177L41 176L41 150L42 149L42 135L43 134L45 113L53 81L68 41L65 44L57 57L49 73L44 86L44 89L42 92L36 118L35 132L34 133L33 174L34 175L34 186L35 187L37 209L45 241L61 283L72 304L72 306L74 306L77 301L79 302L95 286L111 266L121 251L133 227L135 219L139 210L144 189L144 184L145 183L145 176L146 175L146 142L145 141L143 124L139 112L139 109L127 82L119 70L109 58L96 47L86 41L101 57L110 69L120 86L120 88L125 97L133 122L135 138L136 139L137 173L136 174L135 190L134 191L131 208L120 239L106 265L90 288L78 302L77 300L95 259L103 235L104 227L107 219L109 202L111 195L111 187L112 186L113 149L112 148L111 126L110 125L109 114L104 93L94 67L86 52L78 41L81 51L89 69L99 104L101 119L102 120L102 127L103 128L103 137L104 138L105 173L104 174L103 202L102 203L102 210L101 211L98 231L94 244L94 248L89 262L89 265L87 268L85 277L76 299L75 298L75 259L76 258L76 211L77 210L76 209L77 208L77 101L76 100L75 54L74 53L74 43L73 40ZM71 0L67 2L68 15L69 16L68 37L78 37L77 35L78 2L75 0Z" fill="var(--accent)" fill-rule="evenodd" />
+          </svg>
+          <span class="logo-title" style="font-family:'Cormorant Garamond','Playfair Display',serif;font-size:15px;color:var(--text-heading);font-weight:500;letter-spacing:0.32em;margin-right:-0.32em;">RT CHOCOS</span>
+        </div>
       </a>
       <p style="color:var(--text-secondary);font-size:13.5px;line-height:1.75;font-weight:400;max-width:260px;">India's chocolate learning platform for makers, learners, and enthusiasts. Bean-to-bar science, craft, and education.</p>
     </div>

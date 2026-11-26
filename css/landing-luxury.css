@@ -2826,7 +2826,7 @@
     max-width: 490px !important;
     width: 100% !important;
     padding: clamp(10px, 1.5vh, 16px) clamp(16px, 1.6vw, 22px) clamp(9px, 1.3vh, 13px) !important;
-    margin-top: 2px !important;
+    margin-top: clamp(46px, 6.2vh, 76px) !important;
     border-radius: 16px !important;
   }
 
@@ -2906,6 +2906,7 @@
   #hero .hero-ingredient-spotlight-card,
   #page-home .hero-ingredient-spotlight-card {
     padding: 8px 14px 7px !important;
+    margin-top: 18px !important;
   }
 
   #hero .hero-video-bg {
