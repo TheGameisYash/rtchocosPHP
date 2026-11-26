@@ -62,9 +62,11 @@ function renderWorkshopCard($w, $pathPrefix = "") {
         ? "data-workshop-title=\"{$safeTitle}\" data-workshop-duration=\"{$safeDuration}\" data-workshop-level=\"{$safeLevel}\" onclick=\"openWorkshopNotifyModal(this.dataset.workshopTitle, this.dataset.workshopDuration, this.dataset.workshopLevel)\""
         : 'onclick="addToCart()"';
 
-    $imageSrc = $pathPrefix . $w['image'];
+    $imageFile = __DIR__ . '/../' . $w['image'];
+    $cacheBust = file_exists($imageFile) ? '?v=' . filemtime($imageFile) : '';
+    $imageSrc = $pathPrefix . $w['image'] . $cacheBust;
     $imageTag = ($w['image'] && strpos($w['image'], '/') !== false)
-        ? "<img src=\"{$imageSrc}\" alt=\"{$w['title']}\">"
+        ? "<img src=\"{$imageSrc}\" alt=\"{$safeTitle}\" loading=\"lazy\">"
         : "<span>🍫</span>";
 
     $outcomesHtml = "";
