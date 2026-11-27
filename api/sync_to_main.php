@@ -1,5 +1,5 @@
 <?php
-// sync_to_main.php - One-time server sync script to copy studio photos & resolvers from beta to main
+// api/sync_to_main.php - Sync studio images and components from beta to main
 header('Content-Type: application/json');
 
 $key = $_GET['key'] ?? '';
@@ -9,8 +9,8 @@ if ($key !== 'rtbeta2026') {
     exit;
 }
 
-$betaDir = __DIR__;
-$mainDir = dirname(__DIR__);
+$betaDir = dirname(__DIR__); // .../beta
+$mainDir = dirname($betaDir); // .../public_html
 
 $results = [
     'betaDir' => $betaDir,
