@@ -31,6 +31,9 @@
 # ----------------------------------------------------------------------
 Options +FollowSymLinks -Indexes
 DirectoryIndex index.php index.html
+<IfModule mod_dir.c>
+    DirectorySlash Off
+</IfModule>
 
 # ----------------------------------------------------------------------
 # | Protect Sensitive Files                                            |
@@ -107,13 +110,16 @@ DirectoryIndex index.php index.html
     RewriteRule ^maintenance/?$ /maintenance.php [L]
 
     # ------------------------------------------------------------------
-    # | 3. Physical Directory & Clean Article URL Routing               |
+    # | 3. Clean URL Trailing-Slash Normalization & Article Routing       |
     # ------------------------------------------------------------------
-    # Canonical: Strip trailing slash from clean URLs (e.g. /blog/ -> /blog)
+    # Canonical: Strip trailing slash from clean top-level and detail URLs
     RewriteCond %{REQUEST_METHOD} =GET
-    RewriteRule ^(blog|shop|about|workshops|chocopedia|gallery|contact|innovation-lab|work-with-us)/+$ /$1 [R=301,L]
+    RewriteRule ^(blog|shop|about|workshops|chocopedia|gallery|contact|innovation-lab|work-with-us|faq|corporate-gifting|indian-chocolate-brands)/+$ /$1 [R=301,L]
 
-    # Handle /blog and /blog/ requests
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteRule ^(blog|shop|product|experiment|failed-batch|ingredient)/([^/]+)/+$ /$1/$2 [R=301,L]
+
+    # Handle /blog requests
     RewriteRule ^blog/?$ /blog.php [L]
 
     # Rewrite clean blog article URLs (/blog/article-slug) to blog-article.php
@@ -129,14 +135,14 @@ DirectoryIndex index.php index.html
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^experiment/([^/]+)/?$ /experiment.php?slug=$1 [L,QSA]
 
-    # Handle /failed-batch requests
-    RewriteRule ^failed-batch/?$ /innovation-lab.php#failed-experiments [L]
+    # Handle /failed-batch requests (redirect cleanly with fragment using NE)
+    RewriteRule ^failed-batch/?$ /innovation-lab#failed-experiments [R=301,NE,L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^failed-batch/([^/]+)/?$ /failed-batch.php?slug=$1 [L,QSA]
 
-    # Handle /ingredient requests
-    RewriteRule ^ingredient/?$ /innovation-lab.php#ingredient-innovation [L]
+    # Handle /ingredient requests (redirect cleanly with fragment using NE)
+    RewriteRule ^ingredient/?$ /innovation-lab#ingredient-innovation [R=301,NE,L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ingredient/([^/]+)/?$ /ingredient.php?slug=$1 [L,QSA]

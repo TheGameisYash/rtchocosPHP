@@ -262,15 +262,15 @@
       }
   }
 
+  // Path prefix detection (must run before error.php include on nested /shop/ or /product/ URLs)
+  $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+  $pathPrefix = (strpos($requestPath, '/shop/') !== false || strpos($requestPath, '/product/') !== false) ? '../' : '';
+
   if (!$product) {
       header('HTTP/1.0 404 Not Found');
       include __DIR__ . '/error.php';
       exit;
   }
-
-  // Path prefix detection
-  $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
-  $pathPrefix = (strpos($requestPath, '/shop/') !== false) ? '../' : '';
 
   // Smart high-res image resolver
   if (!function_exists('resolveProductImageSafe')) {

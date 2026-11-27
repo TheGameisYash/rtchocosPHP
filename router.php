@@ -110,6 +110,16 @@ if (preg_match('#^/(?:experiment|lab)/([^/]+)/?$#', $uri, $m)) {
     return true;
 }
 
+// Route /failed-batch and /ingredient base URLs to innovation-lab anchors
+if (preg_match('#^/failed-batch/?$#', $uri)) {
+    header('Location: /innovation-lab#failed-experiments', true, 301);
+    return true;
+}
+if (preg_match('#^/ingredient/?$#', $uri)) {
+    header('Location: /innovation-lab#ingredient-innovation', true, 301);
+    return true;
+}
+
 // Route clean failed batch URLs: /failed-batch/{slug} or /case-study/{slug}
 if (preg_match('#^/(?:failed-batch|case-study)/([^/]+)/?$#', $uri, $m)) {
     $_GET['slug'] = $m[1];
@@ -124,8 +134,8 @@ if (preg_match('#^/ingredient/([^/]+)/?$#', $uri, $m)) {
     return true;
 }
 
-// Serve static files requested from subpaths like /shop/style.css, /blog/style.css, /experiment/assets/..., /failed-batch/css/...
-if (preg_match('#^/(?:shop|blog|experiment|lab|failed-batch|ingredient)/((?:style\.css|script\.js|favicon\.[a-z]+|(?:css|js|assets|data)/.+))$#', $uri, $m)) {
+// Serve static files requested from subpaths like /shop/style.css, /product/style.css, /blog/style.css, /experiment/assets/..., /failed-batch/css/...
+if (preg_match('#^/(?:shop|product|blog|experiment|lab|failed-batch|ingredient)/((?:style\.css|script\.js|favicon\.[a-z]+|(?:css|js|assets|data)/.+))$#', $uri, $m)) {
     $realStaticPath = __DIR__ . '/' . $m[1];
     if (file_exists($realStaticPath)) {
         $mimeTypes = [

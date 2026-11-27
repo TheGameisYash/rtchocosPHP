@@ -63,11 +63,9 @@
   if ($hasTrailingSlash) {
       $qs = !empty($_SERVER['QUERY_STRING']) ? ('?' . $_SERVER['QUERY_STRING']) : '';
       header('Location: /blog' . $qs, true, 301);
-      // Fallback pathPrefix in case redirect is delayed or output buffered
-      $pathPrefix = "../";
-  } else {
-      $pathPrefix = "";
+      exit;
   }
+  $pathPrefix = "";
 
   $canonicalUrl = "https://www.rtchocos.com/blog";
   $schemaType = "CollectionPage";
