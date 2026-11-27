@@ -71,7 +71,7 @@ Options +FollowSymLinks -Indexes
     RewriteCond %{REQUEST_METHOD} =GET
     RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([a-zA-Z0-9_\-]+)\.php(\?[^\ ]*)?\ HTTP/ [NC]
     RewriteCond %{REQUEST_URI} !^/(admin|dev|api|includes)/ [NC]
-    RewriteCond %{REQUEST_URI} !(send_contact|subscribe|blog_image|test_blog|db_setup|router) [NC]
+    RewriteCond %{REQUEST_URI} !(send_contact|subscribe|blog_image|product_image|test_blog|db_setup|router) [NC]
     RewriteRule ^([a-zA-Z0-9_\-]+)\.php$ /$1 [R=301,L]
 
     # ------------------------------------------------------------------
@@ -154,6 +154,10 @@ Options +FollowSymLinks -Indexes
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^assets/blogs/(.+)$ /blog_image.php?file=$1 [L,QSA]
 
+    # Route missing product images to product_image.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^assets/products/(.+)$ /product_image.php?file=$1 [L,QSA]
+
     # ------------------------------------------------------------------
     # | 4. Map Any Extensionless URL to .php (e.g. /about -> about.php)|
     # ------------------------------------------------------------------
@@ -180,6 +184,10 @@ RewriteRule ^indian-chocolate-brands/?$ brand-listicle.php [L]
 # Route missing blog images to blog_image.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^assets/blogs/(.+)$ blog_image.php?file=$1 [L,QSA]
+
+# Route missing product images to product_image.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^assets/products/(.+)$ product_image.php?file=$1 [L,QSA]
 
 # ----------------------------------------------------------------------
 # | Security Headers                                                   |

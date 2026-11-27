@@ -157,22 +157,20 @@
   if (!function_exists('resolveShopCatalogImage')) {
       function resolveShopCatalogImage($img, $slug = '') {
           if (!empty($img)) {
-              if (strpos($img, 'http://') === 0 || strpos($img, 'https://') === 0) {
+              if (strpos($img, 'http://') === 0 || strpos($img, 'https://') === 0 || strpos($img, 'data:') === 0) {
                   return $img;
               }
               $clean = ltrim($img, '/');
-              if (file_exists(__DIR__ . '/' . $clean)) {
-                  return $clean;
-              }
+              return $clean;
           }
           if (!empty($slug)) {
-              $slugJpg = 'assets/products/' . str_replace('-', '_', $slug) . '.jpg';
-              if (file_exists(__DIR__ . '/' . $slugJpg)) {
-                  return $slugJpg;
-              }
               $slugPng = 'assets/products/' . str_replace('-', '_', $slug) . '.png';
               if (file_exists(__DIR__ . '/' . $slugPng)) {
                   return $slugPng;
+              }
+              $slugJpg = 'assets/products/' . str_replace('-', '_', $slug) . '.jpg';
+              if (file_exists(__DIR__ . '/' . $slugJpg)) {
+                  return $slugJpg;
               }
           }
           return 'assets/premium_chocolate.png';

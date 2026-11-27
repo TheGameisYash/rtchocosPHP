@@ -31,7 +31,7 @@ if ($uri === '/index.php') {
 
 // Redirect direct .php GET requests to extensionless (except dev/admin/api/scripts)
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && preg_match('#^/([a-zA-Z0-9_\-]+)\.php$#', $uri, $m)) {
-    if (!in_array($m[1], ['send_contact', 'subscribe', 'blog_image', 'test_blog', 'router', 'db_setup'])) {
+    if (!in_array($m[1], ['send_contact', 'subscribe', 'blog_image', 'product_image', 'test_blog', 'router', 'db_setup'])) {
         $qs = !empty($_SERVER['QUERY_STRING']) ? ('?' . $_SERVER['QUERY_STRING']) : '';
         header('Location: /' . $m[1] . $qs, true, 301);
         return true;
@@ -249,6 +249,15 @@ if (preg_match('#^/assets/blogs/(.+)$#', $uri, $m)) {
     if (!file_exists(__DIR__ . $uri)) {
         $_GET['file'] = $m[1];
         include __DIR__ . '/blog_image.php';
+        return true;
+    }
+}
+
+// Route missing product images to product_image.php
+if (preg_match('#^/assets/products/(.+)$#', $uri, $m)) {
+    if (!file_exists(__DIR__ . $uri)) {
+        $_GET['file'] = $m[1];
+        include __DIR__ . '/product_image.php';
         return true;
     }
 }

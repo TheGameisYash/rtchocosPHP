@@ -280,19 +280,17 @@
                   return $img;
               }
               $clean = ltrim($img, '/');
-              if (file_exists(__DIR__ . '/' . $clean)) {
-                  return $pathPrefix . $clean;
-              }
+              return $pathPrefix . $clean;
           }
           // Check slug-derived filenames on disk
           if (!empty($slug)) {
-              $slugJpg = 'assets/products/' . str_replace('-', '_', $slug) . '.jpg';
-              if (file_exists(__DIR__ . '/' . $slugJpg)) {
-                  return $pathPrefix . $slugJpg;
-              }
               $slugPng = 'assets/products/' . str_replace('-', '_', $slug) . '.png';
               if (file_exists(__DIR__ . '/' . $slugPng)) {
                   return $pathPrefix . $slugPng;
+              }
+              $slugJpg = 'assets/products/' . str_replace('-', '_', $slug) . '.jpg';
+              if (file_exists(__DIR__ . '/' . $slugJpg)) {
+                  return $pathPrefix . $slugJpg;
               }
           }
           return $pathPrefix . 'assets/premium_chocolate.png';
