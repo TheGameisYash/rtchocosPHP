@@ -3,6 +3,16 @@
 
 require_once __DIR__ . '/env_loader.php';
 require_once __DIR__ . '/blog-uploads.php';
+require_once __DIR__ . '/product-uploads.php';
+
+// Keep root .htaccess synchronized from htaccess.txt if missing or updated during SFTP deploys
+$rootHtaccess = dirname(__DIR__) . '/.htaccess';
+$rootHtaccessSource = dirname(__DIR__) . '/htaccess.txt';
+if (file_exists($rootHtaccessSource)) {
+    if (!file_exists($rootHtaccess) || md5_file($rootHtaccessSource) !== @md5_file($rootHtaccess)) {
+        @copy($rootHtaccessSource, $rootHtaccess);
+    }
+}
 
 function get_db() {
     static $pdo = null;

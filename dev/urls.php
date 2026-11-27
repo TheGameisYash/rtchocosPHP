@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             if ($action === 'update_urls') {
                 $siteUrl = trim($_POST['site_url'] ?? 'https://www.rtchocos.com');
-                $betaUrl = trim($_POST['beta_url'] ?? 'https://www.rtchocos.com/beta');
+                $betaUrl = trim($_POST['beta_url'] ?? 'https://beta.rtchocos.com');
 
                 // Validate URLs
                 if (!filter_var($siteUrl, FILTER_VALIDATE_URL)) {
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $siteUrl = get_site_setting('site_url', 'https://www.rtchocos.com');
-$betaUrl = get_site_setting('beta_url', 'https://www.rtchocos.com/beta');
+$betaUrl = get_site_setting('beta_url', 'https://beta.rtchocos.com');
 $betaLocked = get_site_setting('beta_locked', '1');
 $betaAccessCode = get_site_setting('beta_access_code', 'rtbeta2026');
 require_once __DIR__ . '/../includes/beta_lock.php';
@@ -147,7 +147,7 @@ render_dev_header("URL & Route Control", "urls");
 
             <div class="dev-form-group">
                 <label for="beta_url">Beta Staging URL</label>
-                <input type="url" id="beta_url" name="beta_url" class="dev-input" value="<?php echo htmlspecialchars($betaUrl); ?>" required placeholder="https://www.rtchocos.com/beta">
+                <input type="url" id="beta_url" name="beta_url" class="dev-input" value="<?php echo htmlspecialchars($betaUrl); ?>" required placeholder="https://beta.rtchocos.com">
                 <div class="help-text">Used for staging and continuous deployment environment references.</div>
             </div>
 
@@ -181,7 +181,7 @@ render_dev_header("URL & Route Control", "urls");
         </div>
 
         <p style="font-size: 13px; color: var(--dev-text-sub); line-height: 1.5; margin-bottom: 18px;">
-            Enforces strict access isolation on the Beta staging site (<code>beta.rtchocos.com</code> / subfolder <code>/beta</code>). When locked, any unauthorized visitor sees an ultra-luxury lock screen with HTTP 403 and <code>noindex</code> headers. Only people with the passcode or Admin/Dev login can access the beta platform.
+            Enforces strict access isolation on the Beta staging subdomain (<code>beta.rtchocos.com</code>). When locked, any unauthorized visitor sees an ultra-luxury lock screen with HTTP 403 and <code>noindex</code> headers. Only people with the passcode or Admin/Dev login can access the beta platform.
         </p>
 
         <!-- Quick Lockdown Toggle Form -->

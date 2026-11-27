@@ -33,7 +33,7 @@ This file defines critical repository knowledge, architectural constraints, and 
 ## 4. Git Branch Strategy & Deployment
 
 - **`main`**: Production branch deployed to `rtchocos.com`.
-- **`beta`**: Staging branch deployed to `rtchocos.com/beta` via GitHub Actions (`.github/workflows/deploy-beta.yml`).
+- **`beta`**: Staging branch deployed via GitHub Actions (`.github/workflows/deploy-beta.yml`) and served exclusively at `beta.rtchocos.com` (`rtchocos.com/beta` is disabled with 404).
 - Never push untested code directly to `main`. Test on `beta` first.
 
 ---

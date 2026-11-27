@@ -23,3 +23,12 @@ jobs:
         local_path: './'
         remote_path: 'domains/rtchocos.com/public_html/beta'
         rsyncArgs: '--exclude=.git --exclude=.github --exclude=robots.txt --exclude=.env'
+
+    - name: 🛡️ Ensure .htaccess is uploaded
+      continue-on-error: true
+      run: |
+        sudo apt-get update -y && sudo apt-get install -y sshpass
+        sshpass -p '${{ secrets.FTP_PASSWORD }}' sftp -o StrictHostKeyChecking=no -P 65002 ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }} <<EOF
+        put .htaccess domains/rtchocos.com/public_html/beta/.htaccess
+        bye
+        EOF

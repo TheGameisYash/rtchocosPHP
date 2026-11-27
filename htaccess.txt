@@ -1,0 +1,189 @@
+# ----------------------------------------------------------------------
+# | Gzip / Deflate Compression                                         |
+# ----------------------------------------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+    SetOutputFilter DEFLATE
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | Browser Caching (Expires Headers)                                  |
+# ----------------------------------------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 0 seconds"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/x-font-ttf "access plus 1 year"
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | Options & Directives for LiteSpeed / Hostinger                      |
+# ----------------------------------------------------------------------
+Options +FollowSymLinks -Indexes
+DirectoryIndex index.php index.html
+
+# ----------------------------------------------------------------------
+# | Protect Sensitive Files                                            |
+# ----------------------------------------------------------------------
+<FilesMatch "^(\.env|\.git|\.gitignore|db_setup\.php|htaccess\.txt)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ----------------------------------------------------------------------
+# | LiteSpeed / Hostinger Rewrite Engine Rules                         |
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # ------------------------------------------------------------------
+    # | Remove rtchocos.com/beta — Beta runs strictly at beta.rtchocos.com |
+    # ------------------------------------------------------------------
+    RewriteCond %{HTTP_HOST} ^(?:www\.)?rtchocos\.com$ [NC]
+    RewriteCond %{REQUEST_URI} ^/beta(?:/|$) [NC]
+    RewriteRule .* - [R=404,L]
+
+    # Prevent direct access to includes & data
+    RewriteRule ^includes/ - [F,L]
+    RewriteRule ^data/ - [F,L]
+
+    # Sitemap rule
+    RewriteRule ^sitemap\.xml$ /sitemap.php [L]
+
+    # Handle /admin without trailing slash and /login shortcuts
+    RewriteRule ^admin$ /admin/ [R=301,L]
+    RewriteRule ^login(\.php)?$ /admin/login.php [R=301,L]
+
+    # Handle /dev without trailing slash
+    RewriteRule ^dev$ /dev/ [R=301,L]
+
+    # ------------------------------------------------------------------
+    # | 1. Canonical Redirects: Hide .php Extensions (GET only)        |
+    # ------------------------------------------------------------------
+    # Canonical: Redirect /index.php to /
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /(?:index\.php)+(\?[^\ ]*)?\ HTTP/ [NC]
+    RewriteRule ^index\.php$ / [R=301,L]
+
+    # Canonical: 301 Redirect direct /page.php requests to /page (GET only, ignore admin/dev/api/scripts)
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([a-zA-Z0-9_\-]+)\.php(\?[^\ ]*)?\ HTTP/ [NC]
+    RewriteCond %{REQUEST_URI} !^/(admin|dev|api|includes)/ [NC]
+    RewriteCond %{REQUEST_URI} !(send_contact|subscribe|blog_image|product_image|test_blog|db_setup|router) [NC]
+    RewriteRule ^([a-zA-Z0-9_\-]+)\.php$ /$1 [R=301,L]
+
+    # ------------------------------------------------------------------
+    # | 2. Semantic URL Aliases (Missing URLs)                          |
+    # ------------------------------------------------------------------
+    # Products & Catalog
+    RewriteRule ^(?:products|all-products)/?$ /shop.php [L]
+
+    # Academy & Workshops
+    RewriteRule ^(?:academy|classes|masterclasses)/?$ /workshops.php [L]
+
+    # Journal & Blog
+    RewriteRule ^(?:journal|the-cacao-journal|cacao-journal)/?$ /blog.php [L]
+
+    # Recipes & Formulations
+    RewriteRule ^(?:recipes|formulations)/?$ /gallery.php [L]
+
+    # Work With Us / Work With Me
+    RewriteRule ^(?:work-with-me|consulting)/?$ /work-with-us.php [L]
+
+    # Innovation Lab
+    RewriteRule ^(?:lab|innovation)/?$ /innovation-lab.php [L]
+
+    # Clean Maintenance URL
+    RewriteRule ^maintenance/?$ /maintenance.php [L]
+
+    # ------------------------------------------------------------------
+    # | 3. Physical Directory & Clean Article URL Routing               |
+    # ------------------------------------------------------------------
+    # Canonical: Strip trailing slash from clean URLs (e.g. /blog/ -> /blog)
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteRule ^(blog|shop|about|workshops|chocopedia|gallery|contact|innovation-lab|work-with-us)/+$ /$1 [R=301,L]
+
+    # Handle /blog and /blog/ requests
+    RewriteRule ^blog/?$ /blog.php [L]
+
+    # Rewrite clean blog article URLs (/blog/article-slug) to blog-article.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^blog/([^/]+)/?$ /blog-article.php?slug=$1 [L,QSA]
+
+    # Handle /experiment requests to innovation-lab.php
+    RewriteRule ^experiment/?$ /innovation-lab.php [L]
+
+    # Rewrite clean experiment URLs (/experiment/slug) to experiment.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^experiment/([^/]+)/?$ /experiment.php?slug=$1 [L,QSA]
+
+    # Handle /failed-batch requests
+    RewriteRule ^failed-batch/?$ /innovation-lab.php#failed-experiments [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^failed-batch/([^/]+)/?$ /failed-batch.php?slug=$1 [L,QSA]
+
+    # Handle /ingredient requests
+    RewriteRule ^ingredient/?$ /innovation-lab.php#ingredient-innovation [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ingredient/([^/]+)/?$ /ingredient.php?slug=$1 [L,QSA]
+
+    # Handle accidental nested /shop/shop/{slug} requests
+    RewriteRule ^(?:shop|blog)/(?:shop|blog)/([^/]+)/?$ /shop/$1 [R=301,L]
+
+    # Rewrite clean shop & product URLs (/shop/slug or /product/slug)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(?:shop|product)/([^/]+)/?$ /product.php?slug=$1 [L,QSA]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^shop/?$ /shop.php [L]
+
+    # Rewrite clean listicle URL
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^indian-chocolate-brands/?$ /brand-listicle.php [L]
+
+    # Route missing blog images to blog_image.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^assets/blogs/(.+)$ /blog_image.php?file=$1 [L,QSA]
+
+    # Route missing product images to product_image.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^assets/products/(.+)$ /product_image.php?file=$1 [L,QSA]
+
+    # ------------------------------------------------------------------
+    # | 4. Map Any Extensionless URL to .php (e.g. /about -> about.php)|
+    # ------------------------------------------------------------------
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ /$1.php [L,QSA]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | Security Headers                                                   |
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set X-XSS-Protection "1; mode=block"
+    <FilesMatch "^(api_.*|test_blog|router)\.php$">
+        Header set X-Robots-Tag "noindex, nofollow"
+    </FilesMatch>
+</IfModule>

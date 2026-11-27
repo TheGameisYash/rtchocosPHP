@@ -68,7 +68,7 @@ try {
     // 4. Populate default site_settings for maintenance mode and URLs
     $newSettings = [
         'site_url' => 'https://www.rtchocos.com',
-        'beta_url' => 'https://www.rtchocos.com/beta',
+        'beta_url' => 'https://beta.rtchocos.com',
         'maintenance_mode' => '0',
         'maintenance_title' => "We're Perfecting Something Delicious",
         'maintenance_subtitle' => 'Our chocolate laboratory is currently undergoing planned improvements.',

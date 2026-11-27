@@ -239,7 +239,7 @@ try {
         'newsletter_text' => 'Subscribe to our newsletter for exclusive recipes, scientific cocoa insights, and new product releases.',
         'show_theme_tester' => '0',
         'site_url' => 'https://www.rtchocos.com',
-        'beta_url' => 'https://www.rtchocos.com/beta',
+        'beta_url' => 'https://beta.rtchocos.com',
         'beta_locked' => '1',
         'beta_access_code' => 'rtbeta2026',
         'maintenance_mode' => '0',

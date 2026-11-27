@@ -118,9 +118,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->fetch()) {
                 $error = "The URL slug '{$slug}' is already in use by another product. Slugs must be unique.";
             } else {
-                $uploadDir = __DIR__ . '/../assets/products';
+                $uploadDir = get_product_uploads_dir();
                 if (!file_exists($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
+                    @mkdir($uploadDir, 0755, true);
                 }
 
                 $imagePath = $imageMainExisting;
@@ -141,8 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $error = 'Main Image file size must be less than 5MB.';
                     } else {
                         $newFileName = 'prod-' . $slug . '-' . time() . '.' . $fileExt;
-                        $destPath = $uploadDir . '/' . $newFileName;
-                        if (move_uploaded_file($fileTmp, $destPath)) {
+                        if (save_product_upload($fileTmp, $newFileName)) {
                             $imagePath = 'assets/products/' . $newFileName;
 
                             // Register in media table
@@ -174,8 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                             if (in_array($gType, $allowedMimeTypes) && $gSize <= $maxFileSize) {
                                 $newGalleryName = 'gallery-' . $slug . '-' . time() . '-' . rand(100, 999) . '.' . $gExt;
-                                $gDest = $uploadDir . '/' . $newGalleryName;
-                                if (move_uploaded_file($gTmp, $gDest)) {
+                                if (save_product_upload($gTmp, $newGalleryName)) {
                                     $relGPath = 'assets/products/' . $newGalleryName;
                                     $galleryArray[] = $relGPath;
 

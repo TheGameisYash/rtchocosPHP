@@ -152,10 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $checkImg = $pdo->prepare("SELECT COUNT(*) FROM products WHERE image_main = ?");
                             $checkImg->execute([$prod['image_main']]);
                             if ((int)$checkImg->fetchColumn() === 0) {
-                                $filePath = __DIR__ . '/../' . $prod['image_main'];
-                                if (file_exists($filePath)) {
-                                    @unlink($filePath);
-                                }
+                                delete_product_image_file($prod['image_main']);
                             }
                         }
 

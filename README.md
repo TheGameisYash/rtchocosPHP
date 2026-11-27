@@ -93,4 +93,4 @@ RTchocosReal/
 ## 🌿 Git Branch Strategy
 
 - **`main`**: Production codebase (Live on `https://www.rtchocos.com/`).
-- **`beta`**: Staging/testing branch (Auto-deployed to `https://www.rtchocos.com/beta` via GitHub Actions).
+- **`beta`**: Staging/testing branch (Auto-deployed to `https://beta.rtchocos.com` via GitHub Actions).

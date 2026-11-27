@@ -30,11 +30,12 @@
 # | Options & Directives for LiteSpeed / Hostinger                      |
 # ----------------------------------------------------------------------
 Options +FollowSymLinks -Indexes
+DirectoryIndex index.php index.html
 
 # ----------------------------------------------------------------------
 # | Protect Sensitive Files                                            |
 # ----------------------------------------------------------------------
-<FilesMatch "^(\.env|\.git|\.gitignore|db_setup\.php)">
+<FilesMatch "^(\.env|\.git|\.gitignore|db_setup\.php|htaccess\.txt)">
     Order allow,deny
     Deny from all
 </FilesMatch>
@@ -45,6 +46,13 @@ Options +FollowSymLinks -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+
+    # ------------------------------------------------------------------
+    # | Remove rtchocos.com/beta — Beta runs strictly at beta.rtchocos.com |
+    # ------------------------------------------------------------------
+    RewriteCond %{HTTP_HOST} ^(?:www\.)?rtchocos\.com$ [NC]
+    RewriteCond %{REQUEST_URI} ^/beta(?:/|$) [NC]
+    RewriteRule .* - [R=404,L]
 
     # Prevent direct access to includes & data
     RewriteRule ^includes/ - [F,L]
@@ -166,28 +174,6 @@ Options +FollowSymLinks -Indexes
     RewriteCond %{REQUEST_FILENAME}.php -f
     RewriteRule ^(.*)$ /$1.php [L,QSA]
 </IfModule>
-
-# Rewrite clean shop URLs
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^shop/([^/]+)$ product.php?slug=$1 [L,QSA]
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^shop/?$ shop.php [L]
-
-# Rewrite clean listicle URL
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^indian-chocolate-brands/?$ brand-listicle.php [L]
-
-# Route missing blog images to blog_image.php
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^assets/blogs/(.+)$ blog_image.php?file=$1 [L,QSA]
-
-# Route missing product images to product_image.php
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^assets/products/(.+)$ product_image.php?file=$1 [L,QSA]
 
 # ----------------------------------------------------------------------
 # | Security Headers                                                   |

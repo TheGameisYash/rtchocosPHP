@@ -68,7 +68,7 @@ $maintMediaType = get_site_setting('maintenance_media_type', 'both');
 $maintImage = get_site_setting('maintenance_image', 'assets/ph.png');
 $maintVideo = get_site_setting('maintenance_video', 'https://www.youtube.com/watch?v=kY3Pvdq0YpY');
 $siteUrl = get_site_setting('site_url', 'https://www.rtchocos.com');
-$betaUrl = get_site_setting('beta_url', 'https://www.rtchocos.com/beta');
+$betaUrl = get_site_setting('beta_url', 'https://beta.rtchocos.com');
 $betaLocked = get_site_setting('beta_locked', '1');
 $bypassKey = get_site_setting('maintenance_bypass_key', 'rtdev2026');
 

@@ -47,25 +47,20 @@ function is_beta_environment() {
     $hostOnly = explode(':', $host)[0];
 
     // 2. Production domain whitelist:
-    // If request is explicitly on rtchocos.com or www.rtchocos.com AND NOT under the /beta subpath, it is production.
+    // Requests on rtchocos.com or www.rtchocos.com are strictly production (legacy /beta subpath is disabled).
     $isPrimaryProdDomain = ($hostOnly === 'rtchocos.com' || $hostOnly === 'www.rtchocos.com');
-    if ($isPrimaryProdDomain && !preg_match('#^/beta(/|\?|$)#i', $uri)) {
+    if ($isPrimaryProdDomain) {
         return $isBeta = false;
     }
 
-    // 3. Request URI path detection (e.g. /beta/ or /beta on any host)
-    if (preg_match('#^/beta(/|\?|$)#i', $uri)) {
-        return $isBeta = true;
-    }
-
-    // 4. HTTP Host / Subdomain detection (e.g. beta.rtchocos.com, beta-*, *.beta.*)
+    // 3. HTTP Host / Subdomain detection (beta.rtchocos.com, beta-*, *.beta.*)
     if (!empty($hostOnly)) {
         if (strpos($hostOnly, 'beta.') === 0 || strpos($hostOnly, 'beta-') === 0 || preg_match('/(^|\.)beta(\.|$)/i', $hostOnly)) {
             return $isBeta = true;
         }
     }
 
-    // 5. Filesystem path detection (Hostinger remote_path: domains/rtchocos.com/public_html/beta)
+    // 4. Filesystem path detection (Hostinger beta subdomain root: domains/rtchocos.com/public_html/beta)
     $root = str_replace('\\', '/', __DIR__);
     if (preg_match('#/public_html/beta(/|$)#i', $root) || preg_match('#/domains/[^/]+/public_html/beta#i', $root)) {
         return $isBeta = true;
@@ -232,15 +227,27 @@ function check_beta_lock() {
         return;
     }
 
+    // Block legacy rtchocos.com/beta access completely — staging lives strictly on beta.rtchocos.com
+    $hostOnly = explode(':', strtolower($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? ''))[0];
+    $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    if (($hostOnly === 'rtchocos.com' || $hostOnly === 'www.rtchocos.com') && preg_match('#^/beta(?:/|$)#i', $requestUri)) {
+        http_response_code(404);
+        header('X-Robots-Tag: noindex, nofollow, noarchive');
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        echo "<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
+        exit;
+    }
+
     // 2. Only enforce if running in Beta environment and lock is enabled
     if (!is_beta_environment() || !is_beta_lock_enabled()) {
         return;
     }
 
-    $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-
-    // 3. Static assets bypass (CSS, JS, images, fonts, icons, videos)
-    if (preg_match('/\.(?:css|js|png|jpe?g|gif|webp|svg|woff2?|ttf|eot|ico|mp4|webm|map|json)$/i', $requestUri)) {
+    // 3. Static assets & image proxy bypass (CSS, JS, images, fonts, icons, videos)
+    if (
+        preg_match('/\.(?:css|js|png|jpe?g|gif|webp|svg|woff2?|ttf|eot|ico|mp4|webm|map|json)$/i', $requestUri) ||
+        preg_match('#^/(?:product_image|blog_image)\.php$#i', $requestUri)
+    ) {
         return;
     }
 
