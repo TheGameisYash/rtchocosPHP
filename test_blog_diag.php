@@ -1,50 +1,49 @@
 <?php
-// test_blog_diag.php - Deep scanner across all Hostinger directories
+// test_blog_diag.php - Check exact 11 files on disk
 header('Content-Type: text/plain; charset=UTF-8');
 
-echo "=== Deep Hostinger User Directory Scan ===\n";
+$paths = [
+    'assets/products/prod-almond-halwa-spread-1795592478.png',
+    'assets/products/prod-cashew-coconut-spread-1795592748.png',
+    'assets/products/prod-almond-spread-1795605000.png',
+    'assets/products/prod-hazelnut-spread-clean-label-product-healthy-gifting-1795605136.png',
+    'assets/products/prod-classic-almond-spread-1795605240.png',
+    'assets/products/prod-gourmet-stuffed-dates-gift-box-1795606821.png',
+    'assets/products/prod-the-rocher-collection-1795606988.png',
+    'assets/products/prod-almond-bark-1795607224.png',
+    'assets/products/prod-handcrafted-chocolates-1795607705.png',
+    'assets/products/prod-dates-powder-1795607837.png',
+    'assets/products/prod-customized-chocolate-inclusion-bar-1795608230.png',
+];
 
-$accountHome = '/home/u219698334';
-echo "Account Home: $accountHome\n";
+$roots = [
+    'main' => '/home/u219698334/domains/rtchocos.com/public_html',
+    'beta' => '/home/u219698334/domains/rtchocos.com/public_html/beta',
+    'account_beta' => '/home/u219698334/beta',
+    'uploads_products' => '/home/u219698334/domains/rtchocos.com/uploads_products',
+    'uploads_blogs' => '/home/u219698334/domains/rtchocos.com/uploads_blogs',
+];
 
-$extensions = ['jpg', 'jpeg', 'png', 'webp'];
-$targetPatterns = ['1795', 'halwa', 'coconut', 'crunchy', 'rocher', 'dates', 'bark', 'chocolates', 'final'];
-
-function search_folder($dir, $maxDepth = 4, $currentDepth = 0) {
-    global $extensions, $targetPatterns;
-    if ($currentDepth > $maxDepth || !is_dir($dir) || !is_readable($dir)) return;
-    
-    $items = @scandir($dir);
-    if ($items === false) return;
-    
-    foreach ($items as $item) {
-        if ($item === '.' || $item === '..' || $item === '.git' || $item === 'node_modules' || $item === 'cache') continue;
-        $full = $dir . '/' . $item;
-        if (is_dir($full)) {
-            search_folder($full, $maxDepth, $currentDepth + 1);
-        } elseif (is_file($full)) {
-            $ext = strtolower(pathinfo($item, PATHINFO_EXTENSION));
-            if (in_array($ext, $extensions)) {
-                $isMatch = false;
-                $mtime = filemtime($full);
-                // check if modified in last 7 days
-                if ($mtime >= (time() - 7 * 86400)) {
-                    $isMatch = true;
-                } else {
-                    foreach ($targetPatterns as $p) {
-                        if (stripos($item, $p) !== false) {
-                            $isMatch = true;
-                            break;
-                        }
-                    }
-                }
-                if ($isMatch) {
-                    echo date('Y-m-d H:i:s', $mtime) . " | " . sprintf("%10d", filesize($full)) . " bytes | $full\n";
-                }
+echo "=== Checking Exact 11 Image Paths on Hostinger ===\n";
+foreach ($roots as $label => $root) {
+    echo "\n--- Checking Root: $label ($root) ---\n";
+    if (!is_dir($root)) {
+        echo "Root dir does not exist!\n";
+        continue;
+    }
+    foreach ($paths as $p) {
+        $full = $root . '/' . $p;
+        if (file_exists($full)) {
+            echo "EXISTS: $full (" . filesize($full) . " bytes)\n";
+        } else {
+            // Check basename
+            $base = basename($p);
+            $fullBase = $root . '/' . $base;
+            if (file_exists($fullBase)) {
+                echo "EXISTS AS BASENAME: $fullBase (" . filesize($fullBase) . " bytes)\n";
             }
         }
     }
 }
 
-search_folder($accountHome, 5);
-echo "\n=== Scan Completed ===\n";
+echo "\n=== Check Completed ===\n";
