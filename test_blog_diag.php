@@ -1,39 +1,54 @@
 <?php
-// test_blog_diag.php - Check backup directories and permissions on Hostinger
+// restore_studio_images_live.php
 header('Content-Type: text/plain; charset=UTF-8');
 
-echo "=== Hostinger System & Backup Inspection ===\n";
-echo "Current user: " . get_current_user() . " (UID: " . getmyuid() . ")\n";
+echo "=== Restoring Studio Images on Hostinger ===\n";
 
-$dirsToCheck = [
-    '/home/u219698334',
-    '/home/u219698334/.snapshots',
-    '/home/u219698334/.backup',
-    '/home/u219698334/.backups',
-    '/home/u219698334/backups',
-    '/home/u219698334/.trash',
-    '/home/u219698334/domains/rtchocos.com',
-    '/backup',
-    '/var/backups',
+$srcDir = '/home/u219698334/domains/rtchocos.com/public_html/beta/assets/products';
+$destDir = '/home/u219698334/domains/rtchocos.com/public_html/assets/products';
+
+if (!is_dir($destDir)) {
+    mkdir($destDir, 0755, true);
+}
+
+// 1. Map of products to their high-res studio files found in beta
+$mapping = [
+    6  => 'prod-almond-halwa-spread-1795591052.png',
+    7  => 'prod-cashew-coconut-spread-1789237418.png',
+    9  => 'prod-almond-spread-1789238078.png',
+    18 => 'prod-hazelnut-spread-clean-label-product-healthy-gifting-1789410992.png',
+    19 => 'prod-gourmet-stuffed-dates-gift-box-1789411226.png',
+    20 => 'prod-the-rocher-collection-1789469648.png',
+    21 => 'prod-almond-bark-1789238647.png',
+    17 => 'prod-customized-chocolate-inclusion-bar-1789409649.png',
 ];
 
-foreach ($dirsToCheck as $d) {
-    if (is_dir($d)) {
-        echo "DIR FOUND: $d (Readable: " . (is_readable($d) ? 'YES' : 'NO') . ")\n";
-        $sc = @scandir($d);
-        if ($sc) {
-            echo "  Entries: " . implode(', ', array_diff($sc, ['.', '..'])) . "\n";
+// 2. Copy each file to main public_html/assets/products/
+foreach ($mapping as $productId => $fileName) {
+    $src = $srcDir . '/' . $fileName;
+    $dest = $destDir . '/' . $fileName;
+    if (file_exists($src)) {
+        if (copy($src, $dest)) {
+            echo "COPIED: $fileName -> $dest (" . filesize($dest) . " bytes)\n";
+        } else {
+            echo "FAILED TO COPY: $src\n";
         }
     } else {
-        echo "Not found: $d\n";
+        echo "SRC NOT FOUND: $src\n";
     }
 }
 
-// Check shell_exec
-if (function_exists('shell_exec')) {
-    echo "\nshell_exec is AVAILABLE!\n";
-    $ls = @shell_exec('ls -la /home/u219698334 2>&1');
-    echo "ls -la /home/u219698334:\n$ls\n";
-} else {
-    echo "\nshell_exec is DISABLED.\n";
+// 3. Connect to Database and Update products.image_main
+require_once __DIR__ . '/includes/db.php';
+try {
+    $pdo = get_db();
+    $stmt = $pdo->prepare("UPDATE products SET image_main = ? WHERE id = ?");
+    foreach ($mapping as $productId => $fileName) {
+        $relPath = 'assets/products/' . $fileName;
+        $stmt->execute([$relPath, $productId]);
+        echo "DB UPDATED: Product ID $productId -> $relPath\n";
+    }
+    echo "\n=== ALL STUDIO IMAGES RESTORED AND DB UPDATED SUCCESSFULLY! ===\n";
+} catch (Exception $e) {
+    echo "DB ERROR: " . $e->getMessage() . "\n";
 }
